@@ -1,0 +1,139 @@
+<head>
+	<link rel="stylesheet" type="text/css" href="/webresources/hub_/calendar/css/fullcalendar.css">
+	<link rel="stylesheet" type="text/css" href="/webresources/hub_/calendar/css/SylCalDef.css">
+	<link rel="stylesheet" type="text/css" href="/webresources/hub_/calendar/css/jquery_ui_1.8.23.css">
+	<link rel="stylesheet" type="text/css" href="/webresources/hub_/calendar/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="/webresources/hub_/calendar/css/style.css">
+	<link rel="stylesheet" type="text/css" href="/webresources/hub_/calendar/css/common.css">
+	<script type="text/javascript" src="/webresources/hub_/calendar/js/jquery_1.8.1.min.js"></script>
+	<script type="text/javascript" src="/webresources/hub_/calendar/js/widget.js"></script>
+</head>
+<div class="padding-tb-xs">
+	<div class="padding-left-m display-inline-block">
+		<div class="loc-dropdown btn-group">
+		  	<button class="btn dropdown-toggle" data-toggle="dropdown">
+		    <span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu"></ul>
+		</div>
+		<span> 
+			<i class="prevBtn icon-chevron-left"></i>
+			<span class="headerDate"></span>
+			<i class="nextBtn icon-chevron-right"></i>
+			<input type="hidden" id="datepicker">
+		</span>
+	</div>
+	<div class="delivery-type-container padding-left-m display-inline-block">
+		<div id="pi-btn">
+		   <label>
+		      <input class="dtBtn" type="checkbox"><span>PI</span>
+		   </label>
+		</div>
+		<div id="gi-btn">
+		   <label>
+		      <input class="dtBtn" type="checkbox"><span>GI</span>
+		   </label>
+		</div>
+		<div id="gf-btn">
+		   <label>
+		      <input class="dtBtn" type="checkbox"><span>GF</span>
+		   </label>
+		</div>
+	</div>
+	<div class="margin-left-l display-inline-block">
+		<button class="btn dayView">
+			Day
+		</button>
+		<button class="btn wkView">
+			Week
+		</button>
+	</div>
+	<div class="margin-left-xxl padding-left-xl display-inline-block">
+		<button class="btn font-20" id="addAppointment">
+			+
+		</button>
+		<button class="btn">
+			Share
+		</button>
+	</div>
+	<div class="margin-left-xl padding-left-l display-inline-block">
+		<button class="btn sof-btn">
+			SOF
+		</button>
+		<button class="ta-btn btn">
+			TA
+		</button>
+		<button class="btn">
+			SA
+		</button>
+	</div>
+	<div class="padding-left-m float-right padding-right-m display-inline-block">
+		<i class="action-icon cursor float-right icon-th-list"></i>
+		<i class="action-icon cursor float-right icon-refresh"></i>
+		<i class="action-icon cursor float-right icon-info-sign"></i>
+	</div>
+</div>
+<div class="sof-pane">
+	 <div class="sof-header">Student Overflow
+	 <span class="sof-close-icon cursor float-right">X</span>
+	 </div>
+</div>
+<div class="ta-pane">
+	 <div class="ta-header">Teacher Availablity
+	 	<span class="ta-close-icon cursor float-right">X</span>
+	 </div>
+</div>
+<div id='calendar'></div>
+
+<!-- new appointment modal -->
+<div id="appointmentModal" style="display:none">
+    <form id="form" >
+
+        <div>
+        	From
+        	<input type="text" class="custom-datepicker from-datepicker-input" id="fromDate" tabindex="-1">
+	        	<img src="images/up-arrow.png"  class="from-up-arrow" />
+				<img src="images/down-arrow.png" class="from-down-arrow" />
+        	<input type="text" class="custom-timepicker from-timepicker-input" id="fromTime" tabindex="-1">
+	        	<img src="images/up-arrow.png"  class="up-arrow" />
+				<img src="images/down-arrow.png" class="down-arrow" />
+        </div>
+        <div>
+        	<span class=textAlign>To</span>
+        	<input type="text" class="custom-datepicker to-datepicker-input" id="toDate" tabindex="-1">
+        		<img src="images/up-arrow.png"  class="to-up-arrow" />
+				<img src="images/down-arrow.png" class="to-down-arrow" />
+        	<input type="text" class="custom-timepicker to-timepicker-input" id="toTime" tabindex="-1">
+        		<img src="images/up-arrow.png"  class="up-arrow" />
+				<img src="images/down-arrow.png" class="down-arrow" />
+        </div>
+        <div>Type
+        	<select tabindex="-1" id="type">
+        		<option value="Initial assessment">Initial assessment</option>
+        	</select>
+        </div>
+        <div>
+        	Capacity of appoinments in slot
+        	<input class="custom-input" type="text"  id="capacity" tabindex="-1"/>
+        </div>
+        <div>Staff
+        	<select tabindex="-1" id="staff">
+        		<option value="Unassigned">Unassigned</option>
+        	</select>
+        </div>
+         <div>Location
+        	<input type="text" id="location" tabindex="-1" />
+        </div>
+        <div>Notes
+        <textarea rows="4" cols="50" id="notes" tabindex="-1"></textarea>
+        </div>
+        <button class="btn-modal" id="save" tabindex= "-1">Save</button>
+    </form>
+</div>
+<script type="text/javascript" src="/webresources/hub_/calendar/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/webresources/hub_/calendar/js/moment.min.js"></script>
+<script type="text/javascript" src="/webresources/hub_/calendar/js/jquery_ui_1.8.23.min.js"></script>
+<script type="text/javascript" src="/webresources/hub_/calendar/js/jquery_timepicker_1.3.5.min.js"></script>
+<script type="text/javascript" src="/webresources/hub_/calendar/js/fullcalendar.js"></script>
+<script type="text/javascript" src="/webresources/hub_/calendar/js/script.js"></script>
+<script type="text/javascript" src="/webresources/hub_/calendar/js/plugin.js"></script>

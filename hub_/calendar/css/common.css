@@ -1,0 +1,81 @@
+.font-16{
+	font-size:16px;
+}
+.font-18{
+	font-size:18px;
+}
+.font-20{
+	font-size:20px;
+}
+.font-22{
+	font-size:22px;
+}
+.padding-lr-xxs{
+    padding: 0 5px;
+}
+.padding-tb-xs{
+	padding: 10px 0;
+}
+.padding-tb-s{
+    padding: 15px 0;
+}
+.padding-tb-m{
+    padding: 20px 0;
+}
+.padding-xs{
+	padding: 10px;
+}
+.padding-m{
+	padding: 20px;
+}
+.padding-left-m{
+    padding-left : 20px;
+}
+.padding-left-l{
+    padding-left : 25px;
+}
+.margin-left-l{
+	margin-left : 25px;
+}
+.padding-left-xl{
+    padding-left : 30px;
+}
+.padding-right-xs{
+	padding-right: 10px;
+}
+.padding-right-m{
+    padding-right : 20px;
+}
+.padding-top-m{
+    padding-top : 20px;
+}
+.padding-bottom-m{
+    padding-bottom : 20px;
+}
+.float-right{
+	float: right;
+}
+.float-left{
+	float: left;
+}
+.cursor{
+	cursor: pointer;
+}
+input[type="checkbox"] {
+	margin: 0 5px 0 0;
+}
+input[type="radio"] {
+	margin: 0 5px 0 0;
+}
+.display-inline-block{
+	display: inline-block;
+}
+.margin-left-xl{
+	margin-left: 30px;
+}
+.margin-left-xxl{
+	margin-left: 40px;
+}
+.margin-bottom-xl{
+    margin-bottom : 30px;
+}

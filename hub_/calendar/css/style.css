@@ -1,0 +1,235 @@
+body{
+    overflow-x: hidden;
+}
+#calendar
+{
+	margin: auto;
+}
+.no-margin{
+    margin: 0;
+}
+.nextBtn,.prevBtn{
+    cursor: pointer;
+}
+div label input {
+   margin-right:100px;
+}
+body {
+    font-family:sans-serif;
+}
+.delivery-type-container{
+    position: relative;
+    top: 10px;
+}
+#gf-btn{
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+#pi-btn{
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+#pi-btn,#gi-btn,#gf-btn {
+    background-color:#EFEFEF;
+    border:1px solid #D0D0D0;
+    overflow:auto;
+    float:left;
+}
+#pi-btn label,#gi-btn label,#gf-btn label{
+    float:left;
+    width:4.0em;
+    margin-bottom: 0px;
+}
+
+#pi-btn label span,#gi-btn label span,#gf-btn label span {
+    text-align:center;
+    padding:3px 0px;
+    display:block;
+}
+.action-icon{
+    margin: 8px;
+}
+
+#pi-btn label input,#gi-btn label input,#gf-btn label input {
+    position:absolute;
+    top:-20px;
+    visibility: hidden;
+}
+
+#pi-btn input:checked + span,#gi-btn input:checked + span,#gf-btn input:checked + span {
+    background-color:#777;
+    color:#fff;
+}
+.fc-sun.fc-widget-header,
+.fc-mon.fc-widget-header,
+.fc-tue.fc-widget-header,
+.fc-wed.fc-widget-header,
+.fc-thu.fc-widget-header,
+.fc-fri.fc-widget-header,
+.fc-sat.fc-widget-header {
+    padding: 10px 0;
+}
+.filter-section{
+    width: 300px;
+    background: #fff;
+    z-index: 10;
+    border: 1px solid;
+    position: absolute;
+    margin-left: -275px;
+}
+.filter-label{
+    transform: rotate(-90deg);
+    text-align: center;
+    position: relative;
+    top: 50%;
+}
+#ui-datepicker-div{
+   z-index: 9000 !important;
+   width: 17em !important; 
+   padding: .2em .2em 0 !important;
+}
+.ui-widget-header {
+    border: none !important;
+    background: none !important;
+    border-bottom: 1px solid #DCDCDC !important;
+    border-radius: 1px;
+    
+}
+.ui-dialog .ui-dialog-buttonpane{
+    border-width: 0 !important;
+}
+
+.custom-datepicker{
+    width: 103px;
+    
+}
+.custom-timepicker{
+    width: 103px;
+    margin-left: -24px;
+    
+}
+/*.custom-toggle{
+    width: 10px;
+}*/
+.textAlign{
+    padding-right: 22px;
+}
+.custom-input{
+    width: 30px;
+}
+.up-arrow, .from-up-arrow, .to-up-arrow{
+    position: relative;
+    top: -10px;
+}
+.down-arrow, .from-down-arrow, .to-down-arrow{
+    position: relative;
+    right: 20px;
+}
+.btn-modal{
+    background: none;
+}
+.filter-container{
+    width:calc(100% - 26px);
+    display: inline-block;
+}
+.filter-label-outer{
+    width: 25px;
+    height: inherit;
+    cursor: pointer;
+    display: inline;
+    float: right;
+    border-left: 1px solid #ddd;
+}
+.filter-header{
+    text-transform: capitalize;
+
+}
+.filter-header-container{
+    padding: 5px 10px;
+}
+.filter-nav-icon{
+    display: inline-block;
+    height: 15px;
+    width: 16px;
+    background: url(../images/chevron_right.png) no-repeat;
+    vertical-align: text-bottom;
+}
+.filter-nav-icon.open{
+   background: url(../images/chevron_down.png) no-repeat; 
+}
+.filter-slide-icon{
+    display: inline-block;
+    height: 15px;
+    width: 16px;
+    background: url(../images/chevron_right.png) no-repeat;
+}
+.filter-slide-icon.open{
+   background: url(../images/chevron_left.png) no-repeat; 
+}
+.filter-title{
+    display: inline-block;
+}
+.option-header-container {
+    padding: 3px;
+    margin-left: 20px;
+}
+.ui-timepicker-container.ui-timepicker-standard{
+    height: 200px !important;
+    width: 190px !important;
+    position: absolute;
+    overflow-x: hidden;
+    z-index: 1002 !important;
+    border: 1px solid rgb(221, 221, 221);
+}
+div.ui-widget{
+    width: 350px !important;
+}
+.ui-timepicker.ui-widget.ui-widget-content.ui-menu.ui-corner-all,.ui-timepicker .ui-timepicker-viewport{
+    width: 170px !important;
+}
+.ui-timepicker-viewport .ui-menu-item{
+    width: 145px !important;
+}
+.fc-agenda-slots td div {
+    height: 80px;
+}
+.sof-pane,.ta-pane{
+    width: 250px;
+    height: 200px;
+    margin-right: -260px;
+    border: 1px solid #ddd;
+    right: 0;
+    position: absolute;
+    z-index: 3;
+    background: #fff; 
+}
+.sof-pane.open,.ta-pane.open{
+    display: block;
+}
+
+.fc-event-title, .fc-event-time{
+    text-align: center;
+}
+.teacher-container{
+    border: 1px solid #ccc;
+    padding: 5px;
+    box-shadow: 0px 2px 2px #ddd;
+}
+.subject-identifier{
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    display: inline-block;
+    margin:0 3px;
+}
+.ta-header,.sof-header{
+    padding: 10px 20px;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 38px;
+}
+.teacher-block{
+    padding: 10px 10px 0px;
+}
+.student-overflow,.teacher-availability{
+    border: 1px solid #ccc;
+}

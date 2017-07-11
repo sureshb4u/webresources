@@ -1,0 +1,78 @@
+.Syl {
+  color: #231f20; }
+  .Syl .clSBlue {
+    color: #232483; }
+  .Syl .clSGreen {
+    color: #7bc143; }
+  .Syl .clSSoftGreen {
+    color: #b5d993; }
+  .Syl .clSViolet {
+    color: #5b2d82; }
+  .Syl .clSSoftViolet {
+    color: #d7cbe0; }
+  .Syl .clSSky {
+    color: #9acaea; }
+  .Syl .clSEdge {
+    color: #4ea4d9; }
+  .Syl .clSRose {
+    color: #e1134f; }
+  .Syl .clSSoftRose {
+    color: #fdb3b3; }
+  .Syl .clSOrange {
+    color: #f15d24; }
+  .Syl .clSSoftOrange {
+    color: #f88e50; }
+  .Syl .clSGold {
+    color: #d9ab28; }
+  .Syl .clSSoftGold {
+    color: #eacc82; }
+  .Syl .clSSilver {
+    color: #d1d3d4; }
+  .Syl .clSSoftGray {
+    color: #666666; }
+  .Syl .clSBlack {
+    color: #231f20; }
+  .Syl .clSDarkBlack {
+    color: black; }
+  .Syl .bgSSoftGreen {
+    background-color: #dff0d5; }
+  .Syl .bgSSoftBlue {
+    background-color: #ebf5fb; }
+  .Syl .bgSSoftGold {
+    background-color: #fcf7db; }
+  .Syl .bgSSoftViolet {
+    background-color: #f8f4fc; }
+  .Syl .bgSSoftRose {
+    background-color: #ffe7e7; }
+  .Syl .bgSSoftOrange {
+    background-color: #fedeb7; }
+  .Syl .bgSSoftGray {
+    background-color: #cccccc; }
+  .Syl .disabled {
+    color: #666666; }
+  .Syl .SBox {
+    border-radius: 0;
+    border-width: 2px; }
+    .Syl .SBox.SBSoftGreen {
+      border-color: #7bc143;
+      background: #dff0d5; }
+    .Syl .SBox.SBSoftBlue {
+      border-color: #9acaea;
+      background: #ebf5fb; }
+    .Syl .SBox.SBSoftGold {
+      border-color: #eacc82;
+      background: #fcf7db; }
+    .Syl .SBox.SBSoftViolet {
+      border-color: #d7cbe0;
+      background: #f8f4fc; }
+    .Syl .SBox.SBSoftRose {
+      border-color: #fdb3b3;
+      background: #ffe7e7; }
+    .Syl .SBox.SBSoftOrange {
+      border-color: #f88e50;
+      background: #fedeb7; }
+    .Syl .SBox.SBSoftGray {
+      border-color: #666666;
+      background: #cccccc; }
+
+/*# sourceMappingURL=SylCalDef.css.map */
