@@ -903,7 +903,6 @@ function SylvanCalendar(){
         if (studentList.length) {
             wjQuery.each(studentList, function(key, value) {
                 event = self.calendar.fullCalendar('clientEvents', value['resourceId']+value['start']);
-                console.log(event);
                 if(event.length){
                     wjQuery.each(event, function(k, v){
                         if (value.isTeacher) {
