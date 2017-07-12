@@ -56,7 +56,8 @@ setTimeout(function(){
             sylvanCalendar.populateResource(resourceList);
       if(resourceList.length){
         sylvanCalendar.populateTeacherEvent(sylvanCalendar.generateEventObject(teacherSchedule, "teacherSchedule"));
-        sylvanCalendar.populateStudentEvent(sylvanCalendar.generateEventObject(student, "studentSession"));
+        sylvanCalendar.populateStudentEvent(sylvanCalendar.generateEventObject(students, "studentSession"));
+        
         wjQuery('.prevBtn').bind('click',function(){
           sylvanCalendar.prev();
           currentCalendarDate = moment(moment(currentCalendarDate).format("YYYY-MM-DD")).subtract(1, 'days').format("YYYY-MM-DD");
@@ -66,9 +67,10 @@ setTimeout(function(){
           filterObject.student = students == null ? [] : students;
           sylvanCalendar.generateFilterObject(filterObject);
           sylvanCalendar.populateTeacherEvent(sylvanCalendar.generateEventObject(teacherSchedule, "teacherSchedule"), true);
-          sylvanCalendar.populateStudentEvent(sylvanCalendar.generateEventObject(student, "studentSession"), true);
+          sylvanCalendar.populateStudentEvent(sylvanCalendar.generateEventObject(students, "studentSession"), true);
           sylvanCalendar.populateTAPane(teacherAvailability);
         });
+       
         wjQuery('.nextBtn').bind('click',function(){
           sylvanCalendar.next();
           currentCalendarDate =  moment(moment(currentCalendarDate).format("YYYY-MM-DD")).add(1, 'days').format("YYYY-MM-DD");
@@ -78,7 +80,7 @@ setTimeout(function(){
           filterObject.student = students == null ? [] : students;
           sylvanCalendar.generateFilterObject(filterObject);
           sylvanCalendar.populateTeacherEvent(sylvanCalendar.generateEventObject(teacherSchedule, "teacherSchedule"), true);
-          sylvanCalendar.populateStudentEvent(sylvanCalendar.generateEventObject(student, "studentSession"), true);
+          sylvanCalendar.populateStudentEvent(sylvanCalendar.generateEventObject(students, "studentSession"), true);
           sylvanCalendar.populateTAPane(teacherAvailability);
         });
         wjQuery('.wkView').click(function(){
@@ -472,7 +474,6 @@ function SylvanCalendar(){
         this.calendarOptions = {
             header: false,
             defaultView: 'resourceDay',
-            editable : true,
             disableResizing : true,
             minTime:9,
             maxTime:20,
@@ -508,7 +509,7 @@ function SylvanCalendar(){
             eventDrop: function( event, dayDelta, minuteDelta, allDay) {
                 console.log("@@ drag/drop event " + event.title + ", start " + event.start + ", end " + event.end + ", resource " + event.resourceId);
             },
-            editable: true,
+            editable: false,
             resources: this.resourceList,
             events: this.eventList
         };  
