@@ -1,19 +1,19 @@
 var data = new Data();
-var filterObject = {
-    time: time,
-    student: data.getStudentSession(),
-    grade: data.getGrade(),
-    subject: data.getSubject()
-}
 var deliveryType = data.getDeliveryType();
 var currentCalendarDate = moment(new Date()).format("YYYY-MM-DD");
 setTimeout(function(){
   var deliveryTypeList = [];
     var sylvanCalendar = new SylvanCalendar();
     sylvanCalendar.init("widget-calendar");
-    sylvanCalendar.generateFilterObject(filterObject);
+    var locationId = sylvanCalendar.populateLocation(data.getLocation());
     setTimeout(function(){
-        var locationId = sylvanCalendar.populateLocation(data.getLocation());
+    var filterObject = {
+      time: time == null ? []: time,
+      student:data.getStudentSession(locationId,currentCalendarDate,currentCalendarDate) == null ? []:data.getStudentSession(locationId,currentCalendarDate,currentCalendarDate) ,
+      grade: data.getGrade() == null? [] : data.getGrade(),
+      subject: data.getSubject() == null ? [] : data.getSubject()
+    }
+    sylvanCalendar.generateFilterObject(filterObject);
     for (var i = 0; i < deliveryType.length; i++) {
       switch(deliveryType[i]['hub_name']){
         case 'Personal Instruction':
@@ -58,21 +58,27 @@ setTimeout(function(){
         sylvanCalendar.populateTeacherEvent(sylvanCalendar.generateEventObject(teacherSchedule, "teacherSchedule"));
         sylvanCalendar.populateStudentEvent(sylvanCalendar.generateEventObject(student, "studentSession"));
         wjQuery('.prevBtn').bind('click',function(){
+          sylvanCalendar.clearEvents();
           sylvanCalendar.prev();
-          currentCalendarDate =  moment(moment(currentCalendarDate).format("YYYY-MM-DD")).subtract(1, 'days').format("YYYY-MM-DD");
+          currentCalendarDate = moment(moment(currentCalendarDate).format("YYYY-MM-DD")).subtract(1, 'days').format("YYYY-MM-DD");
           teacherSchedule = data.getTeacherSchedule(locationId,currentCalendarDate,currentCalendarDate);
           students = data.getStudentSession(locationId,currentCalendarDate,currentCalendarDate);
           teacherAvailability = data.getTeacherAvailability(locationId,currentCalendarDate,currentCalendarDate);
+          filterObject.student = students == null ? [] : students;
+          sylvanCalendar.generateFilterObject(filterObject);
           sylvanCalendar.populateTeacherEvent(sylvanCalendar.generateEventObject(teacherSchedule, "teacherSchedule"));
           sylvanCalendar.populateStudentEvent(sylvanCalendar.generateEventObject(student, "studentSession"));
           sylvanCalendar.populateTAPane(teacherAvailability);
         });
         wjQuery('.nextBtn').bind('click',function(){
+          sylvanCalendar.clearEvents();
           sylvanCalendar.next();
           currentCalendarDate =  moment(moment(currentCalendarDate).format("YYYY-MM-DD")).add(1, 'days').format("YYYY-MM-DD");
           teacherSchedule = data.getTeacherSchedule(locationId,currentCalendarDate,currentCalendarDate);
           students = data.getStudentSession(locationId,currentCalendarDate,currentCalendarDate);
           teacherAvailability = data.getTeacherAvailability(locationId,currentCalendarDate,currentCalendarDate);
+          filterObject.student = students == null ? [] : students;
+          sylvanCalendar.generateFilterObject(filterObject);
           sylvanCalendar.populateTeacherEvent(sylvanCalendar.generateEventObject(teacherSchedule, "teacherSchedule"));
           sylvanCalendar.populateStudentEvent(sylvanCalendar.generateEventObject(student, "studentSession"));
           sylvanCalendar.populateTAPane(teacherAvailability);
@@ -111,8 +117,8 @@ setTimeout(function(){
       });
       fetchResources(locationId,deliveryTypeList);
     });
-        fetchResources(locationId,deliveryTypeList);    
-    },200);
+      fetchResources(locationId,deliveryTypeList);    
+    },300);
 },500);
 
 function SylvanCalendar(){
@@ -226,6 +232,7 @@ function SylvanCalendar(){
     }
 
     this.populateLocation = function(args){
+      if(args != null){
         var locationData = [];
         args[0][0] == undefined ? locationData = args:locationData = args[0];
         var locationList = [];
@@ -239,11 +246,12 @@ function SylvanCalendar(){
         }
         wjQuery(".loc-dropdown ul").html(locationList);
         return locationData[0].hub_centerid;
+      } 
     }
 
     this.populateResource = function(args){
         var resourceData = [];
-        if(args[0] != undefined){
+        if(args != null|| args[0] != undefined){
             args[0][0] == undefined ? resourceData = args:resourceData = args[0];
             this.resourceList = [];
             for(var i=0;i<resourceData.length;i++){
@@ -439,6 +447,16 @@ function SylvanCalendar(){
         }
     };
 
+    this.clearEvents = function(){
+      var self = this;
+      // self.calendar.fullCalendar('removeEvents');
+      self.filters = new Object();
+      self.eventList = [];
+      self.sofList = [];
+      self.taList = [];
+      self.calendar.fullCalendar('refetchEvents');
+    }
+
     this.loadCalendar = function(){
 
         // assign filter object to local scope filter to avoid this conflict
@@ -511,7 +529,7 @@ function SylvanCalendar(){
         
 
         wjQuery('#datepicker').datepicker({
-            buttonImage: "images/calendar.png",
+            buttonImage: "/webresources/hub_/calendar/images/calendar.png",
             buttonImageOnly: true,
             changeMonth: true,
             changeYear: true,
@@ -748,11 +766,7 @@ function SylvanCalendar(){
         wjQuery.each(filterObj, function(key, value) {
             self.filters[key] = [];
             wjQuery.each(value, function(ke, val) {
-                if (key == 'location') {
-                    self.filters[key].push( {id: val.hub_centerid, name: val.hub_centername, radio: true} );
-                }else if(key == 'deliveryType'){
-                    self.filters[key].push( {id: val.hub_deliverytypeid, name: val.hub_name, radio: false} );
-                }else if(key == "time"){
+                if(key == "time"){
                     self.filters[key].push( {id: val.id, name: val.name, radio: false});
                 }else if(key == "grade"){
                     wjQuery.each(val, function(name, id){
@@ -875,6 +889,7 @@ function SylvanCalendar(){
                         if (value.isTeacher) {
                             event[k].title = "<b>"+event[k].title+"</b>";
                         }else{
+                            event[k].title = "";
                             event[k].title = event[k].title;
                         }
                         event[k].title += "<br>"+value['name']+", "+value['grade'];
