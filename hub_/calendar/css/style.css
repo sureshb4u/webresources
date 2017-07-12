@@ -233,3 +233,8 @@ div.ui-widget{
 .student-overflow,.teacher-availability{
     border: 1px solid #ccc;
 }
+.loc-dropdown.btn-group .btn {
+    width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
