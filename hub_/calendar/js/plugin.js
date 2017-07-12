@@ -53,35 +53,21 @@ setTimeout(function(){
           }
         }
       }
-            sylvanCalendar.populateResource(resourceList);
+      sylvanCalendar.populateResource(resourceList);
       if(resourceList.length){
-        sylvanCalendar.populateTeacherEvent(sylvanCalendar.generateEventObject(teacherSchedule, "teacherSchedule"));
-        sylvanCalendar.populateStudentEvent(sylvanCalendar.generateEventObject(students, "studentSession"));
-        
+        sylvanCalendar.populateTeacherEvent(sylvanCalendar.generateEventObject(teacherSchedule== null ? [] : teacherSchedule, "teacherSchedule"));
+        sylvanCalendar.populateStudentEvent(sylvanCalendar.generateEventObject(students == null ? [] : students, "studentSession"));
+        sylvanCalendar.populateTAPane(teacherAvailability == null ? []:teacherAvailability);
         wjQuery('.prevBtn').bind('click',function(){
           sylvanCalendar.prev();
           currentCalendarDate = moment(moment(currentCalendarDate).format("YYYY-MM-DD")).subtract(1, 'days').format("YYYY-MM-DD");
-          teacherSchedule = data.getTeacherSchedule(locationId,currentCalendarDate,currentCalendarDate);
-          students = data.getStudentSession(locationId,currentCalendarDate,currentCalendarDate);
-          teacherAvailability = data.getTeacherAvailability(locationId,currentCalendarDate,currentCalendarDate);
-          filterObject.student = students == null ? [] : students;
-          sylvanCalendar.generateFilterObject(filterObject);
-          sylvanCalendar.populateTeacherEvent(sylvanCalendar.generateEventObject(teacherSchedule, "teacherSchedule"), true);
-          sylvanCalendar.populateStudentEvent(sylvanCalendar.generateEventObject(students, "studentSession"), true);
-          sylvanCalendar.populateTAPane(teacherAvailability);
-        });
+         sylvanCalendar.refreshCalendarEvent(locationId,currentCalendarDate,currentCalendarDate);
+       });
        
         wjQuery('.nextBtn').bind('click',function(){
           sylvanCalendar.next();
           currentCalendarDate =  moment(moment(currentCalendarDate).format("YYYY-MM-DD")).add(1, 'days').format("YYYY-MM-DD");
-          teacherSchedule = data.getTeacherSchedule(locationId,currentCalendarDate,currentCalendarDate);
-          students = data.getStudentSession(locationId,currentCalendarDate,currentCalendarDate);
-          teacherAvailability = data.getTeacherAvailability(locationId,currentCalendarDate,currentCalendarDate);
-          filterObject.student = students == null ? [] : students;
-          sylvanCalendar.generateFilterObject(filterObject);
-          sylvanCalendar.populateTeacherEvent(sylvanCalendar.generateEventObject(teacherSchedule, "teacherSchedule"), true);
-          sylvanCalendar.populateStudentEvent(sylvanCalendar.generateEventObject(students, "studentSession"), true);
-          sylvanCalendar.populateTAPane(teacherAvailability);
+          sylvanCalendar.refreshCalendarEvent(locationId,currentCalendarDate,currentCalendarDate);
         });
         wjQuery('.wkView').click(function(){
           sylvanCalendar.weekView();
@@ -98,13 +84,24 @@ setTimeout(function(){
         wjQuery('.ta-btn,.ta-close-icon').click(function(){
           sylvanCalendar.taPane();
         });
-        sylvanCalendar.populateTAPane(teacherAvailability);
         wjQuery('.teacher-container').draggable({
           revert: true,      
           revertDuration: 0,
           appendTo: 'body',
           containment: 'window',
           helper: 'clone'
+        });
+
+        wjQuery('#datepicker').datepicker({
+            buttonImage: "/webresources/hub_/calendar/images/calendar.png",
+            buttonImageOnly: true,
+            changeMonth: true,
+            changeYear: true,
+            showOn: 'button',
+            onSelect: function(date) {
+              sylvanCalendar.dateFromCalendar(date,locationId);
+              wjQuery('#datepicker').hide();
+            }
         });
       }
     }
@@ -250,8 +247,9 @@ function SylvanCalendar(){
     }
 
     this.populateResource = function(args){
+      if(args != null){
         var resourceData = [];
-        if(args != null|| args[0] != undefined){
+        if(args[0] != undefined){
             args[0][0] == undefined ? resourceData = args:resourceData = args[0];
             this.resourceList = [];
             for(var i=0;i<resourceData.length;i++){
@@ -264,16 +262,25 @@ function SylvanCalendar(){
             this.loadMasterInformation();
         }
         else{
-            this.calendar != undefined ? wjQuery(this.calendar).removeAttr('class').html('') : undefined;
-            this.calendar = undefined;
-            this.resourceList = [];
-            this.calendar = undefined;
-            this.filters = new Object();
-            this.eventList = [];
-            this.sofList = [];
-            this.taList = [];
-            this.calendarOptions = {};
+            this.clearAll();
         }
+      }
+      else{
+        this.clearAll();
+      }
+        
+    }
+
+    this.clearAll = function(){
+      this.calendar != undefined ? wjQuery(this.calendar).removeAttr('class').html('') : undefined;
+      this.calendar = undefined;
+      this.resourceList = [];
+      this.calendar = undefined;
+      this.filters = new Object();
+      this.eventList = [];
+      this.sofList = [];
+      this.taList = [];
+      this.calendarOptions = {};
     }
 
     this.calendarFilter = function(){
@@ -526,23 +533,6 @@ function SylvanCalendar(){
             this.calendar.fullCalendar("addResource",[newResource]);
         }); 
 
-        
-
-        wjQuery('#datepicker').datepicker({
-            buttonImage: "/webresources/hub_/calendar/images/calendar.png",
-            buttonImageOnly: true,
-            changeMonth: true,
-            changeYear: true,
-            showOn: 'button',
-            onSelect: function(date) {
-              var displayDate = new Date(date);
-              this.calendar.fullCalendar( 'gotoDate', displayDate );
-               wjQuery('.headerDate').text(date);
-               var dayOfWeek = moment(date).format('dddd');
-               var dayofMonth = moment(date).format('M/D');
-               wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').html(dayOfWeek +" <br/> "+ dayofMonth);  
-            }
-        });
                
         // From date for new appointment
         wjQuery( ".from-datepicker-input" ).datepicker();
@@ -601,15 +591,28 @@ function SylvanCalendar(){
     }
 
     this.prev = function(){
-            this.calendar.fullCalendar('prev');
-            var currentCalendarDate = this.calendar.fullCalendar('getDate');
-            wjQuery('.headerDate').text(moment(currentCalendarDate).format('MM/DD/YYYY'));
-            var dayOfWeek = moment(currentCalendarDate).format('dddd');
-            var dayofMonth = moment(currentCalendarDate).format('M/D');
-            wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').html(dayOfWeek +" <br/> "+ dayofMonth);
-            wjQuery('.fc-agenda-allday .fc-agenda-axis').text('');
-            this.clearEvents();
-        }
+        this.calendar.fullCalendar('prev');
+        var currentCalendarDate = this.calendar.fullCalendar('getDate');
+        wjQuery('.headerDate').text(moment(currentCalendarDate).format('MM/DD/YYYY'));
+        var dayOfWeek = moment(currentCalendarDate).format('dddd');
+        var dayofMonth = moment(currentCalendarDate).format('M/D');
+        wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').html(dayOfWeek +" <br/> "+ dayofMonth);
+        wjQuery('.fc-agenda-allday .fc-agenda-axis').text('');
+        this.clearEvents();
+    }
+
+    this.dateFromCalendar = function(date,locationId){
+      var self = this;
+      var displayDate = new Date(date);
+      self.calendar.fullCalendar( 'gotoDate', displayDate );
+      wjQuery('.headerDate').text(date);
+      var dayOfWeek = moment(date).format('dddd');
+      var dayofMonth = moment(date).format('M/D');
+      wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').html(dayOfWeek +" <br/> "+ dayofMonth);  
+      self.clearEvents();
+      currentCalendarDate = moment(date).format("YYYY-MM-DD");
+      self.refreshCalendarEvent(locationId,currentCalendarDate,currentCalendarDate);
+    }
 
     this.next = function(){
         this.calendar.fullCalendar('next');
@@ -620,6 +623,18 @@ function SylvanCalendar(){
         wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').html(dayOfWeek +" <br/> "+ dayofMonth);
         wjQuery('.fc-agenda-allday .fc-agenda-axis').text('');
         this.clearEvents();
+    }
+
+    this.refreshCalendarEvent = function(locationId,startDate,endDate){
+      var self = this;
+      teacherSchedule = data.getTeacherSchedule(locationId,startDate,endDate);
+      students = data.getStudentSession(locationId,startDate,endDate);
+      teacherAvailability = data.getTeacherAvailability(locationId,startDate,endDate);
+      self.filterObject.student = students == null ? [] : students;
+      self.generateFilterObject(self.filterObject);
+      self.populateTeacherEvent(self.generateEventObject(teacherSchedule== null ? [] : teacherSchedule, "teacherSchedule"), true);
+      self.populateStudentEvent(self.generateEventObject(students == null ? [] : students, "studentSession"), true);
+      self.populateTAPane(teacherAvailability == null ? []:teacherAvailability);
     }
 
     this.weekView = function(){
@@ -765,6 +780,7 @@ function SylvanCalendar(){
     this.generateFilterObject = function(args){
         var self = this;
         args[0] == undefined ? filterObj = args : filterObj = args[0];
+        self.filterObject = filterObj;
         wjQuery.each(filterObj, function(key, value) {
             self.filters[key] = [];
             wjQuery.each(value, function(ke, val) {

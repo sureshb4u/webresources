@@ -82,6 +82,8 @@ body {
     text-align: center;
     position: relative;
     top: 50%;
+    width: 60px;
+    left: -18px;
 }
 #ui-datepicker-div{
    z-index: 9000 !important;
@@ -100,8 +102,7 @@ body {
 }
 
 .custom-datepicker{
-    width: 103px;
-    
+    width: 103px;  
 }
 .custom-timepicker{
     width: 103px;

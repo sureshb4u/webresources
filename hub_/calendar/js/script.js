@@ -593,6 +593,142 @@ var teacherAvailability =
     }
   ];
 
+var masterSchedule = [
+
+    {
+      "@odata.etag": "W/\"1473915\"",
+      "hub_effective_end_date@OData.Community.Display.V1.FormattedValue": "6/20/2017",
+      "hub_effective_end_date": "2017-06-19T18:30:00Z",
+      "hub_wednesday_start_time@OData.Community.Display.V1.FormattedValue": "11:00 AM",
+      "hub_wednesday_start_time": 660,
+      "hub_tuesday@OData.Community.Display.V1.FormattedValue": "Yes",
+      "hub_tuesday": true,
+      "hub_tuesday_end_time@OData.Community.Display.V1.FormattedValue": "12:00 PM",
+      "hub_tuesday_end_time": 720,
+      "hub_monday_end_time@OData.Community.Display.V1.FormattedValue": "12:00 PM",
+      "hub_monday_end_time": 720,
+      "_hub_enrollment_value@OData.Community.Display.V1.FormattedValue": "Chris Yoner - Algebra Fundamentals",
+      "_hub_enrollment_value@Microsoft.Dynamics.CRM.associatednavigationproperty": "hub_enrollment",
+      "_hub_enrollment_value@Microsoft.Dynamics.CRM.lookuplogicalname": "hub_enrollment",
+      "_hub_enrollment_value": "cef81f7e-0650-e711-80f1-c4346bad526c",
+      "hub_monday_start_time@OData.Community.Display.V1.FormattedValue": "11:00 AM",
+      "hub_monday_start_time": 660,
+      "hub_effective_start_date@OData.Community.Display.V1.FormattedValue": "6/15/2017",
+      "hub_effective_start_date": "2017-06-14T18:30:00Z",
+      "hub_wednesday_end_time@OData.Community.Display.V1.FormattedValue": "12:00 PM",
+      "hub_wednesday_end_time": 720,
+      "_hub_pricelist_value@OData.Community.Display.V1.FormattedValue": "GF- 4 | $765",
+      "_hub_pricelist_value@Microsoft.Dynamics.CRM.associatednavigationproperty": "hub_pricelist",
+      "_hub_pricelist_value@Microsoft.Dynamics.CRM.lookuplogicalname": "hub_pricelist",
+      "_hub_pricelist_value": "2aaf8214-0550-e711-80f1-c4346bad526c",
+      "hub_enr_master_scheduleid": "dfc288c0-fe50-e711-80f1-c4346bacfbbc",
+      "hub_tuesday_start_time@OData.Community.Display.V1.FormattedValue": "11:00 AM",
+      "hub_tuesday_start_time": 660,
+      "hub_wednesday@OData.Community.Display.V1.FormattedValue": "Yes",
+      "hub_wednesday": true,
+      "hub_status@OData.Community.Display.V1.FormattedValue": "Active",
+      "hub_status": 2,
+      "hub_monday@OData.Community.Display.V1.FormattedValue": "Yes",
+      "hub_monday": true,
+      "aenrollment_x002e_hub_service@OData.Community.Display.V1.FormattedValue": "Algebra Fundamentals",
+      "aenrollment_x002e_hub_service": "166c5f06-0550-e711-80f1-c4346bad526c"
+    },
+    {
+      "@odata.etag": "W/\"1473916\"",
+      "hub_effective_end_date@OData.Community.Display.V1.FormattedValue": "6/19/2017",
+      "hub_effective_end_date": "2017-06-18T18:30:00Z",
+      "hub_wednesday_start_time@OData.Community.Display.V1.FormattedValue": "11:00 AM",
+      "hub_wednesday_start_time": 660,
+      "hub_tuesday@OData.Community.Display.V1.FormattedValue": "Yes",
+      "hub_tuesday": true,
+      "hub_tuesday_end_time@OData.Community.Display.V1.FormattedValue": "12:00 PM",
+      "hub_tuesday_end_time": 720,
+      "hub_monday_end_time@OData.Community.Display.V1.FormattedValue": "12:00 PM",
+      "hub_monday_end_time": 720,
+      "_hub_enrollment_value@OData.Community.Display.V1.FormattedValue": "Raven White - Algebra Fundamentals",
+      "_hub_enrollment_value@Microsoft.Dynamics.CRM.associatednavigationproperty": "hub_enrollment",
+      "_hub_enrollment_value@Microsoft.Dynamics.CRM.lookuplogicalname": "hub_enrollment",
+      "_hub_enrollment_value": "6fc7eaec-0650-e711-80f1-c4346bad526c",
+      "hub_monday_start_time@OData.Community.Display.V1.FormattedValue": "11:00 AM",
+      "hub_monday_start_time": 660,
+      "hub_effective_start_date@OData.Community.Display.V1.FormattedValue": "6/17/2017",
+      "hub_effective_start_date": "2017-06-16T18:30:00Z",
+      "hub_wednesday_end_time@OData.Community.Display.V1.FormattedValue": "12:00 PM",
+      "hub_wednesday_end_time": 720,
+      "_hub_pricelist_value@OData.Community.Display.V1.FormattedValue": "GF- 4 | $765",
+      "_hub_pricelist_value@Microsoft.Dynamics.CRM.associatednavigationproperty": "hub_pricelist",
+      "_hub_pricelist_value@Microsoft.Dynamics.CRM.lookuplogicalname": "hub_pricelist",
+      "_hub_pricelist_value": "2aaf8214-0550-e711-80f1-c4346bad526c",
+      "hub_enr_master_scheduleid": "885ec26c-b851-e711-80f1-c4346bacfbbc",
+      "hub_tuesday_start_time@OData.Community.Display.V1.FormattedValue": "11:00 AM",
+      "hub_tuesday_start_time": 660,
+      "hub_wednesday@OData.Community.Display.V1.FormattedValue": "Yes",
+      "hub_wednesday": true,
+      "hub_status@OData.Community.Display.V1.FormattedValue": "Active",
+      "hub_status": 2,
+      "hub_monday@OData.Community.Display.V1.FormattedValue": "Yes",
+      "hub_monday": true,
+      "aenrollment_x002e_hub_service@OData.Community.Display.V1.FormattedValue": "Algebra Fundamentals",
+      "aenrollment_x002e_hub_service": "166c5f06-0550-e711-80f1-c4346bad526c"
+    },
+    {
+      "@odata.etag": "W/\"1468360\"",
+      "hub_monday_end_time@OData.Community.Display.V1.FormattedValue": "12:00 PM",
+      "hub_monday_end_time": 720,
+      "_hub_enrollment_value@OData.Community.Display.V1.FormattedValue": "Jim Carter - Sylvan Sync Reading",
+      "_hub_enrollment_value@Microsoft.Dynamics.CRM.associatednavigationproperty": "hub_enrollment",
+      "_hub_enrollment_value@Microsoft.Dynamics.CRM.lookuplogicalname": "hub_enrollment",
+      "_hub_enrollment_value": "8df251b4-4150-e711-80f2-c4346badc680",
+      "hub_monday_start_time@OData.Community.Display.V1.FormattedValue": "11:00 AM",
+      "hub_monday_start_time": 660,
+      "hub_effective_start_date@OData.Community.Display.V1.FormattedValue": "6/16/2017",
+      "hub_effective_start_date": "2017-06-15T18:30:00Z",
+      "_hub_pricelist_value@OData.Community.Display.V1.FormattedValue": "PI- 1:1 | $100",
+      "_hub_pricelist_value@Microsoft.Dynamics.CRM.associatednavigationproperty": "hub_pricelist",
+      "_hub_pricelist_value@Microsoft.Dynamics.CRM.lookuplogicalname": "hub_pricelist",
+      "_hub_pricelist_value": "6fe768eb-3d50-e711-80f2-c4346badc680",
+      "hub_enr_master_scheduleid": "b84eaac8-6652-e711-80f1-c4346bacfbbc",
+      "hub_status@OData.Community.Display.V1.FormattedValue": "Active",
+      "hub_status": 2,
+      "hub_monday@OData.Community.Display.V1.FormattedValue": "Yes",
+      "hub_monday": true,
+      "aenrollment_x002e_hub_service@OData.Community.Display.V1.FormattedValue": "Sylvan Sync Reading",
+      "aenrollment_x002e_hub_service": "71675ea1-3d50-e711-80f2-c4346badc680"
+    },
+    {
+      "@odata.etag": "W/\"1473917\"",
+      "hub_effective_end_date@OData.Community.Display.V1.FormattedValue": "6/29/2017",
+      "hub_effective_end_date": "2017-06-28T18:30:00Z",
+      "hub_tuesday@OData.Community.Display.V1.FormattedValue": "Yes",
+      "hub_tuesday": true,
+      "hub_tuesday_end_time@OData.Community.Display.V1.FormattedValue": "8:00 AM",
+      "hub_tuesday_end_time": 480,
+      "hub_monday_end_time@OData.Community.Display.V1.FormattedValue": "10:30 AM",
+      "hub_monday_end_time": 630,
+      "_hub_enrollment_value@OData.Community.Display.V1.FormattedValue": "Raven White - Robotics Part2",
+      "_hub_enrollment_value@Microsoft.Dynamics.CRM.associatednavigationproperty": "hub_enrollment",
+      "_hub_enrollment_value@Microsoft.Dynamics.CRM.lookuplogicalname": "hub_enrollment",
+      "_hub_enrollment_value": "1b4a67e4-1250-e711-80f1-c4346bad526c",
+      "hub_monday_start_time@OData.Community.Display.V1.FormattedValue": "9:30 AM",
+      "hub_monday_start_time": 570,
+      "hub_effective_start_date@OData.Community.Display.V1.FormattedValue": "6/19/2017",
+      "hub_effective_start_date": "2017-06-18T18:30:00Z",
+      "_hub_pricelist_value@OData.Community.Display.V1.FormattedValue": "PI- 1:1 | $456",
+      "_hub_pricelist_value@Microsoft.Dynamics.CRM.associatednavigationproperty": "hub_pricelist",
+      "_hub_pricelist_value@Microsoft.Dynamics.CRM.lookuplogicalname": "hub_pricelist",
+      "_hub_pricelist_value": "e9638681-0550-e711-80f1-c4346bad526c",
+      "hub_enr_master_scheduleid": "9ffaedb1-b851-e711-80f1-c4346bacfbbc",
+      "hub_tuesday_start_time@OData.Community.Display.V1.FormattedValue": "7:00 AM",
+      "hub_tuesday_start_time": 420,
+      "hub_status@OData.Community.Display.V1.FormattedValue": "Active",
+      "hub_status": 2,
+      "hub_monday@OData.Community.Display.V1.FormattedValue": "Yes",
+      "hub_monday": true,
+      "aenrollment_x002e_hub_service@OData.Community.Display.V1.FormattedValue": "Robotics Part2",
+      "aenrollment_x002e_hub_service": "add25473-0550-e711-80f1-c4346bad526c"
+    }
+  ];
+
 
 function Data(){
 
@@ -626,6 +762,10 @@ function Data(){
 
   this.getTeacherAvailability = function(locationId,startDate,endDate){
     return teacherAvailability;
+  }
+
+  this.getStudentMasterSchedule = function(locationId,startDate,endDate){
+    return masterSchedule;
   }
 }
 
