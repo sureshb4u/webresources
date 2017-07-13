@@ -38,9 +38,6 @@ setTimeout(function(){
     });
     function fetchResources(locationId,selectedDeliveryType){
       var resourceList = [];
-      var teacherSchedule = data.getTeacherSchedule(locationId,currentCalendarDate,currentCalendarDate);
-      var students = data.getStudentSession(locationId,currentCalendarDate,currentCalendarDate);
-      var teacherAvailability = data.getTeacherAvailability(locationId,currentCalendarDate,currentCalendarDate);
       var resources = data.getResources(locationId);
       if(selectedDeliveryType.length == 0 || selectedDeliveryType.length == deliveryType.length){
         resourceList = resources;
@@ -56,33 +53,28 @@ setTimeout(function(){
       }
       sylvanCalendar.populateResource(resourceList);
       if(resourceList.length){
-        sylvanCalendar.populateTeacherEvent(sylvanCalendar.generateEventObject(teacherSchedule== null ? [] : teacherSchedule, "teacherSchedule"));
-        sylvanCalendar.populateStudentEvent(sylvanCalendar.generateEventObject(students == null ? [] : students, "studentSession"));
-        sylvanCalendar.populateTAPane(teacherAvailability == null ? []:teacherAvailability);
-        wjQuery('.prevBtn').bind('click',function(){
+        sylvanCalendar.refreshCalendarEvent(locationId,currentCalendarDate,currentCalendarDate);
+        wjQuery('.prevBtn').off('click').on('click',function(){
           sylvanCalendar.prev();
-          currentCalendarDate = moment(moment(currentCalendarDate).format("YYYY-MM-DD")).subtract(1, 'days').format("YYYY-MM-DD");
-         sylvanCalendar.refreshCalendarEvent(locationId,currentCalendarDate,currentCalendarDate);
        });
        
-        wjQuery('.nextBtn').bind('click',function(){
+        wjQuery('.nextBtn').off('click').on('click',function(){
           sylvanCalendar.next();
-          currentCalendarDate =  moment(moment(currentCalendarDate).format("YYYY-MM-DD")).add(1, 'days').format("YYYY-MM-DD");
-          sylvanCalendar.refreshCalendarEvent(locationId,currentCalendarDate,currentCalendarDate);
         });
-        wjQuery('.wkView').click(function(){
+
+        wjQuery('.wkView').off('click').on('click',function(){
           sylvanCalendar.weekView();
         });
-        wjQuery('.dayView').click(function(){
+        wjQuery('.dayView').off('click').on('click',function(){
           sylvanCalendar.dayView();
         });
-        wjQuery('#addAppointment').on('click', function() {
+        wjQuery('#addAppointment').click(function() {
           sylvanCalendar.addAppointment();
         });
-        wjQuery('.sof-btn,.sof-close-icon').click(function(){
+        wjQuery('.sof-btn,.sof-close-icon').off('click').on('click',function(){
           sylvanCalendar.sofPane();
         });
-        wjQuery('.ta-btn,.ta-close-icon').click(function(){
+        wjQuery('.ta-btn,.ta-close-icon').off('click').on('click',function(){
           sylvanCalendar.taPane();
         });
         wjQuery('.teacher-container').draggable({
@@ -108,6 +100,8 @@ setTimeout(function(){
     }
     wjQuery('.dtBtn').click(function() {
       deliveryTypeList = [];
+      wjQuery('.student-overflow').remove();
+      wjQuery('.teacher-availability').remove();
       wjQuery.each(wjQuery('.dtBtn'), function(index,elm){
         if(wjQuery(elm).is(':checked')){ 
           deliveryTypeList.push(jQuery(elm).val());
@@ -139,6 +133,8 @@ function SylvanCalendar(){
     var taExpanded = false;
     this.loadMasterInformation = function(){
         var self = this;
+        sofExpanded = false;
+        taExpanded = false;
         var currentCalendarDate = this.calendar.fullCalendar('getDate');
         wjQuery('.headerDate').text(moment(currentCalendarDate).format('MM/DD/YYYY'));
         if(wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').length){
@@ -262,20 +258,17 @@ function SylvanCalendar(){
                 });
             }
 
-            this.calendar == undefined ? this.loadCalendar(): this.calendar.fullCalendar('resources',this.resourceList);
+            //this.calendar == undefined ? this.loadCalendar(): this.calendar.fullCalendar('resources',this.resourceList);
+            this.loadCalendar();
             this.loadMasterInformation();
         }
       }
     }
 
     this.clearAll = function(){
-      this.calendar != undefined ? wjQuery(this.calendar).removeAttr('class').html('') : undefined;
+      this.calendar != undefined ? this.calendar.fullCalendar('destroy') : undefined;
       this.calendar = undefined;
       this.resourceList = [];
-      this.calendar = undefined;
-      this.eventList = [];
-      this.sofList = [];
-      this.taList = [];
       this.calendarOptions = {};
     }
 
@@ -455,6 +448,8 @@ function SylvanCalendar(){
       self.filters = new Object();
       self.eventList = [];
       self.sofList = [];
+      wjQuery('.teacher-block').remove();
+      wjQuery('.student-overflow').remove();
       self.taList = [];
       self.convertedTeacherObj = [];
       self.convertedStudentObj = [];
@@ -597,6 +592,8 @@ function SylvanCalendar(){
         wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').html(dayOfWeek +" <br/> "+ dayofMonth);
         wjQuery('.fc-agenda-allday .fc-agenda-axis').text('');
         this.clearEvents();
+        currentCalendarDate = moment(currentCalendarDate).format("YYYY-MM-DD");
+        this.refreshCalendarEvent(locationId,currentCalendarDate,currentCalendarDate);
     }
 
     this.dateFromCalendar = function(date,locationId){
@@ -613,14 +610,16 @@ function SylvanCalendar(){
     }
 
     this.next = function(){
-        this.calendar.fullCalendar('next');
-        var currentCalendarDate = this.calendar.fullCalendar('getDate');
-        wjQuery('.headerDate').text(moment(currentCalendarDate).format('MM/DD/YYYY'));
-        var dayOfWeek = moment(currentCalendarDate).format('dddd');
-        var dayofMonth = moment(currentCalendarDate).format('M/D');
-        wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').html(dayOfWeek +" <br/> "+ dayofMonth);
-        wjQuery('.fc-agenda-allday .fc-agenda-axis').text('');
-        this.clearEvents();
+      this.calendar.fullCalendar('next');
+      var currentCalendarDate = this.calendar.fullCalendar('getDate');
+      wjQuery('.headerDate').text(moment(currentCalendarDate).format('MM/DD/YYYY'));
+      var dayOfWeek = moment(currentCalendarDate).format('dddd');
+      var dayofMonth = moment(currentCalendarDate).format('M/D');
+      wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').html(dayOfWeek +" <br/> "+ dayofMonth);
+      wjQuery('.fc-agenda-allday .fc-agenda-axis').text('');
+      this.clearEvents();
+      currentCalendarDate = moment(currentCalendarDate).format("YYYY-MM-DD");
+      this.refreshCalendarEvent(locationId,currentCalendarDate,currentCalendarDate);
     }
 
     this.refreshCalendarEvent = function(locationId,startDate,endDate){
