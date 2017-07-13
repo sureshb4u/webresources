@@ -299,3 +299,8 @@ div.ui-widget{
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.draggable{
+    z-index: 2;
+    display: block;
+}

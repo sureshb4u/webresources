@@ -79,13 +79,7 @@ setTimeout(function(){
         wjQuery('.ta-btn,.ta-close-icon').off('click').on('click',function(){
           sylvanCalendar.taPane();
         });
-        wjQuery('.teacher-container').draggable({
-          revert: true,      
-          revertDuration: 0,
-          appendTo: 'body',
-          containment: 'window',
-          helper: 'clone'
-        });
+        sylvanCalendar.draggable('teacher-container');
 
         wjQuery('#datepicker').datepicker({
             buttonImage: "/webresources/hub_/calendar/images/calendar.png",
@@ -160,8 +154,7 @@ function SylvanCalendar(){
             
         }
         if(wjQuery('.filter-section').length == 0)
-            wjQuery(".fc-agenda-divider.fc-widget-header").after("<div class='filter-section'></div>");
-       
+        wjQuery(".fc-agenda-divider.fc-widget-header").after("<div class='filter-section'></div>");
         this.calendarFilter();
         this.filterSlide(false);
 
@@ -338,16 +331,10 @@ function SylvanCalendar(){
         for(var i=0;i<studentData.length;i++){
             var studentStartHour = studentData[i].start.getHours();
             if(studentStartHour >= minTime && studentStartHour <= maxTime){
-               var studentPosition = studentStartHour - minTime;
-               var elm = '<div class="student-container padding-lr-xxs" type="student" value="'+studentData[i].id+'">'+studentData[i].name+',<span>'+studentData[i].grade+'</span></div>';
-               wjQuery('#student_block_'+studentPosition).append(elm);
-               wjQuery('.student-container').draggable({
-                  revert: true,      
-                  revertDuration: 0,
-                  appendTo: 'body',
-                  containment: 'window',
-                  helper: 'clone'
-                });
+              var studentPosition = studentStartHour - minTime;
+              var elm = '<div class="student-container padding-lr-xxs" type="student" value="'+studentData[i].id+'">'+studentData[i].name+',<span>'+studentData[i].grade+'</span></div>';
+              wjQuery('#student_block_'+studentPosition).append(elm);
+              this.draggable('student-container');
             }
         }
     }
@@ -407,13 +394,7 @@ function SylvanCalendar(){
                             '<div class="subject-identifier"></div>'+
                         '</div></div>';
                wjQuery('#teacher_block_'+studentPosition).append(elm);
-               wjQuery('.teacher-container').draggable({
-                  revert: true,      
-                  revertDuration: 0,
-                  appendTo: 'body',
-                  containment: 'window',
-                  helper: 'clone'
-                });
+               this.draggable('teacher-container');
             }
         }  
     }
@@ -465,6 +446,24 @@ function SylvanCalendar(){
                 t.populateTeacherEvent([teacherObj]);
             } 
         }
+        else if(wjQuery(elm).attr("type") == 'studentSession'){
+          var endDate = new Date(date);
+          var stuId = wjQuery(elm).attr("value"); 
+          var uniqStuId = wjQuery(elm).attr("id"); 
+          var index = t.convertedStudentObj.map(function(x){
+                  return x.id;
+          }).indexOf(stuId);
+          console.log(t.getDeliveryTypeObj(resource.id));
+          if(t.convertedStudentObj[index]){
+            elm.remove(); 
+            t.convertedStudentObj[index].start = date;
+            t.convertedStudentObj[index].end = new Date(endDate.setHours(endDate.getHours() + 1));
+            t.convertedStudentObj[index].resourceId = resource.id;
+            t.convertedStudentObj[index].deliveryTypeId = t.getDeliveryTypeObj(resource.id).deliveryTypeId;
+            t.convertedStudentObj[index].deliveryType = t.getDeliveryTypeObj(resource.id).deliveryType;
+            t.populateStudentEvent([t.convertedStudentObj[index]]);
+          } 
+        }
     };
 
     this.clearEvents = function(){
@@ -511,6 +510,7 @@ function SylvanCalendar(){
             height:window.innerHeight - 60,
             slotMinutes : 30,
             selectable: false,
+            slotEventOverlap:false,
             selectHelper: true,
             select: function(start, end, allDay, event, resourceId) {
                 //var title = prompt('Event Title:');
@@ -985,17 +985,17 @@ function SylvanCalendar(){
                 if(event.length){
                     wjQuery.each(event, function(k, v){
                         if (value.isTeacher) {
-                            event[k].title = "<b>"+event[k].title+"</b>";
+                            event[k].title = "<span class='draggable'><b>"+event[k].title+"</b></span>";
                         }else{
-                            event[k].title = event[k].title;
+                            event[k].title = "<span>&nbsp;</span>"+event[k].title;
                         }
-                        event[k].title += "<br>"+value['name']+", "+value['grade'];
+                        event[k].title += "<span class='draggable' id='"+value['id']+value['resourceId']+"' type='studentSession' value='"+value['id']+"'>"+value['name']+", "+value['grade']+"</span>";
                     });
                     self.calendar.fullCalendar('updateEvent', event);
                 }else{
                     var obj = {
                         id: value['resourceId']+value['start'],
-                        title:value['name']+", "+value['grade'],
+                        title:"<span class='draggable' id='"+value['id']+value['resourceId']+"' type='studentSession' value='"+value['id']+"'>"+value['name']+", "+value['grade']+"</span>",
                         start:value['start'],
                         end:value['end'],
                         allDay: false,
@@ -1007,10 +1007,10 @@ function SylvanCalendar(){
                     if(value.deliveryTypeId == "d6493b3e-4e35-e711-80ed-c4346bad526c"){ // Group Facilitation
                         obj.backgroundColor = "#dff0d5";
                         obj.borderColor = "#7bc143";
-                    }else if(value.deliveryTypeId== "f8b0e613-a534-e711-80ed-c4346bad526c"){ // Group Instruction
+                    }else if(value.deliveryTypeId == "f8b0e613-a534-e711-80ed-c4346bad526c"){ // Group Instruction
                         obj.backgroundColor = "#fedeb7";
                         obj.borderColor = "#f88e50";
-                    }else if(value.deliveryTypeId== "d6c706eb-a534-e711-80ed-c4346bad526c"){ // Personal Instruction
+                    }else if(value.deliveryTypeId == "d6c706eb-a534-e711-80ed-c4346bad526c"){ // Personal Instruction
                         obj.backgroundColor = "#ebf5fb";
                         obj.borderColor = "#9acaea";
                     }
@@ -1021,6 +1021,7 @@ function SylvanCalendar(){
                     }
                     self.calendar.fullCalendar('refetchEvents');
                 }
+                self.draggable('draggable');
             });
             
         }
@@ -1032,6 +1033,28 @@ function SylvanCalendar(){
                 return el;
             }
         });
+    }
+
+    this.draggable = function(selector){
+      wjQuery('.'+selector).draggable({
+        revert: true,      
+        revertDuration: 0,
+        appendTo: 'body',
+        containment: 'window',
+        helper: 'clone'
+      });
+    }
+
+    this.getDeliveryTypeObj = function(resourceId){
+      var deliveryTypeObj = {}; 
+      console.log(resourceId);
+      console.log(this.resourceList);
+      wjQuery.each(this.resourceList, function(k, v){
+          if (resourceId == v.id) {
+            deliveryTypeObj = v;
+          }
+      });
+      return deliveryTypeObj;
     }
 }
 

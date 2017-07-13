@@ -347,7 +347,6 @@ var student =  [
   ];
 
 var teacherSchedule = [
-
     {
       "@odata.etag": "W/\"1429007\"",
       "_hub_staff_value@OData.Community.Display.V1.FormattedValue": "Teacher1",
