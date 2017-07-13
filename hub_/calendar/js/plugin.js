@@ -32,6 +32,7 @@ setTimeout(function(){
           wjQuery(".loc-dropdown .btn:first-child").text(wjQuery(this).text());
           wjQuery(".loc-dropdown .btn:first-child").val(wjQuery(this).attr('value-id'));
           this.resourceList = [];
+    
           return fetchResources(wjQuery(this).attr('value-id'),deliveryTypeList);
         }
     });
@@ -132,6 +133,7 @@ function SylvanCalendar(){
     this.init = function(element){
         this.loadLibraries();
     }
+
     //Student pane and TA pane Functionality
     var sofExpanded = false;
     var taExpanded = false;
@@ -247,6 +249,7 @@ function SylvanCalendar(){
     }
 
     this.populateResource = function(args){
+      this.clearAll();
       if(args != null){
         var resourceData = [];
         if(args[0] != undefined){
@@ -258,17 +261,11 @@ function SylvanCalendar(){
                     id: resourceData[i].hub_center_resourcesid
                 });
             }
+
             this.calendar == undefined ? this.loadCalendar(): this.calendar.fullCalendar('resources',this.resourceList);
             this.loadMasterInformation();
         }
-        else{
-            this.clearAll();
-        }
       }
-      else{
-        this.clearAll();
-      }
-        
     }
 
     this.clearAll = function(){
@@ -276,7 +273,6 @@ function SylvanCalendar(){
       this.calendar = undefined;
       this.resourceList = [];
       this.calendar = undefined;
-      this.filters = new Object();
       this.eventList = [];
       this.sofList = [];
       this.taList = [];
@@ -491,7 +487,7 @@ function SylvanCalendar(){
             handleWindowResize:true,
             height:window.innerHeight - 60,
             slotMinutes : 30,
-            selectable: true,
+            selectable: false,
             selectHelper: true,
             select: function(start, end, allDay, event, resourceId) {
                 //var title = prompt('Event Title:');
@@ -518,7 +514,10 @@ function SylvanCalendar(){
             },
             editable: false,
             resources: this.resourceList,
-            events: this.eventList
+            events: this.eventList,
+            windowResize: function(view) {
+              self.calendar.fullCalendar('option','height',window.innerHeight - 60);
+            }
         };  
         
         this.calendar = wjQuery('#calendar').fullCalendar(this.calendarOptions);
@@ -532,7 +531,6 @@ function SylvanCalendar(){
             this.resourceList.push(newResource);
             this.calendar.fullCalendar("addResource",[newResource]);
         }); 
-
                
         // From date for new appointment
         wjQuery( ".from-datepicker-input" ).datepicker();
@@ -610,7 +608,7 @@ function SylvanCalendar(){
       var dayofMonth = moment(date).format('M/D');
       wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').html(dayOfWeek +" <br/> "+ dayofMonth);  
       self.clearEvents();
-      currentCalendarDate = moment(date).format("YYYY-MM-DD");
+      var currentCalendarDate = moment(date).format("YYYY-MM-DD");
       self.refreshCalendarEvent(locationId,currentCalendarDate,currentCalendarDate);
     }
 
