@@ -8,7 +8,7 @@
 	<script type="text/javascript" src="/webresources/hub_/calendar/js/jquery_1.8.1.min.js"></script>
 	<script type="text/javascript" src="/webresources/hub_/calendar/js/widget.js"></script>
 </head>
-<div class="padding-tb-xs">
+<div class="header-container">
 	<div class="padding-left-m display-inline-block">
 		<div class="loc-dropdown btn-group">
 		  	<button class="btn dropdown-toggle" data-toggle="dropdown">
@@ -34,19 +34,18 @@
 		      <input class="dtBtn" type="checkbox"><span>GI</span>
 		   </label>
 		</div>
-		<div id="gf-btn">
-		   <label>
-		      <input class="dtBtn" type="checkbox"><span>GF</span>
-		   </label>
-		</div>
 	</div>
 	<div class="margin-left-l display-inline-block">
-		<button class="btn dayView">
-			Day
-		</button>
-		<button class="btn wkView">
-			Week
-		</button>
+		<ul class="view-change-container">
+			<li>
+			    <input type="radio" id="dayBtn" name="amount" checked=checked/>
+			    <label class="dayView" for="dayBtn">Day</label>
+			</li>
+			<li>
+			    <input type="radio" id="weekBtn" name="amount" />
+			    <label class="wkView" for="weekBtn">Week</label>
+			</li>
+		</ul>
 	</div>
 	<div class="margin-left-xxl padding-left-xl display-inline-block">
 		<button class="btn font-20" id="addAppointment">
