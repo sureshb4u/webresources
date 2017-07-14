@@ -131,6 +131,7 @@ function SylvanCalendar(){
     this.convertedTeacherObj = [];
     this.convertedStudentObj = [];
     this.teacherSchedule = [];
+    this.pinnedData = [];
     this.students = [];
     this.teacherAvailability = [];
 
@@ -262,7 +263,7 @@ function SylvanCalendar(){
           this.resourceList = [];
           for(var i=0;i<resourceData.length;i++){
               this.resourceList.push({
-                  name: i+1,
+                  name: resourceData[i].hub_name,
                   id: resourceData[i].hub_center_resourcesid,
                   deliveryType:resourceData[i]["_hub_deliverytype_value@OData.Community.Display.V1.FormattedValue"],
                   deliveryTypeId:resourceData[i]['_hub_deliverytype_value'],
@@ -287,6 +288,7 @@ function SylvanCalendar(){
       this.convertedStudentObj = [];
       this.calendarOptions = {};
       this.teacherSchedule = [];
+      this.pinnedData = [];
       this.teacherAvailability = [];
       this.students = [];
     }
@@ -491,6 +493,7 @@ function SylvanCalendar(){
       self.convertedTeacherObj = [];
       self.convertedStudentObj = [];
       self.teacherSchedule = [];
+      self.pinnedData = [];
       self.teacherAvailability = [];
       self.students = [];
       self.calendar.fullCalendar( 'removeEvents');
@@ -674,7 +677,6 @@ function SylvanCalendar(){
       var dayOfWeek = moment(currentCalendarDate).format('dddd');
       var dayofMonth = moment(currentCalendarDate).format('M/D');
       wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').html(dayOfWeek +" <br/> "+ dayofMonth);
-      
       this.clearEvents();
       var flag = this.findDataSource(currentCalendarDate);
       currentCalendarDate = moment(currentCalendarDate).format("YYYY-MM-DD");
@@ -695,6 +697,7 @@ function SylvanCalendar(){
       }
       else{
         self.students = data.getStudentMasterSchedule(locationId,startDate,endDate);
+        self.pinnedData = data.getPinnedData(locationId,startDate,endDate);
         self.populateStudentEvent(self.generateEventObject(self.students == null ? [] : self.students, "masterStudentSession"), true);
         self.filterObject.student = self.students == null ? [] : self.students;
         self.generateFilterObject(self.filterObject);
@@ -941,6 +944,7 @@ function SylvanCalendar(){
                 locationId: val['aenrollment_x002e_hub_location'],
                 locationName: val['aenrollment_x002e_hub_location@OData.Community.Display.V1.FormattedValue']
             }
+
             if (val.hasOwnProperty('_hub_resourceid_value')) {
                 obj.resourceId = val['_hub_resourceid_value']; 
                 eventObjList.push(obj);
