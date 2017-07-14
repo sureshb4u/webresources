@@ -263,7 +263,9 @@ function SylvanCalendar(){
           for(var i=0;i<resourceData.length;i++){
               this.resourceList.push({
                   name: i+1,
-                  id: resourceData[i].hub_center_resourcesid
+                  id: resourceData[i].hub_center_resourcesid,
+                  deliveryType:resourceData[i]["_hub_deliverytype_value@OData.Community.Display.V1.FormattedValue"],
+                  deliveryTypeId:resourceData[i]['_hub_deliverytype_value'],
               });
           }
           this.loadCalendar(currentCalendarDate);
@@ -1000,13 +1002,13 @@ function SylvanCalendar(){
                   isConflict: false,
                   textColor:"#333333",
               }
-              if(value.deliveryTypeId == "d6493b3e-4e35-e711-80ed-c4346bad526c"){ // Group Facilitation
+              if(value.deliveryType == "Group Facilitation"){
                   obj.backgroundColor = "#dff0d5";
                   obj.borderColor = "#7bc143";
-              }else if(value.deliveryTypeId== "f8b0e613-a534-e711-80ed-c4346bad526c"){ // Group Instruction
+              }else if(value.deliveryType== "Group Instruction"){
                   obj.backgroundColor = "#fedeb7";
                   obj.borderColor = "#f88e50";
-              }else if(value.deliveryTypeId== "d6c706eb-a534-e711-80ed-c4346bad526c"){ // Personal Instruction
+              }else if(value.deliveryType== "Personal Instruction"){ 
                   obj.backgroundColor = "#ebf5fb";
                   obj.borderColor = "#9acaea";
               }
@@ -1059,13 +1061,13 @@ function SylvanCalendar(){
                         isConflict: false,
                         textColor:"#333333",
                     }
-                    if(value.deliveryTypeId == "d6493b3e-4e35-e711-80ed-c4346bad526c"){ // Group Facilitation
+                    if(value.deliveryType == "Group Facilitation"){ 
                         obj.backgroundColor = "#dff0d5";
                         obj.borderColor = "#7bc143";
-                    }else if(value.deliveryTypeId == "f8b0e613-a534-e711-80ed-c4346bad526c"){ // Group Instruction
+                    }else if(value.deliveryType == "Group Instruction"){ 
                         obj.backgroundColor = "#fedeb7";
                         obj.borderColor = "#f88e50";
-                    }else if(value.deliveryTypeId == "d6c706eb-a534-e711-80ed-c4346bad526c"){ // Personal Instruction
+                    }else if(value.deliveryType == "Personal Instruction"){ 
                         obj.backgroundColor = "#ebf5fb";
                         obj.borderColor = "#9acaea";
                     }
