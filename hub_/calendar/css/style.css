@@ -303,4 +303,5 @@ div.ui-widget{
 .draggable{
     z-index: 2;
     display: block;
+    text-align: left;
 }

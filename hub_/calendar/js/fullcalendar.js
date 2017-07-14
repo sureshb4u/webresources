@@ -4036,7 +4036,7 @@ function ResourceEventRenderer() {
         for (i=0; i<segCnt; i++) {
             seg = segs[i];
             if (eventElement = seg.element) {
-                eventElement[0].style.width = Math.max(0, seg.outerWidth - seg.hsides) + 'px';
+                eventElement[0].style.width = Math.max(0, seg.outerWidth - seg.hsides + 10) + 'px';
                 height = Math.max(0, seg.outerHeight - seg.vsides);
                 eventElement[0].style.height = height + 'px';
                 event = seg.event;
@@ -4050,7 +4050,6 @@ function ResourceEventRenderer() {
                 trigger('eventAfterRender', event, event, eventElement);
             }
         }
-					
     }
 	
 	
