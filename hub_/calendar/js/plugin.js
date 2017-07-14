@@ -405,11 +405,9 @@ function SylvanCalendar(){
         if(wjQuery(elm).attr("type") == 'student'){
             var endDate = new Date(date);
             var stuId = wjQuery(elm).attr("value"); 
-            var student = t.sofList.map(function(x){
-                if(x.id == stuId){
-                    return x;
-                }
-            }); 
+            var student = t.sofList.filter(function( obj ) {
+              return obj.id == stuId;
+            });
             var index = t.sofList.map(function(x){
                     return x.id;
             }).indexOf(stuId);
@@ -425,10 +423,8 @@ function SylvanCalendar(){
         else if(wjQuery(elm).attr("type") == 'teacher'){
             var endDate = new Date(date);
             var teacherId = wjQuery(elm).attr("value"); 
-            var teacher = t.taList.map(function(x){
-                if(x.id == teacherId){
-                    return x;
-                }
+            var teacher = t.taList.filter(function(x){
+                return x.id == teacherId;
             }); 
             var index = t.taList.map(function(x){
                     return x.id;
@@ -635,8 +631,10 @@ function SylvanCalendar(){
     } 
 
     this.findDataSource = function(currentCalendarDate) {
-      var now = moment(new Date()).add(14,'d');
-      if(currentCalendarDate > moment(now).valueOf()){
+      var now = new Date();
+      //constant from instruction view js
+      now.setDate(now.getDate() + MASTER_SCHEDULE_CONST); ;
+      if(currentCalendarDate > now.getTime()){
         return true;
       }
       return false;
@@ -649,7 +647,6 @@ function SylvanCalendar(){
         var dayOfWeek = moment(currentCalendarDate).format('dddd');
         var dayofMonth = moment(currentCalendarDate).format('M/D');
         wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').html(dayOfWeek +" <br/> "+ dayofMonth);
-        
         this.clearEvents();
         var flag = this.findDataSource(currentCalendarDate);
         currentCalendarDate = moment(currentCalendarDate).format("YYYY-MM-DD");
@@ -665,7 +662,7 @@ function SylvanCalendar(){
       var dayofMonth = moment(date).format('M/D');
       wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').html(dayOfWeek +" <br/> "+ dayofMonth);  
       self.clearEvents();
-      var flag = this.findDataSource(date);
+      var flag = this.findDataSource(new Date(date));
       var currentCalendarDate = moment(date).format("YYYY-MM-DD");
       self.refreshCalendarEvent(locationId,currentCalendarDate,currentCalendarDate,flag,true);
     }
@@ -930,33 +927,33 @@ function SylvanCalendar(){
         }
         else if(label == 'masterStudentSession'){
           wjQuery.each(args, function(ke, val) {
-                var sDate = new Date(moment(new Date()).format('YYYY-MM-DD') +" "+ val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
-                var eDate = new Date(moment(new Date()).format('YYYY-MM-DD') +" "+ val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
-                var obj = {
-                    id: val['aenrollment_x002e_hub_student'], 
-                    name: val["aenrollment_x002e_hub_student@OData.Community.Display.V1.FormattedValue"],
-                    start: sDate,
-                    end: eDate,
-                    gradeId:val['astudent_x002e_hub_grade'],
-                    grade: val['astudent_x002e_hub_grade@OData.Community.Display.V1.FormattedValue'],
-                    deliveryTypeId: val['aproductservice_x002e_hub_deliverytype'],
-                    deliveryType: val['aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue'],
-                    locationId: val['aenrollment_x002e_hub_location'],
-                    locationName: val['aenrollment_x002e_hub_location@OData.Community.Display.V1.FormattedValue']
-                }
-                if (val.hasOwnProperty('_hub_resourceid_value')) {
-                    obj.resourceId = val['_hub_resourceid_value']; 
-                    eventObjList.push(obj);
-                }else{
-                    self.sofList.push(obj);  
-                }
-            });
-            setTimeout(function(){
-                if(self.sofList.length){
-                    self.populateSOFPane(self.sofList,self.calendarOptions.minTime,self.calendarOptions.maxTime);
-                }
-            },800);
-            self.convertedStudentObj = eventObjList;
+            var sDate = new Date(moment(new Date()).format('YYYY-MM-DD') +" "+ val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+            var eDate = new Date(moment(new Date()).format('YYYY-MM-DD') +" "+ val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
+            var obj = {
+                id: val['aenrollment_x002e_hub_student'], 
+                name: val["aenrollment_x002e_hub_student@OData.Community.Display.V1.FormattedValue"],
+                start: sDate,
+                end: eDate,
+                gradeId:val['astudent_x002e_hub_grade'],
+                grade: val['astudent_x002e_hub_grade@OData.Community.Display.V1.FormattedValue'],
+                deliveryTypeId: val['aproductservice_x002e_hub_deliverytype'],
+                deliveryType: val['aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue'],
+                locationId: val['aenrollment_x002e_hub_location'],
+                locationName: val['aenrollment_x002e_hub_location@OData.Community.Display.V1.FormattedValue']
+            }
+            if (val.hasOwnProperty('_hub_resourceid_value')) {
+                obj.resourceId = val['_hub_resourceid_value']; 
+                eventObjList.push(obj);
+            }else{
+                self.sofList.push(obj);  
+            }
+          });
+          setTimeout(function(){
+              if(self.sofList.length){
+                  self.populateSOFPane(self.sofList,self.calendarOptions.minTime,self.calendarOptions.maxTime);
+              }
+          },800);
+          self.convertedStudentObj = eventObjList;
         }
         return eventObjList;
     }
