@@ -498,7 +498,17 @@ function SylvanCalendar(){
             t.convertedTeacherObj[index].resourceId = resource.id;
             t.convertedTeacherObj[index].deliveryTypeId = t.getDeliveryTypeObj(resource.id).deliveryTypeId;
             t.convertedTeacherObj[index].deliveryType = t.getDeliveryTypeObj(resource.id).deliveryType;
+            t.convertedTeacherObj[index].id = resource.id + date;
             t.populateTeacherEvent([t.convertedTeacherObj[index]]);
+            console.log(this.eventList);
+            if(prevEventId != resource.id + date){
+              if((prevEvent[0].teachers).length == 1 && !(prevEvent[0].hasOwnProperty("names"))){
+                this.calendar.fullCalendar('removeEvents', prevEventId);
+                this.calendar.fullCalendar( 'refetchEvents' );
+                console.log(this.eventList);
+                this.draggable("draggable");
+              }
+            }
           } 
         }
     };
