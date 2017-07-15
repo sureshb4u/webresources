@@ -247,8 +247,8 @@ function SylvanCalendar(){
         });
         wjQuery('.sof-pane').css('height',wjQuery('#calendar').height() - 10 +"px"); 
         wjQuery('.ta-pane').css('height',wjQuery('#calendar').height() - 10 +"px"); 
-        wjQuery('.sof-pane').css('overflow-y','auto'); 
-        wjQuery('.ta-pane').css('overflow-y','auto');
+        wjQuery('.sof-pane').css('overflow-y','hidden'); 
+        wjQuery('.ta-pane').css('overflow-y','hidden');
     }
 
     this.populateLocation = function(args){
@@ -348,7 +348,7 @@ function SylvanCalendar(){
     this.populateSOFPane = function(studentData,minTime,maxTime){
         var sofTemplate = [];
         for(var i=0;i<(maxTime - minTime);i++){
-            var elm = '<div class="student-overflow" id="student_block_'+i+'" style="height:'+ wjQuery(".fc-agenda-slots td div").height() * 2 +'px"></div>';
+            var elm = '<div class="student-overflow" id="student_block_'+i+'" style="height:'+ wjQuery(".fc-agenda-slots td div").height() * 2 +'px;overflow:auto"></div>';
             wjQuery('.sof-pane').append(elm);;
         }
         for(var i=0;i<studentData.length;i++){
@@ -825,9 +825,12 @@ function SylvanCalendar(){
             wjQuery('.sof-pane').prop("scrollTop", this.scrollTop)
                 .prop("scrollLeft", this.scrollLeft);
         });
-        wjQuery('.sof-pane').on('mousewheel DOMMouseScroll touchmove', function(e) {
-            e.preventDefault();
-        }, false);
+        wjQuery('.student-overflow').on( 'mousewheel DOMMouseScroll', function (e) { 
+          var e0 = e.originalEvent;
+          var delta = e0.wheelDelta || -e0.detail;
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          e.preventDefault();  
+        });
         if(taExpanded){
             taExpanded = !taExpanded; // to change the slide
             taExpanded ? wjQuery('.ta-pane').addClass('open') : wjQuery('.ta-pane').removeClass('open');
@@ -852,9 +855,12 @@ function SylvanCalendar(){
             wjQuery('.ta-pane').prop("scrollTop", this.scrollTop)
                 .prop("scrollLeft", this.scrollLeft);
         });
-        wjQuery('.ta-pane').on('mousewheel DOMMouseScroll touchmove', function(e) {
-            e.preventDefault();
-        }, false);
+        wjQuery('.teacher-availability').on( 'mousewheel DOMMouseScroll', function (e) { 
+          var e0 = e.originalEvent;
+          var delta = e0.wheelDelta || -e0.detail;
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          e.preventDefault();  
+        });
         if(sofExpanded){
             sofExpanded = !sofExpanded;
             sofExpanded ? wjQuery('.sof-pane').addClass('open') : wjQuery('.sof-pane').removeClass('open');
