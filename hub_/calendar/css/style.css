@@ -272,9 +272,7 @@ div.ui-widget{
     text-align: center;
 }
 .teacher-container{
-    border: 1px solid #ccc;
-    padding: 5px;
-    box-shadow: 0px 2px 2px #ddd;
+ 
 }
 .subject-identifier{
     width: 15px;
