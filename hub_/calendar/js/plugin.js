@@ -29,7 +29,6 @@ setTimeout(function(){
         if(wjQuery(".loc-dropdown .btn:first-child").val() != wjQuery(this).attr('value-id')){
           wjQuery(".loc-dropdown .btn:first-child").text(wjQuery(this).text());
           wjQuery(".loc-dropdown .btn:first-child").val(wjQuery(this).attr('value-id'));
-          this.resourceList = [];
           locationId = wjQuery(this).attr('value-id');
           return fetchResources(locationId,deliveryTypeList,true);
         }
@@ -400,7 +399,7 @@ function SylvanCalendar(){
                     break;
                 }
                 obj.endTime = moment(obj.startTime, 'h:mm A').add(1,'h').format('h:mm A');
-                obj.startHour = moment(obj.startTime, 'A') == 'AM' ? parseInt(moment(obj.startTime, 'h:mm A').format('h')) : parseInt(moment(obj.startTime, 'h:mm A').format('h')) +12 ;
+                obj.startHour = obj.startTime.split(' ')[1] == 'AM' ? parseInt(moment(obj.startTime, 'h:mm A').format('h')) : parseInt(moment(obj.startTime, 'h:mm A').format('h')) +12 ;
                 teacherArray.push(obj);
             }
         }
@@ -840,6 +839,11 @@ function SylvanCalendar(){
         }
         sofExpanded ? wjQuery('.sof-pane').addClass('open') : wjQuery('.sof-pane').removeClass('open');
         wjQuery('.sof-pane').animate(sofExpanded?{'marginRight':'-15px'} : {marginRight:'-260px'},500);
+        if(!sofExpanded){
+          setTimeout(function(){
+            wjQuery('.sof-pane').hide();
+          },600);
+        }
     }
 
     this.taPane = function(){
@@ -862,6 +866,11 @@ function SylvanCalendar(){
         }
         taExpanded ? wjQuery('.ta-pane').addClass('open') : wjQuery('.ta-pane').removeClass('open');
         wjQuery('.ta-pane').animate(taExpanded?{'marginRight':'-15px'} : {marginRight:'-260px'},500);
+        if(!taExpanded){
+          setTimeout(function(){
+            wjQuery('.ta-pane').hide();
+          },600);
+        }
     } 
 
     this.generateFilterObject = function(args){
