@@ -40,6 +40,26 @@ setTimeout(function(){
       if(fetchData){
         var obj = data.getResources(locationId);
         resources = obj == null ? [] : obj;
+        if(resources.length){
+          var pi = [];
+          var gi = [];
+          var gf = [];
+          for (var i = 0; i < resources.length; i++) {
+            switch(resources[i]['_hub_deliverytype_value@OData.Community.Display.V1.FormattedValue']){
+              case 'Personal Instruction':
+                  pi.push(resources[i]);
+              break;
+              case 'Group Facilitation':
+                  gf.push(resources[i]);
+              break;
+              case 'Group Instruction':
+                  gi.push(resources[i]);
+              break;
+            }
+          }
+          resources = pi.concat(gf);
+          resources = resources.concat(gi);
+        }
       }
       if(selectedDeliveryType.length == 0 || selectedDeliveryType.length == deliveryType.length){
         resourceList = resources;
