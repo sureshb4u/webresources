@@ -482,8 +482,18 @@ function SylvanCalendar(){
               }
             }
             if(eventTitleHTML.prop('outerHTML') != undefined){
-              prevEvent[0].title = eventTitleHTML.prop('outerHTML');
-              this.calendar.fullCalendar('updateEvent', prevEvent);
+              if(eventTitleHTML.prop('outerHTML') != undefined){
+                if(eventTitleHTML.length == 1){
+                  prevEvent[0].title = eventTitleHTML.prop('outerHTML');
+                }
+                else{
+                  prevEvent[0].title = "";
+                  for (var i = 0; i < eventTitleHTML.length; i++) {
+                    prevEvent[0].title += eventTitleHTML[i].outerHTML;
+                  }
+                }
+                this.calendar.fullCalendar('updateEvent', prevEvent);
+              }
             }
             else{
               for (var i = 0; i < this.eventList.length; i++) {
@@ -520,7 +530,15 @@ function SylvanCalendar(){
               }
             }
             if(eventTitleHTML.prop('outerHTML') != undefined){
-              prevEvent[0].title = eventTitleHTML.prop('outerHTML');
+              if(eventTitleHTML.length == 1){
+                prevEvent[0].title = eventTitleHTML.prop('outerHTML');
+              }
+              else{
+                prevEvent[0].title = "";
+                for (var i = 0; i < eventTitleHTML.length; i++) {
+                  prevEvent[0].title += eventTitleHTML[i].outerHTML;
+                }
+              }
               this.calendar.fullCalendar('updateEvent', prevEvent);
             }
             else{
