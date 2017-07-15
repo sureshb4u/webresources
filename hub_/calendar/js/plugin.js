@@ -512,6 +512,25 @@ function SylvanCalendar(){
           var index = t.convertedTeacherObj.map(function(x){
             return x.id;
           }).indexOf(teacherId);
+          if(prevEvent){
+            var eventTitleHTML = wjQuery(prevEvent[0].title);
+            for (var i = 0; i < eventTitleHTML.length; i++) {
+              if(wjQuery(eventTitleHTML[i]).attr('value') == teacherId){
+                eventTitleHTML.splice(i,1);
+              }
+            }
+            if(eventTitleHTML.prop('outerHTML') != undefined){
+              prevEvent[0].title = eventTitleHTML.prop('outerHTML');
+              this.calendar.fullCalendar('updateEvent', prevEvent);
+            }
+            else{
+              for (var i = 0; i < this.eventList.length; i++) {
+                if(this.eventList[i].id == prevEventId)
+                  this.eventList.splice(i,1);
+              }
+              this.calendar.fullCalendar('removeEvents', prevEventId);
+            }
+          }
           if(t.convertedTeacherObj[index]){
             elm.remove(); 
             t.convertedTeacherObj[index].start = date;
@@ -520,16 +539,7 @@ function SylvanCalendar(){
             t.convertedTeacherObj[index].deliveryTypeId = t.getDeliveryTypeObj(resource.id).deliveryTypeId;
             t.convertedTeacherObj[index].deliveryType = t.getDeliveryTypeObj(resource.id).deliveryType;
             t.convertedTeacherObj[index].id = resource.id + date;
-            t.populateTeacherEvent([t.convertedTeacherObj[index]]);
-            console.log(this.eventList);
-            if(prevEventId != resource.id + date){
-              if((prevEvent[0].teachers).length == 1 && !(prevEvent[0].hasOwnProperty("names"))){
-                this.calendar.fullCalendar('removeEvents', prevEventId);
-                this.calendar.fullCalendar( 'refetchEvents' );
-                console.log(this.eventList);
-                this.draggable("draggable");
-              }
-            }
+            t.populateTeacherEvent([t.convertedTeacherObj[index]], true);
           } 
         }
     };
