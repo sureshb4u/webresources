@@ -486,8 +486,10 @@ function SylvanCalendar(){
           var endDate = new Date(date);
           var teacherId = wjQuery(elm).attr("value"); 
           var uniqStuId = wjQuery(elm).attr("id"); 
+          var prevEventId = wjQuery(elm).attr("eventid");
+          prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
           var index = t.convertedTeacherObj.map(function(x){
-                  return x.id;
+            return x.id;
           }).indexOf(teacherId);
           if(t.convertedTeacherObj[index]){
             elm.remove(); 
@@ -1003,7 +1005,8 @@ function SylvanCalendar(){
           wjQuery.each(teacherObject, function(key, value) {
             id = value['id'];
             name = value['name'];
-            event = self.calendar.fullCalendar('clientEvents', value['resourceId']+value['start']);
+            eventId = value['resourceId']+value['start'];
+            event = self.calendar.fullCalendar('clientEvents', eventId);
             if(event.length == 1){
               wjQuery.each(event, function(k, v){
                 if(event[k].hasOwnProperty("teachers")){
@@ -1012,15 +1015,15 @@ function SylvanCalendar(){
                   }).indexOf(id);
                   if(index == -1){
                     event[k].isConflict = true;
-                    event[k].title += "<span class='draggable' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'><b>"+name+"</b></span>";
+                    event[k].title += "<span class='draggable drag-teacher' eventid='"+eventId+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'>"+name+"</span>";
                     event[k].teachers.push({id:id, name:name});
                   }
                 }else{
                   var studentList = event[k].name;
-                  event[k].title = "<span class='draggable' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'><b>"+name+"</b></span>";
+                  event[k].title = "<span class='draggable drag-teacher' eventid='"+eventId+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'>"+name+"</span>";
                   event[k].teachers = [{id:id, name:name}];
                   wjQuery.each(studentList, function(ke, val){
-                    event[k].title += "<span class='draggable' id='"+val.id+value['resourceId']+"' type='studentSession' value='"+val.id+"'>"+val.name+", "+val.grade+"</span>";
+                    event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' id='"+val.id+value['resourceId']+"' type='studentSession' value='"+val.id+"'>"+val.name+", "+val.grade+"</span>";
                   });
                 }
               });
@@ -1028,7 +1031,7 @@ function SylvanCalendar(){
             }else{
               var obj = {
                   id: value['resourceId']+value['start'],
-                  title:"<span class='draggable' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'><b>"+name+"</b></span>",
+                  title:"<span class='draggable drag-teacher' eventid='"+eventId+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'>"+name+"</span>",
                   teachers:[{id:id, name:name}],
                   start:value['start'],
                   end:value['end'],
@@ -1067,7 +1070,8 @@ function SylvanCalendar(){
                 id = value['id'];
                 name = value['name'];
                 grade = value['grade'];
-                event = self.calendar.fullCalendar('clientEvents', value['resourceId']+value['start']);
+                eventId = value['resourceId']+value['start'];
+                event = self.calendar.fullCalendar('clientEvents', eventId);
                 if(event.length){
                     wjQuery.each(event, function(k, v){
                       if(event[k].hasOwnProperty("name")){
@@ -1075,19 +1079,19 @@ function SylvanCalendar(){
                              return x.id;
                         }).indexOf(id);
                         if(index == -1){
-                          event[k].title += "<span class='draggable' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
+                          event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
                           event[k].name.push({id:id, name:name, grade:grade});
                         }
                       }else{
-                        event[k].title += "<span class='draggable' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
+                        event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
                         event[k].name = [{id:id, name:name, grade:grade}];
                       }
                     });
                     self.calendar.fullCalendar('updateEvent', event);
                 }else{
                     var obj = {
-                        id: value['resourceId']+value['start'],
-                        title:"<span class='draggable' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>",
+                        id: eventId,
+                        title:"<span class='draggable drag-student' eventid='"+eventId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>",
                         name:[{id:id, name:name, grade:grade}],
                         start:value['start'],
                         end:value['end'],

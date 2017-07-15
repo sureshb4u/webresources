@@ -305,3 +305,7 @@ div.ui-widget{
     display: block;
     text-align: left;
 }
+.drag-teacher{
+    text-align: center;
+    font-weight: bold;
+}
