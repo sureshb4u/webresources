@@ -469,6 +469,24 @@ function SylvanCalendar(){
           var endDate = new Date(date);
           var stuId = wjQuery(elm).attr("value"); 
           var uniqStuId = wjQuery(elm).attr("id"); 
+          var prevEventId = wjQuery(elm).attr("eventid");
+          prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
+          if(prevEvent){
+            var eventTitleHTML = wjQuery(prevEvent[0].title);
+            for (var i = 0; i < eventTitleHTML.length; i++) {
+              if(wjQuery(eventTitleHTML[i]).attr('value') == stuId){
+                eventTitleHTML.splice(i,1);
+              }
+            }
+            if(eventTitleHTML.prop('outerHTML') != undefined){
+              prevEvent[0].title = eventTitleHTML.prop('outerHTML');
+              this.calendar.fullCalendar('updateEvent', prevEvent);
+            }
+            else{
+              this.calendar.fullCalendar('removeEvents', prevEventId);
+              this.calendar.fullCalendar( 'refetchEvents' );
+            }
+          }
           var index = t.convertedStudentObj.map(function(x){
                   return x.id;
           }).indexOf(stuId);
@@ -480,6 +498,14 @@ function SylvanCalendar(){
             t.convertedStudentObj[index].deliveryTypeId = t.getDeliveryTypeObj(resource.id).deliveryTypeId;
             t.convertedStudentObj[index].deliveryType = t.getDeliveryTypeObj(resource.id).deliveryType;
             t.populateStudentEvent([t.convertedStudentObj[index]]);
+            /*if(prevEventId != resource.id + date){
+              if((prevEvent[0].teachers).length == 1 && !(prevEvent[0].hasOwnProperty("names"))){
+                this.calendar.fullCalendar('removeEvents', prevEventId);
+                this.calendar.fullCalendar( 'refetchEvents' );
+                console.log(this.eventList);
+                this.draggable("draggable");
+              }
+            }*/
           } 
         }
         else if(wjQuery(elm).attr("type") == 'teacherSession'){
