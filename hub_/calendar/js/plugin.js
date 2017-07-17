@@ -547,8 +547,7 @@ function SylvanCalendar(){
                         return x.id;
                 }).indexOf(teacherId);
                 prevEvent[0].teachers.splice(removeTeacherIndex,1);
-              }
-              else{
+              }else{
                 for (var i = 0; i < this.eventList.length; i++) {
                   if(this.eventList[i].id == prevEventId)
                     this.eventList.splice(i,1);
@@ -557,7 +556,6 @@ function SylvanCalendar(){
               }
             }
             if(t.convertedTeacherObj[index]){
-              console.log(prevEvent);
               elm.remove(); 
               t.convertedTeacherObj[index].start = date;
               t.convertedTeacherObj[index].end = new Date(endDate.setHours(endDate.getHours() + 1));
@@ -1077,14 +1075,22 @@ function SylvanCalendar(){
             event = self.calendar.fullCalendar('clientEvents', eventId);
             if(event.length == 1){
               wjQuery.each(event, function(k, v){
-                if(event[k].hasOwnProperty("teachers")){
+                if(event[k].hasOwnProperty("teachers") && event[k]['teachers'].length !=0 ){
                   index = event[k].teachers.map(function(x){
                       return x.id;
                   }).indexOf(id);
                   if(index == -1){
                     event[k].isConflict = true;
-                    event[k].title += "<span class='draggable drag-teacher' eventid='"+eventId+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'>"+name+"</span>";
+                    event[k].title = "";
                     event[k].teachers.push({id:id, name:name});
+                    wjQuery.each(event[k].teachers, function(ka, v){
+                      event[k].title += "<span class='draggable drag-teacher' eventid='"+eventId+"' id='"+v.id+value['resourceId']+"' type='teacherSession' value='"+v.id+"'>"+v.name+"</span>";
+                    });
+                    if(event[k].hasOwnProperty("students")){
+                      wjQuery.each(event[k].students, function(ke, val){
+                        event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' id='"+val.id+value['resourceId']+"' type='studentSession' value='"+val.id+"'>"+val.name+", "+val.grade+"</span>";
+                      });
+                    }
                   }
                 }else{
                   var studentList = event[k].students;
@@ -1142,7 +1148,7 @@ function SylvanCalendar(){
                 event = self.calendar.fullCalendar('clientEvents', eventId);
                 if(event.length){
                     wjQuery.each(event, function(k, v){
-                      if(event[k].hasOwnProperty("students")){
+                      if(event[k].hasOwnProperty("students") && event[k]['students'].length !=0 ){
                         index = event[k].students.map(function(x){
                              return x.id;
                         }).indexOf(id);
