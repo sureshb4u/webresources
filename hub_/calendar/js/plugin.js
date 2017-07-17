@@ -698,6 +698,13 @@ function SylvanCalendar(){
                         return x.id;
                 }).indexOf(stuId);
                 prevEvent[0].students.splice(removeStudentIndex,1);
+                if(eventTitleHTML.length == 1 && eventTitleHTML[0].className == "placeholder"){
+                  for (var i = 0; i < this.eventList.length; i++) {
+                    if(this.eventList[i].id == prevEventId)
+                      this.eventList.splice(i,1);
+                  }
+                  this.calendar.fullCalendar('removeEvents', prevEventId);
+                }
               }
               else{
                 for (var i = 0; i < this.eventList.length; i++) {
@@ -1346,7 +1353,7 @@ function SylvanCalendar(){
                 }else{
                     var obj = {
                         id: eventId,
-                        title:"<span class='draggable drag-student' eventid='"+eventId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>",
+                        title:"<span class='placeholder'>Teacher name</span><span class='draggable drag-student' eventid='"+eventId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>",
                         students:[{id:id, name:name, grade:grade}],
                         start:value['start'],
                         end:value['end'],
