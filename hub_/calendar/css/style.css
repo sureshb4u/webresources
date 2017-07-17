@@ -252,7 +252,7 @@ div.ui-widget{
     width: 145px !important;
 }
 .fc-agenda-slots td div {
-    height: 80px;
+    height: 160px;
 }
 .sof-pane,.ta-pane{
     width: 250px;
@@ -290,7 +290,9 @@ div.ui-widget{
     padding: 10px 10px 0px;
 }
 .student-overflow,.teacher-availability{
-    border: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    border-top: 1px solid #ccc;
 }
 .loc-dropdown.btn-group .btn {
     width: 200px;

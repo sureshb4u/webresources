@@ -312,6 +312,23 @@ function SylvanCalendar(){
       this.students = [];
     }
 
+    this.convertToMinutes = function(timeString){
+      if(timeString != undefined){
+        if(timeString.split(' ')[1] == 'AM'){
+          var hours = parseInt(moment(timeString,'h:mm A').format('h'));
+          var minutes = parseInt(moment(timeString,'h:mm A').format('mm'));
+          return (hours * 60) + minutes;
+        }
+        else{
+         var hours = parseInt(moment(timeString,'h:mm A').format('h'));
+         hours = hours!=12 ? hours + 12 : hours;
+          var minutes = parseInt(moment(timeString,'h:mm A').format('mm'));
+          return (hours * 60) + minutes;
+        }
+      }
+    }
+    console.log(this.convertToMinutes('11:00 AM'));
+
     this.calendarFilter = function(){
          this.buildFilterBody();
     }
@@ -348,7 +365,7 @@ function SylvanCalendar(){
     this.populateSOFPane = function(studentData,minTime,maxTime){
         var sofTemplate = [];
         for(var i=0;i<(maxTime - minTime);i++){
-            var elm = '<div class="student-overflow" id="student_block_'+i+'" style="height:'+ wjQuery(".fc-agenda-slots td div").height() * 2 +'px;overflow:auto"></div>';
+            var elm = '<div class="student-overflow" id="student_block_'+i+'" style="height:'+ wjQuery(".fc-agenda-slots td div").height() +'px;overflow:auto"></div>';
             wjQuery('.sof-pane').append(elm);;
         }
         for(var i=0;i<studentData.length;i++){
@@ -378,34 +395,158 @@ function SylvanCalendar(){
                 switch(moment(currentCalendarDate).format('dddd').toLowerCase()){
                     case 'monday':
                         obj.startTime = teacherData[i]['hub_monstarttime@OData.Community.Display.V1.FormattedValue'];
+                        if(teacherData[i]['hub_monendtime@OData.Community.Display.V1.FormattedValue'] == undefined)
+                        {
+                          obj.endTime = moment(obj.startTime, 'h:mm A').add(1,'h').format('h:mm A');
+                          obj.startHour = obj.startTime.split(' ')[1] == 'AM' ? parseInt(moment(obj.startTime, 'h:mm A').format('h')) : parseInt(moment(obj.startTime, 'h:mm A').format('h')) +12 ;
+                          teacherArray.push(obj);
+                        }
+                        else{
+                          var staffEndTime = teacherData[i]['hub_monendtime@OData.Community.Display.V1.FormattedValue'];
+                          var staffEndHour = staffEndTime.split(' ')[1] == 'AM' ? parseInt(moment(staffEndTime, 'h:mm A').format('h')) : parseInt(moment(staffEndTime, 'h:mm A').format('h')) +12;
+                          var staffStartHour = obj.startTime.split(' ')[1] == 'AM' ? parseInt(moment(obj.startTime, 'h:mm A').format('h')) : parseInt(moment(obj.startTime, 'h:mm A').format('h')) +12 ;
+                          do{
+                            var newObject = wjQuery.extend(true, {}, obj);
+                            newObject.startHour = staffStartHour;
+                            teacherArray.push(newObject);
+                            staffStartHour++;
+                          }
+                          while(staffStartHour < staffEndHour);
+                        }
                     break;
                     case 'tuesday':
                         obj.startTime = teacherData[i]['hub_tuestarttime@OData.Community.Display.V1.FormattedValue'];
+                        if(teacherData[i]['hub_tueendtime@OData.Community.Display.V1.FormattedValue'] == undefined)
+                        {
+                          obj.endTime = moment(obj.startTime, 'h:mm A').add(1,'h').format('h:mm A');
+                          obj.startHour = obj.startTime.split(' ')[1] == 'AM' ? parseInt(moment(obj.startTime, 'h:mm A').format('h')) : parseInt(moment(obj.startTime, 'h:mm A').format('h')) +12 ;
+                          teacherArray.push(obj);
+                        }
+                        else{
+                          var staffEndTime = teacherData[i]['hub_tueendtime@OData.Community.Display.V1.FormattedValue'];
+                          var staffEndHour = staffEndTime.split(' ')[1] == 'AM' ? parseInt(moment(staffEndTime, 'h:mm A').format('h')) : parseInt(moment(staffEndTime, 'h:mm A').format('h')) +12;
+                          var staffStartHour = obj.startTime.split(' ')[1] == 'AM' ? parseInt(moment(obj.startTime, 'h:mm A').format('h')) : parseInt(moment(obj.startTime, 'h:mm A').format('h')) +12 ;
+                          do{
+                            var newObject = wjQuery.extend(true, {}, obj);
+                            newObject.startHour = staffStartHour;
+                            teacherArray.push(newObject);
+                            staffStartHour++;
+                          }
+                          while(staffStartHour < staffEndHour);
+                        }
                     break;
                     case 'wednesday':
                         obj.startTime = teacherData[i]['hub_wedstarttime@OData.Community.Display.V1.FormattedValue'];
+                         if(teacherData[i]['hub_wedendtime@OData.Community.Display.V1.FormattedValue'] == undefined)
+                        {
+                          obj.endTime = moment(obj.startTime, 'h:mm A').add(1,'h').format('h:mm A');
+                          obj.startHour = obj.startTime.split(' ')[1] == 'AM' ? parseInt(moment(obj.startTime, 'h:mm A').format('h')) : parseInt(moment(obj.startTime, 'h:mm A').format('h')) +12 ;
+                          teacherArray.push(obj);
+                        }
+                        else{
+                          var staffEndTime = teacherData[i]['hub_wedendtime@OData.Community.Display.V1.FormattedValue'];
+                          var staffEndHour = staffEndTime.split(' ')[1] == 'AM' ? parseInt(moment(staffEndTime, 'h:mm A').format('h')) : parseInt(moment(staffEndTime, 'h:mm A').format('h')) +12;
+                          var staffStartHour = obj.startTime.split(' ')[1] == 'AM' ? parseInt(moment(obj.startTime, 'h:mm A').format('h')) : parseInt(moment(obj.startTime, 'h:mm A').format('h')) +12 ;
+                          do{
+                            var newObject = wjQuery.extend(true, {}, obj);
+                            newObject.startHour = staffStartHour;
+                            teacherArray.push(newObject);
+                            staffStartHour++;
+                          }
+                          while(staffStartHour < staffEndHour);
+                        }
                     break;
                     case 'thursday':
                         obj.startTime = teacherData[i]['hub_thurstarttime@OData.Community.Display.V1.FormattedValue'];
+                         if(teacherData[i]['hub_thurendtime@OData.Community.Display.V1.FormattedValue'] == undefined)
+                        {
+                          obj.endTime = moment(obj.startTime, 'h:mm A').add(1,'h').format('h:mm A');
+                          obj.startHour = obj.startTime.split(' ')[1] == 'AM' ? parseInt(moment(obj.startTime, 'h:mm A').format('h')) : parseInt(moment(obj.startTime, 'h:mm A').format('h')) +12 ;
+                          teacherArray.push(obj);
+                        }
+                        else{
+                          var staffEndTime = teacherData[i]['hub_thurendtime@OData.Community.Display.V1.FormattedValue'];
+                          var staffEndHour = staffEndTime.split(' ')[1] == 'AM' ? parseInt(moment(staffEndTime, 'h:mm A').format('h')) : parseInt(moment(staffEndTime, 'h:mm A').format('h')) +12;
+                          var staffStartHour = obj.startTime.split(' ')[1] == 'AM' ? parseInt(moment(obj.startTime, 'h:mm A').format('h')) : parseInt(moment(obj.startTime, 'h:mm A').format('h')) +12 ;
+                          do{
+                            var newObject = wjQuery.extend(true, {}, obj);
+                            newObject.startHour = staffStartHour;
+                            teacherArray.push(newObject);
+                            staffStartHour++;
+                          }
+                          while(staffStartHour < staffEndHour);
+                        }
                     break;
                     case 'friday':
                         obj.startTime = teacherData[i]['hub_fristarttime@OData.Community.Display.V1.FormattedValue'];
+                         if(teacherData[i]['hub_friendtime@OData.Community.Display.V1.FormattedValue'] == undefined)
+                        {
+                          obj.endTime = moment(obj.startTime, 'h:mm A').add(1,'h').format('h:mm A');
+                          obj.startHour = obj.startTime.split(' ')[1] == 'AM' ? parseInt(moment(obj.startTime, 'h:mm A').format('h')) : parseInt(moment(obj.startTime, 'h:mm A').format('h')) +12 ;
+                          teacherArray.push(obj);
+                        }
+                        else{
+                          var staffEndTime = teacherData[i]['hub_friendtime@OData.Community.Display.V1.FormattedValue'];
+                          var staffEndHour = staffEndTime.split(' ')[1] == 'AM' ? parseInt(moment(staffEndTime, 'h:mm A').format('h')) : parseInt(moment(staffEndTime, 'h:mm A').format('h')) +12;
+                          var staffStartHour = obj.startTime.split(' ')[1] == 'AM' ? parseInt(moment(obj.startTime, 'h:mm A').format('h')) : parseInt(moment(obj.startTime, 'h:mm A').format('h')) +12 ;
+                          do{
+                            var newObject = wjQuery.extend(true, {}, obj);
+                            newObject.startHour = staffStartHour;
+                            teacherArray.push(newObject);
+                            staffStartHour++;
+                          }
+                          while(staffStartHour < staffEndHour);
+                        }
                     break;
                     case 'saturday':
                         obj.startTime = teacherData[i]['hub_satstarttime@OData.Community.Display.V1.FormattedValue'];
+                         if(teacherData[i]['hub_satendtime@OData.Community.Display.V1.FormattedValue'] == undefined)
+                        {
+                          obj.endTime = moment(obj.startTime, 'h:mm A').add(1,'h').format('h:mm A');
+                          obj.startHour = obj.startTime.split(' ')[1] == 'AM' ? parseInt(moment(obj.startTime, 'h:mm A').format('h')) : parseInt(moment(obj.startTime, 'h:mm A').format('h')) +12 ;
+                          teacherArray.push(obj);
+                        }
+                        else{
+                          var staffEndTime = teacherData[i]['hub_satendtime@OData.Community.Display.V1.FormattedValue'];
+                          var staffEndHour = staffEndTime.split(' ')[1] == 'AM' ? parseInt(moment(staffEndTime, 'h:mm A').format('h')) : parseInt(moment(staffEndTime, 'h:mm A').format('h')) +12;
+                          var staffStartHour = obj.startTime.split(' ')[1] == 'AM' ? parseInt(moment(obj.startTime, 'h:mm A').format('h')) : parseInt(moment(obj.startTime, 'h:mm A').format('h')) +12 ;
+                          do{
+                            var newObject = wjQuery.extend(true, {}, obj);
+                            newObject.startHour = staffStartHour;
+                            teacherArray.push(newObject);
+                            staffStartHour++;
+                          }
+                          while(staffStartHour < staffEndHour);
+                        }
                     break ;
                     case 'sunday':
                         obj.startTime = teacherData[i]['hub_sunstarttime@OData.Community.Display.V1.FormattedValue'];
+                         if(teacherData[i]['hub_sunendtime@OData.Community.Display.V1.FormattedValue'] == undefined)
+                        {
+                          obj.endTime = moment(obj.startTime, 'h:mm A').add(1,'h').format('h:mm A');
+                          obj.startHour = obj.startTime.split(' ')[1] == 'AM' ? parseInt(moment(obj.startTime, 'h:mm A').format('h')) : parseInt(moment(obj.startTime, 'h:mm A').format('h')) +12 ;
+                          teacherArray.push(obj);
+                        }
+                        else{
+                          var staffEndTime = teacherData[i]['hub_sunendtime@OData.Community.Display.V1.FormattedValue'];
+                          var staffEndHour = staffEndTime.split(' ')[1] == 'AM' ? parseInt(moment(staffEndTime, 'h:mm A').format('h')) : parseInt(moment(staffEndTime, 'h:mm A').format('h')) +12;
+                          var staffStartHour = obj.startTime.split(' ')[1] == 'AM' ? parseInt(moment(obj.startTime, 'h:mm A').format('h')) : parseInt(moment(obj.startTime, 'h:mm A').format('h')) +12 ;
+                          do{
+                            var newObject = wjQuery.extend(true, {}, obj);
+                            newObject.startHour = staffStartHour;
+                            teacherArray.push(newObject);
+                            staffStartHour++;
+                          }
+                          while(staffStartHour < staffEndHour);
+                        }
                     break;
                 }
-                obj.endTime = moment(obj.startTime, 'h:mm A').add(1,'h').format('h:mm A');
-                obj.startHour = obj.startTime.split(' ')[1] == 'AM' ? parseInt(moment(obj.startTime, 'h:mm A').format('h')) : parseInt(moment(obj.startTime, 'h:mm A').format('h')) +12 ;
-                teacherArray.push(obj);
+                
             }
         }
         this.taList = teacherArray;
         for(var i=0;i<(this.calendarOptions.maxTime - this.calendarOptions.minTime);i++){
-            var elm = '<div class="teacher-availability" id="teacher_block_'+i+'" style="height:'+ wjQuery(".fc-agenda-slots td div").height() * 2 +'px"></div>';
+            var elm = '<div class="teacher-availability" id="teacher_block_'+i+'" style="overflow-y:auto;height:'+ wjQuery(".fc-agenda-slots td div").height() +'px"></div>';
             wjQuery('.ta-pane').append(elm);
         }
         for(var i=0;i<teacherArray.length;i++){
@@ -648,7 +789,7 @@ function SylvanCalendar(){
             },
             handleWindowResize:true,
             height:window.innerHeight - 60,
-            slotMinutes : 30,
+            slotMinutes : 60,
             selectable: false,
             slotEventOverlap:false,
             selectHelper: true,
