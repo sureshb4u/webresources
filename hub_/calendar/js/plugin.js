@@ -327,7 +327,6 @@ function SylvanCalendar(){
         }
       }
     }
-    console.log(this.convertToMinutes('11:00 AM'));
 
     this.calendarFilter = function(){
          this.buildFilterBody();
@@ -575,8 +574,8 @@ function SylvanCalendar(){
             objSession['hub_center@odata.bind'] = "/hub_centers(" + student[0].locationId + ")";
             objSession['hub_resourceid@odata.bind'] = "/hub_center_resourceses(" + student[0].resourceId + ")";
             objSession.hub_session_date = moment(student[0].start).format("YYYY-MM-DD");
-            objSession.hub_start_time = moment(student[0].start).format("h:mm A");
-            objSession.hub_end_time = moment(student[0].end).format("h:mm A");
+            objSession.hub_start_time = this.convertToMinutes(moment(student[0].start).format("h:mm A"));
+            objSession.hub_end_time = this.convertToMinutes(moment(student[0].end).format("h:mm A"));
       }
       data.saveSOFtoSession(objStudent[0],objSession);
     };
@@ -589,8 +588,8 @@ function SylvanCalendar(){
             objNewSession.hub_deliverytype = teacher.deliveryTypeId;
             objNewSession['hub_resourceid@odata.bind'] = "/hub_center_resourceses(" + teacher.resourceId + ")";
             objNewSession.hub_date = moment(teacher.start).format("YYYY-MM-DD");;
-            objNewSession.hub_start_time = moment(teacher.start).format("h:mm A");
-            objNewSession.hub_end_time  = moment(teacher.end).format("h:mm A");
+            objNewSession.hub_start_time = this.convertToMinutes(moment(teacher.start).format("h:mm A"));
+            objNewSession.hub_end_time  = this.convertToMinutes(moment(teacher.end).format("h:mm A"));
             objNewSession.hub_schedule_type = 1;
         data.saveSOFtoSession(objStaff,objNewSession);
       }
