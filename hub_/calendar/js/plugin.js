@@ -446,14 +446,14 @@ function SylvanCalendar(){
         });
         var objStaff = {};
             objStaff['hub_staff@odata.bind'] = "/hub_staffs(" + teacher.id + ")";
-        objSession properties:
+        var objNewSession = {};
            // objNewSession['hub_product_service@odata.bind'] = "/hub_productservices(" + service id + ")";
             objNewSession['hub_resourceid@odata.bind'] = "/hub_center_resourceses(" + teacher.resourceId + ")";
             objNewSession.hub_date = moment(teacher.start).format("YYYY-MM-DD");;
             objNewSession.hub_start_time = moment(teacher.start).format("h:mm A");
-            objNewSession.hub_end_time moment(teacher.end).format("h:mm A");
+            objNewSession.hub_end_time  = moment(teacher.end).format("h:mm A");
             objNewSession.hub_schedule_type = 1;
-        data.saveSOFtoSession(objStaff,objSession);
+        data.saveSOFtoSession(objStaff,objNewSession);
     };
 
     this.createEventOnDrop = function(t,date, allDay,ev,ui,resource,elm) {
@@ -494,7 +494,8 @@ function SylvanCalendar(){
                     start: date,
                     end: new Date(endDate.setHours(endDate.getHours() + 1)),
                     resourceId:resource.id,
-                    deliveryTypeId: teacher[0].deliveryTypeId,
+                    deliveryTypeId: this.getDeliveryTypeObj(resource.id).deliveryTypeId,
+                    deliveryType : this.getDeliveryTypeObj(resource.id).deliveryType,
                     locationId: teacher[0].locationId,
                 };
                 this.saveTAtoSession(teacherObj);
