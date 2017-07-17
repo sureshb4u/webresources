@@ -569,19 +569,19 @@ function SylvanCalendar(){
       if(student[0] != undefined){
         var objStudent = this.students.filter(function(x){
           return x._hub_student_value == student[0].id;
-        })
+        });
         var objSession = {};
             objSession['hub_center@odata.bind'] = "/hub_centers(" + student[0].locationId + ")";
             objSession['hub_resourceid@odata.bind'] = "/hub_center_resourceses(" + student[0].resourceId + ")";
             objSession.hub_session_date = moment(student[0].start).format("YYYY-MM-DD");
             objSession.hub_start_time = this.convertToMinutes(moment(student[0].start).format("h:mm A"));
             objSession.hub_end_time = this.convertToMinutes(moment(student[0].end).format("h:mm A"));
+        data.saveSOFtoSession(objStudent[0],objSession);
       }
-      data.saveSOFtoSession(objStudent[0],objSession);
     };
     
     this.saveTAtoSession = function(teacher){
-      if(teacher[0] != undefined){
+      if(teacher != undefined){
         var objStaff = {};
             objStaff['hub_staff@odata.bind'] = "/hub_staffs(" + teacher.id + ")";
         var objNewSession = {};
