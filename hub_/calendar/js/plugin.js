@@ -688,6 +688,7 @@ function SylvanCalendar(){
               t.convertedStudentObj[index].resourceId = resource.id;
               t.convertedStudentObj[index].deliveryTypeId = t.getDeliveryTypeObj(resource.id).deliveryTypeId;
               t.convertedStudentObj[index].deliveryType = t.getDeliveryTypeObj(resource.id).deliveryType;
+              t.saveStudentToSession(t.convertedStudentObj[index]);
               t.populateStudentEvent([t.convertedStudentObj[index]],true);  
             } 
           }
@@ -739,6 +740,7 @@ function SylvanCalendar(){
               t.convertedTeacherObj[index].deliveryTypeId = t.getDeliveryTypeObj(resource.id).deliveryTypeId;
               t.convertedTeacherObj[index].deliveryType = t.getDeliveryTypeObj(resource.id).deliveryType;
               // t.convertedTeacherObj[index].id = resource.id + date;
+              t.saveTeacherToSession(t.convertedTeacherObj[index]);
               t.populateTeacherEvent([t.convertedTeacherObj[index]], true);
             } 
           }
@@ -1399,6 +1401,77 @@ function SylvanCalendar(){
           }
       });
       return deliveryTypeObj;
+    }
+
+    this.saveStudentToSession = function(student){
+      var objPrevSession = {};
+      var objNewSession = {};
+      if(student != undefined){
+        var objStudent = this.students.filter(function(x){
+          return x._hub_student_value == student.id;
+        });
+        var oldDate = objStudent[0].hub_session_date;
+        var sessionDate = moment(student.start).format("YYYY-MM-DD");
+        var OldDeliveryType = objStudent[0]["aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue"];
+        
+        // Session type Student Session Id Conditions
+        if(oldDate == sessionDate &&  OldDeliveryType == student.deliveryType){
+          objPrevSession.hub_studentsessionid = null;
+          objNewSession.hub_studentsessionid = objStudent[0]['hub_studentsessionid'];
+        }else{
+          if(student.deliveryType == "Group Facilitation"){
+            objNewSession.hub_studentsessionid = null;
+          }else{
+            objNewSession.hub_studentsessionid = objStudent[0]['hub_studentsessionid'];
+          }
+          objPrevSession.hub_studentsessionid = objStudent[0]['hub_studentsessionid'];
+        }
+        
+
+        // Session type condition
+        if(oldDate == sessionDate && moment(student.start).format("h:mm A") == objStudent[0]['hub_start_time@OData.Community.Display.V1.FormattedValue']){
+          objNewSession['hub_sessiontype'] = 5;
+        }else{
+          if(student.deliveryType == "Group Facilitation"){
+            objNewSession['hub_sessiontype'] = moment(student.end).format("h:mm A");
+          }
+        }
+
+        objPrevSession['hub_deliverytype'] = objStudent[0]['aproductservice_x002e_hub_deliverytype'];
+        
+        objNewSession['hub_center@odata.bind'] = "/hub_centers(" + objStudent[0]["_hub_center_value"] + ")";
+        objNewSession['hub_enrollment@odata.bind'] = "/hub_enrollments(" + objStudent[0]['_hub_enrollment_value'] + ")";
+        objNewSession['hub_student@odata.bind'] = "/contacts(" + objStudent[0]['_hub_student_value'] + ")";
+        objNewSession['hub_resourceid@odata.bind'] = "/hub_center_resourceses(" + objStudent[0]['_hub_resourceid_value'] + ")";
+        objNewSession['hub_service@odata.bind'] = "/hub_productservices(" + objStudent[0]['_hub_service_value'] + ")";
+        objNewSession['hub_session_date'] = sessionDate;
+        objNewSession['hub_start_time'] = moment(student.start).format("h:mm A");
+        objNewSession['hub_end_time'] = moment(student.end).format("h:mm A");
+        data.saveStudenttoSession(objPrevSession,objNewSession);
+      }
+    }
+
+    this.saveTeacherToSession = function(teacher){
+      var objPrevSession = {};
+      var objNewSession = {};
+      if(teacher != undefined){
+        var objTeacher = this.teacherSchedule.filter(function(x){
+          return x._hub_staff_value == teacher.id;
+        });
+
+        // Old object
+        objPrevSession['hub_staff_scheduleid'] = objTeacher[0]['hub_staff_scheduleid'];
+
+        // New object
+        objNewSession['hub_staff@odata.bind'] = "/hub_staffs(" + teacher['id']+ ")";
+        objNewSession['hub_product_service@odata.bind'] = "/hub_productservices(" + objTeacher[0]['_hub_product_service_value'] + ")";
+        objNewSession['hub_resourceid@odata.bind'] = "/hub_center_resourceses(" + teacher['resourceId']+ ")";
+        objNewSession['hub_date'] = moment(teacher.start).format("YYYY-MM-DD");
+        objNewSession['hub_start_time'] = moment(teacher.start).format("h:mm A");
+        objNewSession['hub_end_time'] = moment(teacher.end).format("h:mm A");
+        objNewSession['hub_schedule_type'] = 3
+        data.saveTeachertoSession(objPrevSession,objNewSession);
+      }
     }
 }
 

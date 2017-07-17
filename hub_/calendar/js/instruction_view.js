@@ -243,7 +243,7 @@ var student =  [
       "hub_end_time@OData.Community.Display.V1.FormattedValue": "11:00 AM",
       "hub_end_time": 660,
       "hub_session_date@OData.Community.Display.V1.FormattedValue": "07/17/2017",
-      "hub_session_date": "2017-06-13",
+      "hub_session_date": "2017-07-17",
       "hub_studentsessionid": "57573006-1750-e711-80f1-c4346bacfbbc",
       "hub_late@OData.Community.Display.V1.FormattedValue": "No",
       "hub_late": false,
@@ -280,7 +280,7 @@ var student =  [
       "hub_end_time@OData.Community.Display.V1.FormattedValue": "1:30 PM",
       "hub_end_time": 810,
       "hub_session_date@OData.Community.Display.V1.FormattedValue": "07/17/2017",
-      "hub_session_date": "2017-06-13",
+      "hub_session_date": "2017-07-17",
       "hub_studentsessionid": "917ea5cf-1750-e711-80f1-c4346bacfbbc",
       "hub_late@OData.Community.Display.V1.FormattedValue": "Yes",
       "hub_late": true,
@@ -320,7 +320,7 @@ var student =  [
       "hub_end_time@OData.Community.Display.V1.FormattedValue": "1:30 PM",
       "hub_end_time": 810,
       "hub_session_date@OData.Community.Display.V1.FormattedValue": "07/17/2017",
-      "hub_session_date": "2017-06-13",
+      "hub_session_date": "2017-07-17",
       "hub_studentsessionid": "8968c9ce-1850-e711-80f1-c4346bacfbbc",
       "hub_late@OData.Community.Display.V1.FormattedValue": "No",
       "hub_late": false,
@@ -1711,7 +1711,7 @@ function Data(){
     return true;
   }
   
-  this.saveStudenttoSession = function(objStudent,objSession){
+  this.saveStudenttoSession = function(objPrevSession,objNewSession){
     return true;
   }
   
