@@ -423,8 +423,8 @@ function SylvanCalendar(){
     }
 
     /*
-      Method accepts from where student comes and student
-    */
+     * Method accepts from where student comes and student
+     */
     this.saveSOFtoSession = function(student){
       if(student[0] != undefined){
         var objStudent = this.students.filter(function(x){
@@ -441,19 +441,18 @@ function SylvanCalendar(){
     };
     
     this.saveTAtoSession = function(teacher){
-        var objStudent = this.teacherAvailability.filter(function(x){
-          return x._hub_student_value == teacher.id;
-        });
+      if(teacher[0] != undefined){
         var objStaff = {};
             objStaff['hub_staff@odata.bind'] = "/hub_staffs(" + teacher.id + ")";
         var objNewSession = {};
-           // objNewSession['hub_product_service@odata.bind'] = "/hub_productservices(" + service id + ")";
+            objNewSession.hub_deliverytype = teacher.deliveryTypeId;
             objNewSession['hub_resourceid@odata.bind'] = "/hub_center_resourceses(" + teacher.resourceId + ")";
             objNewSession.hub_date = moment(teacher.start).format("YYYY-MM-DD");;
             objNewSession.hub_start_time = moment(teacher.start).format("h:mm A");
             objNewSession.hub_end_time  = moment(teacher.end).format("h:mm A");
             objNewSession.hub_schedule_type = 1;
         data.saveSOFtoSession(objStaff,objNewSession);
+      }
     };
 
     this.createEventOnDrop = function(t,date, allDay,ev,ui,resource,elm) {
