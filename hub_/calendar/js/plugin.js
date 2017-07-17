@@ -422,6 +422,40 @@ function SylvanCalendar(){
         }  
     }
 
+    /*
+      Method accepts from where student comes and student
+    */
+    this.saveSOFtoSession = function(student){
+      if(student[0] != undefined){
+        var objStudent = this.students.filter(function(x){
+          return x._hub_student_value == student[0].id;
+        })
+        var objSession = {};
+            objSession['hub_center@odata.bind'] = "/hub_centers(" + student[0].locationId + ")";
+            objSession['hub_resourceid@odata.bind'] = "/hub_center_resourceses(" + student[0].resourceId + ")";
+            objSession.hub_session_date = moment(student[0].start).format("YYYY-MM-DD");
+            objSession.hub_start_time = moment(student[0].start).format("h:mm A");
+            objSession.hub_end_time = moment(student[0].end).format("h:mm A");
+      }
+      data.saveSOFtoSession(objStudent[0],objSession);
+    };
+    
+    this.saveTAtoSession = function(teacher){
+        var objStudent = this.teacherAvailability.filter(function(x){
+          return x._hub_student_value == teacher.id;
+        });
+        var objStaff = {};
+            objStaff['hub_staff@odata.bind'] = "/hub_staffs(" + teacher.id + ")";
+        objSession properties:
+           // objNewSession['hub_product_service@odata.bind'] = "/hub_productservices(" + service id + ")";
+            objNewSession['hub_resourceid@odata.bind'] = "/hub_center_resourceses(" + teacher.resourceId + ")";
+            objNewSession.hub_date = moment(teacher.start).format("YYYY-MM-DD");;
+            objNewSession.hub_start_time = moment(teacher.start).format("h:mm A");
+            objNewSession.hub_end_time moment(teacher.end).format("h:mm A");
+            objNewSession.hub_schedule_type = 1;
+        data.saveSOFtoSession(objStaff,objSession);
+    };
+
     this.createEventOnDrop = function(t,date, allDay,ev,ui,resource,elm) {
         if(wjQuery(elm).attr("type") == 'student'){
             var endDate = new Date(date);
@@ -438,6 +472,7 @@ function SylvanCalendar(){
                 student[0].start = date;
                 student[0].end = new Date(endDate.setHours(endDate.getHours() + 1));
                 student[0].resourceId = resource.id;
+                this.saveSOFtoSession(student);
                 t.populateStudentEvent(student);
             }          
         }
@@ -462,6 +497,7 @@ function SylvanCalendar(){
                     deliveryTypeId: teacher[0].deliveryTypeId,
                     locationId: teacher[0].locationId,
                 };
+                this.saveTAtoSession(teacherObj);
                 t.populateTeacherEvent([teacherObj]);
             } 
         }

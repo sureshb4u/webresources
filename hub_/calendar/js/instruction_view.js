@@ -1702,6 +1702,22 @@ function Data(){
   this.getPinnedData = function(locationId){
     return pinnedData;
   }
+
+  this.saveSOFtoSession = function(objStudent,objSession){
+    return true;
+  }
+  
+  this.saveTAtoSession = function(objStudent,objSession){
+    return true;
+  }
+  
+  this.saveStudenttoSession = function(objStudent,objSession){
+    return true;
+  }
+  
+  this.saveTeachertoSession = function(objStudent,objSession){
+    return true;
+  }
 }
 
 
