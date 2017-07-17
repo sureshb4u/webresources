@@ -471,7 +471,6 @@ function SylvanCalendar(){
           var uniqStuId = wjQuery(elm).attr("id"); 
           var prevEventId = wjQuery(elm).attr("eventid");
           prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
-          // delete myObject['regex'];
           var index = t.convertedStudentObj.map(function(x){
                   return x.id;
           }).indexOf(stuId);
@@ -484,12 +483,19 @@ function SylvanCalendar(){
                 }
               }
               if(eventTitleHTML.prop('outerHTML') != undefined){
-                prevEvent[0].title = eventTitleHTML.prop('outerHTML');
-                this.calendar.fullCalendar('updateEvent', prevEvent);
-                var removeStudentIndex = prevEvent[0].name.map(function(x){
+                if(eventTitleHTML.length == 1){                  
+                  prevEvent[0].title = eventTitleHTML.prop('outerHTML');                
+                }else{                  
+                  prevEvent[0].title = "";
+                  for (var i = 0; i < eventTitleHTML.length; i++) {                    
+                    prevEvent[0].title += eventTitleHTML[i].outerHTML;                  
+                  }                
+                }                
+                this.calendar.fullCalendar('updateEvent', prevEvent); 
+                var removeStudentIndex = prevEvent[0].students.map(function(x){
                         return x.id;
                 }).indexOf(stuId);
-                prevEvent[0].name.splice(removeStudentIndex,1);
+                prevEvent[0].students.splice(removeStudentIndex,1);
               }
               else{
                 for (var i = 0; i < this.eventList.length; i++) {
@@ -528,7 +534,14 @@ function SylvanCalendar(){
                 }
               }
               if(eventTitleHTML.prop('outerHTML') != undefined){
-                prevEvent[0].title = eventTitleHTML.prop('outerHTML');
+                if(eventTitleHTML.length == 1){                  
+                  prevEvent[0].title = eventTitleHTML.prop('outerHTML');                
+                }else{                  
+                  prevEvent[0].title = "";
+                  for (var i = 0; i < eventTitleHTML.length; i++) {                    
+                    prevEvent[0].title += eventTitleHTML[i].outerHTML;                  
+                  }                
+                }                
                 this.calendar.fullCalendar('updateEvent', prevEvent);
                 var removeTeacherIndex = prevEvent[0].teachers.map(function(x){
                         return x.id;
@@ -1074,7 +1087,7 @@ function SylvanCalendar(){
                     event[k].teachers.push({id:id, name:name});
                   }
                 }else{
-                  var studentList = event[k].name;
+                  var studentList = event[k].students;
                   event[k].title = "<span class='draggable drag-teacher' eventid='"+eventId+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'>"+name+"</span>";
                   event[k].teachers = [{id:id, name:name}];
                   wjQuery.each(studentList, function(ke, val){
@@ -1129,17 +1142,17 @@ function SylvanCalendar(){
                 event = self.calendar.fullCalendar('clientEvents', eventId);
                 if(event.length){
                     wjQuery.each(event, function(k, v){
-                      if(event[k].hasOwnProperty("name")){
-                        index = event[k].name.map(function(x){
+                      if(event[k].hasOwnProperty("students")){
+                        index = event[k].students.map(function(x){
                              return x.id;
                         }).indexOf(id);
                         if(index == -1){
                           event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
-                          event[k].name.push({id:id, name:name, grade:grade});
+                          event[k].students.push({id:id, name:name, grade:grade});
                         }
                       }else{
                         event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
-                        event[k].name = [{id:id, name:name, grade:grade}];
+                        event[k].students = [{id:id, name:name, grade:grade}];
                       }
                     });
                     self.calendar.fullCalendar('updateEvent', event);
@@ -1147,7 +1160,7 @@ function SylvanCalendar(){
                     var obj = {
                         id: eventId,
                         title:"<span class='draggable drag-student' eventid='"+eventId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>",
-                        name:[{id:id, name:name, grade:grade}],
+                        students:[{id:id, name:name, grade:grade}],
                         start:value['start'],
                         end:value['end'],
                         allDay: false,
