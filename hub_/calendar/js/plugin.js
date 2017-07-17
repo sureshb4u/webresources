@@ -471,94 +471,90 @@ function SylvanCalendar(){
           var uniqStuId = wjQuery(elm).attr("id"); 
           var prevEventId = wjQuery(elm).attr("eventid");
           prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
+          // delete myObject['regex'];
           var index = t.convertedStudentObj.map(function(x){
                   return x.id;
           }).indexOf(stuId);
-          if(prevEvent){
-            var eventTitleHTML = wjQuery(prevEvent[0].title);
-            for (var i = 0; i < eventTitleHTML.length; i++) {
-              if(wjQuery(eventTitleHTML[i]).attr('value') == stuId){
-                eventTitleHTML.splice(i,1);
+          if(resource.id+date != prevEventId){
+            if(prevEvent){
+              var eventTitleHTML = wjQuery(prevEvent[0].title);
+              for (var i = 0; i < eventTitleHTML.length; i++) {
+                if(wjQuery(eventTitleHTML[i]).attr('value') == stuId){
+                  eventTitleHTML.splice(i,1);
+                }
               }
-            }
-            if(eventTitleHTML.prop('outerHTML') != undefined){
               if(eventTitleHTML.prop('outerHTML') != undefined){
-                if(eventTitleHTML.length == 1){
-                  prevEvent[0].title = eventTitleHTML.prop('outerHTML');
-                }
-                else{
-                  prevEvent[0].title = "";
-                  for (var i = 0; i < eventTitleHTML.length; i++) {
-                    prevEvent[0].title += eventTitleHTML[i].outerHTML;
-                  }
-                }
+                prevEvent[0].title = eventTitleHTML.prop('outerHTML');
                 this.calendar.fullCalendar('updateEvent', prevEvent);
+                var removeStudentIndex = prevEvent[0].name.map(function(x){
+                        return x.id;
+                }).indexOf(stuId);
+                prevEvent[0].name.splice(removeStudentIndex,1);
+              }
+              else{
+                for (var i = 0; i < this.eventList.length; i++) {
+                  if(this.eventList[i].id == prevEventId)
+                    this.eventList.splice(i,1);
+                }
+                this.calendar.fullCalendar('removeEvents', prevEventId);
               }
             }
-            else{
-              for (var i = 0; i < this.eventList.length; i++) {
-                if(this.eventList[i].id == prevEventId)
-                  this.eventList.splice(i,1);
-              }
-              this.calendar.fullCalendar('removeEvents', prevEventId);
-            }
+            if(t.convertedStudentObj[index]){
+              elm.remove(); 
+              t.convertedStudentObj[index].start = date;
+              t.convertedStudentObj[index].end = new Date(endDate.setHours(endDate.getHours() + 1));
+              t.convertedStudentObj[index].resourceId = resource.id;
+              t.convertedStudentObj[index].deliveryTypeId = t.getDeliveryTypeObj(resource.id).deliveryTypeId;
+              t.convertedStudentObj[index].deliveryType = t.getDeliveryTypeObj(resource.id).deliveryType;
+              t.populateStudentEvent([t.convertedStudentObj[index]],true);  
+            } 
           }
-          if(t.convertedStudentObj[index]){
-            elm.remove(); 
-            t.convertedStudentObj[index].start = date;
-            t.convertedStudentObj[index].end = new Date(endDate.setHours(endDate.getHours() + 1));
-            t.convertedStudentObj[index].resourceId = resource.id;
-            t.convertedStudentObj[index].deliveryTypeId = t.getDeliveryTypeObj(resource.id).deliveryTypeId;
-            t.convertedStudentObj[index].deliveryType = t.getDeliveryTypeObj(resource.id).deliveryType;
-            t.populateStudentEvent([t.convertedStudentObj[index]],true);  
-          } 
         }
         else if(wjQuery(elm).attr("type") == 'teacherSession'){
           var endDate = new Date(date);
           var teacherId = wjQuery(elm).attr("value"); 
-          var uniqStuId = wjQuery(elm).attr("id"); 
+          var uniqTeacherId = wjQuery(elm).attr("id"); 
           var prevEventId = wjQuery(elm).attr("eventid");
           prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
           var index = t.convertedTeacherObj.map(function(x){
             return x.id;
           }).indexOf(teacherId);
-          if(prevEvent){
-            var eventTitleHTML = wjQuery(prevEvent[0].title);
-            for (var i = 0; i < eventTitleHTML.length; i++) {
-              if(wjQuery(eventTitleHTML[i]).attr('value') == teacherId){
-                eventTitleHTML.splice(i,1);
-              }
-            }
-            if(eventTitleHTML.prop('outerHTML') != undefined){
-              if(eventTitleHTML.length == 1){
-                prevEvent[0].title = eventTitleHTML.prop('outerHTML');
-              }
-              else{
-                prevEvent[0].title = "";
-                for (var i = 0; i < eventTitleHTML.length; i++) {
-                  prevEvent[0].title += eventTitleHTML[i].outerHTML;
+          if(resource.id+date != prevEventId){
+            if(prevEvent){
+              var eventTitleHTML = wjQuery(prevEvent[0].title);
+              for (var i = 0; i < eventTitleHTML.length; i++) {
+                if(wjQuery(eventTitleHTML[i]).attr('value') == teacherId){
+                  eventTitleHTML.splice(i,1);
                 }
               }
-              this.calendar.fullCalendar('updateEvent', prevEvent);
-            }
-            else{
-              for (var i = 0; i < this.eventList.length; i++) {
-                if(this.eventList[i].id == prevEventId)
-                  this.eventList.splice(i,1);
+              if(eventTitleHTML.prop('outerHTML') != undefined){
+                prevEvent[0].title = eventTitleHTML.prop('outerHTML');
+                this.calendar.fullCalendar('updateEvent', prevEvent);
+                var removeTeacherIndex = prevEvent[0].teachers.map(function(x){
+                        return x.id;
+                }).indexOf(teacherId);
+                prevEvent[0].teachers.splice(removeTeacherIndex,1);
               }
-              this.calendar.fullCalendar('removeEvents', prevEventId);
+              else{
+                for (var i = 0; i < this.eventList.length; i++) {
+                  if(this.eventList[i].id == prevEventId)
+                    this.eventList.splice(i,1);
+                }
+                this.calendar.fullCalendar('removeEvents', prevEventId);
+              }
             }
+            if(t.convertedTeacherObj[index]){
+              console.log(prevEvent);
+              elm.remove(); 
+              t.convertedTeacherObj[index].start = date;
+              t.convertedTeacherObj[index].end = new Date(endDate.setHours(endDate.getHours() + 1));
+              t.convertedTeacherObj[index].resourceId = resource.id;
+              t.convertedTeacherObj[index].deliveryTypeId = t.getDeliveryTypeObj(resource.id).deliveryTypeId;
+              t.convertedTeacherObj[index].deliveryType = t.getDeliveryTypeObj(resource.id).deliveryType;
+              // t.convertedTeacherObj[index].id = resource.id + date;
+              t.populateTeacherEvent([t.convertedTeacherObj[index]], true);
+            } 
           }
-          if(t.convertedTeacherObj[index]){
-            elm.remove(); 
-            t.convertedTeacherObj[index].start = date;
-            t.convertedTeacherObj[index].end = new Date(endDate.setHours(endDate.getHours() + 1));
-            t.convertedTeacherObj[index].resourceId = resource.id;
-            t.convertedTeacherObj[index].deliveryTypeId = t.getDeliveryTypeObj(resource.id).deliveryTypeId;
-            t.convertedTeacherObj[index].deliveryType = t.getDeliveryTypeObj(resource.id).deliveryType;
-            t.convertedTeacherObj[index].id = resource.id + date;
-            t.populateTeacherEvent([t.convertedTeacherObj[index]], true);
-          } 
         }
     };
 
