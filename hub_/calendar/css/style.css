@@ -309,3 +309,18 @@ div.ui-widget{
     text-align: center;
     font-weight: bold;
 }
+.sof-pi{
+    background: #ebf5fb;
+    padding: 3px;
+    border: 1px solid #9acaea;
+}
+.sof-gi{
+    padding: 3px;
+    border: 1px solid #f88e50;
+    background: #fedeb7;
+}
+.sof-gf{
+    padding: 3px;
+    border: 1px solid #7bc143;
+    background: #dff0d5;
+}
