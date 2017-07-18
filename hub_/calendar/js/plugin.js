@@ -1410,7 +1410,15 @@ function SylvanCalendar(){
         revertDuration: 0,
         appendTo: 'body',
         containment: 'window',
-        helper: 'clone'
+        helper: 'clone',
+        drag : function(){
+          wjQuery('.sof-pane').css('opacity','.3');
+          wjQuery('.ta-pane').css('opacity','.3');
+        },
+        stop : function(){
+          wjQuery('.sof-pane').css('opacity','1');
+          wjQuery('.ta-pane').css('opacity','1');
+        }
       });
     }
 
