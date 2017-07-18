@@ -8,7 +8,6 @@ setTimeout(function(){
     var locationId = sylvanCalendar.populateLocation(data.getLocation());
     setTimeout(function(){
     var filterObject = {
-      time: time == null ? []: time,
       student:data.getStudentSession(locationId,currentCalendarDate,currentCalendarDate) == null ? []:data.getStudentSession(locationId,currentCalendarDate,currentCalendarDate) ,
       grade: data.getGrade() == null? [] : data.getGrade(),
       subject: data.getSubject() == null ? [] : data.getSubject()
@@ -219,11 +218,15 @@ function SylvanCalendar(){
                         self.populateTeacherEvent(self.convertedTeacherObj, true);
                         if(checkedList.length  == 0){
                             self.populateStudentEvent(self.convertedStudentObj, true);
+                            self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
                         }else{
                             var newArray = [];
+                            var sofNewArray = [];
                             wjQuery.each(checkedList, function(k, v){
                                 newArray = wjQuery.merge(self.filterItems(self.convertedStudentObj, v), newArray);
+                                sofNewArray = wjQuery.merge(self.filterItems(self.sofList, v), sofNewArray);
                             });
+                            self.populateSOFPane(sofNewArray, self.calendarOptions.minTime, self.calendarOptions.maxTime);
                             self.populateStudentEvent(newArray, true);
                         }
                      }else{
@@ -234,11 +237,15 @@ function SylvanCalendar(){
                         self.populateTeacherEvent(self.convertedTeacherObj, true);
                         if(checkedList.length == 0){
                             self.populateStudentEvent(self.convertedStudentObj, true);
+                            self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
                         }else{
                             var newArray = [];
+                            var sofNewArray = [];
                             wjQuery.each(checkedList, function(k, v){
                                 newArray = wjQuery.merge(self.filterItems(self.convertedStudentObj, v), newArray);
+                                sofNewArray = wjQuery.merge(self.filterItems(self.sofList, v), sofNewArray);
                             });
+                            self.populateSOFPane(sofNewArray, self.calendarOptions.minTime, self.calendarOptions.maxTime);
                             self.populateStudentEvent(newArray, true);
                         }
                     }
@@ -363,6 +370,7 @@ function SylvanCalendar(){
 
     this.populateSOFPane = function(studentData,minTime,maxTime){
         var sofTemplate = [];
+        wjQuery('.sof-pane').html("");
         for(var i=0;i<(maxTime - minTime);i++){
             var elm = '<div class="student-overflow" id="student_block_'+i+'" style="height:'+ wjQuery(".fc-agenda-slots td div").height() +'px;overflow:auto"></div>';
             wjQuery('.sof-pane').append(elm);;
@@ -963,6 +971,7 @@ function SylvanCalendar(){
       self.teacherSchedule = isFetch || (self.teacherSchedule.length == 0) ? data.getTeacherSchedule(locationId,startDate,endDate) : self.teacherSchedule;
       self.teacherAvailability = isFetch || (self.teacherAvailability.length == 0) ? data.getTeacherAvailability(locationId,startDate,endDate) : self.teacherAvailability;
       self.populateTeacherEvent(self.generateEventObject(self.teacherSchedule== null ? [] : self.teacherSchedule, "teacherSchedule"), true);
+      self.generateEventObject(self.teacherAvailability == null ? [] : self.teacherAvailability, "teacherAvailability");
       self.populateTAPane(self.teacherAvailability == null ? []:self.teacherAvailability); 
       if(!studentDataSource){  
         self.students = isFetch || (self.students.length == 0) ? data.getStudentSession(locationId,startDate,endDate) : self.students;
@@ -1249,6 +1258,8 @@ function SylvanCalendar(){
               }
           },800);
           self.convertedStudentObj = eventObjList;
+        }else if(label == "teacherAvailability"){
+          console.log(args);
         }
         return eventObjList;
     }
@@ -1437,7 +1448,6 @@ function SylvanCalendar(){
           objPrevSession.hub_studentsessionid = objStudent[0]['hub_studentsessionid'];
         }
         
-
         // Session type condition
         if(oldDate == sessionDate && moment(student.start).format("h:mm A") == objStudent[0]['hub_start_time@OData.Community.Display.V1.FormattedValue']){
           objNewSession['hub_sessiontype'] = 5;

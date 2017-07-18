@@ -171,25 +171,6 @@ var centerAvailable = [
     }
 ];
 
-
-
-var time = [
-	{
-		id: 1,
-		name: "8 hours" 
-	},
-	{
-		id: 2,
-		name: "4 hours" 
-	},
-	{
-		id: 3,
-		name: "2 hours" 
-	}		
-
-];
-
-
 var grade = [{	"PK": 1,
 				"K": 2,
 				"1": 3,
