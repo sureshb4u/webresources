@@ -606,6 +606,8 @@ function SylvanCalendar(){
     this.createEventOnDrop = function(t,date, allDay,ev,ui,resource,elm) {
         if(wjQuery(elm).attr("type") == 'student'){
             var endDate = new Date(date);
+            var startHour = new Date(date).setMinutes(0);
+            startHour = new Date(startHour).setSeconds(0);
             var stuId = wjQuery(elm).attr("value"); 
             var student = t.sofList.filter(function( obj ) {
               return obj.id == stuId;
@@ -617,6 +619,7 @@ function SylvanCalendar(){
             if(student){
                 elm.remove(); 
                 student[0].start = date;
+                student[0].startHour = startHour;
                 student[0].end = new Date(endDate.setHours(endDate.getHours() + 1));
                 student[0].resourceId = resource.id;
                 this.saveSOFtoSession(student);
@@ -625,6 +628,8 @@ function SylvanCalendar(){
         }
         else if(wjQuery(elm).attr("type") == 'teacher'){
             var endDate = new Date(date);
+            var startHour = new Date(date).setMinutes(0);
+            startHour = new Date(startHour).setSeconds(0);
             var teacherId = wjQuery(elm).attr("value"); 
             var teacher = t.taList.filter(function(x){
                 return x.id == teacherId;
@@ -639,6 +644,7 @@ function SylvanCalendar(){
                     id: teacher[0].id, 
                     name: teacher[0].name,
                     start: date,
+                    startHour :startHour,
                     end: new Date(endDate.setHours(endDate.getHours() + 1)),
                     resourceId:resource.id,
                     deliveryTypeId: this.getDeliveryTypeObj(resource.id).deliveryTypeId,
@@ -651,6 +657,8 @@ function SylvanCalendar(){
         }
         else if(wjQuery(elm).attr("type") == 'studentSession'){
           var endDate = new Date(date);
+          var startHour = new Date(date).setMinutes(0);
+          startHour = new Date(startHour).setSeconds(0);
           var stuId = wjQuery(elm).attr("value"); 
           var uniqStuId = wjQuery(elm).attr("id"); 
           var prevEventId = wjQuery(elm).attr("eventid");
@@ -699,6 +707,7 @@ function SylvanCalendar(){
             if(t.convertedStudentObj[index]){
               elm.remove(); 
               t.convertedStudentObj[index].start = date;
+              t.convertedStudentObj[index].startHour = startHour;
               t.convertedStudentObj[index].end = new Date(endDate.setHours(endDate.getHours() + 1));
               t.convertedStudentObj[index].resourceId = resource.id;
               t.convertedStudentObj[index].deliveryTypeId = t.getDeliveryTypeObj(resource.id).deliveryTypeId;
@@ -710,6 +719,8 @@ function SylvanCalendar(){
         }
         else if(wjQuery(elm).attr("type") == 'teacherSession'){
           var endDate = new Date(date);
+          var startHour = new Date(date).setMinutes(0);
+          startHour = new Date(startHour).setSeconds(0);
           var teacherId = wjQuery(elm).attr("value"); 
           var uniqTeacherId = wjQuery(elm).attr("id"); 
           var prevEventId = wjQuery(elm).attr("eventid");
@@ -753,6 +764,7 @@ function SylvanCalendar(){
             if(t.convertedTeacherObj[index]){
               elm.remove(); 
               t.convertedTeacherObj[index].start = date;
+              t.convertedTeacherObj[index].startHour = startHour;
               t.convertedTeacherObj[index].end = new Date(endDate.setHours(endDate.getHours() + 1));
               t.convertedTeacherObj[index].resourceId = resource.id;
               t.convertedTeacherObj[index].deliveryTypeId = t.getDeliveryTypeObj(resource.id).deliveryTypeId;
@@ -1184,11 +1196,15 @@ function SylvanCalendar(){
             wjQuery.each(args, function(ke, val) {
                 var sDate = new Date(val['hub_start_date@OData.Community.Display.V1.FormattedValue'] +" "+ val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
                 var eDate = new Date(val['hub_end_date@OData.Community.Display.V1.FormattedValue'] +" "+ val['hub_end_time@OData.Community.Display.V1.FormattedValue']);
+                var startHour = new Date(val['hub_start_date@OData.Community.Display.V1.FormattedValue'] +" "+ val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
+                startHour = startHour.setMinutes(0);
+                startHour = new Date(startHour).setSeconds(0);
                 eventObjList.push({
                     id: val['_hub_staff_value'], 
                     name: val["_hub_staff_value@OData.Community.Display.V1.FormattedValue"],
                     start: sDate,
                     end: eDate,
+                    startHour : startHour,
                     resourceId:val['_hub_resourceid_value'],
                     deliveryTypeId: val['aproductservice_x002e_hub_deliverytype'],
                     deliveryType: val['aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue'],
@@ -1202,11 +1218,15 @@ function SylvanCalendar(){
             wjQuery.each(args, function(ke, val) {
                 var sDate = new Date(val['hub_session_date@OData.Community.Display.V1.FormattedValue'] +" "+ val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
                 var eDate = new Date(val['hub_session_date@OData.Community.Display.V1.FormattedValue'] +" "+ val['hub_end_time@OData.Community.Display.V1.FormattedValue']);
+                var startHour = new Date(val['hub_session_date@OData.Community.Display.V1.FormattedValue'] +" "+ val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
+                startHour = startHour.setMinutes(0);
+                startHour = new Date(startHour).setSeconds(0);
                 var obj = {
                     id: val._hub_student_value, 
                     name: val["_hub_student_value@OData.Community.Display.V1.FormattedValue"],
                     start: sDate,
                     end: eDate,
+                    startHour : startHour,
                     gradeId:val['astudent_x002e_hub_grade'],
                     grade: val['astudent_x002e_hub_grade@OData.Community.Display.V1.FormattedValue'],
                     deliveryTypeId: val['aproductservice_x002e_hub_deliverytype'],
@@ -1232,11 +1252,15 @@ function SylvanCalendar(){
           wjQuery.each(args, function(ke, val) {
             var sDate = new Date(moment(new Date()).format('YYYY-MM-DD') +" "+ val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
             var eDate = new Date(moment(new Date()).format('YYYY-MM-DD') +" "+ val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
+            var startHour = new Date(moment(new Date()).format('YYYY-MM-DD') +" "+ val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+                startHour = startHour.setMinutes(0);
+                startHour = new Date(startHour).setSeconds(0);
             var obj = {
                 id: val['aenrollment_x002e_hub_student'], 
                 name: val["aenrollment_x002e_hub_student@OData.Community.Display.V1.FormattedValue"],
                 start: sDate,
                 end: eDate,
+                startHour: startHour,
                 gradeId:val['astudent_x002e_hub_grade'],
                 grade: val['astudent_x002e_hub_grade@OData.Community.Display.V1.FormattedValue'],
                 deliveryTypeId: val['aproductservice_x002e_hub_deliverytype'],
@@ -1259,7 +1283,7 @@ function SylvanCalendar(){
           },800);
           self.convertedStudentObj = eventObjList;
         }else if(label == "teacherAvailability"){
-          console.log(args);
+          //console.log(args);
         }
         return eventObjList;
     }
@@ -1270,7 +1294,7 @@ function SylvanCalendar(){
           wjQuery.each(teacherObject, function(key, value) {
             id = value['id'];
             name = value['name'];
-            eventId = value['resourceId']+value['start'];
+            eventId = value['resourceId']+value['startHour'];
             event = self.calendar.fullCalendar('clientEvents', eventId);
             if(event.length == 1){
               wjQuery.each(event, function(k, v){
@@ -1303,7 +1327,7 @@ function SylvanCalendar(){
               self.calendar.fullCalendar('updateEvent', event);
             }else{
               var obj = {
-                  id: value['resourceId']+value['start'],
+                  id: value['resourceId']+value['startHour'],
                   title:"<span class='draggable drag-teacher' eventid='"+eventId+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'>"+name+"</span>",
                   teachers:[{id:id, name:name}],
                   start:value['start'],
@@ -1343,7 +1367,7 @@ function SylvanCalendar(){
                 id = value['id'];
                 name = value['name'];
                 grade = value['grade'];
-                eventId = value['resourceId']+value['start'];
+                eventId = value['resourceId']+value['startHour'];
                 event = self.calendar.fullCalendar('clientEvents', eventId);
                 if(event.length){
                     wjQuery.each(event, function(k, v){
