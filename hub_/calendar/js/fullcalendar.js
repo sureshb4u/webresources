@@ -3961,7 +3961,7 @@ function ResourceEventRenderer() {
             forward = seg.forward || 0;
             leftmost = colContentLeft(colI*dis + dit);
             availWidth = colContentRight(colI*dis + dit) - leftmost;
-            availWidth = Math.min(availWidth-6, availWidth*.95); // TODO: move this to CSS
+            //availWidth = Math.min(availWidth-6, availWidth*.95); // TODO: move this to CSS
             if (levelI) {
                 // indented and thin
                 outerWidth = availWidth / (levelI + forward + 1);
@@ -3979,7 +3979,7 @@ function ResourceEventRenderer() {
             * dis + (rtl ? availWidth - outerWidth : 0);   // rtl
             seg.top = top;
             seg.left = left;
-            seg.outerWidth = outerWidth;
+            seg.outerWidth = outerWidth - 10;
             seg.outerHeight = bottom - top;
             html += slotSegHtml(event, seg);
         }
