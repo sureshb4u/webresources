@@ -249,8 +249,6 @@ function SylvanCalendar(){
         wjQuery('.ta-pane').css('height',wjQuery('#calendar').height() - 10 +"px"); 
         wjQuery('.sof-pane').css('overflow-y','hidden'); 
         wjQuery('.ta-pane').css('overflow-y','hidden');
-        wjQuery('.sof-pane').hide();
-        wjQuery('.ta-pane').hide();
     }
 
     this.populateLocation = function(args){
@@ -369,33 +367,12 @@ function SylvanCalendar(){
             var elm = '<div class="student-overflow" id="student_block_'+i+'" style="height:'+ wjQuery(".fc-agenda-slots td div").height() +'px;overflow:auto"></div>';
             wjQuery('.sof-pane').append(elm);;
         }
-        var piFlag = true,giFlag = true,gfFlag = true;
         for(var i=0;i<studentData.length;i++){
             var studentStartHour = studentData[i].start.getHours();
             if(studentStartHour >= minTime && studentStartHour <= maxTime){
               var studentPosition = studentStartHour - minTime;
               var elm = '<div class="student-container padding-lr-xxs" type="student" value="'+studentData[i].id+'">'+studentData[i].name+',<span>'+studentData[i].grade+'</span></div>';
-              if(studentData[i].deliveryType == 'Personal Instruction'){
-                if(piFlag){
-                  wjQuery('#student_block_'+studentPosition).append('<div class="sof-pi"></div>');
-                  piFlag = false;
-                }
-                wjQuery('#student_block_'+studentPosition +' .sof-pi').append(elm);
-              }
-              else if(studentData[i].deliveryType == 'Group Instruction'){
-                if(giFlag){
-                  wjQuery('#student_block_'+studentPosition).append('<div class="sof-gi"></div>');
-                  giFlag = false;
-                }
-                wjQuery('#student_block_'+studentPosition +' .sof-gi').append(elm);
-              }
-              else if(studentData[i].deliveryType == 'Group Facilitation'){
-                if(gfFlag){
-                  wjQuery('#student_block_'+studentPosition).append('<div class="sof-gf"></div>');
-                  gfFlag = false;
-                }
-                wjQuery('#student_block_'+studentPosition +' .sof-gf').append(elm);
-              }
+              wjQuery('#student_block_'+studentPosition).append(elm);
               this.draggable('student-container');
             }
         }
@@ -634,7 +611,6 @@ function SylvanCalendar(){
                 student[0].start = date;
                 student[0].end = new Date(endDate.setHours(endDate.getHours() + 1));
                 student[0].resourceId = resource.id;
-                this.convertedStudentObj.push(student[0]);
                 this.saveSOFtoSession(student);
                 t.populateStudentEvent(student);
             }          
@@ -661,7 +637,6 @@ function SylvanCalendar(){
                     deliveryType : this.getDeliveryTypeObj(resource.id).deliveryType,
                     locationId: teacher[0].locationId,
                 };
-                this.convertedTeacherObj.push(teacherObj);
                 this.saveTAtoSession(teacherObj);
                 t.populateTeacherEvent([teacherObj]);
             } 
@@ -675,7 +650,6 @@ function SylvanCalendar(){
           var index = t.convertedStudentObj.map(function(x){
                   return x.id;
           }).indexOf(stuId);
-
           if(resource.id+date != prevEventId){
             if(prevEvent){
               var eventTitleHTML = wjQuery(prevEvent[0].title);
@@ -748,6 +722,9 @@ function SylvanCalendar(){
                   prevEvent[0].title = eventTitleHTML.prop('outerHTML');                
                 }else{                  
                   prevEvent[0].title = "";
+                  if(prevEvent[0].teachers.length == 1){
+                      prevEvent[0].title += "<span class='placeholder'>Teacher name</span>";                  
+                  }
                   for (var i = 0; i < eventTitleHTML.length; i++) {                    
                     prevEvent[0].title += eventTitleHTML[i].outerHTML;                  
                   }                
@@ -827,6 +804,29 @@ function SylvanCalendar(){
             selectable: false,
             slotEventOverlap:false,
             selectHelper: true,
+            select: function(start, end, allDay, event, resourceId) {
+                //var title = prompt('Event Title:');
+                if (title) {
+                    console.log("@@ adding event " + title + ", start " + start + ", end " + end + ", allDay " + allDay + ", resource " + resourceId);
+                    this.calendar.fullCalendar('renderEvent',
+                    {
+                        title: title,
+                        start: start,
+                        end: end,
+                        allDay: allDay,
+                        resourceId: resourceId
+                    },
+                    true // make the event "stick"
+                );
+                }
+                this.calendar.fullCalendar('unselect');
+            },
+            eventResize: function(event, dayDelta, minuteDelta) {
+                console.log("@@ resize event " + event.title + ", start " + event.start + ", end " + event.end + ", resource " + event.resourceId);
+            },
+            eventDrop: function( event, dayDelta, minuteDelta, allDay) {
+                console.log("@@ drag/drop event " + event.title + ", start " + event.start + ", end " + event.end + ", resource " + event.resourceId);
+            },
             editable: false,
             resources: this.resourceList,
             events: this.eventList,
@@ -1399,15 +1399,7 @@ function SylvanCalendar(){
         revertDuration: 0,
         appendTo: 'body',
         containment: 'window',
-        helper: 'clone',
-        drag: function() {
-          wjQuery('.sof-pane').css('opacity','.2');
-          wjQuery('.ta-pane').css('opacity','.2');
-        },
-        stop: function() {
-          wjQuery('.sof-pane').css('opacity','1');
-          wjQuery('.ta-pane').css('opacity','1');
-        }
+        helper: 'clone'
       });
     }
 
