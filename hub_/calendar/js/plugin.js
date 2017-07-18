@@ -375,17 +375,38 @@ function SylvanCalendar(){
             var elm = '<div class="student-overflow" id="student_block_'+i+'" style="height:'+ wjQuery(".fc-agenda-slots td div").height() +'px;overflow:auto"></div>';
             wjQuery('.sof-pane').append(elm);;
         }
+        var piFlag = true,giFlag = true,gfFlag = true;
         for(var i=0;i<studentData.length;i++){
             var studentStartHour = studentData[i].start.getHours();
             if(studentStartHour >= minTime && studentStartHour <= maxTime){
               var studentPosition = studentStartHour - minTime;
-              var elm = '<div class="student-container padding-lr-xxs" type="student" value="'+studentData[i].id+'">'+studentData[i].name+',<span>'+studentData[i].grade+'</span></div>';
-              wjQuery('#student_block_'+studentPosition).append(elm);
+              var elm = '<div class="student-container cursor padding-lr-xxs" type="student" value="'+studentData[i].id+'">'+studentData[i].name+',<span>'+studentData[i].grade+'</span></div>';
+              if(studentData[i].deliveryType == 'Personal Instruction'){
+                if(piFlag){
+                  wjQuery('#student_block_'+studentPosition).append('<div class="sof-pi"></div>');
+                  piFlag = false;
+                }
+                wjQuery('#student_block_'+studentPosition +' .sof-pi').append(elm);
+              }
+              else if(studentData[i].deliveryType == 'Group Instruction'){
+                if(giFlag){
+                  wjQuery('#student_block_'+studentPosition).append('<div class="sof-gi"></div>');
+                  giFlag = false;
+                }
+                wjQuery('#student_block_'+studentPosition +' .sof-gi').append(elm);
+              }
+              else if(studentData[i].deliveryType == 'Group Facilitation'){
+                if(gfFlag){
+                  wjQuery('#student_block_'+studentPosition).append('<div class="sof-gf"></div>');
+                  gfFlag = false;
+                }
+                wjQuery('#student_block_'+studentPosition +' .sof-gf').append(elm);
+              }
               this.draggable('student-container');
             }
         }
     }
-
+  
     this.populateTAPane = function(teacherData){
         var teacherArray = this.taList;
         var currentCalendarDate = this.calendar.fullCalendar('getDate');
@@ -609,6 +630,7 @@ function SylvanCalendar(){
             var startHour = new Date(date).setMinutes(0);
             startHour = new Date(new Date(startHour).setSeconds(0));
             var stuId = wjQuery(elm).attr("value"); 
+            var parentElement = elm.parentElement;
             var student = t.sofList.filter(function( obj ) {
               return obj.id == stuId;
             });
@@ -617,7 +639,10 @@ function SylvanCalendar(){
             }).indexOf(stuId);
             t.sofList.splice(index,1);
             if(student){
-                elm.remove(); 
+                elm.remove();
+                if(wjQuery(parentElement).html() == ''){
+                  parentElement.remove();
+                }
                 student[0].start = date;
                 student[0].startHour = startHour;
                 student[0].end = new Date(endDate.setHours(endDate.getHours() + 1));

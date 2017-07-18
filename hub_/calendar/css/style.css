@@ -11,6 +11,7 @@ body{
 .nextBtn,.prevBtn{
     cursor: pointer;
 }
+
 div label input {
    margin-right:100px;
 }
