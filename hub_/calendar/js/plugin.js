@@ -370,7 +370,7 @@ function SylvanCalendar(){
 
     this.populateSOFPane = function(studentData,minTime,maxTime){
         var sofTemplate = [];
-        wjQuery('.sof-pane').html("");
+        wjQuery('.student-overflow').html("");
         for(var i=0;i<(maxTime - minTime);i++){
             var elm = '<div class="student-overflow" id="student_block_'+i+'" style="height:'+ wjQuery(".fc-agenda-slots td div").height() +'px;overflow:auto"></div>';
             wjQuery('.sof-pane').append(elm);;
@@ -607,7 +607,7 @@ function SylvanCalendar(){
         if(wjQuery(elm).attr("type") == 'student'){
             var endDate = new Date(date);
             var startHour = new Date(date).setMinutes(0);
-            startHour = new Date(startHour).setSeconds(0);
+            startHour = new Date(new Date(startHour).setSeconds(0));
             var stuId = wjQuery(elm).attr("value"); 
             var student = t.sofList.filter(function( obj ) {
               return obj.id == stuId;
@@ -622,6 +622,7 @@ function SylvanCalendar(){
                 student[0].startHour = startHour;
                 student[0].end = new Date(endDate.setHours(endDate.getHours() + 1));
                 student[0].resourceId = resource.id;
+                this.convertedStudentObj.push(student[0]);
                 this.saveSOFtoSession(student);
                 t.populateStudentEvent(student);
             }          
@@ -629,7 +630,7 @@ function SylvanCalendar(){
         else if(wjQuery(elm).attr("type") == 'teacher'){
             var endDate = new Date(date);
             var startHour = new Date(date).setMinutes(0);
-            startHour = new Date(startHour).setSeconds(0);
+            startHour = new Date(new Date(startHour).setSeconds(0));
             var teacherId = wjQuery(elm).attr("value"); 
             var teacher = t.taList.filter(function(x){
                 return x.id == teacherId;
@@ -651,6 +652,7 @@ function SylvanCalendar(){
                     deliveryType : this.getDeliveryTypeObj(resource.id).deliveryType,
                     locationId: teacher[0].locationId,
                 };
+                this.convertedTeacherObj(teacherObj);
                 this.saveTAtoSession(teacherObj);
                 t.populateTeacherEvent([teacherObj]);
             } 
@@ -658,7 +660,7 @@ function SylvanCalendar(){
         else if(wjQuery(elm).attr("type") == 'studentSession'){
           var endDate = new Date(date);
           var startHour = new Date(date).setMinutes(0);
-          startHour = new Date(startHour).setSeconds(0);
+          startHour = new Date(new Date(startHour).setSeconds(0));
           var stuId = wjQuery(elm).attr("value"); 
           var uniqStuId = wjQuery(elm).attr("id"); 
           var prevEventId = wjQuery(elm).attr("eventid");
@@ -720,7 +722,7 @@ function SylvanCalendar(){
         else if(wjQuery(elm).attr("type") == 'teacherSession'){
           var endDate = new Date(date);
           var startHour = new Date(date).setMinutes(0);
-          startHour = new Date(startHour).setSeconds(0);
+          startHour = new Date(new Date(startHour).setSeconds(0));
           var teacherId = wjQuery(elm).attr("value"); 
           var uniqTeacherId = wjQuery(elm).attr("id"); 
           var prevEventId = wjQuery(elm).attr("eventid");
@@ -1198,7 +1200,7 @@ function SylvanCalendar(){
                 var eDate = new Date(val['hub_end_date@OData.Community.Display.V1.FormattedValue'] +" "+ val['hub_end_time@OData.Community.Display.V1.FormattedValue']);
                 var startHour = new Date(val['hub_start_date@OData.Community.Display.V1.FormattedValue'] +" "+ val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
                 startHour = startHour.setMinutes(0);
-                startHour = new Date(startHour).setSeconds(0);
+                startHour = new Date(new Date(startHour).setSeconds(0));
                 eventObjList.push({
                     id: val['_hub_staff_value'], 
                     name: val["_hub_staff_value@OData.Community.Display.V1.FormattedValue"],
@@ -1220,7 +1222,7 @@ function SylvanCalendar(){
                 var eDate = new Date(val['hub_session_date@OData.Community.Display.V1.FormattedValue'] +" "+ val['hub_end_time@OData.Community.Display.V1.FormattedValue']);
                 var startHour = new Date(val['hub_session_date@OData.Community.Display.V1.FormattedValue'] +" "+ val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
                 startHour = startHour.setMinutes(0);
-                startHour = new Date(startHour).setSeconds(0);
+                startHour = new Date(new Date(startHour).setSeconds(0));
                 var obj = {
                     id: val._hub_student_value, 
                     name: val["_hub_student_value@OData.Community.Display.V1.FormattedValue"],
@@ -1254,7 +1256,7 @@ function SylvanCalendar(){
             var eDate = new Date(moment(new Date()).format('YYYY-MM-DD') +" "+ val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
             var startHour = new Date(moment(new Date()).format('YYYY-MM-DD') +" "+ val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
                 startHour = startHour.setMinutes(0);
-                startHour = new Date(startHour).setSeconds(0);
+                startHour = new Date(new Date(startHour).setSeconds(0));
             var obj = {
                 id: val['aenrollment_x002e_hub_student'], 
                 name: val["aenrollment_x002e_hub_student@OData.Community.Display.V1.FormattedValue"],
@@ -1330,7 +1332,7 @@ function SylvanCalendar(){
                   id: value['resourceId']+value['startHour'],
                   title:"<span class='draggable drag-teacher' eventid='"+eventId+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'>"+name+"</span>",
                   teachers:[{id:id, name:name}],
-                  start:value['start'],
+                  start:value['startHour'],
                   end:value['end'],
                   allDay: false,
                   resourceId: value['resourceId'],
@@ -1390,7 +1392,7 @@ function SylvanCalendar(){
                         id: eventId,
                         title:"<span class='placeholder'>Teacher name</span><span class='draggable drag-student' eventid='"+eventId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>",
                         students:[{id:id, name:name, grade:grade}],
-                        start:value['start'],
+                        start:value['startHour'],
                         end:value['end'],
                         allDay: false,
                         resourceId: value['resourceId'],
