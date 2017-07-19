@@ -6,7 +6,7 @@
     if (window.jQuery === undefined || window.jQuery.fn.jquery !== '1.8.2') {
         var jQ_script_tag = document.createElement('script');
         jQ_script_tag.setAttribute("type","text/javascript");
-        jQ_script_tag.setAttribute("src","/webresources/hub_/calendar/js/jquery-1.8.2.min.js");
+        jQ_script_tag.setAttribute("src","/webresources/hub_/calendar/js/jquery-1.8.1.min.js");
         if (jQ_script_tag.readyState) {
           jQ_script_tag.onreadystatechange = function () { // For old versions of IE
               if (this.readyState == 'complete' || this.readyState == 'loaded') {
