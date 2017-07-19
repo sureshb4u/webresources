@@ -1552,27 +1552,34 @@ function SylvanCalendar(){
         var oldDate = objStudent[0].hub_session_date;
         var sessionDate = moment(student.start).format("YYYY-MM-DD");
         var OldDeliveryType = objStudent[0]["aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue"];
-        
+        var oldTime = objStudent[0]['hub_start_time@OData.Community.Display.V1.FormattedValue'];
+        var newTime = moment(student.start).format("h:mm A");
+
         // Session type Student Session Id Conditions
         if(oldDate == sessionDate &&  OldDeliveryType == student.deliveryType){
-          objPrevSession.hub_studentsessionid = null;
-          objNewSession.hub_studentsessionid = objStudent[0]['hub_studentsessionid'];
-        }else{
-          if(student.deliveryType == "Group Facilitation"){
-            objNewSession.hub_studentsessionid = null;
+          if((student.deliveryType == "Group Facilitation" && newTime == oldTime) || student.deliveryType == "Personal Instruction"){
+            objPrevSession.hub_studentsessionid = null;
           }else{
-            objNewSession.hub_studentsessionid = objStudent[0]['hub_studentsessionid'];
+            objPrevSession.hub_studentsessionid = objStudent[0]['hub_studentsessionid'];
           }
-          objPrevSession.hub_studentsessionid = objStudent[0]['hub_studentsessionid'];
-        }
-        
-        // Session type condition
-        if(oldDate == sessionDate && moment(student.start).format("h:mm A") == objStudent[0]['hub_start_time@OData.Community.Display.V1.FormattedValue']){
-          objNewSession['hub_sessiontype'] = 5;
         }else{
-          if(student.deliveryType == "Group Facilitation"){
-            objNewSession['hub_sessiontype'] = moment(student.end).format("h:mm A");
-          }
+            objPrevSession.hub_studentsessionid = objStudent[0]['hub_studentsessionid'];
+        }
+
+        if(OldDeliveryType == student.deliveryType && oldDate != sessionDate){
+          objNewSession.hub_studentsessionid = null;
+        }else{
+            if(student.deliveryType == "Personal Instruction"){
+              objNewSession.hub_studentsessionid = objStudent[0]['hub_studentsessionid'];
+            }else{
+              objNewSession.hub_studentsessionid = null;
+            }
+        }
+
+        // Session type condition
+        objNewSession['hub_sessiontype'] = 5;
+        if(oldDate == sessionDate && newTime != oldTime && student.deliveryType == "Personal Instruction"){
+          objNewSession['hub_sessiontype'] = 1;
         }
 
         objPrevSession['hub_deliverytype'] = objStudent[0]['aproductservice_x002e_hub_deliverytype'];
