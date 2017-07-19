@@ -24,6 +24,7 @@ setTimeout(function(){
           break;
       }
     }
+
     wjQuery(".loc-dropdown .dropdown-menu").on('click', 'li a', function(){
         if(wjQuery(".loc-dropdown .btn:first-child").val() != wjQuery(this).attr('value-id')){
           wjQuery(".loc-dropdown .btn:first-child").text(wjQuery(this).text());
@@ -1391,6 +1392,7 @@ function SylvanCalendar(){
               self.calendar.fullCalendar('refetchEvents');
             }
             self.draggable('draggable');
+            self.addContext('drag-teacher');
           });
         }
     }
@@ -1451,6 +1453,7 @@ function SylvanCalendar(){
                     self.calendar.fullCalendar('refetchEvents');
                 }
                 self.draggable('draggable');
+                self.addContext('drag-student');
             });
         }
     }
@@ -1470,6 +1473,34 @@ function SylvanCalendar(){
         });
       }
     }
+
+    this.addContext = function(selector){
+      var obj = {}; 
+      if(selector == 'drag-student'){
+        obj.pin = {name: "Pin"};
+      }
+      else{
+        obj.pin = {
+                    name: "Pin",
+                    "items": {
+                      "pin-key1": {"name": "Time"},
+                      "pin-key2": {"name": "Resource"}
+                    }
+                  };
+      }      
+      obj.reschedule= {name: "Reschedule"};
+      obj.cancel = {name: "Cancel"};
+      wjQuery(function() {
+        wjQuery.contextMenu({
+            selector: '.'+selector, 
+            callback: function(key, options) {
+                var m = "clicked: " + key;
+                window.console && console.log(m) || alert(m); 
+            },
+            items: obj
+        }); 
+      });
+    };
 
     this.draggable = function(selector){
       wjQuery('.'+selector).draggable({
@@ -1550,8 +1581,8 @@ function SylvanCalendar(){
         objNewSession['hub_resourceid@odata.bind'] = "/hub_center_resourceses(" + objStudent[0]['_hub_resourceid_value'] + ")";
         objNewSession['hub_service@odata.bind'] = "/hub_productservices(" + objStudent[0]['_hub_service_value'] + ")";
         objNewSession['hub_session_date'] = sessionDate;
-        objNewSession['hub_start_time'] = moment(student.start).format("h:mm A");
-        objNewSession['hub_end_time'] = moment(student.end).format("h:mm A");
+        objNewSession['hub_start_time'] = this.convertToMinutes(moment(student.start).format("h:mm A"));
+        objNewSession['hub_end_time'] = this.convertToMinutes(moment(student.end).format("h:mm A"));
         data.saveStudenttoSession(objPrevSession,objNewSession);
       }
     }
@@ -1572,8 +1603,8 @@ function SylvanCalendar(){
         objNewSession['hub_product_service@odata.bind'] = "/hub_productservices(" + objTeacher[0]['_hub_product_service_value'] + ")";
         objNewSession['hub_resourceid@odata.bind'] = "/hub_center_resourceses(" + teacher['resourceId']+ ")";
         objNewSession['hub_date'] = moment(teacher.start).format("YYYY-MM-DD");
-        objNewSession['hub_start_time'] = moment(teacher.start).format("h:mm A");
-        objNewSession['hub_end_time'] = moment(teacher.end).format("h:mm A");
+        objNewSession['hub_start_time'] = this.convertToMinutes(moment(teacher.start).format("h:mm A"));
+        objNewSession['hub_end_time'] = this.convertToMinutes(moment(teacher.end).format("h:mm A"));
         objNewSession['hub_schedule_type'] = 3
         data.saveTeachertoSession(objPrevSession,objNewSession);
         }

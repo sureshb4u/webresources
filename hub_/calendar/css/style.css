@@ -333,3 +333,6 @@ div.ui-widget{
     opacity: 0.5;
     display: block;
 }
+.context-menu-list{
+    z-index: 10 !important;
+}
