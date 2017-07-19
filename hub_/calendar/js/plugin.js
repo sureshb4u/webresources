@@ -1068,9 +1068,9 @@ function SylvanCalendar(){
         var eventObjList = [];
         if (label == "teacherSchedule") {
             wjQuery.each(args, function(ke, val) {
-                var sDate = new Date(val['hub_start_date@OData.Community.Display.V1.FormattedValue'] +" "+ val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
-                var eDate = new Date(val['hub_end_date@OData.Community.Display.V1.FormattedValue'] +" "+ val['hub_end_time@OData.Community.Display.V1.FormattedValue']);
-                var startHour = new Date(val['hub_start_date@OData.Community.Display.V1.FormattedValue'] +" "+ val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
+                var sDate = new Date(val['hub_date@OData.Community.Display.V1.FormattedValue'] +" "+ val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
+                var eDate = new Date(val['hub_date@OData.Community.Display.V1.FormattedValue'] +" "+ val['hub_end_time@OData.Community.Display.V1.FormattedValue']);
+                var startHour = new Date(val['hub_date@OData.Community.Display.V1.FormattedValue'] +" "+ val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
                 startHour = startHour.setMinutes(0);
                 startHour = new Date(new Date(startHour).setSeconds(0));
                 eventObjList.push({
@@ -1082,8 +1082,8 @@ function SylvanCalendar(){
                     resourceId:val['_hub_resourceid_value'],
                     deliveryTypeId: val['aproductservice_x002e_hub_deliverytype'],
                     deliveryType: val['aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue'],
-                    locationId: val['aa_x002e_hub_center'],
-                    locationName: val['aa_x002e_hub_center@OData.Community.Display.V1.FormattedValue'],
+                    locationId: val['astaff_x002e_hub_center'],
+                    locationName: val['astaff_x002e_hub_center@OData.Community.Display.V1.FormattedValue'],
                     subjectId: val['subjectId']
                 });
             });
