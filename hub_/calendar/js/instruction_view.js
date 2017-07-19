@@ -189,24 +189,87 @@ var grade = [{	"PK": 1,
 				"NA": 16
 			}];
 
-var subject = [{
-		      "TUTORING": 1,
-		      "Math Tutoring": 2,
-		      "Reading Tutoring": 3,
-		      "Writing Tutoring": 4,
-		      "Homework Help": 5,
-		      "EDGE": 7,
-		      "Study Skills": 6,
-		      "Robotics": 8,
-		      "Coding": 9,
-		      "Math Edge": 10,
-		      "Engineering": 11,
-		      "Camps": 12,
-		      "Science": 13,
-		      "PREP": 14,
-		      "SAT Prep": 15,
-		      "ACT Prep": 16
-			}];	
+var subject = [
+          {
+            id:1,
+            name:"TUTORING",
+            value:"tutoring"
+          },
+          {
+            id:2,
+            name:"Math Tutoring",
+            value:"math"
+          },
+          {
+            id:3,
+            name:"Reading Tutoring",
+            value:"reading"
+          },
+          {
+            id:4,
+            name:"Writing Tutoring",
+            value:"writing"
+          },
+          {
+            id:5,
+            name:"Homework Help",
+            value:"homeworkhelp"
+          },
+          {
+            id:6,
+            name:"Study Skills",
+            value:"studyskills"
+          },
+          {
+            id:7,
+            name:"EDGE",
+            value:"edge"
+          },
+          {
+            id:8,
+            name:"Robotics",
+            value:"robotics"
+          },
+          {
+            id:9,
+            name:"Coding",
+            value:"coding"
+          },
+          {
+            id:10,
+            name:"Math Edge",
+            value:"mathedge"
+          },
+          {
+            id:11,
+            name:"Engineering",
+            value:"engineering"
+          },
+          {
+            id:12,
+            name:"Camps",
+            value:"camps"
+          },
+          {
+            id:13,
+            name:"Science",
+            value:"science"
+          },
+          {
+            id:14,
+            name:"PREP",
+            value:"prep"
+          },
+          {
+            id:15,
+            name:"SAT Prep",
+            value:"satprep"
+          },
+          {
+            id:16,
+            name:"ACT Prep",
+            value:"actprep"
+          }];	
 
 var student =  [
     {
@@ -223,7 +286,7 @@ var student =  [
       "hub_sessiontype": 3,
       "hub_end_time@OData.Community.Display.V1.FormattedValue": "11:00 AM",
       "hub_end_time": 660,
-      "hub_session_date@OData.Community.Display.V1.FormattedValue": "07/18/2017",
+      "hub_session_date@OData.Community.Display.V1.FormattedValue": "07/19/2017",
       "hub_session_date": "2017-07-17",
       "hub_studentsessionid": "57573006-1750-e711-80f1-c4346bacfbbc",
       "hub_late@OData.Community.Display.V1.FormattedValue": "No",
@@ -260,7 +323,7 @@ var student =  [
       "hub_sessiontype": 3,
       "hub_end_time@OData.Community.Display.V1.FormattedValue": "1:00 PM",
       "hub_end_time": 810,
-      "hub_session_date@OData.Community.Display.V1.FormattedValue": "07/18/2017",
+      "hub_session_date@OData.Community.Display.V1.FormattedValue": "07/19/2017",
       "hub_session_date": "2017-07-17",
       "hub_studentsessionid": "917ea5cf-1750-e711-80f1-c4346bacfbbc",
       "hub_late@OData.Community.Display.V1.FormattedValue": "Yes",
@@ -300,7 +363,7 @@ var student =  [
       "hub_sessiontype": 3,
       "hub_end_time@OData.Community.Display.V1.FormattedValue": "1:00 PM",
       "hub_end_time": 810,
-      "hub_session_date@OData.Community.Display.V1.FormattedValue": "07/18/2017",
+      "hub_session_date@OData.Community.Display.V1.FormattedValue": "07/19/2017",
       "hub_session_date": "2017-07-17",
       "hub_studentsessionid": "8968c9ce-1850-e711-80f1-c4346bacfbbc",
       "hub_late@OData.Community.Display.V1.FormattedValue": "No",
@@ -337,13 +400,13 @@ var teacherSchedule = [
       "hub_staff_scheduleid": "94c89f23-2250-e711-80f1-c4346bacfbbc",
       "hub_end_time@OData.Community.Display.V1.FormattedValue": "11:00 AM",
       "hub_end_time": 660,
-      "hub_end_date@OData.Community.Display.V1.FormattedValue": "07/18/2017",
+      "hub_end_date@OData.Community.Display.V1.FormattedValue": "07/19/2017",
       "hub_end_date": "2017-06-13",
       "hub_start_time@OData.Community.Display.V1.FormattedValue": "10:00 AM",
       "hub_start_time": 600,
-      "hub_start_date@OData.Community.Display.V1.FormattedValue": "07/18/2017",
+      "hub_start_date@OData.Community.Display.V1.FormattedValue": "07/19/2017",
       "hub_start_date": "2017-06-13",
-      "hub_date@OData.Community.Display.V1.FormattedValue": "07/18/2017",
+      "hub_date@OData.Community.Display.V1.FormattedValue": "07/19/2017",
       "hub_date": "2017-06-13",
       "aa_x002e_hub_center@OData.Community.Display.V1.FormattedValue": "Bel Air Learning Center",
       "_hub_resourceid_value": "9665d732-7f56-e711-80f1-c4346bad526c",
@@ -360,13 +423,13 @@ var teacherSchedule = [
       "hub_staff_scheduleid": "710ba12f-2250-e711-80f1-c4346bacfbbc",
       "hub_end_time@OData.Community.Display.V1.FormattedValue": "4:00 PM",
       "hub_end_time": 960,
-      "hub_end_date@OData.Community.Display.V1.FormattedValue": "07/18/2017",
+      "hub_end_date@OData.Community.Display.V1.FormattedValue": "07/19/2017",
       "hub_end_date": "2017-06-14",
       "hub_start_time@OData.Community.Display.V1.FormattedValue": "3:00 PM",
       "hub_start_time": 900,
-      "hub_start_date@OData.Community.Display.V1.FormattedValue": "07/18/2017",
+      "hub_start_date@OData.Community.Display.V1.FormattedValue": "07/19/2017",
       "hub_start_date": "2017-06-14",
-      "hub_date@OData.Community.Display.V1.FormattedValue": "07/18/2017",
+      "hub_date@OData.Community.Display.V1.FormattedValue": "07/19/2017",
       "hub_date": "2017-06-14",
       "aa_x002e_hub_center@OData.Community.Display.V1.FormattedValue": "Bel Air Learning Center",
       "_hub_resourceid_value": "f74453af-263f-e711-80ef-c4346bacfbbc",
@@ -383,13 +446,13 @@ var teacherSchedule = [
       "hub_staff_scheduleid": "959a0a3a-2250-e711-80f1-c4346bacfbbc",
       "hub_end_time@OData.Community.Display.V1.FormattedValue": "1:00 PM",
       "hub_end_time": 810,
-      "hub_end_date@OData.Community.Display.V1.FormattedValue": "07/18/2017",
+      "hub_end_date@OData.Community.Display.V1.FormattedValue": "07/19/2017",
       "hub_end_date": "2017-06-18",
       "hub_start_time@OData.Community.Display.V1.FormattedValue": "12:00 PM",
       "hub_start_time": 750,
-      "hub_start_date@OData.Community.Display.V1.FormattedValue": "07/18/2017",
+      "hub_start_date@OData.Community.Display.V1.FormattedValue": "07/19/2017",
       "hub_start_date": "2017-06-18",
-      "hub_date@OData.Community.Display.V1.FormattedValue": "07/18/2017",
+      "hub_date@OData.Community.Display.V1.FormattedValue": "07/19/2017",
       "hub_date": "2017-06-18",
       "aa_x002e_hub_center@OData.Community.Display.V1.FormattedValue": "Bel Air Learning Center",
       "_hub_resourceid_value": "0517a2c8-1b50-e711-80f1-c4346bacfbbc",
@@ -534,12 +597,12 @@ var teacherAvailability =
     "hub_saturday": true,
     "hub_monday@OData.Community.Display.V1.FormattedValue": "Yes",
     "hub_monday": true,
-    "hub_monstarttime@OData.Community.Display.V1.FormattedValue": "9:00 AM",
-    "hub_monstarttime": 540,
-    "hub_monendtime@OData.Community.Display.V1.FormattedValue": "9:00 PM",
-    "hub_monendtime": 1260,
-    "hub_wednesday@OData.Community.Display.V1.FormattedValue": "No",
-    "hub_wednesday": false,
+    "hub_wedstarttime@OData.Community.Display.V1.FormattedValue": "9:00 AM",
+    "hub_wedstarttime": 540,
+    "hub_wedendtime@OData.Community.Display.V1.FormattedValue": "9:00 PM",
+    "hub_wedendtime": 1260,
+    "hub_wednesday@OData.Community.Display.V1.FormattedValue": "Yes",
+    "hub_wednesday": true,
     "hub_thurendtime@OData.Community.Display.V1.FormattedValue": "5:00 PM",
     "hub_thurendtime": 1020,
     "hub_staffavailabilityid": "368ff4fb-3650-e711-80f1-c4346bacfbbc",
@@ -581,12 +644,12 @@ var teacherAvailability =
     "hub_saturday": false,
     "hub_monday@OData.Community.Display.V1.FormattedValue": "Yes",
     "hub_monday": true,
-    "hub_monstarttime@OData.Community.Display.V1.FormattedValue": "9:00 AM",
-    "hub_monstarttime": 540,
-    "hub_monendtime@OData.Community.Display.V1.FormattedValue": "4:00 PM",
-    "hub_monendtime": 960,
-    "hub_wednesday@OData.Community.Display.V1.FormattedValue": "No",
-    "hub_wednesday": false,
+    "hub_wedstarttime@OData.Community.Display.V1.FormattedValue": "9:00 AM",
+    "hub_wedstarttime": 540,
+    "hub_wedendtime@OData.Community.Display.V1.FormattedValue": "4:00 PM",
+    "hub_wedendtime": 960,
+    "hub_wednesday@OData.Community.Display.V1.FormattedValue": "Yes",
+    "hub_wednesday": true,
     "hub_staffavailabilityid": "bf8ed62c-0a67-e711-80f2-c4346bad526c",
     "_hub_staffid_value@OData.Community.Display.V1.FormattedValue": "Simon",
     "_hub_staffid_value@Microsoft.Dynamics.CRM.associatednavigationproperty": "hub_staffid",
