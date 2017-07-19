@@ -11,6 +11,10 @@ body{
 .nextBtn,.prevBtn{
     cursor: pointer;
 }
+.fc-agenda .fc-agenda-axis{
+    padding: 4px;
+    vertical-align: top;
+}
 
 div label input {
    margin-right:100px;

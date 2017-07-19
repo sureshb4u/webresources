@@ -581,7 +581,7 @@ function SylvanCalendar(){
             var studentStartHour = teacherArray[i].startHour;
             if(studentStartHour >= this.calendarOptions.minTime && studentStartHour <= this.calendarOptions.maxTime){
                var studentPosition = studentStartHour - this.calendarOptions.minTime;
-               var elm =   '<div class="teacher-block"> <div class="teacher-container" type="teacher" value="'+teacherArray[i].id+'">'+
+               var elm =   '<div class="teacher-block"> <div class="cursor teacher-container" type="teacher" value="'+teacherArray[i].id+'">'+
                             '<div class="display-inline-block padding-right-xs">'+ teacherArray[i].name+'</div>'+
                             '<div class="subject-identifier"></div>'+
                         '</div></div>';
@@ -620,7 +620,7 @@ function SylvanCalendar(){
             objNewSession.hub_start_time = this.convertToMinutes(moment(teacher.start).format("h:mm A"));
             objNewSession.hub_end_time  = this.convertToMinutes(moment(teacher.end).format("h:mm A"));
             objNewSession.hub_schedule_type = 1;
-        data.saveSOFtoSession(objStaff,objNewSession);
+        data.saveTAtoSession(objStaff,objNewSession);
       }
     };
 
@@ -677,7 +677,7 @@ function SylvanCalendar(){
                     deliveryType : this.getDeliveryTypeObj(resource.id).deliveryType,
                     locationId: teacher[0].locationId,
                 };
-                this.convertedTeacherObj(teacherObj);
+                this.convertedTeacherObj.push(teacherObj);
                 this.saveTAtoSession(teacherObj);
                 t.populateTeacherEvent([teacherObj]);
             } 
@@ -1358,7 +1358,7 @@ function SylvanCalendar(){
                   title:"<span class='draggable drag-teacher' eventid='"+eventId+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'>"+name+"</span>",
                   teachers:[{id:id, name:name}],
                   start:value['startHour'],
-                  end:value['end'],
+                  //end:value['end'],
                   allDay: false,
                   resourceId: value['resourceId'],
                   isTeacher: true,
@@ -1418,7 +1418,7 @@ function SylvanCalendar(){
                         title:"<span class='placeholder'>Teacher name</span><span class='draggable drag-student' eventid='"+eventId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>",
                         students:[{id:id, name:name, grade:grade}],
                         start:value['startHour'],
-                        end:value['end'],
+                        //end:value['end'],
                         allDay: false,
                         resourceId: value['resourceId'],
                         isTeacher: false,
@@ -1462,7 +1462,9 @@ function SylvanCalendar(){
         appendTo: 'body',
         containment: 'window',
         helper: 'clone',
-        drag : function(){
+        cursor: "move",
+        cursorAt: { top : 0 }
+        /*drag : function(){
           if(sofExpanded){
             wjQuery('.sof-pane').css('opacity','.3');
           }
@@ -1477,7 +1479,7 @@ function SylvanCalendar(){
           if(taExpanded){
             wjQuery('.ta-pane').css('opacity','1');
           }
-        }
+        }*/
       });
     }
 
@@ -1545,9 +1547,9 @@ function SylvanCalendar(){
         var objTeacher = this.teacherSchedule.filter(function(x){
           return x._hub_staff_value == teacher.id;
         });
-
+        if(objTeacher.length){
         // Old object
-        objPrevSession['hub_staff_scheduleid'] = objTeacher[0]['hub_staff_scheduleid'];
+          objPrevSession['hub_staff_scheduleid'] = objTeacher[0]['hub_staff_scheduleid'];
 
         // New object
         objNewSession['hub_staff@odata.bind'] = "/hub_staffs(" + teacher['id']+ ")";
@@ -1558,6 +1560,7 @@ function SylvanCalendar(){
         objNewSession['hub_end_time'] = moment(teacher.end).format("h:mm A");
         objNewSession['hub_schedule_type'] = 3
         data.saveTeachertoSession(objPrevSession,objNewSession);
+        }
       }
     }
 }
