@@ -652,7 +652,7 @@ function SylvanCalendar(){
                           return x.id;
                   }).indexOf(teacherId);
                   prevEvent[0].teachers.splice(removeTeacherIndex,1);
-                  if(eventTitleHTML.length == 1 && eventTitleHTML[0].className == "student-placeholder"){
+                  if((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "student-placeholder")) || (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder" && eventTitleHTML[1].className == "student-placeholder")){
                     for (var i = 0; i < this.eventList.length; i++) {
                       if(this.eventList[i].id == prevEventId)
                         this.eventList.splice(i,1);
@@ -720,7 +720,7 @@ function SylvanCalendar(){
                     return x.id;
             }).indexOf(stuId);
             prevEvent[0].students.splice(removeStudentIndex,1);
-            if(eventTitleHTML.length == 1 && eventTitleHTML[0].className == "placeholder"){
+            if((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "student-placeholder")) || (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder" && eventTitleHTML[1].className == "student-placeholder")){
               for (var i = 0; i < this.eventList.length; i++) {
                 if(this.eventList[i].id == prevEventId)
                   this.eventList.splice(i,1);
@@ -1451,6 +1451,9 @@ function SylvanCalendar(){
                   if(index == -1){
                     event[k].isConflict = true;
                     event[k].title = "";
+                    if(event[k].title.includes("<img class='onetoone' src='/webresources/hub_/calendar/images/lock.png'>")){
+                      event[k].title = event[k].title.replace("<img class='onetoone' src='/webresources/hub_/calendar/images/lock.png'>", "");
+                    }
                     event[k].teachers.push({id:id, name:name});
                     wjQuery.each(event[k].teachers, function(ka, v){
                       event[k].title += "<span class='draggable drag-teacher' eventid='"+eventId+"' id='"+v.id+value['resourceId']+"' type='teacherSession' value='"+v.id+"'>"+v.name+"</span>";
@@ -1462,13 +1465,25 @@ function SylvanCalendar(){
                     }
                   }
                 }else{
+                  if(event[k].title.includes("<img class='onetoone' src='/webresources/hub_/calendar/images/lock.png'>")){
+                    event[k].title = "<img class='onetoone' src='/webresources/hub_/calendar/images/lock.png'>";
+                    event[k].title += "<span class='draggable drag-teacher' eventid='"+eventId+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'>"+name+"</span>";
+                  }else{
+                    event[k].title = "<span class='draggable drag-teacher' eventid='"+eventId+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'>"+name+"</span>";
+                  }
                   var studentList = event[k].students;
-                  event[k].title = "<span class='draggable drag-teacher' eventid='"+eventId+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'>"+name+"</span>";
                   event[k].teachers = [{id:id, name:name}];
                   wjQuery.each(studentList, function(ke, val){
                     event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' id='"+val.id+value['resourceId']+"' type='studentSession' value='"+val.id+"'>"+val.name+", "+val.grade+"</span>";
                   });
                 }
+                var resourceObj = self.getDeliveryTypeObj(value['resourceId']);
+                if(event[k].title.includes("<span class='student-placeholder'>Student name</span>")){
+                  event[k].title = event[k].title.replace("<span class='student-placeholder'>Student name</span>", "");
+                }
+                if(event[k].students.length < resourceObj["capacity"]){
+                  event[k].title += "<span class='student-placeholder'>Student name</span>";                  
+                } 
               });
               self.calendar.fullCalendar('updateEvent', event);
             }else{
@@ -1534,7 +1549,15 @@ function SylvanCalendar(){
                         event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
                         event[k].students = [{id:id, name:name, grade:grade}];
                       }
+                      var resourceObj = self.getDeliveryTypeObj(value['resourceId']);
+                      if(event[k].title.includes("<span class='student-placeholder'>Student name</span>")){
+                        event[k].title = event[k].title.replace("<span class='student-placeholder'>Student name</span>", "");
+                      }
+                      if(event[k].students.length < resourceObj["capacity"]){
+                        event[k].title += "<span class='student-placeholder'>Student name</span>";                  
+                      } 
                     });
+
                     self.calendar.fullCalendar('updateEvent', event);
                 }else{
                     var obj = {
@@ -1566,6 +1589,10 @@ function SylvanCalendar(){
                         obj.borderColor = "#9acaea";
                     }
                     self.eventList.push(obj);
+                    var resourceObj = self.getDeliveryTypeObj(value['resourceId']);
+                    if(resourceObj["capacity"] > 1){
+                      obj.title += "<span class='student-placeholder'>Student name</span>";                  
+                    } 
                     if(isFromFilter){
                       self.calendar.fullCalendar('removeEvents');
                       self.calendar.fullCalendar('addEventSource', {events:self.eventList});
