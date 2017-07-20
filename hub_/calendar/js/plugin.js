@@ -591,60 +591,74 @@ function SylvanCalendar(){
         else if(wjQuery(elm).attr("type") == 'teacherSession'){
           var endDate = new Date(date);
           var startHour = new Date(date).setMinutes(0);
-          startHour = new Date(new Date(startHour).setSeconds(0));
+          var startHour = new Date(new Date(startHour).setSeconds(0));
           var teacherId = wjQuery(elm).attr("value"); 
           var uniqTeacherId = wjQuery(elm).attr("id"); 
           var prevEventId = wjQuery(elm).attr("eventid");
-          prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
+          var prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
           var index = t.convertedTeacherObj.map(function(x){
             return x.id;
           }).indexOf(teacherId);
-          if(resource.id+date != prevEventId){
-            if(prevEvent){
-              var eventTitleHTML = wjQuery(prevEvent[0].title);
-              for (var i = 0; i < eventTitleHTML.length; i++) {
-                if(wjQuery(eventTitleHTML[i]).attr('value') == teacherId){
-                  eventTitleHTML.splice(i,1);
-                }
-              }
-              if(eventTitleHTML.prop('outerHTML') != undefined){
-                if(eventTitleHTML.length == 1){                  
-                  prevEvent[0].title = eventTitleHTML.prop('outerHTML');                
-                }else{                  
-                  prevEvent[0].title = "";
-                  if(prevEvent[0].teachers.length == 1){
-                      prevEvent[0].title += "<span class='placeholder'>Teacher name</span>";                  
+          
+          // Validation For teacher drop
+          // don't allow multiple teachers to drop on same
+          var updateFlag = false;
+          var newEvent = this.calendar.fullCalendar('clientEvents', resource.id+date);
+          if(newEvent.length == 0){
+            updateFlag = true;
+          }else if(newEvent.length == 1 && !(newEvent[0].hasOwnProperty('teachers'))){
+            updateFlag = true;
+          }else if(newEvent.length == 1 && newEvent[0].hasOwnProperty('teachers') && newEvent[0]['teachers'].length == 0){
+            updateFlag = true;
+          }
+
+          if(updateFlag){
+            if(resource.id+date != prevEventId){
+              if(prevEvent){
+                var eventTitleHTML = wjQuery(prevEvent[0].title);
+                for (var i = 0; i < eventTitleHTML.length; i++) {
+                  if(wjQuery(eventTitleHTML[i]).attr('value') == teacherId){
+                    eventTitleHTML.splice(i,1);
                   }
-                  for (var i = 0; i < eventTitleHTML.length; i++) {                    
-                    prevEvent[0].title += eventTitleHTML[i].outerHTML;                  
-                  }                
-                }                
-                this.calendar.fullCalendar('updateEvent', prevEvent);
-                var removeTeacherIndex = prevEvent[0].teachers.map(function(x){
-                        return x.id;
-                }).indexOf(teacherId);
-                prevEvent[0].teachers.splice(removeTeacherIndex,1);
-              }else{
-                for (var i = 0; i < this.eventList.length; i++) {
-                  if(this.eventList[i].id == prevEventId)
-                    this.eventList.splice(i,1);
                 }
-                this.calendar.fullCalendar('removeEvents', prevEventId);
+                if(eventTitleHTML.prop('outerHTML') != undefined){
+                  if(eventTitleHTML.length == 1){                  
+                    prevEvent[0].title = eventTitleHTML.prop('outerHTML');                
+                  }else{                  
+                    prevEvent[0].title = "";
+                    if(prevEvent[0].teachers.length == 1){
+                        prevEvent[0].title += "<span class='placeholder'>Teacher name</span>";                  
+                    }
+                    for (var i = 0; i < eventTitleHTML.length; i++) {                    
+                      prevEvent[0].title += eventTitleHTML[i].outerHTML;                  
+                    }                
+                  }                
+                  this.calendar.fullCalendar('updateEvent', prevEvent);
+                  var removeTeacherIndex = prevEvent[0].teachers.map(function(x){
+                          return x.id;
+                  }).indexOf(teacherId);
+                  prevEvent[0].teachers.splice(removeTeacherIndex,1);
+                }else{
+                  for (var i = 0; i < this.eventList.length; i++) {
+                    if(this.eventList[i].id == prevEventId)
+                      this.eventList.splice(i,1);
+                  }
+                  this.calendar.fullCalendar('removeEvents', prevEventId);
+                }
               }
+              if(t.convertedTeacherObj[index]){
+                var prevTeacherSession = wjQuery.extend(true, {}, t.convertedTeacherObj[index]);
+                elm.remove(); 
+                t.convertedTeacherObj[index].start = date;
+                t.convertedTeacherObj[index].startHour = startHour;
+                t.convertedTeacherObj[index].end = new Date(endDate.setHours(endDate.getHours() + 1));
+                t.convertedTeacherObj[index].resourceId = resource.id;
+                t.convertedTeacherObj[index].deliveryTypeId = t.getDeliveryTypeObj(resource.id).deliveryTypeId;
+                t.convertedTeacherObj[index].deliveryType = t.getDeliveryTypeObj(resource.id).deliveryType;
+                t.saveTeacherToSession(t.convertedTeacherObj[index],prevTeacherSession);
+                t.populateTeacherEvent([t.convertedTeacherObj[index]], true);
+              } 
             }
-            if(t.convertedTeacherObj[index]){
-              var prevTeacherSession = wjQuery.extend(true, {}, t.convertedTeacherObj[index]);
-              elm.remove(); 
-              t.convertedTeacherObj[index].start = date;
-              t.convertedTeacherObj[index].startHour = startHour;
-              t.convertedTeacherObj[index].end = new Date(endDate.setHours(endDate.getHours() + 1));
-              t.convertedTeacherObj[index].resourceId = resource.id;
-              t.convertedTeacherObj[index].deliveryTypeId = t.getDeliveryTypeObj(resource.id).deliveryTypeId;
-              t.convertedTeacherObj[index].deliveryType = t.getDeliveryTypeObj(resource.id).deliveryType;
-              // t.convertedTeacherObj[index].id = resource.id + date;
-              t.saveTeacherToSession(t.convertedTeacherObj[index],prevTeacherSession);
-              t.populateTeacherEvent([t.convertedTeacherObj[index]], true);
-            } 
           }
         }
     };
@@ -1596,7 +1610,6 @@ function SylvanCalendar(){
         objNewSession['hub_start_time'] = this.convertToMinutes(moment(student.start).format("h:mm A"));
         objNewSession['hub_end_time'] = this.convertToMinutes(moment(student.end).format("h:mm A"));
         objNewSession['hub_deliverytype'] = student.deliveryTypeId;
-        console.log(objPrevSession,objNewSession);
         data.saveStudenttoSession(objPrevSession,objNewSession);
       }
     }
@@ -1622,10 +1635,28 @@ function SylvanCalendar(){
         objNewSession['hub_start_time'] = this.convertToMinutes(moment(teacher.start).format("h:mm A"));
         objNewSession['hub_end_time'] = this.convertToMinutes(moment(teacher.end).format("h:mm A"));
         objNewSession['hub_schedule_type'] = 3;
-        console.log(objPrevSession,objNewSession);
         data.saveTeachertoSession(objPrevSession,objNewSession);
         }
       }
+    }
+
+    // Parameter 
+    // selector with ./# ex: #dialog/.dialog needed to passs 
+    this.dialogPopup = function(selector){
+      wjQuery(selector).dialog({
+        resizable: false,
+        height: "auto",
+        width: 400,
+        modal: true,
+        buttons: {
+          "Confirm": function() {
+            return true;
+          },
+          Cancel: function() {
+            return false;
+          }
+        }
+      });
     }
 }
 
