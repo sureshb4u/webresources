@@ -287,7 +287,6 @@ function SylvanCalendar(){
               });
           }
           this.loadCalendar(currentCalendarDate);
-          this.loadMasterInformation();
         }
       }
     }
@@ -322,6 +321,34 @@ function SylvanCalendar(){
          hours = hours!=12 ? hours + 12 : hours;
           var minutes = parseInt(moment(timeString,'h:mm A').format('mm'));
           return (hours * 60) + minutes;
+        }
+      }
+    }
+
+    this.getDayValue = function(dayString){
+      if(dayString != undefined){
+        switch(dayString.toLowerCase()){
+          case 'monday':
+            return 1;
+          break;
+          case 'tuesday':
+            return 2;
+          break;
+          case 'wednesday':
+            return 3;
+          break;
+          case 'thursday':
+            return 4;
+          break;
+          case 'friday':
+            return 5;
+          break;
+          case 'saturday':
+            return 6;
+          break;
+          case 'sunday':
+            return 7;
+          break;
         }
       }
     }
@@ -456,6 +483,7 @@ function SylvanCalendar(){
       if(teacher != undefined){
         var objStaff = {};
             objStaff['hub_staff@odata.bind'] = "/hub_staffs(" + teacher.id + ")";
+            objStaff['hub_center@odata.bind'] = "/hub_centers(" + teacher.locationId + ")";
         var objNewSession = {};
             objNewSession.hub_deliverytype = teacher.deliveryTypeId;
             objNewSession['hub_resourceid@odata.bind'] = "/hub_center_resourceses(" + teacher.resourceId + ")";
@@ -726,12 +754,6 @@ function SylvanCalendar(){
                 );
                 }
                 this.calendar.fullCalendar('unselect');
-            },
-            eventResize: function(event, dayDelta, minuteDelta) {
-                console.log("@@ resize event " + event.title + ", start " + event.start + ", end " + event.end + ", resource " + event.resourceId);
-            },
-            eventDrop: function( event, dayDelta, minuteDelta, allDay) {
-                console.log("@@ drag/drop event " + event.title + ", start " + event.start + ", end " + event.end + ", resource " + event.resourceId);
             },
             editable: false,
             resources: this.resourceList,
@@ -1114,6 +1136,7 @@ function SylvanCalendar(){
                     name: val["_hub_student_value@OData.Community.Display.V1.FormattedValue"],
                     start: sDate,
                     end: eDate,
+                    is1to1 : val["hub_is_1to1"],
                     startHour : startHour,
                     gradeId:val['astudent_x002e_hub_grade'],
                     grade: val['astudent_x002e_hub_grade@OData.Community.Display.V1.FormattedValue'],
@@ -1441,16 +1464,22 @@ function SylvanCalendar(){
                 }else{
                     var obj = {
                         id: eventId,
-                        title:"<span class='placeholder'>Teacher name</span><span class='draggable drag-student' eventid='"+eventId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>",
                         students:[{id:id, name:name, grade:grade}],
                         start:value['startHour'],
                         //end:value['end'],
                         allDay: false,
                         resourceId: value['resourceId'],
                         isTeacher: false,
+                        is1to1: value['is1to1'],
                         isConflict: false,
                         textColor:"#333333",
                     }
+                    obj.title = "";
+                    if(value['is1to1']){
+                      obj.title += "<img class='onetoone' src='/webresources/hub_/calendar/images/lock.png'>";
+                    }
+                    obj.title += "<span class='placeholder'>Teacher name</span>" +
+                                "<span class='draggable drag-student' eventid='"+eventId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
                     if(value.deliveryType == "Group Facilitation"){ 
                         obj.backgroundColor = "#dff0d5";
                         obj.borderColor = "#7bc143";
@@ -1569,38 +1598,19 @@ function SylvanCalendar(){
         var oldTime = objStudent[0]['hub_start_time@OData.Community.Display.V1.FormattedValue'];
         var newTime = moment(student.start).format("h:mm A");
 
-        // Session type Student Session Id Conditions
-        if(oldDate == sessionDate &&  OldDeliveryType == student.deliveryType){
-          if((student.deliveryType == "Group Facilitation" && newTime == oldTime) || student.deliveryType == "Personal Instruction"){
-            objPrevSession.hub_studentsessionid = null;
-          }else{
-            objPrevSession.hub_studentsessionid = objStudent[0]['hub_studentsessionid'];
-          }
-        }else{
-            objPrevSession.hub_studentsessionid = objStudent[0]['hub_studentsessionid'];
-        }
-
-        if(OldDeliveryType == student.deliveryType && oldDate != sessionDate){
-          objNewSession.hub_studentsessionid = null;
-        }else{
-            if(student.deliveryType == "Personal Instruction"){
-              objNewSession.hub_studentsessionid = objStudent[0]['hub_studentsessionid'];
-            }else{
-              objNewSession.hub_studentsessionid = null;
-            }
-        }
-
         // Session type condition
         objNewSession['hub_sessiontype'] = 5;
         if(oldDate == sessionDate && newTime != oldTime && student.deliveryType == "Personal Instruction"){
           objNewSession['hub_sessiontype'] = 1;
         }
 
+        objPrevSession['hub_studentsessionid'] = objStudent[0]['hub_studentsessionid'];
         objPrevSession['hub_deliverytype'] = objStudent[0]['aproductservice_x002e_hub_deliverytype'];
         objPrevSession['hub_start_time'] = this.convertToMinutes(moment(prevStudent.start).format("h:mm A"));
         objPrevSession['hub_end_time'] = this.convertToMinutes(moment(prevStudent.end).format("h:mm A"));
         objPrevSession['hub_resourceid@odata.bind'] = "/hub_center_resourceses(" + prevStudent.resourceId + ")";
 
+        objNewSession['hub_studentsessionid'] = objStudent[0]['hub_studentsessionid'];
         objNewSession['hub_center@odata.bind'] = "/hub_centers(" + objStudent[0]["_hub_center_value"] + ")";
         objNewSession['hub_enrollment@odata.bind'] = "/hub_enrollments(" + objStudent[0]['_hub_enrollment_value'] + ")";
         objNewSession['hub_student@odata.bind'] = "/contacts(" + objStudent[0]['_hub_student_value'] + ")";
