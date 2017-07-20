@@ -333,6 +333,11 @@ div.ui-widget{
     opacity: 0.5;
     display: block;
 }
+.student-placeholder{
+    opacity: 0.5;
+    display: block;
+    text-align: left;
+}
 .context-menu-list{
     z-index: 10 !important;
 }
