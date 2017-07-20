@@ -1685,7 +1685,6 @@ function SylvanCalendar(){
     // Parameter 
     // selector with ./# ex: #dialog/.dialog needed to passs 
     this.dialogPopup = function(selector){
-      var response = "";
       wjQuery(selector).dialog({
         resizable: false,
         height: "auto",
