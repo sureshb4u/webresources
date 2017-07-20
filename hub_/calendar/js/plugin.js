@@ -652,8 +652,10 @@ function SylvanCalendar(){
                           return x.id;
                   }).indexOf(teacherId);
                   prevEvent[0].teachers.splice(removeTeacherIndex,1);
-                  if((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "student-placeholder")) || (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder" && eventTitleHTML[1].className == "student-placeholder")){
-                    for (var i = 0; i < this.eventList.length; i++) {
+                   if((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "student-placeholder")) || 
+                      (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder" && eventTitleHTML[1].className == "student-placeholder") ||
+                      (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder" && eventTitleHTML[2].className == "student-placeholder")){
+                      for (var i = 0; i < this.eventList.length; i++) {
                       if(this.eventList[i].id == prevEventId)
                         this.eventList.splice(i,1);
                     }
@@ -707,9 +709,9 @@ function SylvanCalendar(){
           if(eventTitleHTML.prop('outerHTML') != undefined){
             if(eventTitleHTML.length == 1){ 
               prevEvent[0].title = eventTitleHTML.prop('outerHTML');                
-              if(prevEvent[0].students.length == 1){
-                  prevEvent[0].title += "<span class='student-placeholder'>Student name</span>";                  
-              }                 
+              // if(prevEvent[0].students.length == 1){
+              //     prevEvent[0].title += "<span class='student-placeholder'>Student name</span>";                  
+              // }                 
             }else{                  
               prevEvent[0].title = "";
               for (var i = 0; i < eventTitleHTML.length; i++) {                    
@@ -720,7 +722,9 @@ function SylvanCalendar(){
                     return x.id;
             }).indexOf(stuId);
             prevEvent[0].students.splice(removeStudentIndex,1);
-            if((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "student-placeholder")) || (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder" && eventTitleHTML[1].className == "student-placeholder")){
+            if((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "student-placeholder")) || 
+              (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder" && eventTitleHTML[1].className == "student-placeholder") ||
+              (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder" && eventTitleHTML[2].className == "student-placeholder")){
               for (var i = 0; i < this.eventList.length; i++) {
                 if(this.eventList[i].id == prevEventId)
                   this.eventList.splice(i,1);
@@ -1552,6 +1556,9 @@ function SylvanCalendar(){
                       var resourceObj = self.getDeliveryTypeObj(value['resourceId']);
                       if(event[k].title.includes("<span class='student-placeholder'>Student name</span>")){
                         event[k].title = event[k].title.replace("<span class='student-placeholder'>Student name</span>", "");
+                      }
+                      else if(event[k].title.includes('<span class="student-placeholder">Student name</span>')){
+                        event[k].title = event[k].title.replace('<span class="student-placeholder">Student name</span>', "");
                       }
                       if(event[k].students.length < resourceObj["capacity"]){
                         event[k].title += "<span class='student-placeholder'>Student name</span>";                  
