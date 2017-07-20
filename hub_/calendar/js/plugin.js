@@ -632,7 +632,12 @@ function SylvanCalendar(){
                 }
                 if(eventTitleHTML.prop('outerHTML') != undefined){
                   if(eventTitleHTML.length == 1){                  
-                    prevEvent[0].title = eventTitleHTML.prop('outerHTML');                
+                    if(prevEvent[0].teachers.length == 1){
+                        prevEvent[0].title = "<span class='placeholder'>Teacher name</span>";                  
+                        prevEvent[0].title += eventTitleHTML.prop('outerHTML');                
+                    }else{
+                        prevEvent[0].title = eventTitleHTML.prop('outerHTML');                
+                    }
                   }else{                  
                     prevEvent[0].title = "";
                     if(prevEvent[0].teachers.length == 1){
@@ -647,6 +652,13 @@ function SylvanCalendar(){
                           return x.id;
                   }).indexOf(teacherId);
                   prevEvent[0].teachers.splice(removeTeacherIndex,1);
+                  if(eventTitleHTML.length == 1 && eventTitleHTML[0].className == "student-placeholder"){
+                    for (var i = 0; i < this.eventList.length; i++) {
+                      if(this.eventList[i].id == prevEventId)
+                        this.eventList.splice(i,1);
+                    }
+                    this.calendar.fullCalendar('removeEvents', prevEventId);
+                  }
                 }else{
                   for (var i = 0; i < this.eventList.length; i++) {
                     if(this.eventList[i].id == prevEventId)
@@ -693,15 +705,17 @@ function SylvanCalendar(){
             }
           }
           if(eventTitleHTML.prop('outerHTML') != undefined){
-            if(eventTitleHTML.length == 1){                  
+            if(eventTitleHTML.length == 1){ 
               prevEvent[0].title = eventTitleHTML.prop('outerHTML');                
+              if(prevEvent[0].students.length == 1){
+                  prevEvent[0].title += "<span class='student-placeholder'>Student name</span>";                  
+              }                 
             }else{                  
               prevEvent[0].title = "";
               for (var i = 0; i < eventTitleHTML.length; i++) {                    
                 prevEvent[0].title += eventTitleHTML[i].outerHTML;                  
               }                
             }                
-            this.calendar.fullCalendar('updateEvent', prevEvent); 
             var removeStudentIndex = prevEvent[0].students.map(function(x){
                     return x.id;
             }).indexOf(stuId);
@@ -713,6 +727,7 @@ function SylvanCalendar(){
               }
               this.calendar.fullCalendar('removeEvents', prevEventId);
             }
+            this.calendar.fullCalendar('updateEvent', prevEvent); 
           }
           else{
             for (var i = 0; i < this.eventList.length; i++) {
@@ -1460,7 +1475,8 @@ function SylvanCalendar(){
 
               var obj = {
                   id: value['resourceId']+value['startHour'],
-                  title:"<span class='draggable drag-teacher' eventid='"+eventId+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'>"+name+"</span>",
+                  title:"<span class='draggable drag-teacher' eventid='"+eventId+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'>"+name+"</span>"+
+                        "<span class='student-placeholder'>Student name</span>",
                   teachers:[{id:id, name:name}],
                   start:value['startHour'],
                   //end:value['end'],
