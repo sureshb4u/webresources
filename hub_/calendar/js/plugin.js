@@ -500,6 +500,7 @@ function SylvanCalendar(){
 
     this.createEventOnDrop = function(t,date, allDay,ev,ui,resource,elm) {
         if(wjQuery(elm).attr("type") == 'student'){
+            var newEvent = this.calendar.fullCalendar('clientEvents', resource.id+date);
             var endDate = new Date(date);
             var startHour = new Date(date).setMinutes(0);
             startHour = new Date(new Date(startHour).setSeconds(0));
@@ -512,19 +513,33 @@ function SylvanCalendar(){
                     return x.id;
             }).indexOf(stuId);
             t.sofList.splice(index,1);
-            if(student){
-                elm.remove();
-                if(wjQuery(parentElement).html() == ''){
-                  parentElement.remove();
-                }
-                student[0].start = date;
-                student[0].startHour = startHour;
-                student[0].end = new Date(endDate.setHours(endDate.getHours() + 1));
-                student[0].resourceId = resource.id;
-                this.convertedStudentObj.push(student[0]);
-                this.saveSOFtoSession(student);
-                t.populateStudentEvent(student,false);
-            }          
+            var processFlag = false;
+            if(!(newEvent[0].hasOwnProperty("students"))){
+              processFlag = true;
+            }else if(newEvent[0].hasOwnProperty("students")){
+              var index = newEvent[0]['students'].map(function(x){
+                      return x.id;
+              }).indexOf(stuId);
+              if(index == -1){
+                processFlag = true;
+              }
+            }
+
+            if(processFlag){
+              if(student){
+                  elm.remove();
+                  if(wjQuery(parentElement).html() == ''){
+                    parentElement.remove();
+                  }
+                  student[0].start = date;
+                  student[0].startHour = startHour;
+                  student[0].end = new Date(endDate.setHours(endDate.getHours() + 1));
+                  student[0].resourceId = resource.id;
+                  this.convertedStudentObj.push(student[0]);
+                  this.saveSOFtoSession(student);
+                  t.populateStudentEvent(student,false);
+              }          
+            }
         }
         else if(wjQuery(elm).attr("type") == 'teacher'){
             var newEvent = this.calendar.fullCalendar('clientEvents', resource.id+date);

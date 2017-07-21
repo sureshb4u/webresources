@@ -346,3 +346,6 @@ div.ui-widget{
     left: 0;
     padding: 2px;
 }
+.student-container{
+    z-index: 3;
+}
