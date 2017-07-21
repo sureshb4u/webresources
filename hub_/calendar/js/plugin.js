@@ -391,7 +391,7 @@ function SylvanCalendar(){
 
     this.populateSOFPane = function(studentData,minTime,maxTime){
         var sofTemplate = [];
-        wjQuery('.student-container').html("");
+        wjQuery('.student-overflow').html("");
         for(var i=0;i<(maxTime - minTime);i++){
             var elm = '<div class="student-overflow" id="student_block_'+i+'" style="height:'+ wjQuery(".fc-agenda-slots td div").height() +'px;overflow:auto"></div>';
             wjQuery('.sof-pane').append(elm);;
