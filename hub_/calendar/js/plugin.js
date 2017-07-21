@@ -603,7 +603,7 @@ function SylvanCalendar(){
             if(studentIndex === -1){
               t.studentConflictCheck(t,date, allDay,ev,ui,resource,elm);
             }
-          }else if(newEvent.length == 1 && newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length < resource.capacity || resource.capacity == undefined)){
+          }else if(newEvent.length == 1 && newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length >= resource.capacity || resource.capacity == undefined)){
             var studentIndex = newEvent[0]['students'].map(function(x){
               return x.id;
             }).indexOf(stuId);
@@ -1584,7 +1584,6 @@ function SylvanCalendar(){
     }
 
     this.populateStudentEvent = function(studentList, isFromFilter){
-      console.log(this.selectedDeliveryType);
         var self = this;
         if (studentList.length) {
             wjQuery.each(studentList, function(key, value) {

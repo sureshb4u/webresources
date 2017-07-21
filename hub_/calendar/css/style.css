@@ -272,6 +272,9 @@ div.ui-widget{
 .sof-pane.open,.ta-pane.open{
     display: block;
 }
+.fc-event{
+    overflow-y: auto;
+}
 
 .fc-event-title, .fc-event-time{
     text-align: center;
