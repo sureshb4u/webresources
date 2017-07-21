@@ -514,15 +514,19 @@ function SylvanCalendar(){
             }).indexOf(stuId);
             t.sofList.splice(index,1);
             var processFlag = false;
-            if(!(newEvent[0].hasOwnProperty("students"))){
-              processFlag = true;
-            }else if(newEvent[0].hasOwnProperty("students")){
-              var index = newEvent[0]['students'].map(function(x){
-                      return x.id;
-              }).indexOf(stuId);
-              if(index == -1){
+            if(newEvent.length > 0){
+              if(!(newEvent[0].hasOwnProperty("students"))){
                 processFlag = true;
+              }else if(newEvent[0].hasOwnProperty("students")){
+                var index = newEvent[0]['students'].map(function(x){
+                        return x.id;
+                }).indexOf(stuId);
+                if(index == -1){
+                  processFlag = true;
+                }
               }
+            }else{
+              processFlag = true;
             }
 
             if(processFlag){
@@ -555,9 +559,13 @@ function SylvanCalendar(){
             }).indexOf(teacherId);
             t.taList.splice(index,1);
             var processFlag = false;
-            if(!(newEvent[0].hasOwnProperty("teachers"))){
-              processFlag = true;
-            }else if(newEvent[0].hasOwnProperty("teachers") && newEvent[0]['teachers'] == 0){
+            if(newEvent.length > 0){
+              if(!(newEvent[0].hasOwnProperty("teachers"))){
+                processFlag = true;
+              }else if(newEvent[0].hasOwnProperty("teachers") && newEvent[0]['teachers'] == 0){
+                processFlag = true;
+              }
+            }else{
               processFlag = true;
             }
             if(processFlag){
