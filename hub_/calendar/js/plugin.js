@@ -571,14 +571,14 @@ function SylvanCalendar(){
             t.studentConflictCheck(t,date, allDay,ev,ui,resource,elm);
           }else if(newEvent.length == 1 && !(newEvent[0].hasOwnProperty('students'))){
             t.studentConflictCheck(t,date, allDay,ev,ui,resource,elm);
-          }else if(newEvent.length == 1 && newEvent[0].hasOwnProperty('students') && newEvent[0]['students'].length < resource.capacity){
+          }else if(newEvent.length == 1 && newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length < resource.capacity || resource.capacity == undefined)){
             var studentIndex = newEvent[0]['students'].map(function(x){
               return x.id;
             }).indexOf(stuId);
             if(studentIndex === -1){
               t.studentConflictCheck(t,date, allDay,ev,ui,resource,elm);
             }
-          }else if(newEvent.length == 1 && newEvent[0].hasOwnProperty('students') && newEvent[0]['students'].length >= resource.capacity){
+          }else if(newEvent.length == 1 && newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length < resource.capacity || resource.capacity == undefined)){
             var studentIndex = newEvent[0]['students'].map(function(x){
               return x.id;
             }).indexOf(stuId);
@@ -719,9 +719,6 @@ function SylvanCalendar(){
           if(eventTitleHTML.prop('outerHTML') != undefined){
             if(eventTitleHTML.length == 1){ 
               prevEvent[0].title = eventTitleHTML.prop('outerHTML');                
-              // if(prevEvent[0].students.length == 1){
-              //     prevEvent[0].title += "<span class='student-placeholder'>Student name</span>";                  
-              // }                 
             }else{                  
               prevEvent[0].title = "";
               for (var i = 0; i < eventTitleHTML.length; i++) {                    
@@ -749,6 +746,9 @@ function SylvanCalendar(){
                 this.eventList.splice(i,1);
             }
             this.calendar.fullCalendar('removeEvents', prevEventId);
+          }
+          if(!prevEvent[0].title.includes('<span class="student-placeholder">Student name</span>')){
+            prevEvent[0].title += '<span class="student-placeholder">Student name</span>';
           }
         }
         if(t.convertedStudentObj[index]){
@@ -1492,11 +1492,11 @@ function SylvanCalendar(){
                   });
                 }
                 var resourceObj = self.getDeliveryTypeObj(value['resourceId']);
-                if(event[k].title.includes("<span class='student-placeholder'>Student name</span>")){
-                  event[k].title = event[k].title.replace("<span class='student-placeholder'>Student name</span>", "");
+                if(event[k].title.includes('<span class="student-placeholder">Student name</span>')){
+                  event[k].title = event[k].title.replace('<span class="student-placeholder">Student name</span>', "");
                 }
-                if(event[k].students.length < resourceObj["capacity"]){
-                  event[k].title += "<span class='student-placeholder'>Student name</span>";                  
+                if(event[k].students.length < resourceObj["capacity"] || resourceObj["capacity"] == undefined){
+                  event[k].title += '<span class="student-placeholder">Student name</span>';                  
                 } 
               });
               self.calendar.fullCalendar('updateEvent', event);
@@ -1505,7 +1505,7 @@ function SylvanCalendar(){
               var obj = {
                   id: value['resourceId']+value['startHour'],
                   title:"<span class='draggable drag-teacher' eventid='"+eventId+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'>"+name+"</span>"+
-                        "<span class='student-placeholder'>Student name</span>",
+                        '<span class="student-placeholder">Student name</span>',
                   teachers:[{id:id, name:name}],
                   start:value['startHour'],
                   //end:value['end'],
@@ -1564,14 +1564,11 @@ function SylvanCalendar(){
                         event[k].students = [{id:id, name:name, grade:grade}];
                       }
                       var resourceObj = self.getDeliveryTypeObj(value['resourceId']);
-                      if(event[k].title.includes("<span class='student-placeholder'>Student name</span>")){
-                        event[k].title = event[k].title.replace("<span class='student-placeholder'>Student name</span>", "");
-                      }
-                      else if(event[k].title.includes('<span class="student-placeholder">Student name</span>')){
+                      if(event[k].title.includes('<span class="student-placeholder">Student name</span>')){
                         event[k].title = event[k].title.replace('<span class="student-placeholder">Student name</span>', "");
                       }
-                      if(event[k].students.length < resourceObj["capacity"]){
-                        event[k].title += "<span class='student-placeholder'>Student name</span>";                  
+                      if(event[k].students.length < resourceObj["capacity"] || resourceObj["capacity"] == undefined){
+                        event[k].title += '<span class="student-placeholder">Student name</span>';                  
                       } 
                     });
 
@@ -1607,8 +1604,8 @@ function SylvanCalendar(){
                     }
                     self.eventList.push(obj);
                     var resourceObj = self.getDeliveryTypeObj(value['resourceId']);
-                    if(resourceObj["capacity"] > 1){
-                      obj.title += "<span class='student-placeholder'>Student name</span>";                  
+                    if(resourceObj["capacity"] > 1 || resourceObj["capacity"] == undefined){
+                      obj.title += '<span class="student-placeholder">Student name</span>';                  
                     } 
                     if(isFromFilter){
                       self.calendar.fullCalendar('removeEvents');
