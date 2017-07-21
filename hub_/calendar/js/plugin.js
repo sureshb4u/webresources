@@ -35,6 +35,8 @@ setTimeout(function(){
     });
     var resources = [];
     function fetchResources(locationId,selectedDeliveryType,fetchData){
+      // asign deliverytpeList to  
+      sylvanCalendar.selectedDeliveryType = selectedDeliveryType;
       var resourceList = [];
       if(fetchData){
         var obj = data.getResources(locationId);
@@ -153,7 +155,7 @@ function SylvanCalendar(){
     this.pinnedData = [];
     this.students = [];
     this.teacherAvailability = [];
-
+    this.selectedDeliveryType = [];
     this.init = function(element){
     }
 
@@ -1169,16 +1171,22 @@ function SylvanCalendar(){
                     radio: false
                   });
                 }else if(key == "student"){
-                  self.filters[key].push({
-                      id: val._hub_student_value, 
-                      name: val['_hub_student_value@OData.Community.Display.V1.FormattedValue'], 
-                      startTime: val['hub_session_date@OData.Community.Display.V1.FormattedValue'] +" "+ val['hub_start_time@OData.Community.Display.V1.FormattedValue'],
-                      endTime: val['hub_session_date@OData.Community.Display.V1.FormattedValue'] +" "+ val['hub_end_time@OData.Community.Display.V1.FormattedValue'],
-                      sessionDate:val['hub_session_date@OData.Community.Display.V1.FormattedValue'],
-                      resourceId:val['_hub_resourceid_value'],
-                      centerId:val['_hub_center_value'],
-                      radio: false
-                  });
+                  // Remove duplicate entry
+                  var index = self.filters[key].map(function(x){
+                          return x.id;
+                  }).indexOf(val._hub_student_value);
+                  if(index == -1){
+                    self.filters[key].push({
+                        id: val._hub_student_value, 
+                        name: val['_hub_student_value@OData.Community.Display.V1.FormattedValue'], 
+                        startTime: val['hub_session_date@OData.Community.Display.V1.FormattedValue'] +" "+ val['hub_start_time@OData.Community.Display.V1.FormattedValue'],
+                        endTime: val['hub_session_date@OData.Community.Display.V1.FormattedValue'] +" "+ val['hub_end_time@OData.Community.Display.V1.FormattedValue'],
+                        sessionDate:val['hub_session_date@OData.Community.Display.V1.FormattedValue'],
+                        resourceId:val['_hub_resourceid_value'],
+                        centerId:val['_hub_center_value'],
+                        radio: false
+                    });
+                  }
                 }
             });
         });
@@ -1234,7 +1242,13 @@ function SylvanCalendar(){
                     obj.resourceId = val['_hub_resourceid_value']; 
                     eventObjList.push(obj);
                 }else{
-                    self.sofList.push(obj);  
+                    // Don not allow duplicate students into sofList
+                    var index = self.sofList.map(function(x){
+                            return x.id;
+                    }).indexOf(val._hub_student_value);
+                    if(index == -1){
+                      self.sofList.push(obj);  
+                    }
                 }
             });
             setTimeout(function(){
@@ -1269,7 +1283,13 @@ function SylvanCalendar(){
                 obj.resourceId = val['_hub_resourceid_value']; 
                 eventObjList.push(obj);
             }else{
+              // Don not allow duplicate students into sofList
+              var index = self.sofList.map(function(x){
+                      return x.id;
+              }).indexOf(val._hub_student_value);
+              if(index == -1){
                 self.sofList.push(obj);  
+              }
             }
           });
           setTimeout(function(){
@@ -1541,6 +1561,7 @@ function SylvanCalendar(){
     }
 
     this.populateStudentEvent = function(studentList, isFromFilter){
+      console.log(this.selectedDeliveryType);
         var self = this;
         if (studentList.length) {
             wjQuery.each(studentList, function(key, value) {
@@ -1769,29 +1790,6 @@ function SylvanCalendar(){
         data.saveTeachertoSession(objPrevSession,objNewSession);
         }
       }
-    }
-
-    // Parameter 
-    // selector with ./# ex: #dialog/.dialog needed to passs 
-    this.dialogPopup = function(selector){
-      wjQuery(selector).dialog({
-        resizable: false,
-        height: "auto",
-        width: 400,
-        modal: true,
-        buttons: {
-          "Confirm": function() {
-            wjQuery( this ).dialog( "close" );
-            response = true;
-            return true;
-          },
-          Cancel: function() {
-            wjQuery( this ).dialog( "close" );
-            response = false;
-            return false;
-          }
-        }
-      });
     }
 }
 
