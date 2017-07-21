@@ -494,7 +494,7 @@ function SylvanCalendar(){
             objNewSession.hub_start_time = this.convertToMinutes(moment(teacher.start).format("h:mm A"));
             objNewSession.hub_end_time  = this.convertToMinutes(moment(teacher.end).format("h:mm A"));
             objNewSession.hub_schedule_type = 1;
-        data.saveTAtoSession(objStaff,objNewSession);
+            this.teacherSchedule.push(data.saveTAtoSession(objStaff,objNewSession));
       }
     };
 
