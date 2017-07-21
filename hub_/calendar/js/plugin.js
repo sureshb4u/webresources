@@ -525,6 +525,7 @@ function SylvanCalendar(){
             }          
         }
         else if(wjQuery(elm).attr("type") == 'teacher'){
+            var newEvent = this.calendar.fullCalendar('clientEvents', resource.id+date);
             var endDate = new Date(date);
             var startHour = new Date(date).setMinutes(0);
             startHour = new Date(new Date(startHour).setSeconds(0));
@@ -536,23 +537,32 @@ function SylvanCalendar(){
                     return x.id;
             }).indexOf(teacherId);
             t.taList.splice(index,1);
-            if(teacher){
-                elm.remove(); 
-                var teacherObj = {
-                    id: teacher[0].id, 
-                    name: teacher[0].name,
-                    start: date,
-                    startHour :startHour,
-                    end: new Date(endDate.setHours(endDate.getHours() + 1)),
-                    resourceId:resource.id,
-                    deliveryTypeId: this.getDeliveryTypeObj(resource.id).deliveryTypeId,
-                    deliveryType : this.getDeliveryTypeObj(resource.id).deliveryType,
-                    locationId: teacher[0].locationId,
-                };
-                this.convertedTeacherObj.push(teacherObj);
-                this.saveTAtoSession(teacherObj);
-                t.populateTeacherEvent([teacherObj],false);
-            } 
+            var processFlag = false;
+            if(!(newEvent[0].hasOwnProperty("teachers"))){
+              processFlag = true;
+            }else if(newEvent[0].hasOwnProperty("teachers") && newEvent[0]['teachers'] == 0){
+              processFlag = true;
+            }
+            if(processFlag){
+              if(teacher){
+                  elm.remove(); 
+                  var teacherObj = {
+                      id: teacher[0].id, 
+                      name: teacher[0].name,
+                      start: date,
+                      startHour :startHour,
+                      end: new Date(endDate.setHours(endDate.getHours() + 1)),
+                      resourceId:resource.id,
+                      deliveryTypeId: this.getDeliveryTypeObj(resource.id).deliveryTypeId,
+                      deliveryType : this.getDeliveryTypeObj(resource.id).deliveryType,
+                      locationId: teacher[0].locationId,
+                  };
+                  this.convertedTeacherObj.push(teacherObj);
+                  this.saveTAtoSession(teacherObj);
+                  t.populateTeacherEvent([teacherObj],false);
+              } 
+            }
+
         }
         else if(wjQuery(elm).attr("type") == 'studentSession'){
           var stuId = wjQuery(elm).attr("value"); 

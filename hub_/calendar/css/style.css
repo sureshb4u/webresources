@@ -277,7 +277,7 @@ div.ui-widget{
     text-align: center;
 }
 .teacher-container{
- 
+    z-index: 3;
 }
 .subject-identifier{
     width: 15px;
