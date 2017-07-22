@@ -490,11 +490,22 @@ function SylvanCalendar(){
         var objNewSession = {};
             objNewSession.hub_deliverytype = teacher.deliveryTypeId;
             objNewSession['hub_resourceid@odata.bind'] = "/hub_center_resourceses(" + teacher.resourceId + ")";
-            objNewSession.hub_date = moment(teacher.start).format("YYYY-MM-DD");;
+            objNewSession.hub_date = moment(teacher.start).format("YYYY-MM-DD");
             objNewSession.hub_start_time = this.convertToMinutes(moment(teacher.start).format("h:mm A"));
             objNewSession.hub_end_time  = this.convertToMinutes(moment(teacher.end).format("h:mm A"));
             objNewSession.hub_schedule_type = 1;
-            this.teacherSchedule.push(data.saveTAtoSession(objStaff,objNewSession));
+            var newScheduleObj = {};
+            responseObj = data.saveTAtoSession(objStaff,objNewSession);
+            newScheduleObj.hub_staff_scheduleid = responseObj[0]['hub_staff_scheduleid'];
+            newScheduleObj.hub_center = teacher.locationId;
+            newScheduleObj.hub_date = moment(teacher.start).format("YYYY-MM-DD");
+            newScheduleObj.hub_start_time = this.convertToMinutes(moment(teacher.start).format("h:mm A"));
+            newScheduleObj.hub_end_time = this.convertToMinutes(moment(teacher.end).format("h:mm A"));
+            newScheduleObj._hub_resourceid_value = teacher.resourceId;
+            newScheduleObj._hub_staff_value = teacher.id;
+            
+            // update teacher schedule object
+            this.teacherSchedule.push(newScheduleObj);
       }
     };
 
