@@ -406,7 +406,9 @@ var student =  [
     "aenrollment_x002e_hub_enrollmentid": "cf646e8c-6361-e711-80f3-c4346badc680",
     "aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue": "Personal Instruction",
     "aproductservice_x002e_hub_deliverytype": "d6c706eb-a534-e711-80ed-c4346bad526c",
-    "aprogram_x002e_hub_name": "College Prep Writing: English 101"
+    "aprogram_x002e_hub_name": "College Prep Writing: English 101",
+    "aprogram_x002e_hub_areaofinterest@OData.Community.Display.V1.FormattedValue": "Math Tutoring",
+    "aprogram_x002e_hub_areaofinterest": 2
   },
   {
     "@odata.etag": "W/\"1723126\"",
@@ -451,7 +453,9 @@ var student =  [
     "aenrollment_x002e_hub_enrollmentid": "cf646e8c-6361-e711-80f3-c4346badc680",
     "aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue": "Personal Instruction",
     "aproductservice_x002e_hub_deliverytype": "d6c706eb-a534-e711-80ed-c4346bad526c",
-    "aprogram_x002e_hub_name": "College Prep Writing: English 101"
+    "aprogram_x002e_hub_name": "College Prep Writing: English 101",
+    "aprogram_x002e_hub_areaofinterest@OData.Community.Display.V1.FormattedValue": "Math Tutoring",
+    "aprogram_x002e_hub_areaofinterest": 2
   },
   {
     "@odata.etag": "W/\"1723135\"",

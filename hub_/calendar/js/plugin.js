@@ -195,15 +195,23 @@ function SylvanCalendar(){
                     if (self.filters[index][i].radio) {
                         wjQuery('#'+id).append('<div class="option_'+self.filters[index][i].id+' option-header-container">'+
                         '<label class="cursor option-title">'+
-                            '<input type="radio" class="filterCheckBox" name="checkbox" value="'+self.filters[index][i].id+'">'+self.filters[index][i].name+
+                            '<input type="radio" class="filterCheckBox" name="'+index+'" value="'+self.filters[index][i].id+'">'+self.filters[index][i].name+
                         '</label>'+
                     '</div>');
                     }else{
+                      if(index == "subject"){
+                         wjQuery('#'+id).append('<div class="option_'+self.filters[index][i].id+' option-header-container">'+
+                            '<label class="cursor option-title">'+
+                                '<input type="checkbox" class="filterCheckBox" name="'+index+'" value="'+self.filters[index][i].name+'">'+self.filters[index][i].name+
+                            '</label>'+
+                        '</div>');
+                      }else{
                         wjQuery('#'+id).append('<div class="option_'+self.filters[index][i].id+' option-header-container">'+
-                        '<label class="cursor option-title">'+
-                            '<input type="checkbox" class="filterCheckBox" name="checkbox" value="'+self.filters[index][i].id+'">'+self.filters[index][i].name+
-                        '</label>'+
-                    '</div>');
+                          '<label class="cursor option-title">'+
+                              '<input type="checkbox" class="filterCheckBox" name="'+index+'" value="'+self.filters[index][i].id+'">'+self.filters[index][i].name+
+                          '</label>'+
+                      '</div>');
+                      }
                     }
                     
                 }
@@ -236,7 +244,7 @@ function SylvanCalendar(){
                       wjQuery.each(checkedList, function(k, v){
                           newArray = wjQuery.merge(self.filterItems(self.convertedStudentObj, v, "default"), newArray);
                           sofNewArray = wjQuery.merge(self.filterItems(self.sofList, v ,"default"), sofNewArray);
-                          taNewArray = wjQuery.merge(self.filterItems(self.taList, v, "subject"), taNewArray);
+                          taNewArray = wjQuery.merge(self.filterItems(self.taList, v, "tapane"), taNewArray);
                       });
                       self.populateTAPane(taNewArray);
                       self.populateSOFPane(sofNewArray, self.calendarOptions.minTime, self.calendarOptions.maxTime);
@@ -1280,6 +1288,7 @@ function SylvanCalendar(){
                     deliveryTypeId: val['aproductservice_x002e_hub_deliverytype'],
                     deliveryType: val['aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue'],
                     locationId: val['_hub_center_value'],
+                    subject:val['aprogram_x002e_hub_areaofinterest@OData.Community.Display.V1.FormattedValue'],
                     locationName: val['_hub_center_value@OData.Community.Display.V1.FormattedValue']
                 }
                 if (val.hasOwnProperty('_hub_resourceid_value')) {
@@ -1693,7 +1702,7 @@ function SylvanCalendar(){
 
     this.filterItems = function(obj, filterTerm, filterFor){
       var self = this;
-      if(filterFor == "subject"){
+      if(filterFor == "tapane"){
         return obj.filter(function(el){
             if((el['subjects'].indexOf(parseInt(filterTerm)) != -1 )){
                 return el;
@@ -1701,8 +1710,10 @@ function SylvanCalendar(){
         });
       }else{
         return obj.filter(function(el){
-            if((el.id == filterTerm || el.gradeId == filterTerm) && self.selectedDeliveryType.indexOf(el['deliveryTypeId']) != -1){
-                return el;
+            if(el.subject != undefined){
+              if((el.id == filterTerm || el.gradeId == filterTerm || el.subject.toLowerCase() == filterTerm.toLowerCase()) && self.selectedDeliveryType.indexOf(el['deliveryTypeId']) != -1){
+                  return el;
+              }
             }
         });
       }
