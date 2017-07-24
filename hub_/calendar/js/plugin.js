@@ -396,30 +396,26 @@ function SylvanCalendar(){
             var elm = '<div class="student-overflow" id="student_block_'+i+'" style="height:'+ wjQuery(".fc-agenda-slots td div").height() +'px;overflow:auto"></div>';
             wjQuery('.sof-pane').append(elm);;
         }
-        var piFlag = true,giFlag = true,gfFlag = true;
         for(var i=0;i<studentData.length;i++){
             var studentStartHour = studentData[i].start.getHours();
             if(studentStartHour >= minTime && studentStartHour <= maxTime){
               var studentPosition = studentStartHour - minTime;
               var elm = '<div class="student-container cursor padding-lr-xxs" type="student" value="'+studentData[i].id+'">'+studentData[i].name+',<span>'+studentData[i].grade+'</span></div>';
               if(studentData[i].deliveryType == 'Personal Instruction'){
-                if(piFlag){
+                if(wjQuery('#student_block_'+studentPosition +' .sof-pi').length == 0){
                   wjQuery('#student_block_'+studentPosition).append('<div class="sof-pi"></div>');
-                  piFlag = false;
                 }
                 wjQuery('#student_block_'+studentPosition +' .sof-pi').append(elm);
               }
               else if(studentData[i].deliveryType == 'Group Instruction'){
-                if(giFlag){
+                if(wjQuery('#student_block_'+studentPosition +' .sof-gi').length == 0){
                   wjQuery('#student_block_'+studentPosition).append('<div class="sof-gi"></div>');
-                  giFlag = false;
                 }
                 wjQuery('#student_block_'+studentPosition +' .sof-gi').append(elm);
               }
               else if(studentData[i].deliveryType == 'Group Facilitation'){
-                if(gfFlag){
+                if(wjQuery('#student_block_'+studentPosition +' .sof-gf').length == 0){
                   wjQuery('#student_block_'+studentPosition).append('<div class="sof-gf"></div>');
-                  gfFlag = false;
                 }
                 wjQuery('#student_block_'+studentPosition +' .sof-gf').append(elm);
               }
