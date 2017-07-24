@@ -442,7 +442,7 @@ function SylvanCalendar(){
           var subject = self.filters["subject"].filter(function( obj ) {
             return obj.value == value;
           });
-          subjects.push(subject[0].id);
+          subjects.push(subject[0].name.toLowerCase());
         }
       });
       return subjects;
