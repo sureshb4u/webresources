@@ -7,12 +7,6 @@ setTimeout(function(){
     sylvanCalendar.init("widget-calendar");
     var locationId = sylvanCalendar.populateLocation(data.getLocation());
     setTimeout(function(){
-    var filterObject = {
-      student:data.getStudentSession(locationId,currentCalendarDate,currentCalendarDate) == null ? []:data.getStudentSession(locationId,currentCalendarDate,currentCalendarDate) ,
-      grade: data.getGrade() == null? [] : data.getGrade(),
-      subject: data.getSubject() == null ? [] : data.getSubject()
-    }
-    sylvanCalendar.generateFilterObject(filterObject);
     for (var i = 0; i < deliveryType.length; i++) {
       switch(deliveryType[i]['hub_name']){
         case 'Personal Instruction':
@@ -114,7 +108,7 @@ setTimeout(function(){
             }
         });
       }
-    }    
+    }   
     wjQuery('#pi-btn input').attr('checked', 'checked');
     wjQuery('.dtBtn').click(function() {
       deliveryTypeList = [];
@@ -139,6 +133,12 @@ setTimeout(function(){
     });
       fetchResources(locationId,deliveryTypeList,true);    
     },300);
+    var filterObject = {
+      student:data.getStudentSession(locationId,currentCalendarDate,currentCalendarDate) == null ? []:data.getStudentSession(locationId,currentCalendarDate,currentCalendarDate) ,
+      grade: data.getGrade() == null? [] : data.getGrade(),
+      subject: data.getSubject() == null ? [] : data.getSubject()
+    }
+    sylvanCalendar.generateFilterObject(filterObject); 
 },500);
 
 function SylvanCalendar(){
@@ -1204,7 +1204,11 @@ function SylvanCalendar(){
                   var index = self.filters[key].map(function(x){
                           return x.id;
                   }).indexOf(val._hub_student_value);
-                  if(index == -1){
+                  var deliveryTypeIndex = self.selectedDeliveryType.map(function(y){
+                          return y;
+                  }).indexOf(val.aproductservice_x002e_hub_deliverytype);
+
+                  if(index == -1 && deliveryTypeIndex != -1){
                     self.filters[key].push({
                         id: val._hub_student_value, 
                         name: val['_hub_student_value@OData.Community.Display.V1.FormattedValue'], 
@@ -1213,6 +1217,8 @@ function SylvanCalendar(){
                         sessionDate:val['hub_session_date@OData.Community.Display.V1.FormattedValue'],
                         resourceId:val['_hub_resourceid_value'],
                         centerId:val['_hub_center_value'],
+                        deliveryTypeId: val.aproductservice_x002e_hub_deliverytype,
+                        deliveryType: val['aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue'],
                         radio: false
                     });
                   }
@@ -1669,15 +1675,16 @@ function SylvanCalendar(){
     }
 
     this.filterItems = function(obj, filterTerm, filterFor){
+      var self = this;
       if(filterFor == "subject"){
         return obj.filter(function(el){
-            if((el['subjects'].indexOf(parseInt(filterTerm)) != -1)){
+            if((el['subjects'].indexOf(parseInt(filterTerm)) != -1 )){
                 return el;
             }
         });
       }else{
         return obj.filter(function(el){
-            if(el.id == filterTerm || el.gradeId == filterTerm){
+            if((el.id == filterTerm || el.gradeId == filterTerm) && self.selectedDeliveryType.indexOf(el['deliveryTypeId']) != -1){
                 return el;
             }
         });
