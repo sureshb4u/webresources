@@ -1645,8 +1645,11 @@ function SylvanCalendar(){
                         event[k].students = [{id:id, name:name, grade:grade}];
                       }
                       var resourceObj = self.getDeliveryTypeObj(value['resourceId']);
+                      if(event[k].title.includes('<span class="student-placeholder" >Student name</span>')){
+                        event[k].title = event[k].title.replace('<span class="student-placeholder" >Student name</span>', '');
+                      }
                       if(event[k].title.includes('<span class="student-placeholder">Student name</span>')){
-                        event[k].title = event[k].title.replace('<span class="student-placeholder">Student name</span>', "");
+                        event[k].title = event[k].title.replace('<span class="student-placeholder">Student name</span>', '');
                       }
                       if(event[k].students.length < resourceObj["capacity"] || resourceObj["capacity"] == undefined){
                         event[k].title += '<span class="student-placeholder">Student name</span>';                  
