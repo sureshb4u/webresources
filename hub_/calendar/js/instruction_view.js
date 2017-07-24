@@ -409,6 +409,51 @@ var student =  [
     "aprogram_x002e_hub_name": "College Prep Writing: English 101"
   },
   {
+    "@odata.etag": "W/\"1723126\"",
+    "_hub_student_value@OData.Community.Display.V1.FormattedValue": "Ashlee Johnson",
+    "_hub_student_value@Microsoft.Dynamics.CRM.associatednavigationproperty": "hub_student",
+    "_hub_student_value@Microsoft.Dynamics.CRM.lookuplogicalname": "contact",
+    "_hub_student_value": "37dfceef-5f61-e711-80f3-c4346badc680",
+    "hub_isattended@OData.Community.Display.V1.FormattedValue": "No",
+    "hub_isattended": false,
+    "hub_sessiontype@OData.Community.Display.V1.FormattedValue": "Regular",
+    "hub_sessiontype": 1,
+    "hub_end_time@OData.Community.Display.V1.FormattedValue": "11:00 AM",
+    "hub_end_time": 660,
+    "hub_session_date@OData.Community.Display.V1.FormattedValue": "7/24/2017",
+    "hub_session_date": "2017-07-24",
+    "hub_is_1to1@OData.Community.Display.V1.FormattedValue": "Yes",
+    "hub_is_1to1": true,
+    "_hub_enrollment_value@OData.Community.Display.V1.FormattedValue": "Ashlee Johnson - College Prep Writing - 101",
+    "_hub_enrollment_value@Microsoft.Dynamics.CRM.associatednavigationproperty": "hub_enrollment",
+    "_hub_enrollment_value@Microsoft.Dynamics.CRM.lookuplogicalname": "hub_enrollment",
+    "_hub_enrollment_value": "cf646e8c-6361-e711-80f3-c4346badc680",
+    "hub_studentsessionid": "df930c35-0d67-e711-80f2-c4346bacfbbc",
+    "hub_late@OData.Community.Display.V1.FormattedValue": "No",
+    "hub_late": false,
+    "_hub_center_value@OData.Community.Display.V1.FormattedValue": "Bel Air Learning Center",
+    "_hub_center_value@Microsoft.Dynamics.CRM.associatednavigationproperty": "hub_center",
+    "_hub_center_value@Microsoft.Dynamics.CRM.lookuplogicalname": "hub_center",
+    "_hub_center_value": "b97bc0df-a334-e711-80ed-c4346bacfbbc",
+    "_hub_service_value@OData.Community.Display.V1.FormattedValue": "College Prep Writing - 101",
+    "_hub_service_value@Microsoft.Dynamics.CRM.associatednavigationproperty": "hub_service",
+    "_hub_service_value@Microsoft.Dynamics.CRM.lookuplogicalname": "hub_productservice",
+    "_hub_service_value": "c9e31316-e240-e711-80f0-c4346bad526c",
+    "_hub_resourceid_value@OData.Community.Display.V1.FormattedValue": "Area 101",
+    "_hub_resourceid_value@Microsoft.Dynamics.CRM.associatednavigationproperty": "hub_resourceid",
+    "_hub_resourceid_value@Microsoft.Dynamics.CRM.lookuplogicalname": "hub_center_resources",
+    "_hub_resourceid_value": "a63c15a8-1b50-e711-80f1-c4346bacfbbc",
+    "hub_start_time@OData.Community.Display.V1.FormattedValue": "10:00 AM",
+    "hub_start_time": 600,
+    "astudent_x002e_hub_grade@OData.Community.Display.V1.FormattedValue": "4",
+    "astudent_x002e_hub_grade": 6,
+    "aprogram_x002e_hub_programid": "86d15aca-a534-e711-80ed-c4346bad526c",
+    "aenrollment_x002e_hub_enrollmentid": "cf646e8c-6361-e711-80f3-c4346badc680",
+    "aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue": "Personal Instruction",
+    "aproductservice_x002e_hub_deliverytype": "d6c706eb-a534-e711-80ed-c4346bad526c",
+    "aprogram_x002e_hub_name": "College Prep Writing: English 101"
+  },
+  {
     "@odata.etag": "W/\"1723135\"",
     "_hub_student_value@OData.Community.Display.V1.FormattedValue": "Ashlee Johnson",
     "_hub_student_value@Microsoft.Dynamics.CRM.associatednavigationproperty": "hub_student",
@@ -4038,6 +4083,22 @@ function Data(){
   }
   
   this.saveTeachertoSession = function(objStudent,objSession){
+    return true;
+  }
+
+  this.savePinStudent = function(objPinnedStudent){
+    return true;
+  }
+  
+  this.saveUnPinStudent = function(objUnPinnedStudent){
+    return true;
+  }
+  
+  this.savePinTeacher = function(objPinnedTeacher){
+    return true;
+  }
+  
+  this.saveUnPinTeacher = function(ObjUnPinnedTeacher){
     return true;
   }
 }

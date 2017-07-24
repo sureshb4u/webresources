@@ -328,9 +328,9 @@ function SylvanCalendar(){
       }
     }
 
-    this.getDayValue = function(dayString){
-      if(dayString != undefined){
-        switch(dayString.toLowerCase()){
+    this.getDayValue = function(date){
+      if(date != undefined){
+        switch(moment(date).format('dddd').toLowerCase()){
           case 'monday':
             return 1;
           break;
@@ -1263,8 +1263,9 @@ function SylvanCalendar(){
                     id: val._hub_student_value, 
                     name: val["_hub_student_value@OData.Community.Display.V1.FormattedValue"],
                     start: sDate,
-                    end: eDate,
+                    enrollmentId :val['_hub_enrollment_value'],
                     is1to1 : val["hub_is_1to1"],
+                    serviceId:val['_hub_service_value'],
                     startHour : startHour,
                     gradeId:val['astudent_x002e_hub_grade'],
                     grade: val['astudent_x002e_hub_grade@OData.Community.Display.V1.FormattedValue'],
@@ -1512,6 +1513,7 @@ function SylvanCalendar(){
             eventId = value['resourceId']+value['startHour'];
             event = self.calendar.fullCalendar('clientEvents', eventId);
             if(event.length == 1){
+              var uniqueId ='';
               wjQuery.each(event, function(k, v){
                 if(event[k].hasOwnProperty("teachers") && event[k]['teachers'].length !=0 ){
                   index = event[k].teachers.map(function(x){
@@ -1525,25 +1527,25 @@ function SylvanCalendar(){
                     }
                     event[k].teachers.push({id:id, name:name});
                     wjQuery.each(event[k].teachers, function(ka, v){
-                      event[k].title += "<span class='draggable drag-teacher' eventid='"+eventId+"' id='"+v.id+value['resourceId']+"' type='teacherSession' value='"+v.id+"'>"+v.name+"</span>";
+                      event[k].title += "<span class='draggable drag-teacher' eventid='"+eventId+"' uniqueId='"+v.id+"_"+value['resourceId']+"_"+value['startHour']+"' id='"+v.id+value['resourceId']+"' type='teacherSession' value='"+v.id+"'>"+v.name+"</span>";
                     });
                     if(event[k].hasOwnProperty("students")){
                       wjQuery.each(event[k].students, function(ke, val){
-                        event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' id='"+val.id+value['resourceId']+"' type='studentSession' value='"+val.id+"'>"+val.name+", "+val.grade+"</span>";
+                        event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+val.id+"_"+value['resourceId']+"_"+value['startHour']+"' id='"+val.id+value['resourceId']+"' type='studentSession' value='"+val.id+"'>"+val.name+", "+val.grade+"</span>";
                       });
                     }
                   }
                 }else{
                   if(event[k].title.includes("<img class='onetoone' src='/webresources/hub_/calendar/images/lock.png'>")){
                     event[k].title = "<img class='onetoone' src='/webresources/hub_/calendar/images/lock.png'>";
-                    event[k].title += "<span class='draggable drag-teacher' eventid='"+eventId+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'>"+name+"</span>";
+                    event[k].title += "<span class='draggable drag-teacher' eventid='"+eventId+"' uniqueId='"+id+"_"+value['resourceId']+"_"+value['startHour']+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'>"+name+"</span>";
                   }else{
-                    event[k].title = "<span class='draggable drag-teacher' eventid='"+eventId+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'>"+name+"</span>";
+                    event[k].title = "<span class='draggable drag-teacher' eventid='"+eventId+"' uniqueId='"+id+"_"+value['resourceId']+"_"+value['startHour']+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'>"+name+"</span>";
                   }
                   var studentList = event[k].students;
                   event[k].teachers = [{id:id, name:name}];
                   wjQuery.each(studentList, function(ke, val){
-                    event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' id='"+val.id+value['resourceId']+"' type='studentSession' value='"+val.id+"'>"+val.name+", "+val.grade+"</span>";
+                    event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+val.id+"_"+value['resourceId']+"_"+value['startHour']+"' id='"+val.id+value['resourceId']+"' type='studentSession' value='"+val.id+"'>"+val.name+", "+val.grade+"</span>";
                   });
                 }
                 var resourceObj = self.getDeliveryTypeObj(value['resourceId']);
@@ -1559,7 +1561,7 @@ function SylvanCalendar(){
 
               var obj = {
                   id: value['resourceId']+value['startHour'],
-                  title:"<span class='draggable drag-teacher' eventid='"+eventId+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'>"+name+"</span>"+
+                  title:"<span class='draggable drag-teacher' eventid='"+eventId+"' uniqueId='"+val.id+"_"+value['resourceId']+"_"+value['startHour']+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'>"+name+"</span>"+
                         '<span class="student-placeholder">Student name</span>',
                   teachers:[{id:id, name:name}],
                   start:value['startHour'],
@@ -1611,11 +1613,11 @@ function SylvanCalendar(){
                              return x.id;
                         }).indexOf(id);
                         if(index == -1){
-                          event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
+                          event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+id+"_"+value['resourceId']+"_"+value['startHour']+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
                           event[k].students.push({id:id, name:name, grade:grade});
                         }
                       }else{
-                        event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
+                        event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+id+"_"+value['resourceId']+"_"+value['startHour']+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
                         event[k].students = [{id:id, name:name, grade:grade}];
                       }
                       var resourceObj = self.getDeliveryTypeObj(value['resourceId']);
@@ -1626,8 +1628,8 @@ function SylvanCalendar(){
                         event[k].title += '<span class="student-placeholder">Student name</span>';                  
                       } 
                     });
-
                     self.calendar.fullCalendar('updateEvent', event);
+
                 }else{
                     var obj = {
                         id: eventId,
@@ -1646,7 +1648,7 @@ function SylvanCalendar(){
                       obj.title += "<img class='onetoone' src='/webresources/hub_/calendar/images/lock.png'>";
                     }
                     obj.title += "<span class='placeholder'>Teacher name</span>" +
-                                "<span class='draggable drag-student' eventid='"+eventId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
+                                "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+id+"_"+value['resourceId']+"_"+value['startHour']+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
                     if(value.deliveryType == "Group Facilitation"){ 
                         obj.backgroundColor = "#dff0d5";
                         obj.borderColor = "#7bc143";
@@ -1691,29 +1693,54 @@ function SylvanCalendar(){
       }
     }
 
+    this.pinStudent = function(element){
+      var id = wjQuery(element).attr('value');
+      var startTime = wjQuery(element).attr('starttime');
+      var today = this.calendar.fullCalendar('getDate');
+      var student = this.convertedStudentObj.filter(function(x){
+        return x.id == id;
+      });
+      var objPinnedStudent = {};
+      if(student != undefined){
+        objPinnedStudent['hub_center@odata.bind'] = student[0].locationId;
+        objPinnedStudent['hub_enrollment@odata.bind'] = student[0].enrollmentId;
+        objPinnedStudent['hub_productservice@odata.bind'] = student[0].serviceId;
+        objPinnedStudent['hub_studnet@odata.bind'] = id;
+        objPinnedStudent['hub_resource@odata.bind'] = student[0].resourceId;
+      }
+      objPinnedStudent.hub_strat_time = this.convertToMinutes(moment(startTime).format("h:mm A"));
+      objPinnedStudent.hub_end_time = objPinnedStudent.hub_start_time + 60;
+      objPinnedStudent.hub_day = this.getDayValue(today);
+      objPinnedStudent.hub_date = moment(today).format("YYYY-MM-DD");
+      if(data.savePinStudent(objPinnedStudent)){
+
+      }
+    };
+
     this.addContext = function(selector){
+      var self = this;
       var obj = {}; 
       if(selector == 'drag-student'){
         obj.pin = {name: "Pin"};
+        obj.pin.callback = function(key, options) {
+          self.pinStudent(options.$trigger[0]);
+        }  
       }
       else{
         obj.pin = {
-                    name: "Pin",
+                    "name": "Pin",
                     "items": {
-                      "pin-key1": {"name": "Time"},
-                      "pin-key2": {"name": "Resource"}
+                      "pinbyTime": {"name": "Time"},
+                      "pinbyResource": {"name": "Resource"}
                     }
                   };
-      }      
-      obj.reschedule= {name: "Reschedule"};
-      obj.cancel = {name: "Cancel"};
+      }    
+      //obj.reschedule = {name: "Reschedule"};
+      //obj.remove = {name: "Remove"};
+      //obj.cancel = {name: "Cancel"};
       wjQuery(function() {
         wjQuery.contextMenu({
             selector: '.'+selector, 
-            callback: function(key, options) {
-                var m = "clicked: " + key;
-                window.console && console.log(m) || alert(m); 
-            },
             items: obj
         }); 
       });
@@ -1723,10 +1750,10 @@ function SylvanCalendar(){
       wjQuery('.'+selector).draggable({
         revert: true,      
         revertDuration: 0,
-        appendTo: 'body',
-        containment: 'window',
+        appendTo: '#scrollarea',
         helper: 'clone',
         cursor: "move",
+        scroll: true,
         cursorAt: { top : 0 }
         /*drag : function(){
           if(sofExpanded){
@@ -1745,7 +1772,7 @@ function SylvanCalendar(){
           }
         }*/
       });
-    }
+    };
 
     this.getDeliveryTypeObj = function(resourceId){
       var deliveryTypeObj = {}; 
@@ -1755,7 +1782,7 @@ function SylvanCalendar(){
           }
       });
       return deliveryTypeObj;
-    }
+    };
 
     this.saveStudentToSession = function(student,prevStudent){
       var objPrevSession = {};
