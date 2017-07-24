@@ -1539,7 +1539,6 @@ function SylvanCalendar(){
                     wjQuery.each(event[k].teachers, function(ka, v){
                       event[k].title += "<span class='draggable drag-teacher' eventid='"+eventId+"' uniqueId='"+v.id+"_"+value['resourceId']+"_"+value['startHour']+"' id='"+v.id+value['resourceId']+"' type='teacherSession' value='"+v.id+"'>"+v.name+"</span>";
                       event[k].isConflict = true;
-                      event[k].title += "<span class='draggable drag-teacher' eventid='"+eventId+"' id='"+v.id+value['resourceId']+"' type='teacherSession' value='"+v.id+"'>"+v.name+"</span>";
                     });
                     if(event[k].hasOwnProperty("students")){
                       wjQuery.each(event[k].students, function(ke, val){
@@ -1577,7 +1576,7 @@ function SylvanCalendar(){
             }else{
               var obj = {
                   id: value['resourceId']+value['startHour'],
-                  title:"<span class='draggable drag-teacher' eventid='"+eventId+"' uniqueId='"+val.id+"_"+value['resourceId']+"_"+value['startHour']+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'>"+name+"</span>"+
+                  title:"<span class='draggable drag-teacher' eventid='"+eventId+"' uniqueId='"+id+"_"+value['resourceId']+"_"+value['startHour']+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'>"+name+"</span>"+
                         '<span class="student-placeholder">Student name</span>',
                   teachers:[{id:id, name:name}],
                   start:value['startHour'],
