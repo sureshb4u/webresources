@@ -1,9 +1,10 @@
 body{
     overflow-x: hidden;
+    position: relative;
 }
 #calendar
 {
-	margin: auto;
+    margin: auto;
 }
 .no-margin{
     margin: 0;
@@ -351,4 +352,11 @@ div.ui-widget{
 }
 .student-container{
     z-index: 3;
+}
+.conflict{
+    position: absolute;
+    right: 0;
+    vertical-align: middle;
+    top: 50%;
+    transform: translateY(-50%);
 }
