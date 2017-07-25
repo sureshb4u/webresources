@@ -2735,9 +2735,9 @@ var teacherSchedule = [
       "hub_start_date": "2017-06-13",
       "hub_date@OData.Community.Display.V1.FormattedValue": "07/25/2017",
       "hub_date": "2017-06-13",
-      "aa_x002e_hub_center@OData.Community.Display.V1.FormattedValue": "Bel Air Learning Center",
+      "astaff_x002e_hub_center@OData.Community.Display.V1.FormattedValue": "Bel Air Learning Center",
       "_hub_resourceid_value": "f74453af-263f-e711-80ef-c4346bacfbbc",
-      "aa_x002e_hub_center": "b97bc0df-a334-e711-80ed-c4346bacfbbc",
+      "astaff_x002e_hub_center": "b97bc0df-a334-e711-80ed-c4346bacfbbc",
       "aproductservice_x002e_hub_deliverytype": "d6c706eb-a534-e711-80ed-c4346bad526c",
       "aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue": "Personal Instruction"
     },
@@ -2758,9 +2758,9 @@ var teacherSchedule = [
       "hub_start_date": "2017-06-14",
       "hub_date@OData.Community.Display.V1.FormattedValue": "07/25/2017",
       "hub_date": "2017-06-14",
-      "aa_x002e_hub_center@OData.Community.Display.V1.FormattedValue": "Bel Air Learning Center",
+      "astaff_x002e_hub_center@OData.Community.Display.V1.FormattedValue": "Bel Air Learning Center",
       "_hub_resourceid_value": "f74453af-263f-e711-80ef-c4346bacfbbc",
-      "aa_x002e_hub_center": "b97bc0df-a334-e711-80ed-c4346bacfbbc",
+      "astaff_x002e_hub_center": "b97bc0df-a334-e711-80ed-c4346bacfbbc",
       "aproductservice_x002e_hub_deliverytype": "f8b0e613-a534-e711-80ed-c4346bad526c",
       "aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue": "Group Instruction"
     },
@@ -2781,9 +2781,9 @@ var teacherSchedule = [
       "hub_start_date": "2017-06-18",
       "hub_date@OData.Community.Display.V1.FormattedValue": "07/25/2017",
       "hub_date": "2017-06-18",
-      "aa_x002e_hub_center@OData.Community.Display.V1.FormattedValue": "Bel Air Learning Center",
+      "astaff_x002e_hub_center@OData.Community.Display.V1.FormattedValue": "Bel Air Learning Center",
       "_hub_resourceid_value": "f74453af-263f-e711-80ef-c4346bacfbbc",
-      "aa_x002e_hub_center": "a63c15a8-1b50-e711-80f1-c4346bacfbbc",
+      "astaff_x002e_hub_center": "a63c15a8-1b50-e711-80f1-c4346bacfbbc",
       "aproductservice_x002e_hub_deliverytype": "d6493b3e-4e35-e711-80ed-c4346bad526c",
       "aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue": "Group Facilitation"
     }
@@ -2808,8 +2808,8 @@ var staff =   [
       "hub_start_date": "2017-06-13",
       "hub_date@OData.Community.Display.V1.FormattedValue": "6/13/2017",
       "hub_date": "2017-06-13",
-      "aa_x002e_hub_center@OData.Community.Display.V1.FormattedValue": "Bel Air Learning Center",
-      "aa_x002e_hub_center": "b97bc0df-a334-e711-80ed-c4346bacfbbc"
+      "astaff_x002e_hub_center@OData.Community.Display.V1.FormattedValue": "Bel Air Learning Center",
+      "astaff_x002e_hub_center": "b97bc0df-a334-e711-80ed-c4346bacfbbc"
     },
     {
       "@odata.etag": "W/\"1429025\"",
@@ -2828,8 +2828,8 @@ var staff =   [
       "hub_start_date": "2017-06-14",
       "hub_date@OData.Community.Display.V1.FormattedValue": "6/14/2017",
       "hub_date": "2017-06-14",
-      "aa_x002e_hub_center@OData.Community.Display.V1.FormattedValue": "Bel Air Learning Center",
-      "aa_x002e_hub_center": "b97bc0df-a334-e711-80ed-c4346bacfbbc"
+      "astaff_x002e_hub_center@OData.Community.Display.V1.FormattedValue": "Bel Air Learning Center",
+      "astaff_x002e_hub_center": "b97bc0df-a334-e711-80ed-c4346bacfbbc"
     },
     {
       "@odata.etag": "W/\"1429692\"",
@@ -2848,8 +2848,8 @@ var staff =   [
       "hub_start_date": "2017-06-18",
       "hub_date@OData.Community.Display.V1.FormattedValue": "6/18/2017",
       "hub_date": "2017-06-18",
-      "aa_x002e_hub_center@OData.Community.Display.V1.FormattedValue": "Bel Air Learning Center",
-      "aa_x002e_hub_center": "b97bc0df-a334-e711-80ed-c4346bacfbbc"
+      "astaff_x002e_hub_center@OData.Community.Display.V1.FormattedValue": "Bel Air Learning Center",
+      "astaff_x002e_hub_center": "b97bc0df-a334-e711-80ed-c4346bacfbbc"
     },
     {
       "@odata.etag": "W/\"1429027\"",
@@ -2868,8 +2868,8 @@ var staff =   [
       "hub_start_date": "2017-06-16",
       "hub_date@OData.Community.Display.V1.FormattedValue": "6/16/2017",
       "hub_date": "2017-06-16",
-      "aa_x002e_hub_center@OData.Community.Display.V1.FormattedValue": "Bel Air Learning Center",
-      "aa_x002e_hub_center": "b97bc0df-a334-e711-80ed-c4346bacfbbc"
+      "astaff_x002e_hub_center@OData.Community.Display.V1.FormattedValue": "Bel Air Learning Center",
+      "astaff_x002e_hub_center": "b97bc0df-a334-e711-80ed-c4346bacfbbc"
     },
     {
       "@odata.etag": "W/\"1429028\"",
@@ -2888,8 +2888,8 @@ var staff =   [
       "hub_start_date": "2017-06-17",
       "hub_date@OData.Community.Display.V1.FormattedValue": "6/17/2017",
       "hub_date": "2017-06-17",
-      "aa_x002e_hub_center@OData.Community.Display.V1.FormattedValue": "Bel Air Learning Center",
-      "aa_x002e_hub_center": "b97bc0df-a334-e711-80ed-c4346bacfbbc"
+      "astaff_x002e_hub_center@OData.Community.Display.V1.FormattedValue": "Bel Air Learning Center",
+      "astaff_x002e_hub_center": "b97bc0df-a334-e711-80ed-c4346bacfbbc"
     },
     {
       "@odata.etag": "W/\"1429029\"",
@@ -2908,8 +2908,8 @@ var staff =   [
       "hub_start_date": "2017-06-18",
       "hub_date@OData.Community.Display.V1.FormattedValue": "6/18/2017",
       "hub_date": "2017-06-18",
-      "aa_x002e_hub_center@OData.Community.Display.V1.FormattedValue": "Bel Air Learning Center",
-      "aa_x002e_hub_center": "b97bc0df-a334-e711-80ed-c4346bacfbbc"
+      "astaff_x002e_hub_center@OData.Community.Display.V1.FormattedValue": "Bel Air Learning Center",
+      "astaff_x002e_hub_center": "b97bc0df-a334-e711-80ed-c4346bacfbbc"
     }
   ];
 
