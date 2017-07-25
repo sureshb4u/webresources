@@ -528,8 +528,9 @@ function SylvanCalendar(){
             var index = t.sofList.map(function(x){
                     return x.id;
             }).indexOf(stuId);
-            t.sofList.splice(index,1);
+            var prevStudObj = t.sofList[index];
             var processFlag = false;
+
             if(newEvent.length > 0){
               if(!(newEvent[0].hasOwnProperty("students"))){
                 processFlag = true;
@@ -545,20 +546,10 @@ function SylvanCalendar(){
               processFlag = true;
             }
 
-            if(processFlag){
-              if(student){
-                  elm.remove();
-                  if(wjQuery(parentElement).html() == ''){
-                    parentElement.remove();
-                  }
-                  student[0].start = date;
-                  student[0].startHour = startHour;
-                  student[0].end = new Date(endDate.setHours(endDate.getHours() + 1));
-                  student[0].resourceId = resource.id;
-                  this.convertedStudentObj.push(student[0]);
-                  this.saveSOFtoSession(student);
-                  t.populateStudentEvent(student,false);
-              }          
+            if(!processFlag){
+              t.studentSofConflictCheck(t,date, allDay,ev,ui,resource,elm);
+            }else{
+              t.studentSofCnfmPopup(t,date, allDay,ev,ui,resource,elm, "prasad");
             }
         }
         else if(wjQuery(elm).attr("type") == 'teacher'){
@@ -611,62 +602,40 @@ function SylvanCalendar(){
           var newEvent = this.calendar.fullCalendar('clientEvents', resource.id+date);
           var prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
           var newResourceObj = t.getResourceObj(resource.id);
+          var prevResourceObj = t.getResourceObj(prevEvent[0]['resourceId']);
+    
           if(newEvent.length == 0){
             if(newResourceObj.deliveryType != "Group Instruction"){
-              t.studentConflictCheck(t,date, allDay,ev,ui,resource,elm);
+              if(newResourceObj.deliveryType == prevResourceObj.deliveryType){
+                t.studentSessionConflictCheck(t,date, allDay,ev,ui,resource,elm);
+              }else{
+                t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "DeliveryType is different. Do you wish to continue?");
+              }
             }
           }else if(newEvent.length == 1){
-            var studentIndex = newEvent[0]['students'].map(function(x){
-              return x.id;
-            }).indexOf(stuId);
-            if(studentIndex == -1){
-              var prevResourceObj = t.getResourceObj(prevEvent[0]['resourceId']);
-              if(newResourceObj.deliveryType != "Group Instruction"){
-                if(newResourceObj.deliveryType == prevResourceObj.deliveryType){
-                  if(newResourceObj.deliveryType == "Personal Instruction"){
-                    //  Validation for oneToOne check
-                    //* if oneToOne then show popup
-                    if(newEvent[0]['is1to1']){
-                      t.confirmPopup(t,date, allDay,ev,ui,resource,elm, "Event is 'OneToOne' Type. Do you wish to continue?");
-                    }else{
-                      if(!(newEvent[0].hasOwnProperty('students')) || newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length <= resource.capacity || resource.capacity == undefined)){
-                          t.studentConflictCheck(t,date, allDay,ev,ui,resource,elm);
-                      }else if(newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length > resource.capacity || resource.capacity == undefined)){
-                        t.confirmPopup(t,date, allDay,ev,ui,resource,elm, "Capacity has reached the maximum. Do you wish to continue?");
-                      }
-                    }
-                  }else if(newResourceObj.deliveryType == "Group Facilitation"){
-                    // Check Services for same DI
-                    var studentIndex = prevEvent[0]['students'].map(function(x){
-                      return x.id;
-                    }).indexOf(stuId);
-                    prevServiceId = prevEvent[0]['students'][studentIndex]['serviceId'];
-                    var showPromt = true;
-                    wjQuery.each(newEvent[0]['students'], function(k, v){
-
-                      if(v.serviceId == prevServiceId){
-                        showPromt = false;
-                      }
-                    });
-                    if(showPromt){
-                      t.confirmPopup(t,date, allDay,ev,ui,resource,elm, "Servieces are not matching. Do you wish to continue?");
-                    }else{
-                      t.studentConflictCheck(t,date, allDay,ev,ui,resource,elm);
-                    }
-                  }
-                }else{
-                  // condition's for different DI
-                  if(newResourceObj.deliveryType != "Group Instruction"){
+            if(newEvent[0]['students'] == undefined){
+              if(newResourceObj.deliveryType == prevResourceObj.deliveryType){
+                t.studentSessionConflictCheck(t,date, allDay,ev,ui,resource,elm);
+              }else{
+                t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "DeliveryType is different. Do you wish to continue?");
+              }
+            }else{
+              var studentIndex = newEvent[0]['students'].map(function(x){
+                return x.id;
+              }).indexOf(stuId);
+              if(studentIndex == -1){
+                if(newResourceObj.deliveryType != "Group Instruction"){
+                  if(newResourceObj.deliveryType == prevResourceObj.deliveryType){
                     if(newResourceObj.deliveryType == "Personal Instruction"){
                       //  Validation for oneToOne check
                       //* if oneToOne then show popup
                       if(newEvent[0]['is1to1']){
-                        t.confirmPopup(t,date, allDay,ev,ui,resource,elm, "Event is 'OneToOne' Type. Do you wish to continue?");
+                        t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "Event is 'OneToOne' Type. Do you wish to continue?");
                       }else{
                         if(!(newEvent[0].hasOwnProperty('students')) || newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length <= resource.capacity || resource.capacity == undefined)){
-                            t.confirmPopup(t,date, allDay,ev,ui,resource,elm, "DeliveryType is different. Do you wish to continue?");
+                            t.studentSessionConflictCheck(t,date, allDay,ev,ui,resource,elm);
                         }else if(newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length > resource.capacity || resource.capacity == undefined)){
-                          t.confirmPopup(t,date, allDay,ev,ui,resource,elm, "DeliveryType is different and Capacity has reached the maximum. Do you wish to continue?");
+                          t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "Capacity has reached the maximum. Do you wish to continue?");
                         }
                       }
                     }else if(newResourceObj.deliveryType == "Group Facilitation"){
@@ -677,14 +646,49 @@ function SylvanCalendar(){
                       prevServiceId = prevEvent[0]['students'][studentIndex]['serviceId'];
                       var showPromt = true;
                       wjQuery.each(newEvent[0]['students'], function(k, v){
+
                         if(v.serviceId == prevServiceId){
                           showPromt = false;
                         }
                       });
                       if(showPromt){
-                        t.confirmPopup(t,date, allDay,ev,ui,resource,elm, "Servieces are not matching. Do you wish to continue?");
+                        t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "Servieces are not matching. Do you wish to continue?");
                       }else{
-                        t.confirmPopup(t,date, allDay,ev,ui,resource,elm, "DeliveryType is different. Do you wish to continue?");
+                        t.studentSessionConflictCheck(t,date, allDay,ev,ui,resource,elm);
+                      }
+                    }
+                  }else{
+                    // condition's for different DI
+                    if(newResourceObj.deliveryType != "Group Instruction"){
+                      if(newResourceObj.deliveryType == "Personal Instruction"){
+                        //  Validation for oneToOne check
+                        //* if oneToOne then show popup
+                        if(newEvent[0]['is1to1']){
+                          t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "Event is 'OneToOne' Type. Do you wish to continue?");
+                        }else{
+                          if(!(newEvent[0].hasOwnProperty('students')) || newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length <= resource.capacity || resource.capacity == undefined)){
+                              t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "DeliveryType is different. Do you wish to continue?");
+                          }else if(newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length > resource.capacity || resource.capacity == undefined)){
+                            t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "DeliveryType is different and Capacity has reached the maximum. Do you wish to continue?");
+                          }
+                        }
+                      }else if(newResourceObj.deliveryType == "Group Facilitation"){
+                        // Check Services for same DI
+                        var studentIndex = prevEvent[0]['students'].map(function(x){
+                          return x.id;
+                        }).indexOf(stuId);
+                        prevServiceId = prevEvent[0]['students'][studentIndex]['serviceId'];
+                        var showPromt = true;
+                        wjQuery.each(newEvent[0]['students'], function(k, v){
+                          if(v.serviceId == prevServiceId){
+                            showPromt = false;
+                          }
+                        });
+                        if(showPromt){
+                          t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "Servieces are not matching. Do you wish to continue?");
+                        }else{
+                          t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "DeliveryType is different. Do you wish to continue?");
+                        }
                       }
                     }
                   }
@@ -795,7 +799,37 @@ function SylvanCalendar(){
         }
     };
 
-    this.studentConflictCheck = function(t,date, allDay,ev,ui,resource,elm){
+    this.studentSofConflictCheck = function(t,date, allDay,ev,ui,resource,elm){
+      var newEvent = this.calendar.fullCalendar('clientEvents', resource.id+date);
+      var endDate = new Date(date);
+      var startHour = new Date(date).setMinutes(0);
+      startHour = new Date(new Date(startHour).setSeconds(0));
+      var stuId = wjQuery(elm).attr("value"); 
+      var parentElement = elm.parentElement;
+      var student = t.sofList.filter(function( obj ) {
+        return obj.id == stuId;
+      });
+      var index = t.sofList.map(function(x){
+              return x.id;
+      }).indexOf(stuId);
+      var prevStudObj = t.sofList[index];
+      if(student){
+          t.sofList.splice(index,1);
+          elm.remove();
+          if(wjQuery(parentElement).html() == ''){
+            parentElement.remove();
+          }
+          student[0].start = date;
+          student[0].startHour = startHour;
+          student[0].end = new Date(endDate.setHours(endDate.getHours() + 1));
+          student[0].resourceId = resource.id;
+          this.convertedStudentObj.push(student[0]);
+          this.saveSOFtoSession(student);
+          t.populateStudentEvent(student,false);
+      }          
+    }
+
+    this.studentSessionConflictCheck = function(t,date, allDay,ev,ui,resource,elm){
       var endDate = new Date(date);
       var startHour = new Date(date).setMinutes(0);
       var startHour = new Date(new Date(startHour).setSeconds(0));
@@ -2010,7 +2044,7 @@ function SylvanCalendar(){
       }
     }
 
-    this.confirmPopup = function(t, date, allDay, ev, ui, resource, elm, message){
+    this.studentSessionCnfmPopup = function(t, date, allDay, ev, ui, resource, elm, message){
       wjQuery("#dialog > .dialog-msg").text(message);
       wjQuery("#dialog").dialog({
         resizable: false,
@@ -2019,7 +2053,7 @@ function SylvanCalendar(){
         modal: true,
         buttons: {
           "Confirm": function() {
-            t.studentConflictCheck(t,date, allDay,ev,ui,resource,elm);
+            t.studentSessionConflictCheck(t,date, allDay,ev,ui,resource,elm);
             wjQuery( this ).dialog( "close" );
           },
           Cancel: function() {
@@ -2028,6 +2062,26 @@ function SylvanCalendar(){
         }
       });
     }
+
+    this.studentSofCnfmPopup = function(t, date, allDay, ev, ui, resource, elm, message){
+      wjQuery("#dialog > .dialog-msg").text(message);
+      wjQuery("#dialog").dialog({
+        resizable: false,
+        height: "auto",
+        width: 400,
+        modal: true,
+        buttons: {
+          "Confirm": function() {
+            t.studentSofConflictCheck(t,date, allDay,ev,ui,resource,elm);
+            wjQuery( this ).dialog( "close" );
+          },
+          Cancel: function() {
+            wjQuery( this ).dialog( "close" );
+          }
+        }
+      });
+    }
+    
 }
 
 

@@ -281,7 +281,7 @@ div.ui-widget{
     text-align: center;
 }
 .teacher-container{
-    z-index: 3;
+    z-index: 500;
 }
 .subject-identifier{
     width: 15px;
@@ -351,7 +351,7 @@ div.ui-widget{
     padding: 2px;
 }
 .student-container{
-    z-index: 3;
+    z-index: 500;
 }
 .conflict{
     position: absolute;
