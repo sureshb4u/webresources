@@ -594,8 +594,8 @@ function SylvanCalendar(){
                       startHour :startHour,
                       end: new Date(endDate.setHours(endDate.getHours() + 1)),
                       resourceId:resource.id,
-                      deliveryTypeId: this.getDeliveryTypeObj(resource.id).deliveryTypeId,
-                      deliveryType : this.getDeliveryTypeObj(resource.id).deliveryType,
+                      deliveryTypeId: this.getResourceObj(resource.id).deliveryTypeId,
+                      deliveryType : this.getResourceObj(resource.id).deliveryType,
                       locationId: teacher[0].locationId,
                   };
                   this.convertedTeacherObj.push(teacherObj);
@@ -607,25 +607,87 @@ function SylvanCalendar(){
         }
         else if(wjQuery(elm).attr("type") == 'studentSession'){
           var stuId = wjQuery(elm).attr("value"); 
+          var prevEventId = wjQuery(elm).attr("eventid");
           var newEvent = this.calendar.fullCalendar('clientEvents', resource.id+date);
+          var prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
+          var newResourceObj = t.getResourceObj(resource.id);
           if(newEvent.length == 0){
-            t.studentConflictCheck(t,date, allDay,ev,ui,resource,elm);
+            if(newResourceObj.deliveryType != "Group Instruction"){
+              t.studentConflictCheck(t,date, allDay,ev,ui,resource,elm);
+            }
           }else if(newEvent.length == 1){
             var studentIndex = newEvent[0]['students'].map(function(x){
               return x.id;
             }).indexOf(stuId);
             if(studentIndex == -1){
-              //  Validation for oneToOne check
-              //* if oneToOne then show popup
-              if(newEvent[0]['is1to1']){
-                t.confirmPopup(t,date, allDay,ev,ui,resource,elm, "Event is 'OneToOne' Type. Do you wish to continue?");
-              }else{
-                if(!(newEvent[0].hasOwnProperty('students'))){
-                  t.studentConflictCheck(t,date, allDay,ev,ui,resource,elm);
-                }else if(newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length < resource.capacity || resource.capacity == undefined)){
-                    t.studentConflictCheck(t,date, allDay,ev,ui,resource,elm);
-                }else if(newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length >= resource.capacity || resource.capacity == undefined)){
-                  t.confirmPopup(t,date, allDay,ev,ui,resource,elm, "Capacity has reached the maximum. Do you wish to continue?");
+              var prevResourceObj = t.getResourceObj(prevEvent[0]['resourceId']);
+              if(newResourceObj.deliveryType != "Group Instruction"){
+                if(newResourceObj.deliveryType == prevResourceObj.deliveryType){
+                  if(newResourceObj.deliveryType == "Personal Instruction"){
+                    //  Validation for oneToOne check
+                    //* if oneToOne then show popup
+                    if(newEvent[0]['is1to1']){
+                      t.confirmPopup(t,date, allDay,ev,ui,resource,elm, "Event is 'OneToOne' Type. Do you wish to continue?");
+                    }else{
+                      if(!(newEvent[0].hasOwnProperty('students')) || newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length <= resource.capacity || resource.capacity == undefined)){
+                          t.studentConflictCheck(t,date, allDay,ev,ui,resource,elm);
+                      }else if(newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length > resource.capacity || resource.capacity == undefined)){
+                        t.confirmPopup(t,date, allDay,ev,ui,resource,elm, "Capacity has reached the maximum. Do you wish to continue?");
+                      }
+                    }
+                  }else if(newResourceObj.deliveryType == "Group Facilitation"){
+                    // Check Services for same DI
+                    var studentIndex = prevEvent[0]['students'].map(function(x){
+                      return x.id;
+                    }).indexOf(stuId);
+                    prevServiceId = prevEvent[0]['students'][studentIndex]['serviceId'];
+                    var showPromt = true;
+                    wjQuery.each(newEvent[0]['students'], function(k, v){
+
+                      if(v.serviceId == prevServiceId){
+                        showPromt = false;
+                      }
+                    });
+                    if(showPromt){
+                      t.confirmPopup(t,date, allDay,ev,ui,resource,elm, "Servieces are not matching. Do you wish to continue?");
+                    }else{
+                      t.studentConflictCheck(t,date, allDay,ev,ui,resource,elm);
+                    }
+                  }
+                }else{
+                  // condition's for different DI
+                  if(newResourceObj.deliveryType != "Group Instruction"){
+                    if(newResourceObj.deliveryType == "Personal Instruction"){
+                      //  Validation for oneToOne check
+                      //* if oneToOne then show popup
+                      if(newEvent[0]['is1to1']){
+                        t.confirmPopup(t,date, allDay,ev,ui,resource,elm, "Event is 'OneToOne' Type. Do you wish to continue?");
+                      }else{
+                        if(!(newEvent[0].hasOwnProperty('students')) || newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length <= resource.capacity || resource.capacity == undefined)){
+                            t.confirmPopup(t,date, allDay,ev,ui,resource,elm, "DeliveryType is different. Do you wish to continue?");
+                        }else if(newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length > resource.capacity || resource.capacity == undefined)){
+                          t.confirmPopup(t,date, allDay,ev,ui,resource,elm, "DeliveryType is different and Capacity has reached the maximum. Do you wish to continue?");
+                        }
+                      }
+                    }else if(newResourceObj.deliveryType == "Group Facilitation"){
+                      // Check Services for same DI
+                      var studentIndex = prevEvent[0]['students'].map(function(x){
+                        return x.id;
+                      }).indexOf(stuId);
+                      prevServiceId = prevEvent[0]['students'][studentIndex]['serviceId'];
+                      var showPromt = true;
+                      wjQuery.each(newEvent[0]['students'], function(k, v){
+                        if(v.serviceId == prevServiceId){
+                          showPromt = false;
+                        }
+                      });
+                      if(showPromt){
+                        t.confirmPopup(t,date, allDay,ev,ui,resource,elm, "Servieces are not matching. Do you wish to continue?");
+                      }else{
+                        t.confirmPopup(t,date, allDay,ev,ui,resource,elm, "DeliveryType is different. Do you wish to continue?");
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -723,8 +785,8 @@ function SylvanCalendar(){
                 t.convertedTeacherObj[index].startHour = startHour;
                 t.convertedTeacherObj[index].end = new Date(endDate.setHours(endDate.getHours() + 1));
                 t.convertedTeacherObj[index].resourceId = resource.id;
-                t.convertedTeacherObj[index].deliveryTypeId = t.getDeliveryTypeObj(resource.id).deliveryTypeId;
-                t.convertedTeacherObj[index].deliveryType = t.getDeliveryTypeObj(resource.id).deliveryType;
+                t.convertedTeacherObj[index].deliveryTypeId = t.getResourceObj(resource.id).deliveryTypeId;
+                t.convertedTeacherObj[index].deliveryType = t.getResourceObj(resource.id).deliveryType;
                 t.saveTeacherToSession(t.convertedTeacherObj[index],prevTeacherSession);
                 t.populateTeacherEvent([t.convertedTeacherObj[index]], true);
               } 
@@ -795,8 +857,8 @@ function SylvanCalendar(){
           t.convertedStudentObj[index].startHour = startHour;
           t.convertedStudentObj[index].end = new Date(endDate.setHours(endDate.getHours() + 1));
           t.convertedStudentObj[index].resourceId = resource.id;
-          t.convertedStudentObj[index].deliveryTypeId = t.getDeliveryTypeObj(resource.id).deliveryTypeId;
-          t.convertedStudentObj[index].deliveryType = t.getDeliveryTypeObj(resource.id).deliveryType;
+          t.convertedStudentObj[index].deliveryTypeId = t.getResourceObj(resource.id).deliveryTypeId;
+          t.convertedStudentObj[index].deliveryType = t.getResourceObj(resource.id).deliveryType;
           t.saveStudentToSession(t.convertedStudentObj[index],prevSessionObj);
           t.populateStudentEvent([t.convertedStudentObj[index]],true);  
         } 
@@ -1281,6 +1343,7 @@ function SylvanCalendar(){
                     deliveryType: val['aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue'],
                     locationId: val['_hub_center_value'],
                     subject:val['aprogram_x002e_hub_areaofinterest@OData.Community.Display.V1.FormattedValue'],
+                    subjectId:val['aprogram_x002e_hub_areaofinterest'],
                     locationName: val['_hub_center_value@OData.Community.Display.V1.FormattedValue']
                 }
                 if (val.hasOwnProperty('_hub_resourceid_value')) {
@@ -1563,7 +1626,7 @@ function SylvanCalendar(){
                     event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+val.id+"_"+value['resourceId']+"_"+value['startHour']+"' id='"+val.id+value['resourceId']+"' type='studentSession' value='"+val.id+"'>"+val.name+", "+val.grade+"</span>";
                   });
                 }
-                var resourceObj = self.getDeliveryTypeObj(value['resourceId']);
+                var resourceObj = self.getResourceObj(value['resourceId']);
                 if(event[k].title.includes('<span class="student-placeholder">Student name</span>')){
                   event[k].title = event[k].title.replace('<span class="student-placeholder">Student name</span>', "");
                 }
@@ -1587,8 +1650,8 @@ function SylvanCalendar(){
                   resourceId: value['resourceId'],
                   isTeacher: true,
                   isConflict: false,
-                  deliveryTypeId: self.getDeliveryTypeObj(value['resourceId']).deliveryTypeId,
-                  deliveryType : self.getDeliveryTypeObj(value['resourceId']).deliveryType,
+                  deliveryTypeId: self.getResourceObj(value['resourceId']).deliveryTypeId,
+                  deliveryType : self.getResourceObj(value['resourceId']).deliveryType,
                   textColor:"#333333",
               }
               if(obj.deliveryType == "Group Facilitation"){
@@ -1621,6 +1684,9 @@ function SylvanCalendar(){
                 id = value['id'];
                 name = value['name'];
                 grade = value['grade'];
+                subjectId = value['subjectId'];
+                serviceId = value['serviceId'];
+                subjectName = value['subject'];
                 eventId = value['resourceId']+value['startHour'];
                 uniqueId = id+"_"+value['resourceId']+"_"+value['startHour'];
                 event = self.calendar.fullCalendar('clientEvents', eventId);
@@ -1631,14 +1697,14 @@ function SylvanCalendar(){
                              return x.id;
                         }).indexOf(id);
                         if(index == -1){
-                          event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
-                          event[k].students.push({id:id, name:name, grade:grade});
+                          event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+id+"_"+value['resourceId']+"_"+value['startHour']+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
+                          event[k].students.push({id:id, name:name, grade:grade, serviceId:serviceId});
                         }
                       }else{
-                        event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
-                        event[k].students = [{id:id, name:name, grade:grade}];
+                        event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+id+"_"+value['resourceId']+"_"+value['startHour']+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
+                        event[k].students = [{id:id, name:name, grade:grade, serviceId:serviceId }];
                       }
-                      var resourceObj = self.getDeliveryTypeObj(value['resourceId']);
+                      var resourceObj = self.getResourceObj(value['resourceId']);
                       if(event[k].title.includes('<span class="student-placeholder" >Student name</span>')){
                         event[k].title = event[k].title.replace('<span class="student-placeholder" >Student name</span>', '');
                       }
@@ -1654,7 +1720,7 @@ function SylvanCalendar(){
                 }else{
                     var obj = {
                         id: eventId,
-                        students:[{id:id, name:name, grade:grade}],
+                        students:[{id:id, name:name, grade:grade, serviceId:serviceId}],
                         start:value['startHour'],
                         //end:value['end'],
                         allDay: false,
@@ -1681,7 +1747,7 @@ function SylvanCalendar(){
                         obj.borderColor = "#9acaea";
                     }
                     self.eventList.push(obj);
-                    var resourceObj = self.getDeliveryTypeObj(value['resourceId']);
+                    var resourceObj = self.getResourceObj(value['resourceId']);
                     if(resourceObj["capacity"] > 1 || resourceObj["capacity"] == undefined){
                       obj.title += '<span class="student-placeholder">Student name</span>';                  
                     } 
@@ -1864,14 +1930,14 @@ function SylvanCalendar(){
       }
     };
 
-    this.getDeliveryTypeObj = function(resourceId){
-      var deliveryTypeObj = {}; 
+    this.getResourceObj = function(resourceId){
+      var resourceObj = {}; 
       wjQuery.each(this.resourceList, function(k, v){
           if (resourceId == v.id) {
-            deliveryTypeObj = v;
+            resourceObj = v;
           }
       });
-      return deliveryTypeObj;
+      return resourceObj;
     };
 
     this.saveStudentToSession = function(student,prevStudent){
