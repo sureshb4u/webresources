@@ -608,36 +608,24 @@ function SylvanCalendar(){
           var newEvent = this.calendar.fullCalendar('clientEvents', resource.id+date);
           if(newEvent.length == 0){
             t.studentConflictCheck(t,date, allDay,ev,ui,resource,elm);
-          }else if(newEvent.length == 1 && !(newEvent[0].hasOwnProperty('students'))){
-            t.studentConflictCheck(t,date, allDay,ev,ui,resource,elm);
-          }else if(newEvent.length == 1 && newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length < resource.capacity || resource.capacity == undefined)){
+          }else if(newEvent.length == 1){
             var studentIndex = newEvent[0]['students'].map(function(x){
               return x.id;
             }).indexOf(stuId);
-            if(studentIndex === -1){
-              t.studentConflictCheck(t,date, allDay,ev,ui,resource,elm);
-            }
-          }else if(newEvent.length == 1 && newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length >= resource.capacity || resource.capacity == undefined)){
-            var studentIndex = newEvent[0]['students'].map(function(x){
-              return x.id;
-            }).indexOf(stuId);
-            if(studentIndex === -1){
-              wjQuery("#dialog > .dialog-msg").text("Capacity has reached the maximum. Do you wish to continue?");
-              wjQuery("#dialog").dialog({
-                resizable: false,
-                height: "auto",
-                width: 400,
-                modal: true,
-                buttons: {
-                  "Confirm": function() {
+            if(studentIndex == -1){
+              //  Validation for oneToOne check
+              //* if oneToOne then show popup
+              if(newEvent[0]['is1to1']){
+                t.confirmPopup(t,date, allDay,ev,ui,resource,elm, "Event is 'OneToOne' Type. Do you wish to continue?");
+              }else{
+                if(!(newEvent[0].hasOwnProperty('students'))){
+                  t.studentConflictCheck(t,date, allDay,ev,ui,resource,elm);
+                }else if(newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length < resource.capacity || resource.capacity == undefined)){
                     t.studentConflictCheck(t,date, allDay,ev,ui,resource,elm);
-                    wjQuery( this ).dialog( "close" );
-                  },
-                  Cancel: function() {
-                    wjQuery( this ).dialog( "close" );
-                  }
+                }else if(newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length >= resource.capacity || resource.capacity == undefined)){
+                  t.confirmPopup(t,date, allDay,ev,ui,resource,elm, "Capacity has reached the maximum. Do you wish to continue?");
                 }
-              });
+              }
             }
           }
         }
@@ -1881,6 +1869,25 @@ function SylvanCalendar(){
         data.saveTeachertoSession(objPrevSession,objNewSession);
         }
       }
+    }
+
+    this.confirmPopup = function(t, date, allDay, ev, ui, resource, elm, message){
+      wjQuery("#dialog > .dialog-msg").text(message);
+      wjQuery("#dialog").dialog({
+        resizable: false,
+        height: "auto",
+        width: 400,
+        modal: true,
+        buttons: {
+          "Confirm": function() {
+            t.studentConflictCheck(t,date, allDay,ev,ui,resource,elm);
+            wjQuery( this ).dialog( "close" );
+          },
+          Cancel: function() {
+            wjQuery( this ).dialog( "close" );
+          }
+        }
+      });
     }
 }
 
