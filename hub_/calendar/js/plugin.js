@@ -820,6 +820,8 @@ function SylvanCalendar(){
           student[0].startHour = startHour;
           student[0].end = new Date(endDate.setHours(endDate.getHours() + 1));
           student[0].resourceId = resource.id;
+          student[0].deliveryType = t.getResourceObj(resource.id)['deliveryType'];
+          student[0].deliveryTypeId = t.getResourceObj(resource.id)['deliveryTypeId'];
           this.convertedStudentObj.push(student[0]);
           this.saveSOFtoSession(student);
           t.populateStudentEvent(student,false);
