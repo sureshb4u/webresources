@@ -1678,7 +1678,7 @@ function SylvanCalendar(){
                     wjQuery.each(event[k].teachers, function(ka, v){
                       uniqueId = v.id+"_"+value['resourceId']+"_"+value['startHour'];
                       if(value['pinId'] != undefined){
-                        event[k].title += "<span class='draggable drag-teacher' pinnedId='"+ value['pinId']+"' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+v.id+value['resourceId']+"' type='teacherSession' value='"+v.id+"'>"+v.name+"</span>";
+                        event[k].title += "<span class='draggable drag-teacher' pinnedId='"+ value['pinId']+"' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+v.id+value['resourceId']+"' type='teacherSession' value='"+v.id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+v.name+"</span>";
                       }else{
                         event[k].title += "<span class='draggable drag-teacher' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+v.id+value['resourceId']+"' type='teacherSession' value='"+v.id+"'>"+v.name+"</span>";
                       }
@@ -1698,13 +1698,13 @@ function SylvanCalendar(){
                   if(event[k].title.includes("<img class='onetoone' src='/webresources/hub_/calendar/images/lock.png'>")){
                     event[k].title = "<img class='onetoone' src='/webresources/hub_/calendar/images/lock.png'>";
                     if(value['pinId'] != undefined){
-                      event[k].title += "<span class='draggable drag-teacher' pinnedId='"+ value['pinId']+"' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+v.id+value['resourceId']+"' type='teacherSession' value='"+v.id+"'>"+v.name+"</span>";
+                      event[k].title += "<span class='draggable drag-teacher' pinnedId='"+ value['pinId']+"' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+v.id+value['resourceId']+"' type='teacherSession' value='"+v.id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+v.name+"</span>";
                     }else{
                       event[k].title += "<span class='draggable drag-teacher' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+v.id+value['resourceId']+"' type='teacherSession' value='"+v.id+"'>"+v.name+"</span>";
                     }
                   }else{
                     if(value['pinId'] != undefined){
-                      event[k].title = "<span class='draggable drag-teacher' pinnedId='"+ value['pinId']+"' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+v.id+value['resourceId']+"' type='teacherSession' value='"+v.id+"'>"+v.name+"</span>";
+                      event[k].title = "<span class='draggable drag-teacher' pinnedId='"+ value['pinId']+"' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+v.id+value['resourceId']+"' type='teacherSession' value='"+v.id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+v.name+"</span>";
                     }else{
                       event[k].title = "<span class='draggable drag-teacher' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'>"+name+"</span>";
                     }
@@ -1748,7 +1748,7 @@ function SylvanCalendar(){
                   textColor:"#333333",
               }
               if(value['pinId'] != undefined){
-                obj.title = "<span class='draggable drag-teacher' pinnedId='"+ value['pinId']+ "' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'>"+name+"</span>";
+                obj.title = "<span class='draggable drag-teacher' pinnedId='"+ value['pinId']+ "' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+name+"</span>";
               }
               else{
                 obj.title = "<span class='draggable drag-teacher' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'>"+name+"</span>";
@@ -1804,7 +1804,7 @@ function SylvanCalendar(){
                         }).indexOf(id);
                         if(index == -1){
                             if(value['pinId'] != undefined){
-                              event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' pinnedId='"+ value['pinId'] +"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
+                              event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' pinnedId='"+ value['pinId'] +"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+name+", "+grade+"</span>";
                             }else{
                               event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
                             }
@@ -1812,7 +1812,7 @@ function SylvanCalendar(){
                         }
                       }else{
                         if(value['pinId'] != undefined){
-                            event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' pinnedId='"+ value['pinId'] +"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
+                            event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' pinnedId='"+ value['pinId'] +"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+name+", "+grade+"</span>";
                         }else{
                           event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
                         }
@@ -1855,7 +1855,7 @@ function SylvanCalendar(){
                     }
                     obj.title += "<span class='placeholder'>Teacher name</span>";
                     if(value['pinId'] != undefined){
-                      obj.title += "<span class='draggable drag-student' eventid='"+eventId+"' pinnedId='"+ value['pinId'] +"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
+                      obj.title += "<span class='draggable drag-student' eventid='"+eventId+"' pinnedId='"+ value['pinId'] +"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+name+", "+grade+"</span>";
                     }else{
                       obj.title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
                     }
@@ -1932,6 +1932,8 @@ function SylvanCalendar(){
       objPinnedStudent.hub_date = moment(today).format("YYYY-MM-DD");
       var responseObj = data.savePinStudent(objPinnedStudent);
       if(responseObj != undefined){
+        var txt = wjQuery(element).text();
+        wjQuery(element).html("<img src='/webresources/hub_/calendar/images/pin.png'/>"+txt);
         wjQuery(element).attr('pinnedId',responseObj['hub_sch_pinned_students_teachersid']);
       }
     };
@@ -1957,7 +1959,10 @@ function SylvanCalendar(){
       objUnPinnedStudent.hub_day = this.getDayValue(today);
       objUnPinnedStudent.hub_date = moment(today).format("YYYY-MM-DD");
       objUnPinnedStudent.hub_sch_pinned_students_teachersid = wjQuery(element).attr('pinnedId');
-      data.saveUnPinStudent(objUnPinnedStudent);
+      if(data.saveUnPinStudent(objUnPinnedStudent)){
+          wjQuery(element).removeAttr('pinnedId')
+          wjQuery(element).find("img").remove();    
+        }
     };
 
     this.pinTeacher = function(element,pinFor){
@@ -1986,6 +1991,8 @@ function SylvanCalendar(){
         }
         var responseObj = data.savePinTeacher(objPinnedStaff);
         if(responseObj != undefined){
+          var txt = wjQuery(element).text();
+          wjQuery(element).html("<img src='/webresources/hub_/calendar/images/pin.png'/>"+txt);
           wjQuery(element).attr('pinnedId',responseObj['hub_sch_pinned_students_teachersid']);
         }
       }
@@ -2009,7 +2016,10 @@ function SylvanCalendar(){
         objUnPinnedStaff.hub_strat_time = this.convertToMinutes(moment(startTime).format("h:mm A"));
         objUnPinnedStaff.hub_end_time = objUnPinnedStaff.hub_strat_time + 60;
         objUnPinnedStaff['hub_resource@odata.bind'] = teacher[0].resourceId;
-        data.saveUnPinTeacher(objUnPinnedStaff);
+        if(data.saveUnPinTeacher(objUnPinnedStaff)){
+          wjQuery(element).removeAttr('pinnedId');
+          wjQuery(element).find("img").remove();
+        }
       }
     };
 
