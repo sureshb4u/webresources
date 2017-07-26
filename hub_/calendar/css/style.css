@@ -260,6 +260,9 @@ div.ui-widget{
 .fc-agenda-slots td div {
     height: 160px;
 }
+button{
+    outline: none;
+}
 .sof-pane,.ta-pane{
     width: 250px;
     height: 200px;

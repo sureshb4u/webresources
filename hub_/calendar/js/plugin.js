@@ -157,6 +157,7 @@ function SylvanCalendar(){
     this.teacherAvailability = [];
     this.selectedDeliveryType = [];
     this.convertedPinnedList = [];
+    this.staffProgram = [];
     this.init = function(element){
     }
 
@@ -318,7 +319,8 @@ function SylvanCalendar(){
       this.teacherSchedule = [];
       this.pinnedData = [];
       this.teacherAvailability = [];
-      this.convertedPinnedList = []
+      this.convertedPinnedList = [];
+      this.staffProgram = [];
       this.students = [];
     }
 
@@ -411,19 +413,22 @@ function SylvanCalendar(){
             if(studentStartHour >= minTime && studentStartHour <= maxTime){
               var studentPosition = studentStartHour - minTime;
               var elm = '<div class="student-container cursor padding-lr-xxs" type="student" value="'+studentData[i].id+'">'+studentData[i].name+',<span>'+studentData[i].grade+'</span></div>';
-              if(studentData[i].deliveryType == 'Personal Instruction'){
+              var deliveryTypeIndex = this.selectedDeliveryType.map(function(y){
+                return y;
+              }).indexOf(studentData[i].deliveryTypeId);
+              if(studentData[i].deliveryType == 'Personal Instruction' && deliveryTypeIndex != -1){
                 if(wjQuery('#student_block_'+studentPosition +' .sof-pi').length == 0){
                   wjQuery('#student_block_'+studentPosition).append('<div class="sof-pi"></div>');
                 }
                 wjQuery('#student_block_'+studentPosition +' .sof-pi').append(elm);
               }
-              else if(studentData[i].deliveryType == 'Group Instruction'){
+              else if(studentData[i].deliveryType == 'Group Instruction' && deliveryTypeIndex != -1){
                 if(wjQuery('#student_block_'+studentPosition +' .sof-gi').length == 0){
                   wjQuery('#student_block_'+studentPosition).append('<div class="sof-gi"></div>');
                 }
                 wjQuery('#student_block_'+studentPosition +' .sof-gi').append(elm);
               }
-              else if(studentData[i].deliveryType == 'Group Facilitation'){
+              else if(studentData[i].deliveryType == 'Group Facilitation' && deliveryTypeIndex != -1){
                 if(wjQuery('#student_block_'+studentPosition +' .sof-gf').length == 0){
                   wjQuery('#student_block_'+studentPosition).append('<div class="sof-gf"></div>');
                 }
@@ -564,6 +569,9 @@ function SylvanCalendar(){
           }).indexOf(teacherId);
           t.taList.splice(index,1);
           var processFlag = true;
+
+
+          this.getTeacherProgramObj(teacherId);
           // if(newEvent.length > 0){
           //   if(!(newEvent[0].hasOwnProperty("teachers"))){
           //     processFlag = true;
@@ -682,7 +690,7 @@ function SylvanCalendar(){
                         }
                       });
                       if(showPromt){
-                        t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "Servieces are not matching. Do you wish to continue?");
+                        t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "DeliveryType is different and Servieces are not matching. Do you wish to continue?");
                       }else{
                         t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "DeliveryType is different. Do you wish to continue?");
                       }
@@ -702,99 +710,109 @@ function SylvanCalendar(){
         var uniqTeacherId = wjQuery(elm).attr("id"); 
         var prevEventId = wjQuery(elm).attr("eventid");
         var prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
-        var index = t.convertedTeacherObj.map(function(x){
-          return x.id;
-        }).indexOf(teacherId);
         
-        // Validation For teacher drop
-        // don't allow multiple teachers to drop on same
-        var updateFlag = false;
-        var newEvent = this.calendar.fullCalendar('clientEvents', resource.id+date);
-        if(newEvent.length == 0){
-          updateFlag = true;
-        }else if(newEvent.length == 1 && !(newEvent[0].hasOwnProperty('teachers'))){
-            updateFlag = true;
-        }else if(newEvent.length == 1 && newEvent[0].hasOwnProperty('teachers') && newEvent[0]['teachers'].length == 0){
-          var teacherIndex = newEvent[0]['teachers'].map(function(x){
-            return x.id;
-          }).indexOf(teacherId);
-          if(teacherIndex === -1){
-            updateFlag = true;
-          }
-        }
+        var techerPrograms = this.getTeacherProgramObj(teacherId);
 
-        if(updateFlag){
-          if(resource.id+date != prevEventId){
-            if(prevEvent){
-              var eventTitleHTML = wjQuery(prevEvent[0].title);
-              for (var i = 0; i < eventTitleHTML.length; i++) {
-                if(wjQuery(eventTitleHTML[i]).attr('value') == teacherId){
-                  eventTitleHTML.splice(i,1);
-                }
-              }
-              if(eventTitleHTML.prop('outerHTML') != undefined){
-                if(eventTitleHTML.length == 1){                  
-                  if(prevEvent[0].teachers.length == 1){
-                      prevEvent[0].title = "<span class='placeholder'>Teacher name</span>";                  
-                      prevEvent[0].title += eventTitleHTML.prop('outerHTML');                
-                  }else{
-                      prevEvent[0].title = eventTitleHTML.prop('outerHTML');                
-                  }
-                }else{                  
-                  prevEvent[0].title = "";
-                  if(prevEvent[0].teachers.length == 1){
-                      prevEvent[0].title += "<span class='placeholder'>Teacher name</span>";                  
-                  }
-                  for (var i = 0; i < eventTitleHTML.length; i++) {                    
-                    prevEvent[0].title += eventTitleHTML[i].outerHTML;                  
-                  }                
-                  if(prevEvent[0].teachers.length == 2){
-                    if(prevEvent[0].title.includes('<img class="conflict" src="/webresources/hub_/calendar/images/warning.png">')){
-                      prevEvent[0].title = prevEvent[0].title.replace('<img class="conflict" src="/webresources/hub_/calendar/images/warning.png">', '');
-                      if(!prevEvent[0].title.includes('<span class="student-placeholder">Student name</span>')){
-                        prevEvent[0].title += '<span class="student-placeholder">Student name</span>'; 
-                      }
-                    }
-                  }
-                }                
-                this.calendar.fullCalendar('updateEvent', prevEvent);
-                var removeTeacherIndex = prevEvent[0].teachers.map(function(x){
-                        return x.id;
-                }).indexOf(teacherId);
-                prevEvent[0].teachers.splice(removeTeacherIndex,1);
-                 if((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "student-placeholder")) || 
-                    (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder" && eventTitleHTML[1].className == "student-placeholder") ||
-                    (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder" && eventTitleHTML[2].className == "student-placeholder")){
-                    for (var i = 0; i < this.eventList.length; i++) {
-                    if(this.eventList[i].id == prevEventId)
-                      this.eventList.splice(i,1);
-                  }
-                  this.calendar.fullCalendar('removeEvents', prevEventId);
-                }
-              }else{
-                for (var i = 0; i < this.eventList.length; i++) {
-                  if(this.eventList[i].id == prevEventId)
-                    this.eventList.splice(i,1);
-                }
-                this.calendar.fullCalendar('removeEvents', prevEventId);
+        if(resource.id+date != prevEventId){
+            // Validation For teacher drop
+            // don't allow multiple teachers to drop on same
+            var updateFlag = false;
+            var newEvent = this.calendar.fullCalendar('clientEvents', resource.id+date);
+            if(newEvent.length == 0){
+              this.teacherSessionConflictCheck(t,date, allDay,ev,ui,resource,elm);
+            }else if(newEvent.length == 1 && !(newEvent[0].hasOwnProperty('teachers'))){
+                this.teacherSessionConflictCheck(t,date, allDay,ev,ui,resource,elm);
+            }else if(newEvent.length == 1 && newEvent[0].hasOwnProperty('teachers') && newEvent[0]['teachers'].length == 0){
+              var teacherIndex = newEvent[0]['teachers'].map(function(x){
+                return x.id;
+              }).indexOf(teacherId);
+              if(teacherIndex === -1){
+                this.teacherSessionConflictCheck(t,date, allDay,ev,ui,resource,elm);
               }
             }
-            if(t.convertedTeacherObj[index]){
-              var prevTeacherSession = wjQuery.extend(true, {}, t.convertedTeacherObj[index]);
-              elm.remove(); 
-              t.convertedTeacherObj[index].start = date;
-              t.convertedTeacherObj[index].startHour = startHour;
-              t.convertedTeacherObj[index].end = new Date(endDate.setHours(endDate.getHours() + 1));
-              t.convertedTeacherObj[index].resourceId = resource.id;
-              t.convertedTeacherObj[index].deliveryTypeId = t.getResourceObj(resource.id).deliveryTypeId;
-              t.convertedTeacherObj[index].deliveryType = t.getResourceObj(resource.id).deliveryType;
-              t.saveTeacherToSession(t.convertedTeacherObj[index],prevTeacherSession);
-              t.populateTeacherEvent([t.convertedTeacherObj[index]], true);
-            } 
-          }
         }
       }
     };
+
+    this.teacherSessionConflictCheck = function (t,date, allDay,ev,ui,resource,elm){
+      var endDate = new Date(date);
+      var startHour = new Date(date).setMinutes(0);
+      var startHour = new Date(new Date(startHour).setSeconds(0));
+      var teacherId = wjQuery(elm).attr("value"); 
+      var uniqTeacherId = wjQuery(elm).attr("id"); 
+      var prevEventId = wjQuery(elm).attr("eventid");
+      var prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
+      var index = t.convertedTeacherObj.map(function(x){
+        return x.id;
+      }).indexOf(teacherId);
+
+      if(prevEvent){
+        var eventTitleHTML = wjQuery(prevEvent[0].title);
+        for (var i = 0; i < eventTitleHTML.length; i++) {
+          if(wjQuery(eventTitleHTML[i]).attr('value') == teacherId){
+            eventTitleHTML.splice(i,1);
+          }
+        }
+        if(eventTitleHTML.prop('outerHTML') != undefined){
+          if(eventTitleHTML.length == 1){                  
+            if(prevEvent[0].teachers.length == 1){
+                prevEvent[0].title = "<span class='placeholder'>Teacher name</span>";                  
+                prevEvent[0].title += eventTitleHTML.prop('outerHTML');                
+            }else{
+                prevEvent[0].title = eventTitleHTML.prop('outerHTML');                
+            }
+          }else{                  
+            prevEvent[0].title = "";
+            if(prevEvent[0].teachers.length == 1){
+                prevEvent[0].title += "<span class='placeholder'>Teacher name</span>";                  
+            }
+            for (var i = 0; i < eventTitleHTML.length; i++) {                    
+              prevEvent[0].title += eventTitleHTML[i].outerHTML;                  
+            }                
+            if(prevEvent[0].teachers.length == 2){
+              if(prevEvent[0].title.includes('<img class="conflict" src="/webresources/hub_/calendar/images/warning.png">')){
+                prevEvent[0].title = prevEvent[0].title.replace('<img class="conflict" src="/webresources/hub_/calendar/images/warning.png">', '');
+                if(!prevEvent[0].title.includes('<span class="student-placeholder">Student name</span>')){
+                  prevEvent[0].title += '<span class="student-placeholder">Student name</span>'; 
+                }
+              }
+            }
+          }                
+          this.calendar.fullCalendar('updateEvent', prevEvent);
+          var removeTeacherIndex = prevEvent[0].teachers.map(function(x){
+                  return x.id;
+          }).indexOf(teacherId);
+          prevEvent[0].teachers.splice(removeTeacherIndex,1);
+           if((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "student-placeholder")) || 
+              (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder" && eventTitleHTML[1].className == "student-placeholder") ||
+              (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder" && eventTitleHTML[2].className == "student-placeholder")){
+              for (var i = 0; i < this.eventList.length; i++) {
+              if(this.eventList[i].id == prevEventId)
+                this.eventList.splice(i,1);
+            }
+            this.calendar.fullCalendar('removeEvents', prevEventId);
+          }
+        }else{
+          for (var i = 0; i < this.eventList.length; i++) {
+            if(this.eventList[i].id == prevEventId)
+              this.eventList.splice(i,1);
+          }
+          this.calendar.fullCalendar('removeEvents', prevEventId);
+        }
+      }
+      if(t.convertedTeacherObj[index]){
+        var prevTeacherSession = wjQuery.extend(true, {}, t.convertedTeacherObj[index]);
+        elm.remove(); 
+        t.convertedTeacherObj[index].start = date;
+        t.convertedTeacherObj[index].startHour = startHour;
+        t.convertedTeacherObj[index].end = new Date(endDate.setHours(endDate.getHours() + 1));
+        t.convertedTeacherObj[index].resourceId = resource.id;
+        t.convertedTeacherObj[index].deliveryTypeId = t.getResourceObj(resource.id).deliveryTypeId;
+        t.convertedTeacherObj[index].deliveryType = t.getResourceObj(resource.id).deliveryType;
+        t.saveTeacherToSession(t.convertedTeacherObj[index],prevTeacherSession);
+        t.populateTeacherEvent([t.convertedTeacherObj[index]], true);
+      } 
+    }
 
     this.studentSofConflictCheck = function(t,date, allDay,ev,ui,resource,elm){
       var newEvent = this.calendar.fullCalendar('clientEvents', resource.id+date);
@@ -913,6 +931,7 @@ function SylvanCalendar(){
       self.teacherAvailability = [];
       self.students = [];
       self.convertedPinnedList = [];
+      self.staffProgram = [];
       self.calendar.fullCalendar( 'removeEvents');
     }
 
@@ -1105,6 +1124,8 @@ function SylvanCalendar(){
           startDate = moment(currentCalendarDate).format("YYYY-MM-DD");  
           endDate = moment(moment(currentCalendarDate).format("YYYY-MM-DD").add(7,'d')).format("YYYY-MM-DD");
         }
+        // staff program fetching
+        self.staffProgram = data.getStaffProgram() == null? [] : data.getStaffProgram();
         self.teacherSchedule = isFetch || (self.teacherSchedule.length == 0) ? data.getTeacherSchedule(locationId,startDate,endDate) : self.teacherSchedule;
         self.teacherAvailability = isFetch || (self.teacherAvailability.length == 0) ? data.getTeacherAvailability(locationId,startDate,endDate) : self.teacherAvailability;
         self.pinnedData = isFetch || (self.pinnedData.length == 0) ? data.getPinnedData(locationId,startDate,endDate) : self.pinnedData;
@@ -2156,6 +2177,21 @@ function SylvanCalendar(){
           }
         }
       });
+    }
+
+    this.getTeacherProgramObj = function(teacherId){
+      var programObj = [];
+      this.staffProgram.map(function(x){
+        if(x.astaffprogram_x002e_hub_staffid == teacherId){
+          var PrograExist = programObj.map(function(y){
+            return y;
+          }).indexOf(x['astaffprogram_x002e_hub_programid']);
+          if(PrograExist == -1){
+            programObj.push(x['astaffprogram_x002e_hub_programid']);
+          }
+        }
+      }).indexOf(teacherId);
+      console.log(programObj);
     }
     
 }
