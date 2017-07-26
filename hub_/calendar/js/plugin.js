@@ -558,7 +558,7 @@ function SylvanCalendar(){
       else if(wjQuery(elm).attr("type") == 'teacher'){
         var newEvent = this.calendar.fullCalendar('clientEvents', resource.id+date);
         var teacherId = wjQuery(elm).attr("value"); 
-        var techerPrograms = this.getTeacherProgramObj(teacherId);
+        var techerPrograms = this.getProgramObj(teacherId);
         if(newEvent.length == 0){
           this.tapaneConflictCheck(t,date, allDay,ev,ui,resource,elm);
         }else if(newEvent.length == 1){
@@ -689,7 +689,7 @@ function SylvanCalendar(){
       else if(wjQuery(elm).attr("type") == 'teacherSession'){
         var teacherId = wjQuery(elm).attr("value"); 
         var prevEventId = wjQuery(elm).attr("eventid");
-        var techerPrograms = this.getTeacherProgramObj(teacherId);
+        var techerPrograms = this.getProgramObj(teacherId);
         if(resource.id+date != prevEventId){
           var updateFlag = false;
           var newEvent = this.calendar.fullCalendar('clientEvents', resource.id+date);
@@ -1698,15 +1698,15 @@ function SylvanCalendar(){
                     wjQuery.each(event[k].teachers, function(ka, v){
                       uniqueId = v.id+"_"+value['resourceId']+"_"+value['startHour'];
                       if(value['pinId'] != undefined){
-                        event[k].title += "<span class='draggable drag-teacher' pinnedId='"+ value['pinId']+"' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+v.id+value['resourceId']+"' type='teacherSession' value='"+id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+v.name+"</span>";
+                        event[k].title += "<span class='draggable drag-teacher' pinnedId='"+ value['pinId']+"' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+v.id+value['resourceId']+"' type='teacherSession' value='"+v.id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+v.name+"</span>";
                       }else{
-                        event[k].title += "<span class='draggable drag-teacher' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+v.id+value['resourceId']+"' type='teacherSession' value='"+id+"'>"+v.name+"</span>";
+                        event[k].title += "<span class='draggable drag-teacher' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+v.id+value['resourceId']+"' type='teacherSession' value='"+v.id+"'>"+v.name+"</span>";
                       }
                       event[k].isConflict = true;
                     });
                     if(event[k].hasOwnProperty("students")){
                       wjQuery.each(event[k].students, function(ke, val){
-                        event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+val.id+"_"+value['resourceId']+"_"+value['startHour']+"' id='"+val.id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+val.name+", "+val.grade+"</span>";
+                        event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+val.id+"_"+value['resourceId']+"_"+value['startHour']+"' id='"+val.id+value['resourceId']+"' type='studentSession' value='"+val.id+"'>"+val.name+", "+val.grade+"</span>";
                       });
                     }
                     if(!event[k].title.includes('<span class="student-placeholder">Student name</span>')){
@@ -1732,7 +1732,7 @@ function SylvanCalendar(){
                   var studentList = event[k].students;
                   event[k].teachers = [{id:id, name:name}];
                   wjQuery.each(studentList, function(ke, val){
-                    event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+val.id+"_"+value['resourceId']+"_"+value['startHour']+"' id='"+val.id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+val.name+", "+val.grade+"</span>";
+                    event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+val.id+"_"+value['resourceId']+"_"+value['startHour']+"' id='"+val.id+value['resourceId']+"' type='studentSession' value='"+val.id+"'>"+val.name+", "+val.grade+"</span>";
                   });
                 }
                 var resourceObj = self.getResourceObj(value['resourceId']);
@@ -2322,15 +2322,15 @@ function SylvanCalendar(){
       });
     }
 
-    this.getTeacherProgramObj = function(teacherId){
+    this.getProgramObj = function(teacherId){
       var programObj = [];
       this.staffProgram.map(function(x){
         if(x.astaffprogram_x002e_hub_staffid == teacherId){
           var PrograExist = programObj.map(function(y){
             return y;
-          }).indexOf(x['astaffprogram_x002e_hub_programid']);
+          }).indexOf(x['hub_programid']);
           if(PrograExist == -1){
-            programObj.push(x['astaffprogram_x002e_hub_programid']);
+            programObj.push(x['hub_programid']);
           }
         }
       }).indexOf(teacherId);
