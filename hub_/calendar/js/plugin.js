@@ -1955,7 +1955,7 @@ function SylvanCalendar(){
       if(responseObj != undefined){
         var txt = wjQuery(element).text();
         wjQuery(element).html("<img src='/webresources/hub_/calendar/images/pin.png'/>"+txt);
-        wjQuery(element).attr('pinnedId',responseObj['hub_sch_pinned_students_teachersid']);
+        wjQuery(element).attr('pinnedId',responseObj['hub_pinned_student_teacher_id']);
       }
     };
 
@@ -2014,7 +2014,7 @@ function SylvanCalendar(){
         if(responseObj != undefined){
           var txt = wjQuery(element).text();
           wjQuery(element).html("<img src='/webresources/hub_/calendar/images/pin.png'/>"+txt);
-          wjQuery(element).attr('pinnedId',responseObj['hub_sch_pinned_students_teachersid']);
+          wjQuery(element).attr('pinnedId',responseObj['hub_pinned_student_teacher_id']);
         }
       }
     };
