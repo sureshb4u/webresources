@@ -521,21 +521,13 @@ function SylvanCalendar(){
 
     this.createEventOnDrop = function(t,date, allDay,ev,ui,resource,elm) {
       if(wjQuery(elm).attr("type") == 'student'){
-          var newEvent = this.calendar.fullCalendar('clientEvents', resource.id+date);
-          var endDate = new Date(date);
-          var startHour = new Date(date).setMinutes(0);
-          startHour = new Date(new Date(startHour).setSeconds(0));
-          var stuId = wjQuery(elm).attr("value"); 
-          var parentElement = elm.parentElement;
-          var student = t.sofList.filter(function( obj ) {
-            return obj.id == stuId;
-          });
-          var index = t.sofList.map(function(x){
-                  return x.id;
-          }).indexOf(stuId);
-          var prevStudObj = t.sofList[index];
-          var processFlag = false;
-
+        var newEvent = this.calendar.fullCalendar('clientEvents', resource.id+date);
+        var stuId = wjQuery(elm).attr("value"); 
+        var index = t.sofList.map(function(x){
+                return x.id;
+        }).indexOf(stuId);
+        var prevStudObj = t.sofList[index];
+        if(prevStudObj['deliveryType'] == resource.deliveryType ){
           if(newEvent.length == 0){
             t.studentSofConflictCheck(t,date, allDay,ev,ui,resource,elm);
           }else if(newEvent.length == 1){
@@ -544,7 +536,7 @@ function SylvanCalendar(){
             }else{
               //  Validation for oneToOne check
               if(newEvent[0]['is1to1']){
-                t.studentSofCnfmPopup(t,date, allDay,ev,ui,resource,elm, "Event is 'OneToOne' Type. Do you wish to continue?");
+                t.studentSofCnfmPopup(t,date, allDay,ev,ui,resource,elm, "Session is 'OneToOne' Type. Do you wish to continue?");
               }else{
                 if(!(newEvent[0].hasOwnProperty('students')) || newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length <= resource.capacity || resource.capacity == undefined)){
                     t.studentSofConflictCheck(t,date, allDay,ev,ui,resource,elm);
@@ -554,6 +546,9 @@ function SylvanCalendar(){
               }
             }
           }
+        }else{
+          t.studentSofCnfmPopup(t,date, allDay,ev,ui,resource,elm, "DeliveryType is different. Do you wish to continue?");
+        }
       }
       else if(wjQuery(elm).attr("type") == 'teacher'){
         var newEvent = this.calendar.fullCalendar('clientEvents', resource.id+date);
@@ -619,7 +614,7 @@ function SylvanCalendar(){
                     //  Validation for oneToOne check
                     //* if oneToOne then show popup
                     if(newEvent[0]['is1to1']){
-                      t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "Event is 'OneToOne' Type. Do you wish to continue?");
+                      t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "Session is 'OneToOne' Type. Do you wish to continue?");
                     }else{
                       if(!(newEvent[0].hasOwnProperty('students')) || newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length <= resource.capacity || resource.capacity == undefined)){
                           t.studentSessionConflictCheck(t,date, allDay,ev,ui,resource,elm);
@@ -653,7 +648,7 @@ function SylvanCalendar(){
                       //  Validation for oneToOne check
                       //* if oneToOne then show popup
                       if(newEvent[0]['is1to1']){
-                        t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "Event is 'OneToOne' Type. Do you wish to continue?");
+                        t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "DeliveryType is different and Session is 'OneToOne' Type. Do you wish to continue?");
                       }else{
                         if(!(newEvent[0].hasOwnProperty('students')) || newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length <= resource.capacity || resource.capacity == undefined)){
                             t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "DeliveryType is different. Do you wish to continue?");
