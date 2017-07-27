@@ -1673,10 +1673,11 @@ function SylvanCalendar(){
         var self = this;
         if (teacherObject.length) {
           wjQuery.each(teacherObject, function(key, value) {
-            id = value['id'];
-            name = value['name'];
-            eventId = value['resourceId']+value['startHour'];
-            event = self.calendar.fullCalendar('clientEvents', eventId);
+            var id = value['id'];
+            var name = value['name'];
+            var eventId = value['resourceId']+value['startHour'];
+            var event = self.calendar.fullCalendar('clientEvents', eventId);
+            var resourceObj = self.getResourceObj(value['resourceId']);
             if(event.length == 1){
               var uniqueId ='';
               wjQuery.each(event, function(k, v){
@@ -1704,7 +1705,11 @@ function SylvanCalendar(){
                     });
                     if(event[k].hasOwnProperty("students")){
                       wjQuery.each(event[k].students, function(ke, val){
-                        event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+val.id+"_"+value['resourceId']+"_"+value['startHour']+"' id='"+val.id+value['resourceId']+"' type='studentSession' value='"+val.id+"'>"+val.name+", "+val.grade+"</span>";
+                        if(resourceObj.deliveryType == "Group Instruction"){
+                          event[k].title += "<span class='drag-student' eventid='"+eventId+"' uniqueId='"+val.id+"_"+value['resourceId']+"_"+value['startHour']+"' id='"+val.id+value['resourceId']+"' type='studentSession' value='"+val.id+"'>"+val.name+", "+val.grade+"</span>";
+                        }else{
+                          event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+val.id+"_"+value['resourceId']+"_"+value['startHour']+"' id='"+val.id+value['resourceId']+"' type='studentSession' value='"+val.id+"'>"+val.name+", "+val.grade+"</span>";
+                        }
                       });
                     }
                     if(!event[k].title.includes('<span class="student-placeholder">Student name</span>')){
@@ -1730,10 +1735,13 @@ function SylvanCalendar(){
                   var studentList = event[k].students;
                   event[k].teachers = [{id:id, name:name}];
                   wjQuery.each(studentList, function(ke, val){
-                    event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+val.id+"_"+value['resourceId']+"_"+value['startHour']+"' id='"+val.id+value['resourceId']+"' type='studentSession' value='"+val.id+"'>"+val.name+", "+val.grade+"</span>";
+                    if(resourceObj.deliveryType == "Group Instruction"){
+                      event[k].title += "<span class='drag-student' eventid='"+eventId+"' uniqueId='"+val.id+"_"+value['resourceId']+"_"+value['startHour']+"' id='"+val.id+value['resourceId']+"' type='studentSession' value='"+val.id+"'>"+val.name+", "+val.grade+"</span>";
+                    }else{
+                      event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+val.id+"_"+value['resourceId']+"_"+value['startHour']+"' id='"+val.id+value['resourceId']+"' type='studentSession' value='"+val.id+"'>"+val.name+", "+val.grade+"</span>";
+                    }
                   });
                 }
-                var resourceObj = self.getResourceObj(value['resourceId']);
                 if(event[k].title.includes('<span class="student-placeholder">Student name</span>')){
                   event[k].title = event[k].title.replace('<span class="student-placeholder">Student name</span>', "");
                 }
@@ -1761,8 +1769,8 @@ function SylvanCalendar(){
                   resourceId: value['resourceId'],
                   isTeacher: true,
                   isConflict: false,
-                  deliveryTypeId: self.getResourceObj(value['resourceId']).deliveryTypeId,
-                  deliveryType : self.getResourceObj(value['resourceId']).deliveryType,
+                  deliveryTypeId: resourceObj.deliveryTypeId,
+                  deliveryType : resourceObj.deliveryType,
                   textColor:"#333333",
               }
               if(value['pinId'] != undefined){
@@ -1815,6 +1823,7 @@ function SylvanCalendar(){
                 var eventId = value['resourceId']+value['startHour'];
                 var uniqueId = id+"_"+value['resourceId']+"_"+value['startHour'];
                 var event = self.calendar.fullCalendar('clientEvents', eventId);
+                var resourceObj = self.getResourceObj(value['resourceId']);
                 if(event.length){
                     wjQuery.each(event, function(k, v){
                       if(event[k].hasOwnProperty("students") && event[k]['students'].length !=0 ){
@@ -1822,22 +1831,37 @@ function SylvanCalendar(){
                              return x.id;
                         }).indexOf(id);
                         if(index == -1){
-                            if(value['pinId'] != undefined){
-                              event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' pinnedId='"+ value['pinId'] +"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+name+", "+grade+"</span>";
+                            if(resourceObj.deliveryType == "Group Instruction"){
+                              if(value['pinId'] != undefined){
+                                event[k].title += "<span class='drag-student' eventid='"+eventId+"' pinnedId='"+ value['pinId'] +"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+name+", "+grade+"</span>";
+                              }else{
+                                event[k].title += "<span class='drag-student' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
+                              }
                             }else{
-                              event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
+                              if(value['pinId'] != undefined){
+                                event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' pinnedId='"+ value['pinId'] +"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+name+", "+grade+"</span>";
+                              }else{
+                                event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
+                              }
                             }
                           event[k].students.push({id:id, name:name, grade:grade, serviceId:serviceId, programId:programId});
                         }
                       }else{
-                        if(value['pinId'] != undefined){
-                            event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' pinnedId='"+ value['pinId'] +"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+name+", "+grade+"</span>";
+                        if(resourceObj.deliveryType == "Group Instruction"){
+                          if(value['pinId'] != undefined){
+                              event[k].title += "<span class='drag-student' eventid='"+eventId+"' pinnedId='"+ value['pinId'] +"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+name+", "+grade+"</span>";
+                          }else{
+                            event[k].title += "<span class='drag-student' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
+                          }
                         }else{
-                          event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
+                          if(value['pinId'] != undefined){
+                              event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' pinnedId='"+ value['pinId'] +"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+name+", "+grade+"</span>";
+                          }else{
+                            event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
+                          }
                         }
                         event[k].students = [{id:id, name:name, grade:grade, serviceId:serviceId, programId:programId }];
                       }
-                      var resourceObj = self.getResourceObj(value['resourceId']);
                       if(event[k].title.includes('<span class="student-placeholder" >Student name</span>')){
                         event[k].title = event[k].title.replace('<span class="student-placeholder" >Student name</span>', '');
                       }
@@ -1869,16 +1893,25 @@ function SylvanCalendar(){
                         textColor:"#333333",
                     }
                     obj.title = "";
+
                     if(value['is1to1']){
                       obj.title += "<img class='onetoone' src='/webresources/hub_/calendar/images/lock.png'>";
                     }
                     obj.title += "<span class='placeholder'>Teacher name</span>";
-                    if(value['pinId'] != undefined){
-                      obj.title += "<span class='draggable drag-student' eventid='"+eventId+"' pinnedId='"+ value['pinId'] +"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+name+", "+grade+"</span>";
+                    if(resourceObj.deliveryType == "Group Instruction"){
+                      if(value['pinId'] != undefined){
+                        obj.title += "<span class='drag-student' eventid='"+eventId+"' pinnedId='"+ value['pinId'] +"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+name+", "+grade+"</span>";
+                      }else{
+                        obj.title += "<span class='drag-student' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
+                      }
                     }else{
-                      obj.title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
+                      if(value['pinId'] != undefined){
+                        obj.title += "<span class='draggable drag-student' eventid='"+eventId+"' pinnedId='"+ value['pinId'] +"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+name+", "+grade+"</span>";
+                      }else{
+                        obj.title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
+                      }
                     }
-                    var resourceObj = self.getResourceObj(value['resourceId']);
+
                     if(resourceObj.deliveryType == "Group Facilitation"){ 
                         obj.backgroundColor = "#dff0d5";
                         obj.borderColor = "#7bc143";
