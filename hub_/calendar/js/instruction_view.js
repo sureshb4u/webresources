@@ -4557,7 +4557,7 @@ function Data(){
     return deliveryType;
   }
   
-  this.getStaffProgram = function(){
+  this.getStaffProgram = function(locationId){
     return staffProgram;
   }
 

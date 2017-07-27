@@ -1139,7 +1139,7 @@ function SylvanCalendar(){
           endDate = moment(moment(currentCalendarDate).format("YYYY-MM-DD").add(7,'d')).format("YYYY-MM-DD");
         }
         // staff program fetching
-        self.staffProgram = data.getStaffProgram() == null? [] : data.getStaffProgram();
+        self.staffProgram = data.getStaffProgram(locationId) == null? [] : data.getStaffProgram(locationId);
         self.teacherSchedule = isFetch || (self.teacherSchedule.length == 0) ? data.getTeacherSchedule(locationId,startDate,endDate) : self.teacherSchedule;
         self.teacherAvailability = isFetch || (self.teacherAvailability.length == 0) ? data.getTeacherAvailability(locationId,startDate,endDate) : self.teacherAvailability;
         self.pinnedData = isFetch || (self.pinnedData.length == 0) ? data.getPinnedData(locationId,startDate,endDate) : self.pinnedData;
