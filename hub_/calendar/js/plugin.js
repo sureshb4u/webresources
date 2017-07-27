@@ -587,10 +587,14 @@ function SylvanCalendar(){
         var prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
         var newResourceObj = t.getResourceObj(resource.id);
         var prevResourceObj = t.getResourceObj(prevEvent[0]['resourceId']);
+        var index = t.convertedStudentObj.map(function(x){
+                return x.id;
+        }).indexOf(stuId);
+        var prevStudObj = t.convertedStudentObj[index];
   
         if(newEvent.length == 0){
           if(newResourceObj.deliveryType != "Group Instruction"){
-            if(newResourceObj.deliveryType == prevResourceObj.deliveryType){
+            if(newResourceObj.deliveryType == prevStudObj.deliveryType){
               t.studentSessionConflictCheck(t,date, allDay,ev,ui,resource,elm);
             }else{
               t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "DeliveryType is different. Do you wish to continue?");
@@ -598,7 +602,7 @@ function SylvanCalendar(){
           }
         }else if(newEvent.length == 1){
           if(newEvent[0]['students'] == undefined){
-            if(newResourceObj.deliveryType == prevResourceObj.deliveryType){
+            if(newResourceObj.deliveryType == prevStudObj.deliveryType){
               t.studentSessionConflictCheck(t,date, allDay,ev,ui,resource,elm);
             }else{
               t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "DeliveryType is different. Do you wish to continue?");
@@ -609,7 +613,7 @@ function SylvanCalendar(){
             }).indexOf(stuId);
             if(studentIndex == -1){
               if(newResourceObj.deliveryType != "Group Instruction"){
-                if(newResourceObj.deliveryType == prevResourceObj.deliveryType){
+                if(newResourceObj.deliveryType == prevStudObj.deliveryType){
                   if(newResourceObj.deliveryType == "Personal Instruction"){
                     //  Validation for oneToOne check
                     //* if oneToOne then show popup
@@ -852,8 +856,8 @@ function SylvanCalendar(){
           student[0].startHour = startHour;
           student[0].end = new Date(endDate.setHours(endDate.getHours() + 1));
           student[0].resourceId = resource.id;
-          student[0].deliveryType = t.getResourceObj(resource.id)['deliveryType'];
-          student[0].deliveryTypeId = t.getResourceObj(resource.id)['deliveryTypeId'];
+          // student[0].deliveryType = t.getResourceObj(resource.id)['deliveryType'];
+          // student[0].deliveryTypeId = t.getResourceObj(resource.id)['deliveryTypeId'];
           this.convertedStudentObj.push(student[0]);
           this.saveSOFtoSession(student);
           t.populateStudentEvent(student,false);
@@ -922,8 +926,8 @@ function SylvanCalendar(){
           t.convertedStudentObj[index].startHour = startHour;
           t.convertedStudentObj[index].end = new Date(endDate.setHours(endDate.getHours() + 1));
           t.convertedStudentObj[index].resourceId = resource.id;
-          t.convertedStudentObj[index].deliveryTypeId = t.getResourceObj(resource.id).deliveryTypeId;
-          t.convertedStudentObj[index].deliveryType = t.getResourceObj(resource.id).deliveryType;
+          // t.convertedStudentObj[index].deliveryTypeId = t.getResourceObj(resource.id).deliveryTypeId;
+          // t.convertedStudentObj[index].deliveryType = t.getResourceObj(resource.id).deliveryType;
           t.saveStudentToSession(t.convertedStudentObj[index],prevSessionObj);
           t.populateStudentEvent([t.convertedStudentObj[index]],true);  
         } 
@@ -1875,13 +1879,14 @@ function SylvanCalendar(){
                     }else{
                       obj.title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
                     }
-                    if(value.deliveryType == "Group Facilitation"){ 
+                    var resourceObj = self.getResourceObj(value['resourceId']);
+                    if(resourceObj.deliveryType == "Group Facilitation"){ 
                         obj.backgroundColor = "#dff0d5";
                         obj.borderColor = "#7bc143";
-                    }else if(value.deliveryType == "Group Instruction"){ 
+                    }else if(resourceObj.deliveryType == "Group Instruction"){ 
                         obj.backgroundColor = "#fedeb7";
                         obj.borderColor = "#f88e50";
-                    }else if(value.deliveryType == "Personal Instruction"){ 
+                    }else if(resourceObj.deliveryType == "Personal Instruction"){ 
                         obj.backgroundColor = "#ebf5fb";
                         obj.borderColor = "#9acaea";
                     }
@@ -1939,11 +1944,11 @@ function SylvanCalendar(){
         objPinnedStudent['hub_center@odata.bind'] = student[0].locationId;
         objPinnedStudent['hub_enrollment@odata.bind'] = student[0].enrollmentId;
         objPinnedStudent['hub_productservice@odata.bind'] = student[0].serviceId;
-        objPinnedStudent['hub_studnet@odata.bind'] = id;
+        objPinnedStudent['hub_student@odata.bind'] = id;
         objPinnedStudent['hub_resource@odata.bind'] = student[0].resourceId;
       }
-      objPinnedStudent.hub_strat_time = this.convertToMinutes(moment(startTime).format("h:mm A"));
-      objPinnedStudent.hub_end_time = objPinnedStudent.hub_strat_time + 60;
+      objPinnedStudent.hub_start_time = this.convertToMinutes(moment(startTime).format("h:mm A"));
+      objPinnedStudent.hub_end_time = objPinnedStudent.hub_start_time + 60;
       objPinnedStudent.hub_day = this.getDayValue(today);
       objPinnedStudent.hub_date = moment(today).format("YYYY-MM-DD");
       var responseObj = data.savePinStudent(objPinnedStudent);
@@ -1967,11 +1972,11 @@ function SylvanCalendar(){
         objUnPinnedStudent['hub_center@odata.bind'] = student[0].locationId;
         objUnPinnedStudent['hub_enrollment@odata.bind'] = student[0].enrollmentId;
         objUnPinnedStudent['hub_productservice@odata.bind'] = student[0].serviceId;
-        objUnPinnedStudent['hub_studnet@odata.bind'] = id;
+        objUnPinnedStudent['hub_student@odata.bind'] = id;
         objUnPinnedStudent['hub_resource@odata.bind'] = student[0].resourceId;
       }
-      objUnPinnedStudent.hub_strat_time = this.convertToMinutes(moment(startTime).format("h:mm A"));
-      objUnPinnedStudent.hub_end_time = objUnPinnedStudent.hub_strat_time + 60;
+      objUnPinnedStudent.hub_start_time = this.convertToMinutes(moment(startTime).format("h:mm A"));
+      objUnPinnedStudent.hub_end_time = objUnPinnedStudent.hub_start_time + 60;
       objUnPinnedStudent.hub_day = this.getDayValue(today);
       objUnPinnedStudent.hub_date = moment(today).format("YYYY-MM-DD");
       objUnPinnedStudent.hub_sch_pinned_students_teachersid = wjQuery(element).attr('pinnedId');
@@ -1997,12 +2002,12 @@ function SylvanCalendar(){
         objPinnedStaff.hub_date = moment(today).format("YYYY-MM-DD");
         if(pinFor == 'time'){
           objPinnedStaff['hub_resource@odata.bind'] = null;
-          objPinnedStaff.hub_strat_time = this.convertToMinutes(moment(startTime).format("h:mm A"));
-          objPinnedStaff.hub_end_time = objPinnedStaff.hub_strat_time + 60;
+          objPinnedStaff.hub_start_time = this.convertToMinutes(moment(startTime).format("h:mm A"));
+          objPinnedStaff.hub_end_time = objPinnedStaff.hub_start_time + 60;
         }
         else{
           objPinnedStaff['hub_resource@odata.bind'] = teacher[0].resourceId;
-          objPinnedStaff.hub_strat_time = null;
+          objPinnedStaff.hub_start_time = null;
           objPinnedStaff.hub_end_time = null;
         }
         var responseObj = data.savePinTeacher(objPinnedStaff);
@@ -2029,8 +2034,8 @@ function SylvanCalendar(){
         objUnPinnedStaff.hub_sch_pinned_students_teachersid = wjQuery(element).attr('pinnedId');
         objUnPinnedStaff.hub_day = this.getDayValue(today);
         objUnPinnedStaff.hub_date = moment(today).format("YYYY-MM-DD");
-        objUnPinnedStaff.hub_strat_time = this.convertToMinutes(moment(startTime).format("h:mm A"));
-        objUnPinnedStaff.hub_end_time = objUnPinnedStaff.hub_strat_time + 60;
+        objUnPinnedStaff.hub_start_time = this.convertToMinutes(moment(startTime).format("h:mm A"));
+        objUnPinnedStaff.hub_end_time = objUnPinnedStaff.hub_start_time + 60;
         objUnPinnedStaff['hub_resource@odata.bind'] = teacher[0].resourceId;
         if(data.saveUnPinTeacher(objUnPinnedStaff)){
           wjQuery(element).removeAttr('pinnedId');
