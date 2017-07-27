@@ -681,7 +681,7 @@ function SylvanCalendar(){
             }
           }
         }else{
-          t.prompt("You can not place a student.");
+          t.prompt("Can not be placed to a GI session.");
         }
       }
       else if(wjQuery(elm).attr("type") == 'teacherSession'){
