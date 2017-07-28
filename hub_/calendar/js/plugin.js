@@ -239,6 +239,7 @@ function SylvanCalendar(){
                         self.populateStudentEvent(self.convertedStudentObj, true);
                         self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
                         self.populateTAPane(self.taList);
+                        self.populateTeacherEvent(self.convertedTeacherObj, true);
                     }else{
                       var newArray = [];
                       var sofNewArray = [];
@@ -251,6 +252,7 @@ function SylvanCalendar(){
                       self.populateTAPane(taNewArray);
                       self.populateSOFPane(sofNewArray, self.calendarOptions.minTime, self.calendarOptions.maxTime);
                       self.populateStudentEvent(newArray, true);
+                      self.populateTeacherEvent(self.convertedTeacherObj, true);
                     }
                 });
             }
@@ -1146,7 +1148,7 @@ function SylvanCalendar(){
         self.teacherSchedule = isFetch || (self.teacherSchedule.length == 0) ? data.getTeacherSchedule(locationId,startDate,endDate) : self.teacherSchedule;
         self.teacherAvailability = isFetch || (self.teacherAvailability.length == 0) ? data.getTeacherAvailability(locationId,startDate,endDate) : self.teacherAvailability;
         self.pinnedData = isFetch || (self.pinnedData.length == 0) ? data.getPinnedData(locationId,startDate,endDate) : self.pinnedData;
-        self.convertPinnedData(self.pinnedData);
+        self.convertPinnedData(self.pinnedData == null ? [] : self.pinnedData);
         if(!studentDataSource){  
           self.students = isFetch || (self.students.length == 0) ? data.getStudentSession(locationId,startDate,endDate) : self.students;
           self.populateStudentEvent(self.generateEventObject(self.students == null ? [] : self.students, "studentSession"), true);
@@ -2286,11 +2288,11 @@ function SylvanCalendar(){
         width: 400,
         modal: true,
         buttons: {
-          "Confirm": function() {
+          Yes: function() {
             t.studentSessionConflictCheck(t,date, allDay,ev,ui,resource,elm);
             wjQuery( this ).dialog( "close" );
           },
-          Cancel: function() {
+          No: function() {
             wjQuery( this ).dialog( "close" );
           }
         }
@@ -2305,11 +2307,11 @@ function SylvanCalendar(){
         width: 400,
         modal: true,
         buttons: {
-          "Confirm": function() {
+          Yes: function() {
             t.studentSofConflictCheck(t,date, allDay,ev,ui,resource,elm);
             wjQuery( this ).dialog( "close" );
           },
-          Cancel: function() {
+          No: function() {
             wjQuery( this ).dialog( "close" );
           }
         }
@@ -2324,11 +2326,11 @@ function SylvanCalendar(){
         width: 400,
         modal: true,
         buttons: {
-          "Confirm": function() {
+          Yes: function() {
             t.teacherSessionConflictCheck(t,date, allDay,ev,ui,resource,elm);
             wjQuery( this ).dialog( "close" );
           },
-          Cancel: function() {
+          No: function() {
             wjQuery( this ).dialog( "close" );
           }
         }
@@ -2343,11 +2345,11 @@ function SylvanCalendar(){
         width: 400,
         modal: true,
         buttons: {
-          "Confirm": function() {
+          Yes: function() {
             t.tapaneConflictCheck(t,date, allDay,ev,ui,resource,elm);
             wjQuery( this ).dialog( "close" );
           },
-          Cancel: function() {
+          No: function() {
             wjQuery( this ).dialog( "close" );
           }
         }
@@ -2366,7 +2368,7 @@ function SylvanCalendar(){
           //   t.tapaneConflictCheck(t,date, allDay,ev,ui,resource,elm);
           //   wjQuery( this ).dialog( "close" );
           // },
-          Cancel: function() {
+          Close: function() {
             wjQuery( this ).dialog( "close" );
           }
         }
