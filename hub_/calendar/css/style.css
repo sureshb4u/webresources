@@ -5,6 +5,7 @@ body{
 #calendar
 {
     margin: auto;
+    position: relative;
 }
 .no-margin{
     margin: 0;
@@ -363,4 +364,20 @@ button{
     vertical-align: middle;
     top: 5%;
     /*transform: translateY(-50%);*/
+}
+.loading{
+    width: 100%;
+    background: rgba(141, 139, 139, 0.28);
+    position: absolute;
+    top: 0;
+    height: 100%;
+    z-index: 2;
+    display: none;
+}
+.loading > img {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 64px;
 }

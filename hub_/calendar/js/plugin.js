@@ -29,6 +29,7 @@ setTimeout(function(){
     });
     var resources = [];
     function fetchResources(locationId,selectedDeliveryType,fetchData){
+      wjQuery(".loading").show();
       // asign deliverytpeList to  
       sylvanCalendar.selectedDeliveryType = selectedDeliveryType;
       var resourceList = [];
@@ -72,26 +73,33 @@ setTimeout(function(){
       if(resourceList.length){
         sylvanCalendar.refreshCalendarEvent(locationId,currentCalendarDate,currentCalendarDate,false,false);
         wjQuery('.prevBtn').off('click').on('click',function(){
+          wjQuery(".loading").show();
           sylvanCalendar.prev(locationId);
         });
        
         wjQuery('.nextBtn').off('click').on('click',function(){
+          wjQuery(".loading").show();
           sylvanCalendar.next(locationId);
         });
 
         wjQuery('.wkView').off('click').on('click',function(){
+          wjQuery(".loading").show();
           sylvanCalendar.weekView();
         });
         wjQuery('.dayView').off('click').on('click',function(){
+          wjQuery(".loading").show();
           sylvanCalendar.dayView();
         });
         wjQuery('#addAppointment').click(function() {
+          wjQuery(".loading").show();
           sylvanCalendar.addAppointment();
         });
         wjQuery('.sof-btn,.sof-close-icon').off('click').on('click',function(){
+          wjQuery(".loading").show();
           sylvanCalendar.sofPane();
         });
         wjQuery('.ta-btn,.ta-close-icon').off('click').on('click',function(){
+          wjQuery(".loading").show();
           sylvanCalendar.taPane();
         });
         sylvanCalendar.draggable('teacher-container');
@@ -103,6 +111,7 @@ setTimeout(function(){
             changeYear: true,
             showOn: 'button',
             onSelect: function(date) {
+              wjQuery(".loading").show();
               sylvanCalendar.dateFromCalendar(date,locationId);
               wjQuery('#datepicker').hide();
             }
@@ -235,6 +244,7 @@ function SylvanCalendar(){
                         self.calendar.fullCalendar('refetchEvents');
                     }
                     
+                    wjQuery(".loading").show();
                     if(checkedList.length == 0){
                         self.populateStudentEvent(self.convertedStudentObj, true);
                         self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
@@ -1006,7 +1016,7 @@ function SylvanCalendar(){
             events: this.eventList,
             windowResize: function(view) {
               self.calendar.fullCalendar('option','height',window.innerHeight - 60);
-            }
+            },
         };  
         
         if(args != undefined){
@@ -1809,6 +1819,7 @@ function SylvanCalendar(){
             self.draggable('draggable');
           });
         }
+        wjQuery(".loading").hide();
     }
 
     this.populateStudentEvent = function(studentList, isFromFilter){
@@ -1944,6 +1955,7 @@ function SylvanCalendar(){
                 self.draggable('draggable');
             });
         }
+        wjQuery(".loading").hide();
     }
 
     this.filterItems = function(obj, filterTerm, filterFor){
