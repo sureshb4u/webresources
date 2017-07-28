@@ -83,26 +83,24 @@ setTimeout(function(){
         });
 
         wjQuery('.wkView').off('click').on('click',function(){
-          wjQuery(".loading").show();
           sylvanCalendar.weekView();
         });
         wjQuery('.dayView').off('click').on('click',function(){
-          wjQuery(".loading").show();
           sylvanCalendar.dayView();
         });
         wjQuery('#addAppointment').click(function() {
-          wjQuery(".loading").show();
           sylvanCalendar.addAppointment();
         });
         wjQuery('.sof-btn,.sof-close-icon').off('click').on('click',function(){
-          wjQuery(".loading").show();
           sylvanCalendar.sofPane();
         });
         wjQuery('.ta-btn,.ta-close-icon').off('click').on('click',function(){
-          wjQuery(".loading").show();
           sylvanCalendar.taPane();
         });
         sylvanCalendar.draggable('teacher-container');
+        wjQuery(".icon-refresh").click(function(event) {
+          fetchResources(locationId,deliveryTypeList,false);
+        });
 
         wjQuery('#datepicker').datepicker({
             buttonImage: "/webresources/hub_/calendar/images/calendar.png",
@@ -232,6 +230,7 @@ function SylvanCalendar(){
                 // filter functionality
                 var checkedList = [];
                 wjQuery(".filterCheckBox").click(function() {
+                  wjQuery(".loading").show();
                    if(wjQuery(this).is(':checked')){
                         self.eventList = [];
                         self.calendar.fullCalendar( 'removeEvents');
@@ -244,7 +243,6 @@ function SylvanCalendar(){
                         self.calendar.fullCalendar('refetchEvents');
                     }
                     
-                    wjQuery(".loading").show();
                     if(checkedList.length == 0){
                         self.populateStudentEvent(self.convertedStudentObj, true);
                         self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
@@ -1682,6 +1680,7 @@ function SylvanCalendar(){
     }
 
     this.populateTeacherEvent = function(teacherObject, isFromFilter){
+        wjQuery(".loading").show();
         var self = this;
         if (teacherObject.length) {
           wjQuery.each(teacherObject, function(key, value) {
@@ -1823,6 +1822,7 @@ function SylvanCalendar(){
     }
 
     this.populateStudentEvent = function(studentList, isFromFilter){
+        wjQuery(".loading").show();
         var self = this;
         if (studentList.length) {
             wjQuery.each(studentList, function(key, value) {
