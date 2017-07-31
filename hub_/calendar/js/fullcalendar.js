@@ -3251,7 +3251,7 @@ function ResourceView(element, calendar, viewName) {
         for (i=0; i<colCnt; i++) {
             date = resourceDate(i);
             headCell = dayHeadCells.eq(i);
-            headCell.html(resources[i].name);
+            headCell.html(resources[i].name+" ("+resources[i].capacity+")");
             headCell.attr("id", resources[i].id);
             bodyCell = dayBodyCells.eq(i);
             if (+date == +today) {

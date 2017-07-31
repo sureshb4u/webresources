@@ -69,7 +69,7 @@ setTimeout(function(){
           }
         }
       }
-      sylvanCalendar.populateResource(resourceList);
+      sylvanCalendar.populateResource(resourceList,fetchData);
       if(resourceList.length){
         sylvanCalendar.refreshCalendarEvent(locationId,currentCalendarDate,currentCalendarDate,false,false);
         wjQuery('.prevBtn').off('click').on('click',function(){
@@ -293,7 +293,7 @@ function SylvanCalendar(){
       } 
     }
 
-    this.populateResource = function(args){
+    this.populateResource = function(args,isFetch){
       var currentCalendarDate;
       if(this.calendar != undefined){
         currentCalendarDate = this.calendar.fullCalendar('getDate');
@@ -2091,6 +2091,54 @@ function SylvanCalendar(){
       }
     };
 
+    this.removeStudentFromSession = function(element) {
+      var prevEventId = wjQuery(element).attr("eventid");
+      var prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
+      if(prevEvent){
+        var eventTitleHTML = wjQuery(prevEvent[0].title);
+        for (var i = 0; i < eventTitleHTML.length; i++) {
+          if(wjQuery(eventTitleHTML[i]).attr('value') == wjQuery(element).attr('value')){
+            eventTitleHTML.splice(i,1);
+          }
+        }
+        if(eventTitleHTML.prop('outerHTML') != undefined){
+          if(eventTitleHTML.length == 1){ 
+            prevEvent[0].title = eventTitleHTML.prop('outerHTML');                
+          }else{                  
+            prevEvent[0].title = "";
+            for (var i = 0; i < eventTitleHTML.length; i++) {                    
+              prevEvent[0].title += eventTitleHTML[i].outerHTML;                  
+            }                
+          }                
+          var removeStudentIndex = prevEvent[0].students.map(function(x){
+                  return x.id;
+          }).indexOf(wjQuery(element).attr('value'));
+          prevEvent[0].students.splice(removeStudentIndex,1);
+          if((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "student-placeholder")) || 
+            (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder" && eventTitleHTML[1].className == "student-placeholder") ||
+            (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder" && eventTitleHTML[2].className == "student-placeholder")){
+            for (var i = 0; i < this.eventList.length; i++) {
+              if(this.eventList[i].id == prevEventId)
+                this.eventList.splice(i,1);
+            }
+            this.calendar.fullCalendar('removeEvents', prevEventId);
+          }
+          this.calendar.fullCalendar('updateEvent', prevEvent); 
+        }
+        else{
+          for (var i = 0; i < this.eventList.length; i++) {
+            if(this.eventList[i].id == prevEventId)
+              this.eventList.splice(i,1);
+          }
+          this.calendar.fullCalendar('removeEvents', prevEventId);
+        }
+        if(!prevEvent[0].title.includes('<span class="student-placeholder">Student name</span>')){
+          prevEvent[0].title += '<span class="student-placeholder">Student name</span>';
+        }
+      }
+    };
+
+    //Method to add the context menu for Student and Teacher
     this.addContext = function(uniqueId,labelFor,isPinned){
       var self = this;
       var obj = {}; 
@@ -2109,6 +2157,12 @@ function SylvanCalendar(){
           obj.pin.visible = false;
           self.pinStudent(options.$trigger[0]);
         }  
+        obj.cancel = {
+          name: "Cancel",
+          callback : function(key, options) {
+            self.removeStudentFromSession(options.$trigger[0]);
+          }
+        }
       }
       else{
         obj.pin = {
@@ -2143,16 +2197,13 @@ function SylvanCalendar(){
         };
       }   
       if(isPinned){
-          obj.unpin.visible = true;
-          obj.pin.visible = false;
-        }
-        else{
-          obj.unpin.visible = false;
-          obj.pin.visible = true;
-        } 
-      //obj.reschedule = {name: "Reschedule"};
-      //obj.remove = {name: "Remove"};
-      obj.cancel = {name: "Cancel"};
+        obj.unpin.visible = true;
+        obj.pin.visible = false;
+      }
+      else{
+        obj.unpin.visible = false;
+        obj.pin.visible = true;
+      } 
       wjQuery(function() {
         wjQuery.contextMenu({
             selector: 'span[uniqueId="'+uniqueId+'"]', 
