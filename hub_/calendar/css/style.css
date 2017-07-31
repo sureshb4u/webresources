@@ -320,7 +320,15 @@ button{
     display: block;
     text-align: left;
 }
+.drag-student{
+    text-align: left;
+    display: block;
+    z-index: 100;
+}
+
 .drag-teacher{
+    z-index: 100;
+    display: block;
     text-align: center;
     font-weight: bold;
 }
