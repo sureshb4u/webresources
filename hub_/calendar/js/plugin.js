@@ -558,7 +558,7 @@ function SylvanCalendar(){
               if(newEvent[0]['is1to1']){
                 t.studentSofCnfmPopup(t,date, allDay,ev,ui,resource,elm, "Session is 'OneToOne' Type. Do you wish to continue?");
               }else{
-                if(!(newEvent[0].hasOwnProperty('students')) || newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length <= resource.capacity || resource.capacity == undefined)){
+                if(!(newEvent[0].hasOwnProperty('students')) || newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length < resource.capacity || resource.capacity == undefined)){
                     t.studentSofConflictCheck(t,date, allDay,ev,ui,resource,elm);
                 }else if(newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length >= resource.capacity || resource.capacity == undefined)){
                   t.studentSofCnfmPopup(t,date, allDay,ev,ui,resource,elm, "Capacity has reached the maximum. Do you wish to continue?");
@@ -639,9 +639,9 @@ function SylvanCalendar(){
                       if(newEvent[0]['is1to1']){
                         t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "Session is 'OneToOne' Type. Do you wish to continue?");
                       }else{
-                        if(!(newEvent[0].hasOwnProperty('students')) || newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length <= resource.capacity || resource.capacity == undefined)){
+                        if(!(newEvent[0].hasOwnProperty('students')) || newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length < resource.capacity || resource.capacity == undefined)){
                             t.studentSessionConflictCheck(t,date, allDay,ev,ui,resource,elm);
-                        }else if(newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length > resource.capacity || resource.capacity == undefined)){
+                        }else if(newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length >= resource.capacity || resource.capacity == undefined)){
                           t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "Capacity has reached the maximum. Do you wish to continue?");
                         }
                       }
@@ -670,9 +670,9 @@ function SylvanCalendar(){
                       if(newEvent[0]['is1to1']){
                         t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "DeliveryType is different and Session is 'OneToOne' Type. Do you wish to continue?");
                       }else{
-                        if(!(newEvent[0].hasOwnProperty('students')) || newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length <= resource.capacity || resource.capacity == undefined)){
+                        if(!(newEvent[0].hasOwnProperty('students')) || newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length < resource.capacity || resource.capacity == undefined)){
                             t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "DeliveryType is different. Do you wish to continue?");
-                        }else if(newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length > resource.capacity || resource.capacity == undefined)){
+                        }else if(newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length >= resource.capacity || resource.capacity == undefined)){
                           t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "DeliveryType is different and Capacity has reached the maximum. Do you wish to continue?");
                         }
                       }
@@ -1790,7 +1790,7 @@ function SylvanCalendar(){
                   event[k].title = event[k].title.replace('<span class="student-placeholder">Student name</span>', "");
                 }
                 if(event[k].students != undefined){
-                  if(event[k].students.length <= resourceObj["capacity"] || resourceObj["capacity"] == undefined){
+                  if(event[k].students.length < resourceObj["capacity"] || resourceObj["capacity"] == undefined){
                     event[k].title += '<span class="student-placeholder">Student name</span>';                  
                   } 
                 }
@@ -1913,7 +1913,7 @@ function SylvanCalendar(){
                       if(event[k].title.includes('<span class="student-placeholder">Student name</span>')){
                         event[k].title = event[k].title.replace('<span class="student-placeholder">Student name</span>', '');
                       }
-                      if(event[k].students.length <= resourceObj["capacity"] || resourceObj["capacity"] == undefined){
+                      if(event[k].students.length < resourceObj["capacity"] || resourceObj["capacity"] == undefined){
                         event[k].title += '<span class="student-placeholder">Student name</span>';                  
                       } 
                     });
