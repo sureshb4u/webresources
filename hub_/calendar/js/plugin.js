@@ -179,6 +179,12 @@ function SylvanCalendar(){
         taExpanded = false;
         var currentCalendarDate = this.calendar.fullCalendar('getDate');
         wjQuery('.headerDate').text(moment(currentCalendarDate).format('MM/DD/YYYY'));
+        if(moment(currentCalendarDate).format('MM/DD/YYYY') == moment(new Date()).format('MM/DD/YYYY')){
+          wjQuery('.headerDate').addClass('today');
+        }
+        else{
+          wjQuery('.headerDate').removeClass('today');
+        }
         if(wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').length){
             var dayOfWeek = moment(currentCalendarDate).format('dddd');
             var dayofMonth = moment(currentCalendarDate).format('M/D');
@@ -1107,6 +1113,12 @@ function SylvanCalendar(){
         this.calendar.fullCalendar('prev');
         var currentCalendarDate = this.calendar.fullCalendar('getDate');
         wjQuery('.headerDate').text(moment(currentCalendarDate).format('MM/DD/YYYY'));
+        if(moment(currentCalendarDate).format('MM/DD/YYYY') == moment(new Date()).format('MM/DD/YYYY')){
+          wjQuery('.headerDate').addClass('today');
+        }
+        else{
+          wjQuery('.headerDate').removeClass('today');
+        }
         var dayOfWeek = moment(currentCalendarDate).format('dddd');
         var dayofMonth = moment(currentCalendarDate).format('M/D');
         wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').html(dayOfWeek +" <br/> "+ dayofMonth);
@@ -1121,6 +1133,12 @@ function SylvanCalendar(){
       var displayDate = new Date(date);
       self.calendar.fullCalendar( 'gotoDate', displayDate );
       wjQuery('.headerDate').text(date);
+      if(moment(date).format('MM/DD/YYYY') == moment(new Date()).format('MM/DD/YYYY')){
+        wjQuery('.headerDate').addClass('today');
+      }
+      else{
+        wjQuery('.headerDate').removeClass('today');
+      }
       var dayOfWeek = moment(date).format('dddd');
       var dayofMonth = moment(date).format('M/D');
       wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').html(dayOfWeek +" <br/> "+ dayofMonth);  
@@ -1134,6 +1152,12 @@ function SylvanCalendar(){
       this.calendar.fullCalendar('next');
       var currentCalendarDate = this.calendar.fullCalendar('getDate');
       wjQuery('.headerDate').text(moment(currentCalendarDate).format('MM/DD/YYYY'));
+      if(moment(currentCalendarDate).format('MM/DD/YYYY') == moment(new Date()).format('MM/DD/YYYY')){
+        wjQuery('.headerDate').addClass('today');
+      }
+      else{
+        wjQuery('.headerDate').removeClass('today');
+      }
       var dayOfWeek = moment(currentCalendarDate).format('dddd');
       var dayofMonth = moment(currentCalendarDate).format('M/D');
       wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').html(dayOfWeek +" <br/> "+ dayofMonth);
@@ -1214,6 +1238,12 @@ function SylvanCalendar(){
             setTimeout(function(){
                 var currentCalendarDate = self.calendar.fullCalendar('getDate');
                 wjQuery('.headerDate').text(moment(currentCalendarDate).format('MM/DD/YYYY'));
+                if(moment(currentCalendarDate).format('MM/DD/YYYY') == moment(new Date()).format('MM/DD/YYYY')){
+                  wjQuery('.headerDate').addClass('today');
+                }
+                else{
+                  wjQuery('.headerDate').removeClass('today');
+                }
                 var dayOfWeek = moment(currentCalendarDate).format('dddd');
                 var dayofMonth = moment(currentCalendarDate).format('M/D');
                 wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').html(dayOfWeek +" <br/> "+ dayofMonth);
