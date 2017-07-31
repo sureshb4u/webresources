@@ -72,6 +72,12 @@ body {
 .header-container{
     padding: 8px 0;
 }
+.today{
+    background: #ccc;
+}
+.headerDate{
+    padding: 2px 4px;
+}
 
 .view-change-container {
      list-style-type:none;
