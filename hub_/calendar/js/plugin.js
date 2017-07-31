@@ -271,6 +271,8 @@ function SylvanCalendar(){
         wjQuery('.ta-pane').css('height',wjQuery('#calendar').height() - 10 +"px"); 
         wjQuery('.sof-pane').css('overflow-y','hidden'); 
         wjQuery('.ta-pane').css('overflow-y','hidden');
+        wjQuery('.ta-pane').hide();
+        wjQuery('.sof-pane').hide();
     }
 
     this.populateLocation = function(args){
