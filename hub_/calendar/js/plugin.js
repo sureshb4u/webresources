@@ -1735,7 +1735,7 @@ function SylvanCalendar(){
                       event[k].title = event[k].title.replace("<img class='onetoone' src='/webresources/hub_/calendar/images/lock.png'>", "");
                     }
                     if(!event[k].title.includes('<img class="conflict" src="/webresources/hub_/calendar/images/warning.png">')){
-                      event[k].title +=  '<p title="dfkgjdfhkghkjdfkdg">ldkjgldfj</p><img class="conflict" src="/webresources/hub_/calendar/images/warning.png">';
+                      event[k].title +=  '<img class="conflict" src="/webresources/hub_/calendar/images/warning.png">';
                     }
                     event[k].teachers.push({id:id, name:name});
                     wjQuery.each(event[k].teachers, function(ka, v){
