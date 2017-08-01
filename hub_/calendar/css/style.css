@@ -397,3 +397,25 @@ button{
     transform: translate(-50%, -50%);
     width: 32px;
 }
+.info-tooltip{
+    border: 1px solid #c5c5c5;
+    padding: 5px;
+    background: #ffffff;
+    color: #333333;
+    border-radius: 3px;
+    max-width: 150px;
+    webkit-box-shadow: 0px 0px 5px #666666;
+    box-shadow: 0px 0px 5px #666666;
+}
+
+.overflow-info{
+    background-image: linear-gradient(to bottom,#F44336,#F44336);
+    color: white;
+    outline: none;
+}
+
+.overflow-info:hover, .overflow-info:focus{
+    background-position: 0 0px;
+    color: white;
+    outline: none;
+}
