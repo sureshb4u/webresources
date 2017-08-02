@@ -456,6 +456,11 @@ function SylvanCalendar(){
                 }
                 wjQuery('#student_block_'+studentPosition +' .sof-gf').append(elm);
               }
+              if(this.selectedDeliveryType.length == 1){
+                wjQuery(".sof-pi").css("width", "calc(100% - 10px)");
+              }else{
+                wjQuery(".sof-pi").css("width", "calc(50% - 10px)");
+              }
               this.draggable('student-container');
             }
         }
