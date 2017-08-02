@@ -424,3 +424,6 @@ button{
 .sof-btn:focus, .sof-btn:active, .sof-btn.active{
     background-color: #F44336;
 }
+.fc-event-inner{
+    overflow-y: auto;
+}
