@@ -412,10 +412,15 @@ button{
     background-image: linear-gradient(to bottom,#F44336,#F44336);
     color: white;
     outline: none;
+    background-color: #F44336;
 }
 
 .overflow-info:hover, .overflow-info:focus{
     background-position: 0 0px;
     color: white;
     outline: none;
+    background-color: #F44336;
+}
+.sof-btn:hover, .sof-btn:focus, .sof-btn:active, .sof-btn.active{
+    background-color: #F44336;
 }

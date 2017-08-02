@@ -2002,9 +2002,7 @@ function SylvanCalendar(){
         }else{
           this.sofPane();
           wjQuery(".sof-btn").removeClass('overflow-info');
-          // wjQuery('.sof-btn,.sof-close-icon').bind('click', function(){
-          //   this.sofPane();           
-          // });
+          wjQuery('.sof-btn,.sof-close-icon').prop('disabled', true);
         }
     }
 
