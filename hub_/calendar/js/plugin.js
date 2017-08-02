@@ -1856,7 +1856,8 @@ function SylvanCalendar(){
         }
         wjQuery(".loading").hide();
     }
-    this.callSofFlag = true;
+    this.callSofOpenCount = 0;
+    this.callSofCloseCount = 0;
     this.populateStudentEvent = function(studentList, isFromFilter){
         wjQuery(".loading").show();
         var self = this;
@@ -1995,12 +1996,15 @@ function SylvanCalendar(){
           wjQuery(".sof-btn").removeClass('overflow-info');
           wjQuery(".sof-btn").addClass('overflow-info');
           wjQuery('.sof-btn,.sof-close-icon').unbind('click');
-          if(this.callSofFlag){
+          if(this.callSofOpenCount == 0){
             this.sofPane();
-            this.callSofFlag = false;
+            this.callSofOpenCount++;
           }
         }else{
-          this.sofPane();
+          if(this.callSofCloseCount == 0){
+            this.sofPane();
+            this.callSofCloseCount++;
+          }
           wjQuery(".sof-btn").removeClass('overflow-info');
           wjQuery('.sof-btn,.sof-close-icon').prop('disabled', true);
         }
