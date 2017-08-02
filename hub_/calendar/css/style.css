@@ -342,16 +342,25 @@ button{
     background: #ebf5fb;
     padding: 3px;
     border: 1px solid #9acaea;
+    display: inline-block;
+    width: calc(50% - 8px);
+    height: calc(100% - 8px);
 }
 .sof-gi{
     padding: 3px;
     border: 1px solid #f88e50;
     background: #fedeb7;
+    display: inline-block;
+    width: calc(50% - 8px);
+    height: calc(100% - 8px);
 }
 .sof-gf{
     padding: 3px;
     border: 1px solid #7bc143;
     background: #dff0d5;
+    display: inline-block;
+    width: calc(50% - 8px);
+    height: calc(100% - 8px);
 }
 .placeholder{
     opacity: 0.5;
@@ -427,3 +436,5 @@ button{
 .fc-event-inner{
     overflow-y: auto;
 }
+
+01203888388

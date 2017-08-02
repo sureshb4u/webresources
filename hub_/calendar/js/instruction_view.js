@@ -2181,8 +2181,8 @@ var student =  [
     "_hub_student_value@Microsoft.Dynamics.CRM.lookuplogicalname":"contact",
     "_hub_student_value@OData.Community.Display.V1.FormattedValue":"Chinmay D",
     "aenrollment_x002e_hub_enrollmentid":"df8ab858-4669-e711-80f2-c4346bacfbbc",
-    "aproductservice_x002e_hub_deliverytype":"d6c706eb-a534-e711-80ed-c4346bad526c",
-    "aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue":"Personal Instruction",
+    "aproductservice_x002e_hub_deliverytype":"d6493b3e-4e35-e711-80ed-c4346bad526c",
+    "aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue":"Group Facilitation",
     "aprogram_x002e_hub_areaofinterest":10,
     "aprogram_x002e_hub_areaofinterest@OData.Community.Display.V1.FormattedValue":"Math Edge",
     "aprogram_x002e_hub_name":"Algebra Fundamentals",
@@ -2236,7 +2236,7 @@ var student =  [
     "hub_attendancestatus":0,
     "hub_attendancestatus@OData.Community.Display.V1.FormattedValue":"Attended",
     "hub_end_time":840,
-    "hub_end_time@OData.Community.Display.V1.FormattedValue":"2:00 PM",
+    "hub_end_time@OData.Community.Display.V1.FormattedValue":"12:00 PM",
     "hub_is_1to1":false,
     "falsehub_is_1to1@OData.Community.Display.V1.FormattedValue":"No",
     "hub_isattended":true,
@@ -2248,7 +2248,7 @@ var student =  [
     "hub_sessiontype":1,
     "hub_sessiontype@OData.Community.Display.V1.FormattedValue":"Regular",
     "hub_start_time":780,
-    "hub_start_time@OData.Community.Display.V1.FormattedValue":"1:00 PM",
+    "hub_start_time@OData.Community.Display.V1.FormattedValue":"11:00 AM",
     "hub_studentsessionid":"60e7c850-d16a-e711-80f2-c4346bad526c"
   },
   {
