@@ -30,6 +30,8 @@ setTimeout(function(){
     var resources = [];
     function fetchResources(locationId,selectedDeliveryType,fetchData){
       wjQuery(".loading").show();
+      sylvanCalendar.callSofOpenCount = 0;
+      sylvanCalendar.callSofCloseCount = 0;
       // asign deliverytpeList to  
       sylvanCalendar.selectedDeliveryType = selectedDeliveryType;
       var resourceList = [];
