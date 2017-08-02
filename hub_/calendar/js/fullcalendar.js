@@ -3464,11 +3464,20 @@ function ResourceView(element, calendar, viewName) {
             return Math.max(slotScrollerTop, Math.min(slotScrollerBottom, n));
         }
         for (var i=0; i<slotCnt; i++) {
-            rows.push([
-                constrain(slotTableTop + slotHeight*i),
-                constrain(slotTableTop + slotHeight*(i+1))
-                ]);
+        	if(i == 0){
+        		rows.push([
+	                slotScrollerTop,
+	                slotScrollerTop + slotHeight
+                ]);	
+        	}
+        	else{
+        		rows.push([
+        			parseInt(rows[rows.length - 1][1]),
+        			parseInt(rows[rows.length - 1][1] + slotHeight)
+        		]);
+        	}
         }
+            
     });
 	
 	
@@ -6845,7 +6854,10 @@ function HoverListener(coordinateGrid) {
 	
 	function mouse(ev) {
 		_fixUIEvent(ev); // see below
-		var newCell = coordinateGrid.cell(ev.pageX, ev.pageY);
+        var parentOffset = wjQuery('#scrollarea div').offset(); 
+	    var relX = ev.pageX - parentOffset.left;
+	    var relY = ev.pageY - parentOffset.top + 100;
+		var newCell = coordinateGrid.cell(relX, relY);
 		if (!newCell != !cell || newCell && (newCell.row != cell.row || newCell.col != cell.col)) {
 			if (newCell) {
 				if (!firstCell) {
