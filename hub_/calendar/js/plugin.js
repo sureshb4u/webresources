@@ -276,8 +276,8 @@ function SylvanCalendar(){
         });
         wjQuery('.sof-pane').css('height',wjQuery('#calendar').height() - 65 +"px"); 
         wjQuery('.ta-pane').css('height',wjQuery('#calendar').height() - 65 +"px"); 
-        wjQuery('.sof-pane').css('overflow-y','hidden'); 
-        wjQuery('.ta-pane').css('overflow-y','hidden');
+        wjQuery('.sof-pane').css('overflow','hidden'); 
+        wjQuery('.ta-pane').css('overflow','hidden');
         wjQuery('.ta-pane').hide();
         wjQuery('.sof-pane').hide();
     }
