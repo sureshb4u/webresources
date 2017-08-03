@@ -1524,6 +1524,7 @@ function SylvanCalendar(){
                 name: val["aenrollment_x002e_hub_student@OData.Community.Display.V1.FormattedValue"],
                 start: sDate,
                 end: eDate,
+                enrollmentId :val['_hub_enrollment_value'],
                 startHour: startHour,
                 gradeId:val['astudent_x002e_hub_grade'],
                 grade: val['astudent_x002e_hub_grade@OData.Community.Display.V1.FormattedValue'],
