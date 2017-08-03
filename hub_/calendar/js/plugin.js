@@ -1536,8 +1536,8 @@ function SylvanCalendar(){
                 var sDate = new Date(val['hub_session_date@OData.Community.Display.V1.FormattedValue'] +" "+ val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
                 var eDate = new Date(val['hub_session_date@OData.Community.Display.V1.FormattedValue'] +" "+ val['hub_end_time@OData.Community.Display.V1.FormattedValue']);
                 var startHour = new Date(val['hub_session_date@OData.Community.Display.V1.FormattedValue'] +" "+ val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
-                var startHour = startHour.setMinutes(0);
-                var startHour = new Date(new Date(startHour).setSeconds(0));
+                startHour = startHour.setMinutes(0);
+                startHour = new Date(new Date(startHour).setSeconds(0));
                 var obj = {
                     id: val._hub_student_value, 
                     name: val["_hub_student_value@OData.Community.Display.V1.FormattedValue"],
@@ -1604,18 +1604,10 @@ function SylvanCalendar(){
         }
         else if(label == 'masterStudentSession'){
           wjQuery.each(args, function(ke, val) {
-            var sDate = new Date(moment(new Date()).format('YYYY-MM-DD') +" "+ val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
-            var eDate = new Date(moment(new Date()).format('YYYY-MM-DD') +" "+ val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
-            var startHour = new Date(moment(new Date()).format('YYYY-MM-DD') +" "+ val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
-            var startHour = startHour.setMinutes(0);
-            var startHour = new Date(new Date(startHour).setSeconds(0));
             var obj = {
                 id: val['aenrollment_x002e_hub_student'], 
                 name: val["aenrollment_x002e_hub_student@OData.Community.Display.V1.FormattedValue"],
-                start: sDate,
-                end: eDate,
                 enrollmentId :val['_hub_enrollment_value'],
-                startHour: startHour,
                 gradeId:val['astudent_x002e_hub_grade'],
                 grade: val['astudent_x002e_hub_grade@OData.Community.Display.V1.FormattedValue'],
                 deliveryTypeId: val['aproductservice_x002e_hub_deliverytype'],
@@ -1624,31 +1616,22 @@ function SylvanCalendar(){
                 locationName: val['aenrollment_x002e_hub_location@OData.Community.Display.V1.FormattedValue']
             }
 
-            if (val.hasOwnProperty('_hub_resourceid_value')) {
+            var pinnedStudent = this.convertedPinnedList.filter(function(x){
+               return x.studentId == obj.id &&
+                      x.dayId == this.getDayValue(new Date());
+            });
+            if(pinnedStudent[0] != undefined){
+              obj.start = new Date(moment(new Date()).format('YYYY-MM-DD')+" "+pinnedStudent[0].startTime);
+              obj.end = new Date(moment(new Date()).format('YYYY-MM-DD')+" "+pinnedStudent[0].endTime);
+              var startHour = new Date(moment(new Date()).format('YYYY-MM-DD') +" "+ pinnedStudent[0].startTime);
+              startHour = startHour.setMinutes(0);
+              startHour = new Date(new Date(startHour).setSeconds(0));
+              obj.startHour = startHour;
+              if (pinnedStudent[0].hasOwnProperty('_hub_resourceid_value')) {
                 obj.resourceId = val['_hub_resourceid_value']; 
                 eventObjList.push(obj);
-            }else{
-              if(obj.deliveryType == "Personal Instruction"){
-                var index = self.sofList['Personal Instruction'].map(function(x){
-                  return x.id;
-                }).indexOf(val._hub_student_value);
-                if(index == -1){
-                  self.sofList['Personal Instruction'].push(obj);
-                }
-              }else if(obj.deliveryType == "Group Instruction"){
-                var index = self.sofList['Group Instruction'].map(function(x){
-                  return x.id;
-                }).indexOf(val._hub_student_value);
-                if(index == -1){
-                  self.sofList['Group Instruction'].push(obj);
-                }
-              }else if(obj.deliveryType == "Group Facilitation"){
-                var index = self.sofList['Group Facilitation'].map(function(x){
-                  return x.id;
-                }).indexOf(val._hub_student_value);
-                if(index == -1){
-                  self.sofList['Group Facilitation'].push(obj);
-                }
+              }else if(pinnedStudent[0].hasOwnProperty('_hub_affinity_value')){
+                
               }
             }
           });
