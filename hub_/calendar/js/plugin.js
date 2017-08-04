@@ -1,4 +1,6 @@
 var data = new Data();
+var DEFAULT_START_TIME = "8:00 AM";
+var DEFAULT_END_TIME = "9:00 AM";
 var deliveryType = data.getDeliveryType();
 var currentCalendarDate = moment(new Date()).format("YYYY-MM-DD");
 setTimeout(function(){
@@ -1542,19 +1544,19 @@ function SylvanCalendar(){
                     id: val._hub_student_value, 
                     name: val["_hub_student_value@OData.Community.Display.V1.FormattedValue"],
                     start: sDate,
-                    enrollmentId :val['_hub_enrollment_value'],
-                    is1to1 : val["hub_is_1to1"],
-                    programId: val['aprogram_x002e_hub_programid'],
-                    serviceId:val['_hub_service_value'],
                     startHour : startHour,
                     gradeId:val['astudent_x002e_hub_grade'],
                     grade: val['astudent_x002e_hub_grade@OData.Community.Display.V1.FormattedValue'],
                     deliveryTypeId: val['aproductservice_x002e_hub_deliverytype'],
                     deliveryType: val['aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue'],
                     locationId: val['_hub_center_value'],
+                    locationName: val['_hub_center_value@OData.Community.Display.V1.FormattedValue'],
+                    enrollmentId :val['_hub_enrollment_value'],
                     subject:val['aprogram_x002e_hub_areaofinterest@OData.Community.Display.V1.FormattedValue'],
                     subjectId:val['aprogram_x002e_hub_areaofinterest'],
-                    locationName: val['_hub_center_value@OData.Community.Display.V1.FormattedValue']
+                    is1to1 : val["hub_is_1to1"],
+                    programId: val['aprogram_x002e_hub_programid'],
+                    serviceId:val['_hub_service_value']
                 }
                 if (val.hasOwnProperty('_hub_resourceid_value')) {
                     obj.resourceId = val['_hub_resourceid_value']; 
@@ -1570,7 +1572,13 @@ function SylvanCalendar(){
                       }
                     }
                     eventObjList.push(obj);
-                }else{
+                }
+                else{
+                  if(self.sofList.length == 0){
+                    self.sofList['Personal Instruction'] = [];
+                    self.sofList['Group Instruction'] = [];
+                    self.sofList['Group Facilitation'] = [];
+                  }
                   if(obj.deliveryType == "Personal Instruction"){
                     var index = self.sofList['Personal Instruction'].map(function(x){
                       return x.id;
@@ -1603,35 +1611,76 @@ function SylvanCalendar(){
             self.convertedStudentObj = eventObjList;
         }
         else if(label == 'masterStudentSession'){
+          var currentCalendarDate = self.calendar.fullCalendar('getDate');
           wjQuery.each(args, function(ke, val) {
             var obj = {
                 id: val['aenrollment_x002e_hub_student'], 
                 name: val["aenrollment_x002e_hub_student@OData.Community.Display.V1.FormattedValue"],
-                enrollmentId :val['_hub_enrollment_value'],
                 gradeId:val['astudent_x002e_hub_grade'],
                 grade: val['astudent_x002e_hub_grade@OData.Community.Display.V1.FormattedValue'],
                 deliveryTypeId: val['aproductservice_x002e_hub_deliverytype'],
                 deliveryType: val['aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue'],
                 locationId: val['aenrollment_x002e_hub_location'],
-                locationName: val['aenrollment_x002e_hub_location@OData.Community.Display.V1.FormattedValue']
+                locationName: val['aenrollment_x002e_hub_location@OData.Community.Display.V1.FormattedValue'],
+                subject:val['aprogram_x002e_hub_areaofinterest@OData.Community.Display.V1.FormattedValue'],
+                subjectId:val['aprogram_x002e_hub_areaofinterest'],
+                programId: val['aprogram_x002e_hub_programid'],
+                serviceId: val['aenrollment_x002e_hub_service']
             }
-
-            var pinnedStudent = this.convertedPinnedList.filter(function(x){
+            var pinnedStudent = self.convertedPinnedList.filter(function(x){
                return x.studentId == obj.id &&
-                      x.dayId == this.getDayValue(new Date());
+                      x.dayId == self.getDayValue(currentCalendarDate);
             });
             if(pinnedStudent[0] != undefined){
-              obj.start = new Date(moment(new Date()).format('YYYY-MM-DD')+" "+pinnedStudent[0].startTime);
-              obj.end = new Date(moment(new Date()).format('YYYY-MM-DD')+" "+pinnedStudent[0].endTime);
-              var startHour = new Date(moment(new Date()).format('YYYY-MM-DD') +" "+ pinnedStudent[0].startTime);
+              obj.enrollmentId  = pinnedStudent[0].enrollmentId,
+              obj.start = new Date(moment(currentCalendarDate).format('YYYY-MM-DD')+" "+pinnedStudent[0].startTime);
+              obj.end = new Date(moment(currentCalendarDate).format('YYYY-MM-DD')+" "+pinnedStudent[0].endTime);
+              var startHour = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') +" "+ pinnedStudent[0].startTime);
               startHour = startHour.setMinutes(0);
               startHour = new Date(new Date(startHour).setSeconds(0));
               obj.startHour = startHour;
-              if (pinnedStudent[0].hasOwnProperty('_hub_resourceid_value')) {
+              if (pinnedStudent[0].hasOwnProperty('resourceId')) {
+                obj.resourceId = pinnedStudent[0].resourceId; 
+                obj.pinId = pinnedStudent[0].id;
+                eventObjList.push(obj);
+              }/*else if(pinnedStudent[0].hasOwnProperty('_hub_affinity_value')){
                 obj.resourceId = val['_hub_resourceid_value']; 
                 eventObjList.push(obj);
-              }else if(pinnedStudent[0].hasOwnProperty('_hub_affinity_value')){
-                
+              }*/
+            }
+            else{
+              obj.start = new Date(moment(currentCalendarDate).format('YYYY-MM-DD')+" "+DEFAULT_START_TIME);
+              obj.end = new Date(moment(currentCalendarDate).format('YYYY-MM-DD')+" "+DEFAULT_END_TIME);
+              var startHour = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') +" "+ DEFAULT_START_TIME);
+              startHour = startHour.setMinutes(0);
+              startHour = new Date(new Date(startHour).setSeconds(0));
+              obj.startHour = startHour;
+              if(self.sofList.length == 0){
+                self.sofList['Personal Instruction'] = [];
+                self.sofList['Group Instruction'] = [];
+                self.sofList['Group Facilitation'] = [];
+              }
+              if(obj.deliveryType == "Personal Instruction"){
+                var index = self.sofList['Personal Instruction'].map(function(x){
+                  return x.id;
+                }).indexOf(val._hub_student_value);
+                if(index == -1){
+                  self.sofList['Personal Instruction'].push(obj);
+                }
+              }else if(obj.deliveryType == "Group Instruction"){
+                var index = self.sofList['Group Instruction'].map(function(x){
+                  return x.id;
+                }).indexOf(val._hub_student_value);
+                if(index == -1){
+                  self.sofList['Group Instruction'].push(obj);
+                }
+              }else if(obj.deliveryType == "Group Facilitation"){
+                var index = self.sofList['Group Facilitation'].map(function(x){
+                  return x.id;
+                }).indexOf(val._hub_student_value);
+                if(index == -1){
+                  self.sofList['Group Facilitation'].push(obj);
+                }
               }
             }
           });
@@ -2088,20 +2137,22 @@ function SylvanCalendar(){
         }
         wjQuery(".loading").hide();
         var closeSofPane = true;
-        if(this.selectedDeliveryType.length == 1){
-          if(this.getDeliveryTypeVal(this.selectedDeliveryType[0]) == "Personal Instruction"){
+        if(this.sofList.length){
+          if(this.selectedDeliveryType.length == 1){
+            if(this.getDeliveryTypeVal(this.selectedDeliveryType[0]) == "Personal Instruction"){
+              if(this.sofList['Personal Instruction'].length == 0){
+                closeSofPane = false;
+              }
+            }
+          }else if(this.selectedDeliveryType.length > 1){
             if(this.sofList['Personal Instruction'].length == 0){
+              wjQuery(".sof-gf").css("width", "calc(100% - 10px)");
+            }else if(this.sofList['Group Facilitation'].length == 0){
+              wjQuery(".sof-pi").css("width", "calc(100% - 10px)");
+            }
+            if(this.sofList['Personal Instruction'].length == 0 && this.sofList['Group Facilitation'].length == 0 && this.sofList['Group Instruction'].length == 0){
               closeSofPane = false;
             }
-          }
-        }else if(this.selectedDeliveryType.length > 1){
-          if(this.sofList['Personal Instruction'].length == 0){
-            wjQuery(".sof-gf").css("width", "calc(100% - 10px)");
-          }else if(this.sofList['Group Facilitation'].length == 0){
-            wjQuery(".sof-pi").css("width", "calc(100% - 10px)");
-          }
-          if(this.sofList['Personal Instruction'].length == 0 && this.sofList['Group Facilitation'].length == 0 && this.sofList['Group Instruction'].length == 0){
-            closeSofPane = false;
           }
         }
 
@@ -2447,6 +2498,7 @@ function SylvanCalendar(){
         for (var i = 0; i < data.length; i++) {
           var obj={
             id: data[i]['hub_sch_pinned_students_teachersid'],
+            enrollmentId : data[i]['_hub_enrollment_value'],
             startTime : data[i]['hub_start_time@OData.Community.Display.V1.FormattedValue'],
             endTime: data[i]['hub_end_time@OData.Community.Display.V1.FormattedValue'],
             studentId : data[i]['_hub_student_value'],
