@@ -2170,6 +2170,7 @@ function SylvanCalendar(){
             this.callSofCloseCount++;
           }
           wjQuery(".sof-btn").removeClass('overflow-info');
+          wjQuery('.sof-btn,.sof-close-icon').prop('title', "No Student in Overflow Pane");
           wjQuery('.sof-btn,.sof-close-icon').prop('disabled', true);
         }
     }
@@ -2332,6 +2333,9 @@ function SylvanCalendar(){
         objCancelSession['hub_center@odata.bind'] = "/hub_centers(" + objStudent[0]["_hub_center_value"] + ")";
         objCancelSession['hub_student@odata.bind'] = "/contacts(" + objStudent[0]['_hub_student_value'] + ")";
         objCancelSession['hub_session_date'] = objStudent[0]['hub_session_date'];
+        if(objStudent[0].hasOwnProperty('_hub_resourceid_value')){
+          objCancelSession['hub_resourceid@odata.bind'] = "/hub_center_resourceses(" +objStudent[0]['_hub_resourceid_value'] + ")";
+        }
         if(data.cancelStudentSession(objCancelSession)){
           var prevEventId = wjQuery(element).attr("eventid");
           var prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
@@ -2400,14 +2404,14 @@ function SylvanCalendar(){
           obj.pin.visible = false;
           self.pinStudent(options.$trigger[0]);
         }  
-        obj.cancel = {
-          name: "Cancel",
+        obj.moveToSof = {
+          name: "Move to SOF",
           callback : function(key, options) {
-            self.removeStudentFromSession(options.$trigger[0]);
+            self.moveStudentToSOF(options.$trigger[0]);
           }
         }
-        obj.moveToSof = {
-          name: "Move TO SOF",
+        obj.cancel = {
+          name: "Cancel",
           callback : function(key, options) {
             self.removeStudentFromSession(options.$trigger[0]);
           }
@@ -2465,6 +2469,78 @@ function SylvanCalendar(){
       });
     };
 
+    this.moveStudentToSOF = function(element){
+      var uniqueIds = wjQuery(element).attr("uniqueId").split('_');
+      var objStudent = this.students.filter(function(x){
+          return x._hub_student_value == uniqueIds[0] &&
+                 x._hub_resourceid_value == uniqueIds[1] &&
+                 x.hub_session_date == moment(uniqueIds[2]).format('YYYY-MM-DD') &&
+                 parseInt(x['hub_start_time@OData.Community.Display.V1.FormattedValue'].split(':')[0]) == new Date(uniqueIds[2]).getHours();
+        });
+      if(objStudent[0] != undefined){
+        var objMovetoSOF = {};
+        objMovetoSOF['hub_studentsessionid'] = objStudent[0]['hub_studentsessionid'];
+        objMovetoSOF['hub_enrollment@odata.bind'] = "/hub_enrollments(" + objStudent[0]['_hub_enrollment_value'] + ")";
+        objMovetoSOF['hub_service@odata.bind'] = "/hub_productservices(" + objStudent[0]['_hub_service_value'] + ")";
+        objMovetoSOF['hub_deliverytype'] = objStudent[0]['aproductservice_x002e_hub_deliverytype'];
+        objMovetoSOF['hub_deliverytype@OData.Community.Display.V1.FormattedValue'] = objStudent[0]['aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue'];
+        objMovetoSOF['hub_center@odata.bind'] = "/hub_centers(" + objStudent[0]["_hub_center_value"] + ")";
+        objMovetoSOF['hub_student@odata.bind'] = "/contacts(" + objStudent[0]['_hub_student_value'] + ")";
+        objMovetoSOF['hub_session_date'] = objStudent[0]['hub_session_date'];
+        if(objStudent[0].hasOwnProperty('_hub_resourceid_value')){
+          objMovetoSOF['hub_resourceid@odata.bind'] = "/hub_center_resourceses(" +objStudent[0]['_hub_resourceid_value'] + ")";
+          delete objStudent[0]['_hub_resourceid_value'];
+        }
+        if(data.moveStudentToSOF(objMovetoSOF)){
+          this.populateStudentEvent(self.generateEventObject(objStudent == null ? [] : objStudent, "studentSession"), true);
+          var prevEventId = wjQuery(element).attr("eventid");
+          var prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
+          if(prevEvent){
+            var eventTitleHTML = wjQuery(prevEvent[0].title);
+            for (var i = 0; i < eventTitleHTML.length; i++) {
+              if(wjQuery(eventTitleHTML[i]).attr('value') == wjQuery(element).attr('value')){
+                eventTitleHTML.splice(i,1);
+              }
+            }
+            if(eventTitleHTML.prop('outerHTML') != undefined){
+              if(eventTitleHTML.length == 1){ 
+                prevEvent[0].title = eventTitleHTML.prop('outerHTML');                
+              }else{                  
+                prevEvent[0].title = "";
+                for (var i = 0; i < eventTitleHTML.length; i++) {                    
+                  prevEvent[0].title += eventTitleHTML[i].outerHTML;                  
+                }                
+              }                
+              var removeStudentIndex = prevEvent[0].students.map(function(x){
+                      return x.id;
+              }).indexOf(wjQuery(element).attr('value'));
+              prevEvent[0].students.splice(removeStudentIndex,1);
+              if((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "student-placeholder")) || 
+                (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder" && eventTitleHTML[1].className == "student-placeholder") ||
+                (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder" && eventTitleHTML[2].className == "student-placeholder")){
+                for (var i = 0; i < this.eventList.length; i++) {
+                  if(this.eventList[i].id == prevEventId)
+                    this.eventList.splice(i,1);
+                }
+                this.calendar.fullCalendar('removeEvents', prevEventId);
+              }
+              this.calendar.fullCalendar('updateEvent', prevEvent); 
+            }
+            else{
+              for (var i = 0; i < this.eventList.length; i++) {
+                if(this.eventList[i].id == prevEventId)
+                  this.eventList.splice(i,1);
+              }
+              this.calendar.fullCalendar('removeEvents', prevEventId);
+            }
+            if(!prevEvent[0].title.includes('<span class="student-placeholder">Student name</span>')){
+              prevEvent[0].title += '<span class="student-placeholder">Student name</span>';
+            }
+          }
+        }
+      }
+    };
+
     this.draggable = function(selector){
       wjQuery('.'+selector).draggable({
         revert: true,      
@@ -2476,10 +2552,10 @@ function SylvanCalendar(){
         cursorAt: { top : 0 },
         drag : function(){
           if(sofExpanded){
-            wjQuery('.sof-pane').css('opacity','.3');
+            wjQuery('.sof-pane').css('opacity','.1');
           }
           if(taExpanded){
-            wjQuery('.ta-pane').css('opacity','.3');
+            wjQuery('.ta-pane').css('opacity','.1');
           }
         },
         stop : function(){

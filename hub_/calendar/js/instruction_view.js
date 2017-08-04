@@ -4570,6 +4570,10 @@ function Data(){
   this.cancelStudentSession = function(objCancelSession){
     return true;
   }
+
+  this.moveStudentToSOF = function(objMoveToSOF){
+    return true;
+  }
 }
 
 
