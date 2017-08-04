@@ -1574,7 +1574,7 @@ function SylvanCalendar(){
                     eventObjList.push(obj);
                 }
                 else{
-                  if(self.sofList.length == 0){
+                  if(Object.keys(self.sofList).length == 0){
                     self.sofList['Personal Instruction'] = [];
                     self.sofList['Group Instruction'] = [];
                     self.sofList['Group Facilitation'] = [];
@@ -2317,11 +2317,15 @@ function SylvanCalendar(){
 
     this.removeStudentFromSession = function(element) {
       var uniqueIds = wjQuery(element).attr("uniqueId").split('_');
+      var h = new Date(uniqueIds[2]).getHours();
+      if(h > 12){
+        h -= 12;
+      }
       var objStudent = this.students.filter(function(x){
           return x._hub_student_value == uniqueIds[0] &&
                  x._hub_resourceid_value == uniqueIds[1] &&
                  x.hub_session_date == moment(uniqueIds[2]).format('YYYY-MM-DD') &&
-                 parseInt(x['hub_start_time@OData.Community.Display.V1.FormattedValue'].split(':')[0]) == new Date(uniqueIds[2]).getHours();
+                 parseInt(x['hub_start_time@OData.Community.Display.V1.FormattedValue'].split(':')[0]) == h;
         });
       if(objStudent[0] != undefined){
         var objCancelSession = {};
@@ -2471,11 +2475,15 @@ function SylvanCalendar(){
 
     this.moveStudentToSOF = function(element){
       var uniqueIds = wjQuery(element).attr("uniqueId").split('_');
+      var h = new Date(uniqueIds[2]).getHours();
+      if(h > 12){
+        h -= 12;
+      }
       var objStudent = this.students.filter(function(x){
           return x._hub_student_value == uniqueIds[0] &&
                  x._hub_resourceid_value == uniqueIds[1] &&
                  x.hub_session_date == moment(uniqueIds[2]).format('YYYY-MM-DD') &&
-                 parseInt(x['hub_start_time@OData.Community.Display.V1.FormattedValue'].split(':')[0]) == new Date(uniqueIds[2]).getHours();
+                 parseInt(x['hub_start_time@OData.Community.Display.V1.FormattedValue'].split(':')[0]) == h;
         });
       if(objStudent[0] != undefined){
         var objMovetoSOF = {};
@@ -2492,7 +2500,7 @@ function SylvanCalendar(){
           delete objStudent[0]['_hub_resourceid_value'];
         }
         if(data.moveStudentToSOF(objMovetoSOF)){
-          this.populateStudentEvent(self.generateEventObject(objStudent == null ? [] : objStudent, "studentSession"), true);
+          self.generateEventObject(objStudent == null ? [] : objStudent, "studentSession");
           var prevEventId = wjQuery(element).attr("eventid");
           var prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
           if(prevEvent){
