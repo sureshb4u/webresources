@@ -3777,7 +3777,38 @@ var masterSchedule = [
 
 
 var pinnedData = [
-    
+    {
+      "@odata.etag": "W/\"3199836\"",
+      "hub_sch_pinned_students_teachersid": "0fd0fb14-6d78-e711-80f3-c4346bad526c",
+      "_hub_student_value@OData.Community.Display.V1.FormattedValue": "Pricilla Jenkin",
+      "_hub_student_value@Microsoft.Dynamics.CRM.associatednavigationproperty": "hub_student",
+      "_hub_student_value@Microsoft.Dynamics.CRM.lookuplogicalname": "contact",
+      "_hub_student_value": "2aa274b0-3166-e711-80f2-c4346bacfbbc",
+      "hub_end_time@OData.Community.Display.V1.FormattedValue": "11:00 AM",
+      "hub_end_time": 660,
+      "_hub_enrollment_value@OData.Community.Display.V1.FormattedValue": "Neil R - Homework Help for summer",
+      "_hub_enrollment_value@Microsoft.Dynamics.CRM.associatednavigationproperty": "hub_enrollment",
+      "_hub_enrollment_value@Microsoft.Dynamics.CRM.lookuplogicalname": "hub_enrollment",
+      "_hub_enrollment_value": "bd6da26c-3c78-e711-80f3-c4346bad526c",
+      "_hub_center_value@OData.Community.Display.V1.FormattedValue": "Bel Air Learning Center",
+      "_hub_center_value@Microsoft.Dynamics.CRM.associatednavigationproperty": "hub_center",
+      "_hub_center_value@Microsoft.Dynamics.CRM.lookuplogicalname": "hub_center",
+      "_hub_center_value": "b97bc0df-a334-e711-80ed-c4346bacfbbc",
+      "hub_day@OData.Community.Display.V1.FormattedValue": "Friday",
+      "hub_day": 5,
+      "_hub_productservice_value@OData.Community.Display.V1.FormattedValue": "Homework Help for summer",
+      "_hub_productservice_value@Microsoft.Dynamics.CRM.associatednavigationproperty": "hub_productservice",
+      "_hub_productservice_value@Microsoft.Dynamics.CRM.lookuplogicalname": "hub_productservice",
+      "_hub_productservice_value": "827c8125-ac77-e711-80f3-c4346bad526c",
+      "hub_start_time@OData.Community.Display.V1.FormattedValue": "10:00 AM",
+      "hub_start_time": 600,
+      "_hub_affinity_resourceid_value@OData.Community.Display.V1.FormattedValue": "Area 101",
+      "_hub_affinity_resourceid_value@Microsoft.Dynamics.CRM.associatednavigationproperty": "hub_affinity_resourceid",
+      "_hub_affinity_resourceid_value@Microsoft.Dynamics.CRM.lookuplogicalname": "hub_center_resources",
+      "_hub_affinity_resourceid_value": "a63c15a8-1b50-e711-80f1-c4346bacfbbc",
+      "aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue": "Personal Instruction",
+      "aproductservice_x002e_hub_deliverytype": "d6c706eb-a534-e711-80ed-c4346bad526c"
+    },
     {
       "@odata.etag": "W/\"1483413\"",
       "hub_sch_pinned_students_teachersid": "eea25ca7-7f56-e711-80f1-c4346bad526c",
