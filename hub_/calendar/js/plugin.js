@@ -1554,6 +1554,7 @@ function SylvanCalendar(){
                     enrollmentId :val['_hub_enrollment_value'],
                     subject:val['aprogram_x002e_hub_areaofinterest@OData.Community.Display.V1.FormattedValue'],
                     subjectId:val['aprogram_x002e_hub_areaofinterest'],
+                    subjectColorCode: val['aprogram_x002e_hub_color'],
                     is1to1 : val["hub_is_1to1"],
                     programId: val['aprogram_x002e_hub_programid'],
                     serviceId:val['_hub_service_value']
@@ -1624,6 +1625,7 @@ function SylvanCalendar(){
                 locationName: val['aenrollment_x002e_hub_location@OData.Community.Display.V1.FormattedValue'],
                 subject:val['aprogram_x002e_hub_areaofinterest@OData.Community.Display.V1.FormattedValue'],
                 subjectId:val['aprogram_x002e_hub_areaofinterest'],
+                subjectColorCode:val['aprogram_x002e_hub_color'],
                 programId: val['aprogram_x002e_hub_programid'],
                 serviceId: val['aenrollment_x002e_hub_service']
             }
@@ -2027,15 +2029,15 @@ function SylvanCalendar(){
                         if(index == -1){
                             if(resourceObj.deliveryType == "Group Instruction"){
                               if(value['pinId'] != undefined){
-                                event[k].title += "<span class='drag-student' eventid='"+eventId+"' pinnedId='"+ value['pinId'] +"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+name+", "+grade+"</span>";
+                                event[k].title += "<span class='drag-student' eventid='"+eventId+"' pinnedId='"+ value['pinId'] +"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+name+", "+grade+"<i class='material-icons' style='color:"+value['subjectColorCode'] +"'>location_on</i></span>";
                               }else{
-                                event[k].title += "<span class='drag-student' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
+                                event[k].title += "<span class='drag-student' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"<i class='material-icons' style='color:"+value['subjectColorCode'] +"'>location_on</i></span>";
                               }
                             }else{
                               if(value['pinId'] != undefined){
-                                event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' pinnedId='"+ value['pinId'] +"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+name+", "+grade+"</span>";
+                                event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' pinnedId='"+ value['pinId'] +"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+name+", "+grade+"<i class='material-icons' style='color:"+value['subjectColorCode'] +"'>location_on</i></span>";
                               }else{
-                                event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
+                                event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"<i class='material-icons' style='color:"+value['subjectColorCode'] +"'>location_on</i></span>";
                               }
                             }
                           event[k].students.push({id:id, name:name, grade:grade, serviceId:serviceId, programId:programId});
@@ -2043,15 +2045,15 @@ function SylvanCalendar(){
                       }else{
                         if(resourceObj.deliveryType == "Group Instruction"){
                           if(value['pinId'] != undefined){
-                              event[k].title += "<span class='drag-student' eventid='"+eventId+"' pinnedId='"+ value['pinId'] +"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+name+", "+grade+"</span>";
+                              event[k].title += "<span class='drag-student' eventid='"+eventId+"' pinnedId='"+ value['pinId'] +"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+name+", "+grade+"<i class='material-icons' style='color:"+value['subjectColorCode'] +"'>location_on</i></span>";
                           }else{
-                            event[k].title += "<span class='drag-student' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
+                            event[k].title += "<span class='drag-student' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"<i class='material-icons' style='color:"+value['subjectColorCode'] +"'>location_on</i></span>";
                           }
                         }else{
                           if(value['pinId'] != undefined){
-                              event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' pinnedId='"+ value['pinId'] +"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+name+", "+grade+"</span>";
+                              event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' pinnedId='"+ value['pinId'] +"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+name+", "+grade+"<i class='material-icons' style='color:"+value['subjectColorCode'] +"'>location_on</i></span>";
                           }else{
-                            event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
+                            event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"<i class='material-icons' style='color:"+value['subjectColorCode'] +"'>location_on</i></span>";
                           }
                         }
                         event[k].students = [{id:id, name:name, grade:grade, serviceId:serviceId, programId:programId }];
@@ -2094,15 +2096,15 @@ function SylvanCalendar(){
                     obj.title += "<span class='placeholder'>Teacher name</span>";
                     if(resourceObj.deliveryType == "Group Instruction"){
                       if(value['pinId'] != undefined){
-                        obj.title += "<span class='drag-student' eventid='"+eventId+"' pinnedId='"+ value['pinId'] +"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+name+", "+grade+"</span>";
+                        obj.title += "<span class='drag-student' eventid='"+eventId+"' pinnedId='"+ value['pinId'] +"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+name+", "+grade+"<i class='material-icons' style='color:"+value['subjectColorCode'] +"'>location_on</i></span>";
                       }else{
-                        obj.title += "<span class='drag-student' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
+                        obj.title += "<span class='drag-student' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"<i class='material-icons' style='color:"+value['subjectColorCode'] +"'>location_on</i></span>";
                       }
                     }else{
                       if(value['pinId'] != undefined){
-                        obj.title += "<span class='draggable drag-student' eventid='"+eventId+"' pinnedId='"+ value['pinId'] +"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+name+", "+grade+"</span>";
+                        obj.title += "<span class='draggable drag-student' eventid='"+eventId+"' pinnedId='"+ value['pinId'] +"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+name+", "+grade+"<i class='material-icons' style='color:"+value['subjectColorCode'] +"'>location_on</i></span>";
                       }else{
-                        obj.title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"</span>";
+                        obj.title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='studentSession' value='"+id+"'>"+name+", "+grade+"<i class='material-icons' style='color:"+value['subjectColorCode'] +"'>location_on</i></span>";
                       }
                     }
                     if(resourceObj.deliveryType == "Group Facilitation"){ 
