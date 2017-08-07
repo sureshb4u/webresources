@@ -2184,22 +2184,20 @@ function SylvanCalendar(){
         }
         wjQuery(".loading").hide();
         var closeSofPane = true;
-        if(this.sofList.length){
-          if(this.selectedDeliveryType.length == 1){
-            if(this.getDeliveryTypeVal(this.selectedDeliveryType[0]) == "Personal Instruction"){
-              if(this.sofList['Personal Instruction'].length == 0){
-                closeSofPane = false;
-              }
-            }
-          }else if(this.selectedDeliveryType.length > 1){
+        if(this.selectedDeliveryType.length == 1){
+          if(this.getDeliveryTypeVal(this.selectedDeliveryType[0]) == "Personal Instruction"){
             if(this.sofList['Personal Instruction'].length == 0){
-              wjQuery(".sof-gf").css("width", "calc(100% - 10px)");
-            }else if(this.sofList['Group Facilitation'].length == 0){
-              wjQuery(".sof-pi").css("width", "calc(100% - 10px)");
-            }
-            if(this.sofList['Personal Instruction'].length == 0 && this.sofList['Group Facilitation'].length == 0 && this.sofList['Group Instruction'].length == 0){
               closeSofPane = false;
             }
+          }
+        }else if(this.selectedDeliveryType.length > 1){
+          if(this.sofList['Personal Instruction'].length == 0){
+            wjQuery(".sof-gf").css("width", "calc(100% - 10px)");
+          }else if(this.sofList['Group Facilitation'].length == 0){
+            wjQuery(".sof-pi").css("width", "calc(100% - 10px)");
+          }
+          if(this.sofList['Personal Instruction'].length == 0 && this.sofList['Group Facilitation'].length == 0 && this.sofList['Group Instruction'].length == 0){
+            closeSofPane = false;
           }
         }
 
