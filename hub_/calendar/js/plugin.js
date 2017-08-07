@@ -247,12 +247,22 @@ function SylvanCalendar(){
                    if(wjQuery(this).is(':checked')){
                         self.eventList = [];
                         self.calendar.fullCalendar( 'removeEvents');
-                        checkedList.push(wjQuery(this).val()); 
+                        var index = checkedList.map(function(y){
+                          return y;
+                        }).indexOf(wjQuery(this).val());
+                        if(index == -1){
+                          checkedList.push(wjQuery(this).val()); 
+                        }
                         self.calendar.fullCalendar('refetchEvents');
                      }else{
                         self.eventList = [];
                         self.calendar.fullCalendar( 'removeEvents');
-                        checkedList.splice(checkedList.indexOf(wjQuery(this).val()), 1);
+                        var index = checkedList.map(function(y){
+                          return y;
+                        }).indexOf(wjQuery(this).val());
+                        if(index != -1){
+                          checkedList.splice(checkedList.indexOf(wjQuery(this).val()), 1);
+                        }
                         self.calendar.fullCalendar('refetchEvents');
                     }
                     
@@ -270,10 +280,31 @@ function SylvanCalendar(){
                       var taNewArray = [];
                       wjQuery.each(checkedList, function(k, v){
                           newArray = wjQuery.merge(self.filterItems(self.convertedStudentObj, v, "default"), newArray);
-                          sofNewArray['Personal Instruction'] = wjQuery.merge(self.filterItems(self.sofList['Personal Instruction'], v ,"sofpane"), sofNewArray['Personal Instruction']);
-                          sofNewArray['Group Instruction'] = wjQuery.merge(self.filterItems(self.sofList['Group Instruction'], v ,"sofpane"), sofNewArray['Group Instruction']);
-                          sofNewArray['Group Facilitation'] = wjQuery.merge(self.filterItems(self.sofList['Group Facilitation'], v ,"sofpane"), sofNewArray['Group Facilitation']);
                           taNewArray = wjQuery.merge(self.filterItems(self.taList, v, "tapane"), taNewArray);
+                          piResponse = self.filterItems(self.sofList['Personal Instruction'], v ,"sofpane");
+                          giResponse = self.filterItems(self.sofList['Group Instruction'], v ,"sofpane");
+                          gfResponse = self.filterItems(self.sofList['Group Facilitation'], v ,"sofpane");
+                          
+                          var piIndex = sofNewArray['Personal Instruction'].map(function(x){
+                            return x;
+                          }).indexOf(v);
+                          if(piIndex == -1){
+                            sofNewArray['Personal Instruction'] = wjQuery.merge(piResponse, sofNewArray['Personal Instruction']);
+                          }
+
+                          var giIndex = sofNewArray['Group Instruction'].map(function(y){
+                            return y;
+                          }).indexOf(v);
+                          if(giIndex == -1){
+                            sofNewArray['Group Instruction'] = wjQuery.merge(giResponse, sofNewArray['Group Instruction']);
+                          }
+
+                          var gfIndex = sofNewArray['Group Facilitation'].map(function(z){
+                            return z;
+                          }).indexOf(v);
+                          if(gfIndex == -1){
+                            sofNewArray['Group Facilitation'] = wjQuery.merge(gfResponse, sofNewArray['Group Facilitation']);
+                          }
                       });
                       self.populateTAPane(taNewArray);
                       self.populateSOFPane(sofNewArray, self.calendarOptions.minTime, self.calendarOptions.maxTime);
