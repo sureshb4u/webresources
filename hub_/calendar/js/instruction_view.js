@@ -2592,7 +2592,37 @@ var student =  [
     "hub_studentsessionid":"6ce7c850-d16a-e711-80f2-c4346bad526c"
   }];
 
-
+var staffExceptions = [
+  
+    {
+    "@odata.etag": "W/\"1717911\"",
+    "hub_startdate@OData.Community.Display.V1.FormattedValue": "8/07/2017",
+    "hub_startdate": "2017-08-07T00:00:00Z",
+    "hub_availabilityexceptionid": "3383bc99-0467-e711-80f2-c4346bad526c",
+    "hub_name": "Jane | Ad-Hoc OOF | Jul 17 | Jul 17",
+    "hub_enddate@OData.Community.Display.V1.FormattedValue": "8/07/2017",
+    "hub_enddate": "2017-08-07T00:00:00Z",
+    "hub_type@OData.Community.Display.V1.FormattedValue": "Ad-Hoc OOF",
+    "hub_type": 974230001,
+    "astaff_x002e_hub_center@OData.Community.Display.V1.FormattedValue": "Bel Air Learning Center",
+    "astaff_x002e_hub_center": "b97bc0df-a334-e711-80ed-c4346bacfbbc",
+    "astaff_x002e_hub_staffid": "5aea3143-2f66-e711-80f2-c4346bacfbbc"
+  },
+  {
+    "@odata.etag": "W/\"1717920\"",
+    "hub_startdate@OData.Community.Display.V1.FormattedValue": "8/07/2017",
+    "hub_startdate": "2017-08-07T00:00:00Z",
+    "hub_availabilityexceptionid": "223f21bf-0467-e711-80f2-c4346bad526c",
+    "hub_name": "Simon | Ad-Hoc OOF | Jul 19 | Jul 19",
+    "hub_enddate@OData.Community.Display.V1.FormattedValue": "8/07/2017",
+    "hub_enddate": "2017-08-07T00:00:00Z",
+    "hub_type@OData.Community.Display.V1.FormattedValue": "Ad-Hoc OOF",
+    "hub_type": 974230001,
+    "astaff_x002e_hub_center@OData.Community.Display.V1.FormattedValue": "Bel Air Learning Center",
+    "astaff_x002e_hub_center": "b97bc0df-a334-e711-80ed-c4346bacfbbc",
+    "astaff_x002e_hub_staffid": "7ea9ed74-2f66-e711-80f2-c4346bacfbbc"
+  }
+];
 var teacherSchedule = [
     {
       "@odata.etag": "W/\"1429007\"",
@@ -2601,16 +2631,10 @@ var teacherSchedule = [
       "_hub_staff_value@Microsoft.Dynamics.CRM.lookuplogicalname": "hub_staff",
       "_hub_staff_value": "60339fb2-d940-e711-80f0-c4346bad526c",
       "hub_staff_scheduleid": "94c89f23-2250-e711-80f1-c4346bacfbbc",
-      "hub_end_time@OData.Community.Display.V1.FormattedValue": "10:00 AM",
-      "hub_end_time": 660,
       "hub_end_date@OData.Community.Display.V1.FormattedValue": "08/07/2017",
       "hub_end_date": "2017-06-13",
-      "hub_start_time@OData.Community.Display.V1.FormattedValue": "09:00 AM",
-      "hub_start_time": 600,
       "hub_start_date@OData.Community.Display.V1.FormattedValue": "08/07/2017",
       "hub_start_date": "2017-06-13",
-      "hub_date@OData.Community.Display.V1.FormattedValue": "08/07/2017",
-      "hub_date": "2017-06-13",
       "astaff_x002e_hub_center@OData.Community.Display.V1.FormattedValue": "Bel Air Learning Center",
       "_hub_resourceid_value": "f74453af-263f-e711-80ef-c4346bacfbbc",
       "astaff_x002e_hub_center": "b97bc0df-a334-e711-80ed-c4346bacfbbc",
@@ -2624,18 +2648,18 @@ var teacherSchedule = [
       "_hub_staff_value@Microsoft.Dynamics.CRM.lookuplogicalname": "hub_staff",
       "_hub_staff_value": "60339fb2-d940-e711-80f0-c4346bad526d",
       "hub_staff_scheduleid": "710ba12f-2250-e711-80f1-c4346bacfbbc",
-      "hub_end_time@OData.Community.Display.V1.FormattedValue": "10:00 AM",
-      "hub_end_time": 960,
+      "hub_end_time@OData.Community.Display.V1.FormattedValue": "09:00 AM",
+      "hub_end_time": 540,
       "hub_end_date@OData.Community.Display.V1.FormattedValue": "08/07/2017",
       "hub_end_date": "2017-06-14",
-      "hub_start_time@OData.Community.Display.V1.FormattedValue": "09:00 AM",
-      "hub_start_time": 900,
+      "hub_start_time@OData.Community.Display.V1.FormattedValue": "08:00 AM",
+      "hub_start_time": 480,
       "hub_start_date@OData.Community.Display.V1.FormattedValue": "08/07/2017",
       "hub_start_date": "2017-06-14",
       "hub_date@OData.Community.Display.V1.FormattedValue": "08/07/2017",
-      "hub_date": "2017-06-14",
-      "astaff_x002e_hub_center@OData.Community.Display.V1.FormattedValue": "Bel Air Learning Center",
+      "hub_date": "2017-08-07",
       "_hub_resourceid_value": "f74453af-263f-e711-80ef-c4346bacfbbc",
+      "astaff_x002e_hub_center@OData.Community.Display.V1.FormattedValue": "Bel Air Learning Center",
       "astaff_x002e_hub_center": "b97bc0df-a334-e711-80ed-c4346bacfbbc",
       "aproductservice_x002e_hub_deliverytype": "f8b0e613-a534-e711-80ed-c4346bad526c",
       "aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue": "Group Instruction"
@@ -2656,7 +2680,7 @@ var teacherSchedule = [
       "hub_start_date@OData.Community.Display.V1.FormattedValue": "08/07/2017",
       "hub_start_date": "2017-06-18",
       "hub_date@OData.Community.Display.V1.FormattedValue": "08/07/2017",
-      "hub_date": "2017-06-18",
+      "hub_date": "2017-08-07",
       "astaff_x002e_hub_center@OData.Community.Display.V1.FormattedValue": "Bel Air Learning Center",
       "_hub_resourceid_value": "f74453af-263f-e711-80ef-c4346bacfbbc",
       "astaff_x002e_hub_center": "a63c15a8-1b50-e711-80f1-c4346bacfbbc",
@@ -4484,6 +4508,9 @@ function Data(){
     return pinnedData;
   }
 
+  this.getStaffException = function(locationId,startDate,endDate){
+    return staffExceptions;
+  }
 
   this.saveSOFtoSession = function(objStudent,objSession){
     return true;
