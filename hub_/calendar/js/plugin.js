@@ -2196,7 +2196,12 @@ function SylvanCalendar(){
             });
         }
         wjQuery(".loading").hide();
-        var closeSofPane = false;
+        // Open Sof pane condition writen in below function 
+        this.openSofPane();
+    }
+
+    this.openSofPane = function (){
+      var closeSofPane = false;
         if(this.selectedDeliveryType.length == 1){
           if(this.getDeliveryTypeVal(this.selectedDeliveryType[0]) == "Personal Instruction"){
             if(this.sofList['Personal Instruction'].length == 0){
@@ -2232,8 +2237,10 @@ function SylvanCalendar(){
           wjQuery(".sof-btn").removeClass('overflow-info');
           wjQuery(".sof-btn").addClass('overflow-info');
         }
-        wjQuery('.sof-btn,.sof-close-icon').prop('disabled', true);
+        wjQuery('.sof-btn,.sof-close-icon').prop('disabled', true);  
     }
+
+
 
     this.filterItems = function(obj, filterTerm, filterFor){
       var self = this;
@@ -2561,6 +2568,7 @@ function SylvanCalendar(){
         }
         if(data.moveStudentToSOF(objMovetoSOF)){
           self.generateEventObject(objStudent == null ? [] : objStudent, "studentSession");
+          self.openSofPane();
           var prevEventId = wjQuery(element).attr("eventid");
           var prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
           if(prevEvent){
