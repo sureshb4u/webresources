@@ -526,10 +526,13 @@ function SylvanCalendar(){
           }
           if(this.selectedDeliveryType.length == 1){
             wjQuery(".sof-pi").css("width", "calc(100% - 10px)");
+          }else if(this.selectedDeliveryType.length == 2){
+              wjQuery(".sof-gf").css("width", "calc(100% - 10px)");
           }else{
-            if(this.selectedDeliveryType.length == 2){
+            if(this.sofList['Personal Instruction'].length == 0){
               wjQuery(".sof-gf").css("width", "calc(100% - 10px)");
             }else{
+              wjQuery(".sof-gf").css("width", "calc(50% - 10px)");
               wjQuery(".sof-pi").css("width", "calc(50% - 10px)");
             }
           }
@@ -2193,9 +2196,6 @@ function SylvanCalendar(){
             });
         }
         wjQuery(".loading").hide();
-        // if(!sofExpanded){
-        //   this.sofPane();
-        // }
         var closeSofPane = false;
         if(this.selectedDeliveryType.length == 1){
           if(this.getDeliveryTypeVal(this.selectedDeliveryType[0]) == "Personal Instruction"){
@@ -2203,16 +2203,15 @@ function SylvanCalendar(){
               closeSofPane = true;
             }
           }
-        }else if(this.selectedDeliveryType.length > 1){
+        }else if(this.selectedDeliveryType.length == 2){
+          if(this.sofList['Group Facilitation'].length == 0){
+            closeSofPane = true;
+          }
+        }else{
           if(this.sofList['Personal Instruction'].length == 0){
             wjQuery(".sof-gf").css("width", "calc(100% - 10px)");
           }else if(this.sofList['Group Facilitation'].length == 0){
             wjQuery(".sof-pi").css("width", "calc(100% - 10px)");
-          }
-          if(this.selectedDeliveryType.length == 2){
-            if(this.sofList['Group Facilitation'].length == 0){
-              closeSofPane = true;
-            }
           }
           if(this.sofList['Personal Instruction'].length == 0 && this.sofList['Group Facilitation'].length == 0 && this.sofList['Group Instruction'].length == 0){
             closeSofPane = true;
@@ -2229,9 +2228,9 @@ function SylvanCalendar(){
         }else{
           if(!sofExpanded){
             this.sofPane();
-            wjQuery(".sof-btn").removeClass('overflow-info');
-            wjQuery(".sof-btn").addClass('overflow-info');
           }
+          wjQuery(".sof-btn").removeClass('overflow-info');
+          wjQuery(".sof-btn").addClass('overflow-info');
         }
         wjQuery('.sof-btn,.sof-close-icon').prop('disabled', true);
     }

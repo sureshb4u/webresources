@@ -438,6 +438,17 @@ button{
     color: #333333;
 }
 
+.overflow-info[disabled]{
+    background-color: #F44336;
+    color: white;
+    opacity: 1;
+}
+
+.overflow-info[disabled]:hover{
+    background-color: #F44336;
+    color: white;
+}
+
 .fc-event-inner{
     overflow-y: auto;
 }
