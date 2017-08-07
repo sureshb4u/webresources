@@ -8,6 +8,7 @@ setTimeout(function(){
     var sylvanCalendar = new SylvanCalendar();
     sylvanCalendar.init("widget-calendar");
     var locationId = sylvanCalendar.populateLocation(data.getLocation());
+    wjQuery('.headerDate').text(moment(currentCalendarDate).format('MM/DD/YYYY'));
     setTimeout(function(){
     for (var i = 0; i < deliveryType.length; i++) {
       switch(deliveryType[i]['hub_name']){
