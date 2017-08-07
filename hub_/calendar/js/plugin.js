@@ -32,8 +32,6 @@ setTimeout(function(){
     var resources = [];
     function fetchResources(locationId,selectedDeliveryType,fetchData){
       wjQuery(".loading").show();
-      sylvanCalendar.callSofOpenCount = 0;
-      sylvanCalendar.callSofCloseCount = 0;
       // asign deliverytpeList to  
       sylvanCalendar.selectedDeliveryType = selectedDeliveryType;
       var resourceList = [];
@@ -529,7 +527,11 @@ function SylvanCalendar(){
           if(this.selectedDeliveryType.length == 1){
             wjQuery(".sof-pi").css("width", "calc(100% - 10px)");
           }else{
-            wjQuery(".sof-pi").css("width", "calc(50% - 10px)");
+            if(this.selectedDeliveryType.length == 2){
+              wjQuery(".sof-gf").css("width", "calc(100% - 10px)");
+            }else{
+              wjQuery(".sof-pi").css("width", "calc(50% - 10px)");
+            }
           }
           this.draggable('student-container');
         }
@@ -1470,8 +1472,18 @@ function SylvanCalendar(){
         if(!taExpanded){
           setTimeout(function(){
             wjQuery('.ta-pane').hide();
-            if(self.sofList['Personal Instruction'].length > 0 || self.sofList['Group Instruction'].length > 0 || self.sofList['Group Facilitation'].length > 0){
-              self.sofPane(); 
+            if(self.selectedDeliveryType.length == 1){
+              if(self.sofList['Personal Instruction'].length > 0){
+                self.sofPane(); 
+              }
+            }else if(self.selectedDeliveryType.length == 2){
+              if(self.sofList['Personal Facilitation'].length > 0){
+                self.sofPane(); 
+              }
+            }else {
+              if(self.sofList['Personal Instruction'].length > 0 || self.sofList['Group Instruction'].length > 0 || self.sofList['Group Facilitation'].length > 0){
+                self.sofPane(); 
+              }
             }
           },600);
         }
@@ -2047,8 +2059,6 @@ function SylvanCalendar(){
         }
         wjQuery(".loading").hide();
     }
-    this.callSofOpenCount = 0;
-    this.callSofCloseCount = 0;
     this.populateStudentEvent = function(studentList, isFromFilter){
         wjQuery(".loading").show();
         var self = this;
@@ -2183,11 +2193,14 @@ function SylvanCalendar(){
             });
         }
         wjQuery(".loading").hide();
-        var closeSofPane = true;
+        // if(!sofExpanded){
+        //   this.sofPane();
+        // }
+        var closeSofPane = false;
         if(this.selectedDeliveryType.length == 1){
           if(this.getDeliveryTypeVal(this.selectedDeliveryType[0]) == "Personal Instruction"){
             if(this.sofList['Personal Instruction'].length == 0){
-              closeSofPane = false;
+              closeSofPane = true;
             }
           }
         }else if(this.selectedDeliveryType.length > 1){
@@ -2196,28 +2209,31 @@ function SylvanCalendar(){
           }else if(this.sofList['Group Facilitation'].length == 0){
             wjQuery(".sof-pi").css("width", "calc(100% - 10px)");
           }
+          if(this.selectedDeliveryType.length == 2){
+            if(this.sofList['Group Facilitation'].length == 0){
+              closeSofPane = true;
+            }
+          }
           if(this.sofList['Personal Instruction'].length == 0 && this.sofList['Group Facilitation'].length == 0 && this.sofList['Group Instruction'].length == 0){
-            closeSofPane = false;
+            closeSofPane = true;
           }
         }
 
         if(closeSofPane){
-          wjQuery(".sof-btn").removeClass('overflow-info');
-          wjQuery(".sof-btn").addClass('overflow-info');
-          wjQuery('.sof-btn,.sof-close-icon').unbind('click');
-          if(this.callSofOpenCount == 0){
+          if(sofExpanded){
             this.sofPane();
-            this.callSofOpenCount++;
           }
-        }else{
-          if(this.callSofCloseCount == 0){
-            this.sofPane();
-            this.callSofCloseCount++;
-          }
+          // wjQuery('.sof-btn, .sof-close-icon').unbind('click');
           wjQuery(".sof-btn").removeClass('overflow-info');
           wjQuery('.sof-btn,.sof-close-icon').prop('title', "No Student in Overflow Pane");
-          wjQuery('.sof-btn,.sof-close-icon').prop('disabled', true);
+        }else{
+          if(!sofExpanded){
+            this.sofPane();
+            wjQuery(".sof-btn").removeClass('overflow-info');
+            wjQuery(".sof-btn").addClass('overflow-info');
+          }
         }
+        wjQuery('.sof-btn,.sof-close-icon').prop('disabled', true);
     }
 
     this.filterItems = function(obj, filterTerm, filterFor){
@@ -2604,20 +2620,20 @@ function SylvanCalendar(){
         scroll: true,
         cursorAt: { top : 0 },
         drag : function(){
-          if(sofExpanded){
-            wjQuery('.sof-pane').css('opacity','.1');
-          }
-          if(taExpanded){
-            wjQuery('.ta-pane').css('opacity','.1');
-          }
+          // if(sofExpanded){
+          //   wjQuery('.sof-pane').css('opacity','.1');
+          // }
+          // if(taExpanded){
+          //   wjQuery('.ta-pane').css('opacity','.1');
+          // }
         },
         stop : function(){
-          if(sofExpanded){
-            wjQuery('.sof-pane').css('opacity','1');
-          }
-          if(taExpanded){
-            wjQuery('.ta-pane').css('opacity','1');
-          }
+          // if(sofExpanded){
+          //   wjQuery('.sof-pane').css('opacity','1');
+          // }
+          // if(taExpanded){
+          //   wjQuery('.ta-pane').css('opacity','1');
+          // }
         }
       });
     };
