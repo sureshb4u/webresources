@@ -2073,10 +2073,10 @@ function SylvanCalendar(){
               });
               self.calendar.fullCalendar('updateEvent', event);
               if(value['pinId'] != undefined){
-                self.addContext(uniqueId,'teacher',true);
+                self.addContext(uniqueId,'teacher',true, "");
               }
               else{
-                self.addContext(uniqueId,'teacher',false);
+                self.addContext(uniqueId,'teacher',false, "");
               }
             }else{
               var uniqueId = id+"_"+value['resourceId']+"_"+value['startHour'];
@@ -2111,10 +2111,10 @@ function SylvanCalendar(){
                   obj.borderColor = "#9acaea";
               }
               if(value['pinId'] != undefined){
-                self.addContext(uniqueId,'teacher',true);
+                self.addContext(uniqueId,'teacher',true, "");
               }
               else{
-                self.addContext(uniqueId,'teacher',false);
+                self.addContext(uniqueId,'teacher',false, "");
               }
               self.eventList.push(obj);
               self.calendar.fullCalendar('refetchEvents');
@@ -2192,11 +2192,13 @@ function SylvanCalendar(){
                         event[k].title += '<span class="student-placeholder">Student name</span>';                  
                       } 
                     });
-                    if(value['pinId'] != undefined){
-                      self.addContext(uniqueId,'student',true);
-                    }
-                    else{
-                      self.addContext(uniqueId,'student',false);
+                    if(value['deliveryType'] != "Group Instruction"){
+                      if(value['pinId'] != undefined){
+                        self.addContext(uniqueId,'student',true, value['deliveryType']);
+                      }
+                      else{
+                        self.addContext(uniqueId,'student',false, value['deliveryType']);
+                      }
                     }
                     self.calendar.fullCalendar('updateEvent', event);
                 }else{
@@ -2245,11 +2247,13 @@ function SylvanCalendar(){
                     if(resourceObj["capacity"] >= 1 || resourceObj["capacity"] == undefined){
                       obj.title += '<span class="student-placeholder">Student name</span>';                  
                     } 
-                    if(value['pinId'] != undefined){
-                      self.addContext(uniqueId,'student',true);
-                    }
-                    else{
-                      self.addContext(uniqueId,'student',false);
+                    if(value['deliveryType'] != "Group Instruction"){
+                      if(value['pinId'] != undefined){
+                        self.addContext(uniqueId,'student',true, value['deliveryType']);
+                      }
+                      else{
+                        self.addContext(uniqueId,'student',false, value['deliveryType']);
+                      }
                     }
                     self.eventList.push(obj);
                     if(isFromFilter){
@@ -2523,24 +2527,26 @@ function SylvanCalendar(){
     };
 
     //Method to add the context menu for Student and Teacher
-    this.addContext = function(uniqueId,labelFor,isPinned){
+    this.addContext = function(uniqueId,labelFor,isPinned, deliveryType){
       var self = this;
       var obj = {}; 
       if(labelFor == 'student'){
-        obj.unpin = {name: "Unpin"};
-        obj.unpin.visible = true;
-        obj.unpin.callback = function(key, options) {
-          obj.unpin.visible = false;
-          obj.pin.visible = true;
-          self.unPinStudent(options.$trigger[0]);
-        }
-        obj.pin = {name: "Pin"};
-        obj.pin.visible = true;
-        obj.pin.callback = function(key, options) {
+        if(deliveryType == "Personal Instruction"){
+          obj.unpin = {name: "Unpin"};
           obj.unpin.visible = true;
-          obj.pin.visible = false;
-          self.pinStudent(options.$trigger[0]);
-        }  
+          obj.unpin.callback = function(key, options) {
+            obj.unpin.visible = false;
+            obj.pin.visible = true;
+            self.unPinStudent(options.$trigger[0]);
+          }
+          obj.pin = {name: "Pin"};
+          obj.pin.visible = true;
+          obj.pin.callback = function(key, options) {
+            obj.unpin.visible = true;
+            obj.pin.visible = false;
+            self.pinStudent(options.$trigger[0]);
+          }  
+        }
         obj.moveToSof = {
           name: "Move to SOF",
           callback : function(key, options) {
@@ -2553,8 +2559,7 @@ function SylvanCalendar(){
             self.removeStudentFromSession(options.$trigger[0]);
           }
         }
-      }
-      else{
+      }else{
         obj.pin = {
           "name": "Pin",
           "visible": true,
@@ -2586,14 +2591,18 @@ function SylvanCalendar(){
         }
         };
       }   
-      if(isPinned){
-        obj.unpin.visible = true;
-        obj.pin.visible = false;
+
+      if(deliveryType == "Personal Instruction"){
+        if(isPinned){
+          obj.unpin.visible = true;
+          obj.pin.visible = false;
+        }
+        else{
+          obj.unpin.visible = false;
+          obj.pin.visible = true;
+        } 
       }
-      else{
-        obj.unpin.visible = false;
-        obj.pin.visible = true;
-      } 
+
       wjQuery(function() {
         wjQuery.contextMenu({
             selector: 'span[uniqueId="'+uniqueId+'"]', 

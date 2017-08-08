@@ -452,7 +452,7 @@ button{
 .fc-event-inner{
     overflow-y: auto;
 }
-.draggable.drag-student i.material-icons {
+.drag-student i.material-icons {
     font-size: 14px;
     padding: 4px;
     position: relative;
