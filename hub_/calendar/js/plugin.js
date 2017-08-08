@@ -2361,7 +2361,7 @@ function SylvanCalendar(){
       objPinnedStudent.hub_date = moment(today).format("YYYY-MM-DD");
       var responseObj = data.savePinStudent(objPinnedStudent);
       if(responseObj != undefined){
-        var txt = wjQuery(element).text();
+        var txt = wjQuery(element)[0].innerHTML;
         wjQuery(element).html("<img src='/webresources/hub_/calendar/images/pin.png'/>"+txt);
         wjQuery(element).attr('pinnedId',responseObj['hub_pinned_student_teacher_id']);
       }
