@@ -1338,6 +1338,9 @@ function SylvanCalendar(){
         // staff program fetching
         self.staffProgram = data.getStaffProgram(locationId) == null? [] : data.getStaffProgram(locationId);
         self.staffExceptions = isFetch || (self.staffExceptions.length == 0) ? data.getStaffException(locationId,startDate,endDate) : self.staffExceptions;
+        if(self.staffExceptions == null){
+          self.staffExceptions = [];
+        }
         self.teacherSchedule = isFetch || (self.teacherSchedule.length == 0) ? data.getTeacherSchedule(locationId,startDate,endDate) : self.teacherSchedule;
         self.teacherAvailability = isFetch || (self.teacherAvailability.length == 0) ? data.getTeacherAvailability(locationId,startDate,endDate) : self.teacherAvailability;
         self.pinnedData = isFetch || (self.pinnedData.length == 0) ? data.getPinnedData(locationId,startDate,endDate) : self.pinnedData;
@@ -2310,6 +2313,11 @@ function SylvanCalendar(){
 
     this.openSofPane = function (){
       var closeSofPane = false;
+        if(this.sofList.length == 0){
+          this.sofList['Personal Instruction'] = [];
+          this.sofList['Group Facilitation'] = [];
+          this.sofList['Group Instruction'] = [];
+        }
         if(this.selectedDeliveryType.length == 1){
           if(this.getDeliveryTypeVal(this.selectedDeliveryType[0]) == "Personal Instruction"){
             if(this.sofList['Personal Instruction'].length == 0){
@@ -2339,13 +2347,13 @@ function SylvanCalendar(){
           wjQuery(".sof-btn").removeClass('overflow-info');
           wjQuery('.sof-btn,.sof-close-icon').prop('title', "No Student in Overflow Pane");
         }else{
-          if(!sofExpanded){
+          /*if(!sofExpanded){
             this.sofPane();
-          }
+          }*/
           wjQuery(".sof-btn").removeClass('overflow-info');
           wjQuery(".sof-btn").addClass('overflow-info');
         }
-        wjQuery('.sof-btn,.sof-close-icon').prop('disabled', true);  
+        //wjQuery('.sof-btn,.sof-close-icon').prop('disabled', true);  
     }
 
 
@@ -2515,7 +2523,7 @@ function SylvanCalendar(){
         if(objStudent[0].hasOwnProperty('_hub_resourceid_value')){
           objCancelSession['hub_resourceid@odata.bind'] = "/hub_center_resourceses(" +objStudent[0]['_hub_resourceid_value'] + ")";
         }
-        if(data.cancelStudentSession(objCancelSession)){
+        if(data.omitStudentSession(objCancelSession)){
           var prevEventId = wjQuery(element).attr("eventid");
           var prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
           if(prevEvent){

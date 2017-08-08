@@ -434,9 +434,9 @@ button{
     outline: none;
     background-color: #F44336;
 }
-.sof-btn:focus, .sof-btn:active, .sof-btn.active{
+/*.sof-btn:focus, .sof-btn:active, .sof-btn.active{
     background-color: #F44336;
-}
+}*/
 
 .sof-btn[disabled]:hover{
     background-color: #e6e6e6;

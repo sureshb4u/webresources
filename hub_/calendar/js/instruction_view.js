@@ -4644,7 +4644,7 @@ function Data(){
     return true;
   }
 
-  this.cancelStudentSession = function(objCancelSession){
+  this.omitStudentSession = function(objCancelSession){
     return true;
   }
 
