@@ -2638,7 +2638,6 @@ function SylvanCalendar(){
       }
     };
 
-
     this.excuseAndMakeUpStudent =function(element){
       var uniqueIds = wjQuery(element).attr("uniqueId").split('_');
       var h = new Date(uniqueIds[2]).getHours();
@@ -2678,30 +2677,33 @@ function SylvanCalendar(){
       });
         wjQuery(".resource-dropdown ul").html(resourceHTML);
         setTimeout(function(){                      
-            wjQuery(".excuse-from-timepicker-input" ).timepicker({
-                timeFormat: 'h:mm p', 
-                interval: 60,                            
-                minTime: '8',                            
-                maxTime: '19',                            
-                dynamic: false,                            
-                dropdown: true,                            
-                scrollbar: true      
-                });                                   
-                wjQuery( ".excuse-to-timepicker-input" ).timepicker({    
-                    timeFormat: 'h:mm p',                            
-                    interval: 60, 
-                    minTime: '8',                            
-                    maxTime: '19',                            
-                    dynamic: false,                            
-                    dropdown: true,                            
-                    scrollbar: true                        
-                });                                   
+          wjQuery(".excuse-from-timepicker-input" ).timepicker({
+            timeFormat: 'h:mm p', 
+            interval: 60,                            
+            minTime: '8',                            
+            maxTime: '19',                            
+            dynamic: false,                            
+            dropdown: true,                            
+            scrollbar: true      
+          });                                   
+          wjQuery( ".excuse-to-timepicker-input" ).timepicker({    
+            timeFormat: 'h:mm p',                            
+            interval: 60, 
+            minTime: '9',                            
+            maxTime: '20',                            
+            dynamic: false,                            
+            dropdown: true,                            
+            scrollbar: true                        
+          });                                   
         },300); 
         wjQuery("#excuseModal").dialog({
           modal: true 
         });
         wjQuery("#excuseModal").dialog('option', 'title', 'Excuse and MakeUp');
       }
+      wjQuery("#excuseSave").click(function(){
+        
+      });
     };
 
     //Method to add the context menu for Student and Teacher

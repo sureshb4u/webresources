@@ -184,6 +184,13 @@ body {
 /*.custom-toggle{
     width: 10px;
 }*/
+#excuseSave{
+    margin-top: 10px;
+    float: right;
+}
+#studentNameofExcuse{
+    padding: 8px 0;
+}
 .textAlign{
     padding-right: 22px;
 }
