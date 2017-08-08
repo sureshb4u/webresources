@@ -2936,20 +2936,20 @@ function SylvanCalendar(){
         scroll: true,
         cursorAt: { top : 0 },
         drag : function(){
-          // if(sofExpanded){
-          //   wjQuery('.sof-pane').css('opacity','.1');
-          // }
-          // if(taExpanded){
-          //   wjQuery('.ta-pane').css('opacity','.1');
-          // }
+          if(sofExpanded){
+            wjQuery('.sof-pane').css('opacity','.1');
+          }
+          if(taExpanded){
+            wjQuery('.ta-pane').css('opacity','.1');
+          }
         },
         stop : function(){
-          // if(sofExpanded){
-          //   wjQuery('.sof-pane').css('opacity','1');
-          // }
-          // if(taExpanded){
-          //   wjQuery('.ta-pane').css('opacity','1');
-          // }
+          if(sofExpanded){
+            wjQuery('.sof-pane').css('opacity','1');
+          }
+          if(taExpanded){
+            wjQuery('.ta-pane').css('opacity','1');
+          }
         }
       });
     };
