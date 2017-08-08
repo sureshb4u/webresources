@@ -93,7 +93,6 @@
 <!-- new appointment modal -->
 <div id="appointmentModal" style="display:none">
     <form id="form" >
-
         <div>
         	From
         	<input type="text" class="custom-datepicker from-datepicker-input" id="fromDate" tabindex="-1">
@@ -133,6 +132,28 @@
         <textarea rows="4" cols="50" id="notes" tabindex="-1"></textarea>
         </div>
         <button class="btn-modal" id="save" tabindex= "-1">Save</button>
+    </form>
+</div>
+<div id="excuseModal" style="display:none">
+    <form id="excuseForm" >
+        <div>
+        	Name 
+        	<input type="text" class="custom-datepicker from-datepicker-input" id="fromDate" tabindex="-1">
+	        	<img src="images/up_arrow.png"  class="from-up-arrow" />
+				<img src="images/down_arrow.png" class="from-down-arrow" />
+        	
+        </div>
+        <div>
+        	<span class=textAlign>To</span>
+        	<input type="text" class="custom-datepicker to-datepicker-input" id="toDate" tabindex="-1">
+        		<img src="images/up_arrow.png"  class="to-up-arrow" />
+				<img src="images/down_arrow.png" class="to-down-arrow" />
+        	<input type="text" class="custom-timepicker to-timepicker-input" id="toTime" tabindex="-1">
+        		<img src="images/up_arrow.png"  class="up-arrow" />
+				<img src="images/down_arrow.png" class="down-arrow" />
+        </div>
+
+        <button class="btn-modal" id="excuseSave" tabindex= "-1">Save</button>
     </form>
 </div>
 <script type="text/javascript" src="/webresources/hub_/calendar/js/bootstrap.min.js"></script>
