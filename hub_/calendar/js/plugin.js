@@ -2652,9 +2652,54 @@ function SylvanCalendar(){
                  parseInt(x['hub_start_time@OData.Community.Display.V1.FormattedValue'].split(':')[0]) == h;
         });
       if(objStudent[0] != undefined){
-             wjQuery("#excuseModal").dialog({
-              modal: true 
-          });
+        wjQuery( "#studentNameofExcuse").text(objStudent[0]['_hub_student_value@OData.Community.Display.V1.FormattedValue']);
+        wjQuery( ".excuse-datepicker-input" ).datepicker({
+          minDate: this.calendar.fullCalendar('getDate'),
+          format: 'mm/dd/yyyy'
+        });
+        var selectedFromDate; 
+        wjQuery(".excuse-datepicker-input").on("change",function(){
+            selectedFromDate = wjQuery(this).val();
+        });
+        var resourceHTML = [];
+        for(var i=0;i<this.resourceList.length;i++){
+          if(!i)
+          {
+              wjQuery(".resource-dropdown .btn:first-child").text(this.resourceList[i].name);
+              wjQuery(".resource-dropdown .btn:first-child").val(this.resourceList[i].id);
+          }
+          resourceHTML.push('<li><a tabindex="-1" value-id='+this.resourceList[i].id+' href="javascript:void(0)">'+this.resourceList[i].name+'</a></li>');
+        }
+        wjQuery(".resource-dropdown .dropdown-menu").on('click', 'li a', function(){
+          if(wjQuery(".resource-dropdown .btn:first-child").val() != wjQuery(this).attr('value-id')){
+            wjQuery(".resource-dropdown .btn:first-child").text(wjQuery(this).text());
+            wjQuery(".resource-dropdown .btn:first-child").val(wjQuery(this).attr('value-id'));
+          }
+      });
+        wjQuery(".resource-dropdown ul").html(resourceHTML);
+        setTimeout(function(){                      
+            wjQuery(".excuse-from-timepicker-input" ).timepicker({
+                timeFormat: 'h:mm p', 
+                interval: 60,                            
+                minTime: '8',                            
+                maxTime: '19',                            
+                dynamic: false,                            
+                dropdown: true,                            
+                scrollbar: true      
+                });                                   
+                wjQuery( ".excuse-to-timepicker-input" ).timepicker({    
+                    timeFormat: 'h:mm p',                            
+                    interval: 60, 
+                    minTime: '8',                            
+                    maxTime: '19',                            
+                    dynamic: false,                            
+                    dropdown: true,                            
+                    scrollbar: true                        
+                });                                   
+        },300); 
+        wjQuery("#excuseModal").dialog({
+          modal: true 
+        });
         wjQuery("#excuseModal").dialog('option', 'title', 'Excuse and MakeUp');
       }
     };
