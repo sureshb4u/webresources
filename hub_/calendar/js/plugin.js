@@ -1,3 +1,4 @@
+
 var data = new Data();
 var DEFAULT_START_TIME = "8:00 AM";
 var DEFAULT_END_TIME = "9:00 AM";
@@ -75,6 +76,12 @@ setTimeout(function(){
       sylvanCalendar.populateResource(resourceList,fetchData);
       if(resourceList.length){
         sylvanCalendar.refreshCalendarEvent(locationId,currentCalendarDate,currentCalendarDate,false,false);
+        $( window ).resize(function() {
+          // location.reload();
+          wjQuery(".loading").show();
+          sylvanCalendar.populateResource(resourceList,fetchData);
+          sylvanCalendar.refreshCalendarEvent(locationId,currentCalendarDate,currentCalendarDate,false,false);
+        });  
         wjQuery('.prevBtn').off('click').on('click',function(){
           wjQuery(".loading").show();
           sylvanCalendar.prev(locationId);
