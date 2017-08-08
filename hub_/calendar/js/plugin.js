@@ -1617,7 +1617,8 @@ function SylvanCalendar(){
                     subjectColorCode: val['aprogram_x002e_hub_color'],
                     is1to1 : val["hub_is_1to1"],
                     programId: val['aprogram_x002e_hub_programid'],
-                    serviceId:val['_hub_service_value']
+                    serviceId:val['_hub_service_value'],
+                    sessionId:val['hub_studentsessionid']
                 }
                 if (val.hasOwnProperty('_hub_resourceid_value')) {
                     obj.resourceId = val['_hub_resourceid_value']; 
@@ -2606,36 +2607,72 @@ function SylvanCalendar(){
     };
 
     this.moveStudentToSOF = function(element){
+      var self = this;
       var uniqueIds = wjQuery(element).attr("uniqueId").split('_');
       var h = new Date(uniqueIds[2]).getHours();
       if(h > 12){
         h -= 12;
       }
-      var objStudent = this.students.filter(function(x){
-          return x._hub_student_value == uniqueIds[0] &&
-                 x._hub_resourceid_value == uniqueIds[1] &&
-                 x.hub_session_date == moment(uniqueIds[2]).format('YYYY-MM-DD') &&
-                 parseInt(x['hub_start_time@OData.Community.Display.V1.FormattedValue'].split(':')[0]) == h;
+      var objStudent = this.convertedStudentObj.filter(function(x){
+          return x.id == uniqueIds[0] &&
+                 x.resourceId == uniqueIds[1] &&
+                 moment(x.startHour).format('YYYY-MM-DD') == moment(uniqueIds[2]).format('YYYY-MM-DD') &&
+                 parseInt(moment(x.startHour).format('h')) == h;
         });
       if(objStudent[0] != undefined){
         var objMovetoSOF = {};
-        objMovetoSOF['hub_studentsessionid'] = objStudent[0]['hub_studentsessionid'];
-        objMovetoSOF['hub_enrollment@odata.bind'] = "/hub_enrollments(" + objStudent[0]['_hub_enrollment_value'] + ")";
-        objMovetoSOF['hub_service@odata.bind'] = "/hub_productservices(" + objStudent[0]['_hub_service_value'] + ")";
-        objMovetoSOF['hub_deliverytype'] = objStudent[0]['aproductservice_x002e_hub_deliverytype'];
-        objMovetoSOF['hub_deliverytype@OData.Community.Display.V1.FormattedValue'] = objStudent[0]['aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue'];
-        objMovetoSOF['hub_center@odata.bind'] = "/hub_centers(" + objStudent[0]["_hub_center_value"] + ")";
-        objMovetoSOF['hub_student@odata.bind'] = "/contacts(" + objStudent[0]['_hub_student_value'] + ")";
-        objMovetoSOF['hub_session_date'] = objStudent[0]['hub_session_date'];
-        if(objStudent[0].hasOwnProperty('_hub_resourceid_value')){
-          objMovetoSOF['hub_resourceid@odata.bind'] = "/hub_center_resourceses(" +objStudent[0]['_hub_resourceid_value'] + ")";
-          delete objStudent[0]['_hub_resourceid_value'];
+        objMovetoSOF['hub_studentsessionid'] = objStudent[0]['sessionId'];
+        objMovetoSOF['hub_enrollment@odata.bind'] = "/hub_enrollments(" + objStudent[0]['enrollmentId'] + ")";
+        objMovetoSOF['hub_service@odata.bind'] = "/hub_productservices(" + objStudent[0]['serviceId'] + ")";
+        objMovetoSOF['hub_deliverytype'] = objStudent[0]['deliveryTypeId'];
+        objMovetoSOF['hub_deliverytype@OData.Community.Display.V1.FormattedValue'] = objStudent[0]['deliveryType'];
+        objMovetoSOF['hub_center@odata.bind'] = "/hub_centers(" + objStudent[0]["locationId"] + ")";
+        objMovetoSOF['hub_student@odata.bind'] = "/contacts(" + objStudent[0]['id'] + ")";
+        objMovetoSOF['hub_session_date'] = moment(objStudent[0].startHour).format('YYYY-MM-DD');
+        if(objStudent[0].hasOwnProperty('resourceId')){
+          objMovetoSOF['hub_resourceid@odata.bind'] = "/hub_center_resourceses(" +objStudent[0]['resourceId'] + ")";
+          delete objStudent[0]['resourceId'];
         }
         if(data.moveStudentToSOF(objMovetoSOF)){
-          self.generateEventObject(objStudent == null ? [] : objStudent, "studentSession");
+           var index = this.convertedStudentObj.map(function(x){
+            return x.id;
+           }).indexOf(objStudent[0].id);
+           this.convertedStudentObj.splice(index, 1);
+           if(Object.keys(self.sofList).length == 0){
+              self.sofList['Personal Instruction'] = [];
+              self.sofList['Group Instruction'] = [];
+              self.sofList['Group Facilitation'] = [];
+            }
+            if(objStudent[0].deliveryType == "Personal Instruction"){
+              var index = self.sofList['Personal Instruction'].map(function(x){
+                return x.id;
+              }).indexOf(objStudent[0].id);
+              if(index == -1){
+                self.sofList['Personal Instruction'].push(objStudent[0]);
+              }
+            }else if(objStudent[0].deliveryType == "Group Instruction"){
+              var index = self.sofList['Group Instruction'].map(function(x){
+                return x.id;
+              }).indexOf(objStudent[0].id);
+              if(index == -1){
+                self.sofList['Group Instruction'].push(objStudent[0]);
+              }
+            }else if(objStudent[0].deliveryType == "Group Facilitation"){
+              var index = self.sofList['Group Facilitation'].map(function(x){
+                return x.id;
+              }).indexOf(objStudent[0].id);
+              if(index == -1){
+                self.sofList['Group Facilitation'].push(objStudent[0]);
+              }
+            }
+            setTimeout(function(){
+              if(self.sofList['Personal Instruction'].length > 0 || self.sofList['Group Instruction'].length > 0 || self.sofList['Group Facilitation'].length > 0){
+                  self.populateSOFPane(self.sofList,self.calendarOptions.minTime,self.calendarOptions.maxTime);
+              }
+            },500);
           self.openSofPane();
           var prevEventId = wjQuery(element).attr("eventid");
-          var prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
+          var prevEvent = self.calendar.fullCalendar('clientEvents', prevEventId);
           if(prevEvent){
             var eventTitleHTML = wjQuery(prevEvent[0].title);
             for (var i = 0; i < eventTitleHTML.length; i++) {
@@ -2659,20 +2696,20 @@ function SylvanCalendar(){
               if((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "student-placeholder")) || 
                 (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder" && eventTitleHTML[1].className == "student-placeholder") ||
                 (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder" && eventTitleHTML[2].className == "student-placeholder")){
-                for (var i = 0; i < this.eventList.length; i++) {
-                  if(this.eventList[i].id == prevEventId)
-                    this.eventList.splice(i,1);
+                for (var i = 0; i < self.eventList.length; i++) {
+                  if(self.eventList[i].id == prevEventId)
+                    self.eventList.splice(i,1);
                 }
-                this.calendar.fullCalendar('removeEvents', prevEventId);
+                self.calendar.fullCalendar('removeEvents', prevEventId);
               }
-              this.calendar.fullCalendar('updateEvent', prevEvent); 
+              self.calendar.fullCalendar('updateEvent', prevEvent); 
             }
             else{
-              for (var i = 0; i < this.eventList.length; i++) {
-                if(this.eventList[i].id == prevEventId)
-                  this.eventList.splice(i,1);
+              for (var i = 0; i < self.eventList.length; i++) {
+                if(self.eventList[i].id == prevEventId)
+                  self.eventList.splice(i,1);
               }
-              this.calendar.fullCalendar('removeEvents', prevEventId);
+              self.calendar.fullCalendar('removeEvents', prevEventId);
             }
             if(!prevEvent[0].title.includes('<span class="student-placeholder">Student name</span>')){
               prevEvent[0].title += '<span class="student-placeholder">Student name</span>';
