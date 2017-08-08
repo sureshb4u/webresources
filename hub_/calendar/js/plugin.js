@@ -269,8 +269,8 @@ function SylvanCalendar(){
                     if(checkedList.length == 0){
                         self.populateStudentEvent(self.convertedStudentObj, true);
                         self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
-                        self.populateTAPane(self.taList);
                         self.populateTeacherEvent(self.convertedTeacherObj, true);
+                        self.populateTAPane(self.taList);
                     }else{
                       var newArray = [];
                       var sofNewArray = [];
@@ -306,10 +306,10 @@ function SylvanCalendar(){
                             sofNewArray['Group Facilitation'] = wjQuery.merge(gfResponse, sofNewArray['Group Facilitation']);
                           }
                       });
-                      self.populateTAPane(taNewArray);
                       self.populateSOFPane(sofNewArray, self.calendarOptions.minTime, self.calendarOptions.maxTime);
                       self.populateStudentEvent(newArray, true);
                       self.populateTeacherEvent(self.convertedTeacherObj, true);
+                      self.populateTAPane(taNewArray);
                     }
                 });
             }
@@ -565,16 +565,47 @@ function SylvanCalendar(){
             var elm = '<div class="teacher-availability" id="teacher_block_'+i+'" style="overflow-y:auto;height:'+ wjQuery(".fc-agenda-slots td div").height() +'px"></div>';
             wjQuery('.ta-pane').append(elm);
         }
+        var currentCalendarDate = this.calendar.fullCalendar('getDate');
         for(var i=0;i<teacherData.length;i++){
-          var studentStartHour = teacherData[i].startHour;
-          if(studentStartHour >= this.calendarOptions.minTime && studentStartHour <= this.calendarOptions.maxTime){
-             var studentPosition = studentStartHour - this.calendarOptions.minTime;
-             var elm =   '<div class="teacher-block"> <div class="teacher-container" type="teacher" value="'+teacherData[i].id+'">'+
-                          '<div class="display-inline-block padding-right-xs">'+ teacherData[i].name+'</div>'+
-                          '<div class="subject-identifier"></div>'+
-                      '</div></div>';
-             wjQuery('#teacher_block_'+studentPosition).append(elm);
-             this.draggable('teacher-container');
+          var teacherStartHour = teacherData[i].startHour;
+          var teacherStart = new Date(moment(currentCalendarDate).format('YYYY-MM-DD')+' '+teacherStartHour+":00");
+          var addTeacherToTA = true;
+          for (var  l = 0; l < this.resourceList.length; l++) {
+            var event = this.calendar.fullCalendar('clientEvents' ,this.resourceList[l].id+teacherStart);
+            if(event.length != 0){
+              for (var j = 0; j < event.length; j++) {
+                if(event[j].hasOwnProperty('teachers') && event[j].teachers.length != 0){
+                  for (var k = 0; k < event[j].teachers.length; k++) {
+                    if(event[j].teachers[k].id == teacherData[i].id){
+                      addTeacherToTA = false;
+                      break;
+                    }
+                  }
+                }
+                if(!addTeacherToTA){
+                  break;
+                }
+              }
+            }
+            if(!addTeacherToTA){
+              break;
+            }
+          }
+          if(addTeacherToTA){
+            if(teacherStartHour >= this.calendarOptions.minTime && teacherStartHour <= this.calendarOptions.maxTime){
+              var teacherPosition = teacherStartHour - this.calendarOptions.minTime;
+              var elm ='<div class="teacher-block"> <div class="teacher-container" type="teacher" value="'+teacherData[i].id+'">'+
+                            '<div class="display-inline-block padding-right-xs">'+ teacherData[i].name+'</div>';
+              var staffPrograms = this.getProgramObj(teacherData[i].id);       
+              if(staffPrograms.length != 0){
+                for (var a = 0; a < staffPrograms.length; a++) {
+                  elm+='<div class="subject-identifier" style="background:'+staffPrograms[a].color+'"></div>';
+                }
+              }              
+              elm+='</div></div>';
+              wjQuery('#teacher_block_'+teacherPosition).append(elm);
+              this.draggable('teacher-container');
+            }
           }
         }  
     }
@@ -682,7 +713,7 @@ function SylvanCalendar(){
               var showPopup = false;
               wjQuery.each(newEvent[0]['students'], function(k, v){
                 var index = techerPrograms.map(function(x){
-                  return x;
+                  return x.id;
                 }).indexOf(v.programId);
                 if(index == -1){
                   showPopup = true;
@@ -818,7 +849,7 @@ function SylvanCalendar(){
                 var showPopup = false;
                 wjQuery.each(newEvent[0]['students'], function(k, v){
                   var index = techerPrograms.map(function(x){
-                    return x;
+                    return x.id;
                   }).indexOf(v.programId);
                   if(index == -1){
                     showPopup = true;
@@ -2980,7 +3011,11 @@ function SylvanCalendar(){
             return y;
           }).indexOf(x['hub_programid']);
           if(PrograExist == -1){
-            programObj.push(x['hub_programid']);
+            var obj = {
+              id : x['hub_programid'],
+              color: x['hub_color'] 
+            }
+            programObj.push(obj);
           }
         }
       }).indexOf(teacherId);
