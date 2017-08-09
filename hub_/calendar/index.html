@@ -135,49 +135,37 @@
     </form>
 </div>
 <div id="excuseModal" style="display:none">
-    <form id="excuseForm" >
-    	<table style="width: 100%">
-    		<tr>
-    			<td>Name</td>
-    			<td id='studentNameofExcuse'></td>
-    		</tr>
-    		<tr>
-    			<td>Date</td>
-    			<td>
-    				<input type="text" class="custom-datepicker excuse-datepicker-input" id="rescheduleDate" tabindex="-1">
-    			</td>
-    		</tr>
-    		<tr>
-    			<td>From</td>
-    			<td>
-    				<input type="text" class="custom-timepicker excuse-from-timepicker-input" id="excuseFromTime" tabindex="-1">
-    			</td>
-    		</tr>
-    		<tr>
-    			<td>To</td>
-    			<td>
-    				<input type="text" class="custom-timepicker excuse-to-timepicker-input" id="excuseToTime" tabindex="-1">
-    			</td>
-    		</tr>
-    		<tr>
-    			<td>Resource</td>
-    			<td>
-    				<div class="resource-dropdown btn-group">
-					  	<button class="btn dropdown-toggle" data-toggle="dropdown">
-					    <span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu"></ul>
-					</div>
-    			</td>
-    		</tr>
-    		<tr>
-    			<td></td>
-    			<td>
-    				<button class="btn btn-modal" id="excuseSave" tabindex= "-1">Save</button>
-    			</td>
-    		</tr>
-    	</table>
-    </form>
+	<table style="width: 100%">
+		<tr>
+			<td>Name</td>
+			<td id='studentNameofExcuse'></td>
+		</tr>
+		<tr>
+			<td>Date</td>
+			<td>
+				<input type="text" class="custom-datepicker excuse-datepicker-input" id="rescheduleDate" required tabindex="-1">
+			</td>
+		</tr>
+		<tr>
+			<td>Start</td>
+			<td>
+				<input type="text" class="custom-timepicker excuse-from-timepicker-input" id="excuseFromTime" required tabindex="-1">
+			</td>
+		</tr>
+		<tr>
+			<td>End</td>
+			<td>
+				<input type="text" class="custom-timepicker excuse-to-timepicker-input" id="excuseToTime" required tabindex="-1">
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>
+				<button class="btn btn-modal" id="excuseSave" tabindex= "-1">Save</button>
+			</td>
+		</tr>
+	</table>
+	<p id='error_block'></p>
 </div>
 <script type="text/javascript" src="/webresources/hub_/calendar/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="/webresources/hub_/calendar/js/moment.min.js"></script>
