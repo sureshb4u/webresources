@@ -1053,7 +1053,7 @@ function SylvanCalendar(){
           // student[0].deliveryTypeId = t.getResourceObj(resource.id)['deliveryTypeId'];
           this.convertedStudentObj.push(student[0]);
           this.saveSOFtoSession(student);
-          t.populateStudentEvent(student,false);
+          t.populateStudentEvent(student,true);
       }          
     }
 
@@ -2339,7 +2339,7 @@ function SylvanCalendar(){
 
     this.openSofPane = function (){
       var closeSofPane = false;
-        if(Object.keys(this.sofList).length == 0 ){
+        if(Object.keys(this.sofList). length == 0 ){
           this.sofList['Personal Instruction'] = [];
           this.sofList['Group Facilitation'] = [];
           this.sofList['Group Instruction'] = [];
