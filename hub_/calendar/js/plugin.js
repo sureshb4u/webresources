@@ -2339,7 +2339,7 @@ function SylvanCalendar(){
 
     this.openSofPane = function (){
       var closeSofPane = false;
-        if(this.sofList.length == 0){
+        if(Object.keys(this.sofList).length == 0 ){
           this.sofList['Personal Instruction'] = [];
           this.sofList['Group Facilitation'] = [];
           this.sofList['Group Instruction'] = [];
