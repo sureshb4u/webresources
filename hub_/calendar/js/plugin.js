@@ -179,6 +179,7 @@ function SylvanCalendar(){
     this.selectedDeliveryType = [];
     this.convertedPinnedList = [];
     this.staffProgram = [];
+    this.businessClosure = [];
     this.staffExceptions = [];
     this.init = function(element){
     }
@@ -392,6 +393,7 @@ function SylvanCalendar(){
       this.teacherAvailability = [];
       this.convertedPinnedList = [];
       this.staffProgram = [];
+      this.businessClosure = [];
       this.staffExceptions = [];
       this.students = [];
     }
@@ -1336,6 +1338,7 @@ function SylvanCalendar(){
           endDate = moment(moment(currentCalendarDate).format("YYYY-MM-DD").add(7,'d')).format("YYYY-MM-DD");
         }
         // staff program fetching
+        self.businessClosure = data.getBusinessClosure(locationId) == null? [] : data.getBusinessClosure(locationId);
         self.staffProgram = data.getStaffProgram(locationId) == null? [] : data.getStaffProgram(locationId);
         self.staffExceptions = isFetch || (self.staffExceptions.length == 0) ? data.getStaffException(locationId,startDate,endDate) : self.staffExceptions;
         if(self.staffExceptions == null){
