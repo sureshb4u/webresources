@@ -2606,7 +2606,7 @@ function SylvanCalendar(){
                 }else{
                     var obj = {
                         id: eventId,
-                        students:[{id:id, name:name, grade:grade,is1to1: is1to1, serviceId:serviceId, programId:programId }],
+                        students:[{id:id, name:name, grade:grade,is1to1: is1to1,pinId:value['pinId'] serviceId:serviceId, programId:programId }],
                         start:value['startHour'],
                         //end:value['end'],
                         allDay: false,
