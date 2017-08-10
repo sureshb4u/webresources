@@ -2606,7 +2606,7 @@ function SylvanCalendar(){
                 }else{
                     var obj = {
                         id: eventId,
-                        students:[{id:id, name:name, grade:grade,is1to1: is1to1,pinId:value['pinId'] serviceId:serviceId, programId:programId }],
+                        students:[{id:id, name:name, grade:grade,is1to1: is1to1,pinId:value['pinId'] ,serviceId:serviceId, programId:programId }],
                         start:value['startHour'],
                         //end:value['end'],
                         allDay: false,
@@ -3291,7 +3291,7 @@ function SylvanCalendar(){
       if(h > 12){
         h -= 12;
       }
-      var objStudent = this.convertedStudentObj.filter(function(x){
+      var objStudent = self.convertedStudentObj.filter(function(x){
           return x.id == uniqueIds[0] &&
                  x.resourceId == uniqueIds[1] &&
                  moment(x.startHour).format('YYYY-MM-DD') == moment(uniqueIds[2]).format('YYYY-MM-DD') &&
@@ -3306,16 +3306,16 @@ function SylvanCalendar(){
         }
         if(data.moveStudentToSOF(objMovetoSOF)){
             
-            var index = t.convertedStudentObj.findIndex(function(x){
+            var index = self.convertedStudentObj.findIndex(function(x){
              return x.id == objStudent[0].id && 
                      x.resourceId == uniqueId.split('_')[1] &&
                      moment(x.startHour).format("h:mm A") == moment(startTime).format("h:mm A");
             });
-            // var index = this.convertedStudentObj.map(function(x){
+            // var index = self.convertedStudentObj.map(function(x){
             //   return x.id;
             // }).indexOf(objStudent[0].id);
-            this.convertedStudentObj.splice(index, 1);
-            this.pushStudentToSOF(objStudent[0]);
+            self.convertedStudentObj.splice(index, 1);
+            self.pushStudentToSOF(objStudent[0]);
             setTimeout(function(){
               if(self.sofList['Personal Instruction'].length > 0 || self.sofList['Group Instruction'].length > 0 || self.sofList['Group Facilitation'].length > 0){
                   self.populateSOFPane(self.sofList,self.calendarOptions.minTime,self.calendarOptions.maxTime);
