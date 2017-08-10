@@ -2541,7 +2541,7 @@ function SylvanCalendar(){
                                   }
                                 }
                               }
-                            event[k].students.push({id:id, name:name,is1to1:is1to1, grade:grade, serviceId:serviceId, programId:programId});
+                            event[k].students.push({id:id, name:name,is1to1:is1to1,pinId:value['pinId'], grade:grade, serviceId:serviceId, programId:programId});
                           }
                         }
                       }else{
@@ -2568,7 +2568,7 @@ function SylvanCalendar(){
                             }
                           }
                         }
-                        event[k].students = [{id:id, name:name, grade:grade,is1to1:is1to1, serviceId:serviceId, programId:programId }];
+                        event[k].students = [{id:id, name:name, grade:grade,pinId:value['pinId'],is1to1:is1to1, serviceId:serviceId, programId:programId }];
                       }
                       if(event[k].title.includes('<span class="student-placeholder">Student name</span>')){
                         event[k].title = event[k].title.replace('<span class="student-placeholder">Student name</span>', '');
