@@ -2301,7 +2301,11 @@ function SylvanCalendar(){
                         if(resourceObj.deliveryType == "Group Instruction"){
                           event[k].title += "<span class='drag-student' eventid='"+eventId+"' uniqueId='"+val.id+"_"+value['resourceId']+"_"+value['startHour']+"' id='"+val.id+value['resourceId']+"' type='studentSession' value='"+val.id+"'>"+val.name+", "+val.grade+"<i class='material-icons' style='color:"+val['subjectColorCode'] +"'>location_on</i></span>";
                         }else{
-                          event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+val.id+"_"+value['resourceId']+"_"+value['startHour']+"' id='"+val.id+value['resourceId']+"' type='studentSession' value='"+val.id+"'>"+val.name+", "+val.grade+"<i class='material-icons' style='color:"+val['subjectColorCode'] +"'>location_on</i></span>";
+                          if(val['pinId'] != undefined){
+                            event[k].title += "<span class='draggable drag-student' pinnedId='"+ value['pinId']+"' eventid='"+eventId+"' uniqueId='"+val.id+"_"+value['resourceId']+"_"+value['startHour']+"' id='"+val.id+value['resourceId']+"' type='studentSession' value='"+val.id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+val.name+", "+val.grade+"<i class='material-icons' style='color:"+val['subjectColorCode'] +"'>location_on</i></span>";
+                          }else{
+                            event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+val.id+"_"+value['resourceId']+"_"+value['startHour']+"' id='"+val.id+value['resourceId']+"' type='studentSession' value='"+val.id+"'>"+val.name+", "+val.grade+"<i class='material-icons' style='color:"+val['subjectColorCode'] +"'>location_on</i></span>";
+                          }
                         }
                       });
                     }
@@ -2346,7 +2350,11 @@ function SylvanCalendar(){
                     if(resourceObj.deliveryType == "Group Instruction"){
                       event[k].title += "<span class='drag-student' eventid='"+eventId+"' uniqueId='"+val.id+"_"+value['resourceId']+"_"+value['startHour']+"' id='"+val.id+value['resourceId']+"' type='studentSession' value='"+val.id+"'>"+val.name+", "+val.grade+"<i class='material-icons' style='color:"+val['subjectColorCode'] +"'>location_on</i></span>";
                     }else{
-                      event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+val.id+"_"+value['resourceId']+"_"+value['startHour']+"' id='"+val.id+value['resourceId']+"' type='studentSession' value='"+val.id+"'>"+val.name+", "+val.grade+"<i class='material-icons' style='color:"+val['subjectColorCode'] +"'>location_on</i></span>";
+                      if(val['pinId']){
+                        event[k].title += "<span class='draggable drag-student' pinnedId='"+ value['pinId']+"' eventid='"+eventId+"' uniqueId='"+val.id+"_"+value['resourceId']+"_"+value['startHour']+"' id='"+val.id+value['resourceId']+"' type='studentSession' value='"+val.id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+val.name+", "+val.grade+"<i class='material-icons' style='color:"+val['subjectColorCode'] +"'>location_on</i></span>";
+                      }else{
+                        event[k].title += "<span class='draggable drag-student' eventid='"+eventId+"' uniqueId='"+val.id+"_"+value['resourceId']+"_"+value['startHour']+"' id='"+val.id+value['resourceId']+"' type='studentSession' value='"+val.id+"'>"+val.name+", "+val.grade+"<i class='material-icons' style='color:"+val['subjectColorCode'] +"'>location_on</i></span>";
+                      }
                     }
                   });
                 }
@@ -3211,15 +3219,13 @@ function SylvanCalendar(){
               self.moveStudentToSOF(options.$trigger[0]);
             }
           }
-          if(isPinned){
-          }
         }
-        obj.cancel = {
+        /*obj.cancel = {
           name: "Cancel",
           callback : function(key, options) {
             self.removeStudentFromSession(options.$trigger[0]);
           }
-        }
+        }*/
       }else{
         obj.pin = {
           "name": "Pin",
