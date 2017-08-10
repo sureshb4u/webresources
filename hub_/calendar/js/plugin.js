@@ -174,6 +174,7 @@ setTimeout(function(){
     sylvanCalendar.generateFilterObject(filterObject); 
 },500);
 
+
 function SylvanCalendar(){
     this.resourceList = [];
     this.calendar = undefined;
@@ -184,6 +185,11 @@ function SylvanCalendar(){
     this.sofList['Group Instruction'] = [];
     this.sofList['Group Facilitation'] = [];
     this.taList = [];
+    // 1. Teacher conflict
+    // 2. Capacity Conflict
+    // 3. OneToOne Conflict
+    // 4. Do not sit with stydent
+    this.conflictMsg = ["Multiple teachers are placed", "Capacity has reached max", "OneToOne Conflict"];
     this.calendarOptions = {};
     this.convertedTeacherObj = [];
     this.convertedStudentObj = [];
@@ -398,6 +404,7 @@ function SylvanCalendar(){
       this.sofList['Personal Instruction'] = [];
       this.sofList['Group Instruction'] = [];
       this.sofList['Group Facilitation'] = [];
+      // this.conflictMsg = [];
       wjQuery('.teacher-block').remove();
       wjQuery('.student-overflow').remove();
       this.taList = [];
@@ -711,6 +718,14 @@ function SylvanCalendar(){
             }else{
               //  Validation for oneToOne check
               if(newEvent[0]['is1to1']){
+                // OneToOne Conflict
+                var msgIndex = newEvent[0].conflictMsg.map(function(x){
+                  return x;
+                }).indexOf(2);
+                if(msgIndex == -1) {
+                  newEvent[0].conflictMsg.push(2);
+                  self.updateConflictMsg(newEvent[0]);
+                }
                 t.studentSofCnfmPopup(t,date, allDay,ev,ui,resource,elm, "Session is 'OneToOne' Type. Do you wish to continue?");
               }else{
                 if(!(newEvent[0].hasOwnProperty('students')) || newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length < resource.capacity || resource.capacity == undefined)){
@@ -792,6 +807,14 @@ function SylvanCalendar(){
                       //  Validation for oneToOne check
                       //* if oneToOne then show popup
                       if(newEvent[0]['is1to1']){
+                        // OneToOne Conflict
+                        var msgIndex = newEvent[0].conflictMsg.map(function(x){
+                          return x;
+                        }).indexOf(2);
+                        if (msgIndex == -1) {
+                          newEvent[0].conflictMsg.push(2);
+                          self.updateConflictMsg(newEvent[0]);
+                        }
                         t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "Session is 'OneToOne' Type. Do you wish to continue?");
                       }else{
                         if(!(newEvent[0].hasOwnProperty('students')) || newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length < resource.capacity || resource.capacity == undefined)){
@@ -823,6 +846,14 @@ function SylvanCalendar(){
                       //  Validation for oneToOne check
                       //* if oneToOne then show popup
                       if(newEvent[0]['is1to1']){
+                        // OneToOne Conflict
+                        var msgIndex = newEvent[0].conflictMsg.map(function(x){
+                          return x;
+                        }).indexOf(2);
+                        if (msgIndex == -1) {
+                          newEvent[0].conflictMsg.push(2);
+                          self.updateConflictMsg(newEvent[0]);
+                        }
                         t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "DeliveryType is different and Session is 'OneToOne' Type. Do you wish to continue?");
                       }else{
                         if(!(newEvent[0].hasOwnProperty('students')) || newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length < resource.capacity || resource.capacity == undefined)){
@@ -959,13 +990,19 @@ function SylvanCalendar(){
             }
             for (var i = 0; i < eventTitleHTML.length; i++) {                    
               prevEvent[0].title += eventTitleHTML[i].outerHTML;                  
-            }                
+            }   
+
+            // Teacher conflict removal               
             if(prevEvent[0].teachers.length == 2){
-              if(prevEvent[0].title.includes('<img class="conflict" src="/webresources/hub_/calendar/images/warning.png">')){
-                prevEvent[0].title = prevEvent[0].title.replace('<img class="conflict" src="/webresources/hub_/calendar/images/warning.png">', '');
-                if(!prevEvent[0].title.includes('<span class="student-placeholder">Student name</span>')){
-                  prevEvent[0].title += '<span class="student-placeholder">Student name</span>'; 
-                }
+              var msgIndex = prevEvent[0].conflictMsg.map(function(x){
+                return x;
+              }).indexOf(0);
+              if (msgIndex > -1) {
+                  prevEvent[0].conflictMsg.splice(msgIndex, 1);
+              }
+              self.updateConflictMsg(prevEvent[0]);
+              if(!prevEvent[0].title.includes('<span class="student-placeholder">Student name</span>')){
+                prevEvent[0].title += '<span class="student-placeholder">Student name</span>'; 
               }
             }
           }                
@@ -1108,8 +1145,37 @@ function SylvanCalendar(){
             }
             this.calendar.fullCalendar('removeEvents', prevEventId);
           }
-          if(!prevEvent[0].title.includes('<span class="student-placeholder">Student name</span>')){
-            prevEvent[0].title += '<span class="student-placeholder">Student name</span>';
+
+          var resourceObj = self.getResourceObj(prevEvent[0]["resourceId"]);
+
+          // oneToOne conflict removal prevevent student Darg
+          if(prevEvent[0]['is1to1']){
+            if(prevEvent[0]['students'].length == 1){
+              var msgIndex = prevEvent[0].conflictMsg.map(function(x){
+                return x;
+              }).indexOf(2);
+              if (msgIndex > -1) {
+                  prevEvent[0].conflictMsg.splice(msgIndex, 1);
+              }
+              self.updateConflictMsg(prevEvent[0]);
+            }
+          }
+          // Conflict removal
+          // Capacity conflict removal prevevent student Darg
+          if(resourceObj['capacity'] >= prevEvent[0]['students'].length){
+            var msgIndex = prevEvent[0].conflictMsg.map(function(x){
+              return x;
+            }).indexOf(1);
+            if (msgIndex > -1) {
+                prevEvent[0].conflictMsg.splice(msgIndex, 1);
+            }
+            self.updateConflictMsg(prevEvent[0]);
+          }
+
+          if(resourceObj['capacity'] > prevEvent[0]['students'].length){
+            if(!prevEvent[0].title.includes('<span class="student-placeholder">Student name</span>')){
+              prevEvent[0].title += '<span class="student-placeholder">Student name</span>';
+            }
           }
         }
         if(t.convertedStudentObj[index]){
@@ -1404,6 +1470,7 @@ function SylvanCalendar(){
           }
           self.populateTeacherEvent(self.generateEventObject(self.teacherSchedule== null ? [] : self.teacherSchedule, "teacherSchedule"), true);
           self.populateTAPane(self.generateEventObject(self.teacherAvailability == null ? []:self.teacherAvailability, "teacherAvailability")); 
+		  self.showConflictMsg();
         }
         else{
           wjQuery('.loading').hide();
@@ -2132,9 +2199,16 @@ function SylvanCalendar(){
                     if(event[k].title.includes("<img class='onetoone' src='/webresources/hub_/calendar/images/lock.png'>")){
                       event[k].title = event[k].title.replace("<img class='onetoone' src='/webresources/hub_/calendar/images/lock.png'>", "");
                     }
-                    if(!event[k].title.includes('<img class="conflict" src="/webresources/hub_/calendar/images/warning.png">')){
-                      event[k].title +=  '<img class="conflict" src="/webresources/hub_/calendar/images/warning.png">';
+                    // Conflict update
+                    // More than one teacher conflict 
+                    var msgIndex = event[k].conflictMsg.map(function(x){
+                      return x.id;
+                    }).indexOf(0);
+                    if(msgIndex == -1){
+                      event[k].conflictMsg.push(0);
+                      self.updateConflictMsg(event[k]);
                     }
+
                     event[k].teachers.push({id:id, name:name});
                     wjQuery.each(event[k].teachers, function(ka, v){
                       uniqueId = v.id+"_"+value['resourceId']+"_"+value['startHour'];
@@ -2154,8 +2228,13 @@ function SylvanCalendar(){
                         }
                       });
                     }
-                    if(!event[k].title.includes('<span class="student-placeholder">Student name</span>')){
-                      event[k].title +='<span class="student-placeholder" >Student name</span>';
+                    // capacity check for students place holder
+                    if(event[k].hasOwnProperty("students")){
+                      if(resourceObj['capacity'] > event[k].students.length){
+                        if(!event[k].title.includes('<span class="student-placeholder">Student name</span>')){
+                          event[k].title += '<span class="student-placeholder">Student name</span>';
+                        }
+                      }
                     }
                   }
                 }else{
@@ -2184,14 +2263,42 @@ function SylvanCalendar(){
                     }
                   });
                 }
-                if(event[k].title.includes('<span class="student-placeholder">Student name</span>')){
-                  event[k].title = event[k].title.replace('<span class="student-placeholder">Student name</span>', "");
-                }
                 if(event[k].students != undefined){
                   if(event[k].students.length < resourceObj["capacity"] || resourceObj["capacity"] == undefined){
                     event[k].title += '<span class="student-placeholder">Student name</span>';                  
-                  } 
+                    
+                    // Conflict removal 
+                    // Capacity conflict reamoval
+                    var msgIndex = event[k].conflictMsg.map(function(y){
+                      return y;
+                    }).indexOf(1);
+                    if (msgIndex > -1) {
+                        event[k].conflictMsg.splice(msgIndex, 1);
+                    }
+                    self.updateConflictMsg(event[k]);
+                  }else if(event[k].students.length > resourceObj["capacity"]){
+                    var msgIndex = event[k].conflictMsg.map(function(z){
+                      return z;
+                    }).indexOf(1);
+                    if(msgIndex == -1){
+                      event[k].conflictMsg.push(1);
+                    }
+                    self.updateConflictMsg(event[k]);
+                  }  
                 }
+                if(event[k].title.includes('<span class="student-placeholder">Student name</span>')){
+                  event[k].title = event[k].title.replace('<span class="student-placeholder">Student name</span>', "");
+                }
+                if(event[k].hasOwnProperty("students")){
+                  if(resourceObj['capacity'] > event[k].students.length){
+                    if(!event[k].title.includes('<span class="student-placeholder">Student name</span>')){
+                      event[k].title += '<span class="student-placeholder">Student name</span>';
+                    }
+                  }
+                }
+                // if(!event[k].title.includes('<span class="student-placeholder">Student name</span>')){
+                //   event[k].title +='<span class="student-placeholder">Student name</span>';
+                // }
               });
               self.calendar.fullCalendar('updateEvent', event);
               if(value['pinId'] != undefined){
@@ -2214,6 +2321,7 @@ function SylvanCalendar(){
                   deliveryTypeId: resourceObj.deliveryTypeId,
                   deliveryType : resourceObj.deliveryType,
                   textColor:"#333333",
+                  conflictMsg: []
               }
               if(value['pinId'] != undefined){
                 obj.title = "<span class='draggable drag-teacher' pinnedId='"+ value['pinId']+ "' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+name+"</span>";
@@ -2249,6 +2357,7 @@ function SylvanCalendar(){
           });
         }
         wjQuery(".loading").hide();
+        this.showConflictMsg();
     }
     this.populateStudentEvent = function(studentList, isFromFilter){
         wjQuery(".loading").show();
@@ -2304,14 +2413,28 @@ function SylvanCalendar(){
                         }
                         event[k].students = [{id:id, name:name, grade:grade, serviceId:serviceId, programId:programId }];
                       }
-                      if(event[k].title.includes('<span class="student-placeholder" >Student name</span>')){
-                        event[k].title = event[k].title.replace('<span class="student-placeholder" >Student name</span>', '');
-                      }
                       if(event[k].title.includes('<span class="student-placeholder">Student name</span>')){
                         event[k].title = event[k].title.replace('<span class="student-placeholder">Student name</span>', '');
                       }
                       if(event[k].students.length < resourceObj["capacity"] || resourceObj["capacity"] == undefined){
                         event[k].title += '<span class="student-placeholder">Student name</span>';                  
+                        // Conflict removal
+                        // capacity conflict removal
+                        var msgIndex = event[k].conflictMsg.map(function(x){
+                          return x;
+                        }).indexOf(1);
+                        if (msgIndex > -1) {
+                            event[k].conflictMsg.splice(msgIndex, 1);
+                        }
+                        self.updateConflictMsg(event[k]);
+                      }else if(event[k].students.length > resourceObj["capacity"]){
+                        var msgIndex = event[k].conflictMsg.map(function(x){
+                          return x;
+                        }).indexOf(1);
+                        if(msgIndex == -1){
+                          event[k].conflictMsg.push(1);
+                        }
+                        self.updateConflictMsg(event[k]);
                       } 
                     });
                     if(value['deliveryType'] != "Group Instruction"){
@@ -2335,6 +2458,7 @@ function SylvanCalendar(){
                         is1to1: value['is1to1'],
                         isConflict: false,
                         textColor:"#333333",
+                        conflictMsg: []
                     }
                     obj.title = "";
 
@@ -2389,7 +2513,8 @@ function SylvanCalendar(){
         }
         wjQuery(".loading").hide();
         // Open Sof pane condition writen in below function 
-        this.openSofPane();
+      this.openSofPane();
+      this.showConflictMsg();
     }
 
     this.openSofPane = function (){
@@ -2426,18 +2551,20 @@ function SylvanCalendar(){
           }
           // wjQuery('.sof-btn, .sof-close-icon').unbind('click');
           wjQuery(".sof-btn").removeClass('overflow-info');
-          wjQuery('.sof-btn,.sof-close-icon').prop('title', "No Student in Overflow Pane");
+          wjQuery('.sof-btn,.sof-close-icon').prop('title', "There are no student in overflow pane");
         }else{
           /*if(!sofExpanded){
             this.sofPane();
           }*/
           wjQuery(".sof-btn").removeClass('overflow-info');
           wjQuery(".sof-btn").addClass('overflow-info');
+          wjQuery('.sof-btn,.sof-close-icon').prop('title', "There are students in overflow pane");
+        }
         }
         //wjQuery('.sof-btn,.sof-close-icon').prop('disabled', true);  
     }
 
-
+    }
 
     this.filterItems = function(obj, filterTerm, filterFor){
       var self = this;
@@ -2930,12 +3057,12 @@ function SylvanCalendar(){
             }
           }
           if(isPinned){
-            obj.unpin.visible = true;
-            obj.pin.visible = false;
           }
-          else{
-            obj.unpin.visible = false;
-            obj.pin.visible = true;
+        }
+        obj.cancel = {
+          name: "Cancel",
+          callback : function(key, options) {
+            self.removeStudentFromSession(options.$trigger[0]);
           }
         }
       }else{
@@ -2969,6 +3096,9 @@ function SylvanCalendar(){
           self.unPinTeacher(options.$trigger[0]);
         }
         };
+      }   
+
+      if(deliveryType == "Personal Instruction"){
         if(isPinned){
           obj.unpin.visible = true;
           obj.pin.visible = false;
@@ -3383,7 +3513,43 @@ function SylvanCalendar(){
       }).indexOf(teacherId);
       return programObj;
     }
-    
+
+    this.showConflictMsg = function(){
+      wjQuery("body, .conflict").tooltip({
+        tooltipClass:"custom-conflict",
+        track: true,
+        content: function () {
+          return wjQuery(this).prop('title').replace('|','<br />');
+        }
+      });
+    }
+
+    // Conflict messages update method
+    this.updateConflictMsg = function(event){
+      var msg = "";
+      var self = this;
+      var title =  wjQuery(event.title);
+      for (var i = 0; i < title.length; i++) {
+        if(title[i].className == 'conflict'){ 
+          title.splice(i,1);
+          event.title = '';
+          for (var j = 0; j < title.length; j++) {
+          event.title+= title[j].outerHTML;
+          }
+          break;
+        }
+      }
+      if(event.conflictMsg.length){
+        wjQuery.each(event.conflictMsg, function(k, v){
+          msg += (k+1)+". "+ self.conflictMsg[v]+"|";
+        });
+        var lastIndex = msg.lastIndexOf("|");
+        msg = msg.substring(0, lastIndex);
+        if(!event.title.includes('<img class="conflict" title="'+msg+'" src="/webresources/hub_/calendar/images/warning.png">')){
+          event.title +=  '<img class="conflict" title="'+msg+'" src="/webresources/hub_/calendar/images/warning.png">';
+        }
+      }
+    }
 }
 
-
+  
