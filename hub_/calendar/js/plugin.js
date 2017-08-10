@@ -2560,12 +2560,8 @@ function SylvanCalendar(){
           wjQuery(".sof-btn").addClass('overflow-info');
           wjQuery('.sof-btn,.sof-close-icon').prop('title', "There are students in overflow pane");
         }
-        }
-        //wjQuery('.sof-btn,.sof-close-icon').prop('disabled', true);  
     }
-
-    }
-
+  
     this.filterItems = function(obj, filterTerm, filterFor){
       var self = this;
       if(filterFor == "tapane"){
@@ -2655,7 +2651,7 @@ function SylvanCalendar(){
       var student = this.convertedStudentObj.filter(function(x){
         return x.id == id && 
                x.resourceId == uniqueId.split('_')[1]
-               moment(x.startHour).format("h:mm A") == moment(startTime).format("h:mm A"));
+               moment(x.startHour).format("h:mm A") == moment(startTime).format("h:mm A");
       });
 
       var objUnPinnedStudent = {};
