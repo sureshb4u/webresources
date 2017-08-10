@@ -1904,15 +1904,15 @@ function SylvanCalendar(){
               else{
                 if(obj.deliveryType == 'Group Instruction'){
                   var serviceMatchedStudent = eventObjList.filter(function(x){
-                    return x.serviceId == objserviceId;
+                    return x.serviceId == obj.serviceId;
                   });
                   if(serviceMatchedStudent[0] != undefined){
                     obj.resourceId = serviceMatchedStudent[0].resourceId;
                   }
                   else{
-                    for (var i = 0; i < this.resourceList.length; i++) {
-                      if(this.resourceList[i].deliveryType == 'Group Instruction'){
-                        obj.resourceId = this.resourceList[i].id;
+                    for (var i = 0; i < self.resourceList.length; i++) {
+                      if(self.resourceList[i].deliveryType == 'Group Instruction'){
+                        obj.resourceId = self.resourceList[i].id;
                         break;
                       }
                     }
@@ -1931,15 +1931,15 @@ function SylvanCalendar(){
                 }
                 else if(obj.deliveryType == 'Group Facilitation'){
                   var serviceMatchedStudent = eventObjList.filter(function(x){
-                    return x.serviceId == objserviceId;
+                    return x.serviceId == obj.serviceId;
                   });
                   if(serviceMatchedStudent[0] != undefined){
                     obj.resourceId = serviceMatchedStudent[0].resourceId;
                   }
                   else{
-                    for (var i = 0; i < this.resourceList.length; i++) {
-                      if(this.resourceList[i].deliveryType == 'Group Facilitation'){
-                        obj.resourceId = this.resourceList[i].id;
+                    for (var i = 0; i < self.resourceList.length; i++) {
+                      if(self.resourceList[i].deliveryType == 'Group Facilitation'){
+                        obj.resourceId = self.resourceList[i].id;
                         break;
                       }
                     }
