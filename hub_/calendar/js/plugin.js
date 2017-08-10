@@ -1389,7 +1389,7 @@ function SylvanCalendar(){
           if(self.enrollmentPriceList == null){
             self.enrollmentPriceList = [];
           }
-          self.convertPinnedData(self.pinnedData == null ? [] : self.pinnedData);
+          self.convertPinnedData(self.pinnedData == null ? [] : self.pinnedData,false);
           if(!studentDataSource){  
             self.students = isFetch || (self.students.length == 0) ? data.getStudentSession(locationId,startDate,endDate) : self.students;
             self.populateStudentEvent(self.generateEventObject(self.students == null ? [] : self.students, "studentSession"), true);
@@ -1786,6 +1786,10 @@ function SylvanCalendar(){
                  return x.studentId == obj.id &&
                         x.dayId == self.getDayValue(currentCalendarDate);
               });
+              var priceList = self.enrollmentPriceList.filter(function(x){
+                  return x.studentId == obj.id &&
+                        x.dayId == self.getDayValue(currentCalendarDate);
+              });
               for (var i = 0; i < pinnedStudent.length; i++) {
                 if(pinnedStudent[i] != undefined){
                   var newObj = wjQuery.extend(true, {}, obj);
@@ -1817,9 +1821,9 @@ function SylvanCalendar(){
                   }
                 }
                 else{
-                  newObj.start = new Date(moment(currentCalendarDate).format('YYYY-MM-DD')+" "+DEFAULT_START_TIME);
-                  newObj.end = new Date(moment(currentCalendarDate).format('YYYY-MM-DD')+" "+DEFAULT_END_TIME);
-                  var startHour = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') +" "+ DEFAULT_START_TIME);
+                  newObj.start = new Date(moment(currentCalendarDate).format('YYYY-MM-DD')+" "+val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+                  newObj.end = new Date(moment(currentCalendarDate).format('YYYY-MM-DD')+" "+val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
+                  var startHour = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') +" "+val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
                   startHour = startHour.setMinutes(0);
                   startHour = new Date(new Date(startHour).setSeconds(0));
                   newObj.startHour = startHour;
@@ -1835,20 +1839,6 @@ function SylvanCalendar(){
                     if(index == -1){
                       self.sofList['Personal Instruction'].push(newObj);
                     }
-                  }else if(newObj.deliveryType == "Group Instruction"){
-                    var index = self.sofList['Group Instruction'].map(function(x){
-                      return x.id;
-                    }).indexOf(val._hub_student_value);
-                    if(index == -1){
-                      self.sofList['Group Instruction'].push(newObj);
-                    }
-                  }else if(newObj.deliveryType == "Group Facilitation"){
-                    var index = self.sofList['Group Facilitation'].map(function(x){
-                      return x.id;
-                    }).indexOf(val._hub_student_value);
-                    if(index == -1){
-                      self.sofList['Group Facilitation'].push(newObj);
-                    }
                   }
                 }
               }
@@ -1862,6 +1852,34 @@ function SylvanCalendar(){
               obj.startHour = startHour;
               if(val.hasOwnProperty('aproductservice_x002e_hub_resource')){
                 obj.resourceId = val['aproductservice_x002e_hub_resource']; 
+                var index = eventObjList.map(function(x){
+                      return x.id;
+                    }).indexOf(obj.id);
+                if(index == -1){
+                  eventObjList.push(obj);
+                }
+                else{
+                  if(eventObjList[index].startHour != startHour){
+                    eventObjList.push(newObj);
+                  }
+                }
+              }
+              else{
+                if(obj.deliveryType == "Group Instruction"){
+                  var index = self.sofList['Group Instruction'].map(function(x){
+                    return x.id;
+                  }).indexOf(val._hub_student_value);
+                  if(index == -1){
+                    self.sofList['Group Instruction'].push(obj);
+                  }
+                }else if(obj.deliveryType == "Group Facilitation"){
+                  var index = self.sofList['Group Facilitation'].map(function(x){
+                    return x.id;
+                  }).indexOf(val._hub_student_value);
+                  if(index == -1){
+                    self.sofList['Group Facilitation'].push(obj);
+                  }
+                }
               }
             }
           });
@@ -2466,10 +2484,14 @@ function SylvanCalendar(){
         objPinnedStudent['hub_resourceid@odata.bind'] = student[0].resourceId;
         if(self.convertedPinnedList.length){
           var isPinned = self.convertedPinnedList.filter(function(x){
-            return (x.studentId == id &&
+            return ((x.studentId == id &&
                     x.resourceId == student[0].resourceId && 
                     x.dayId == self.getDayValue(startTime) &&
-                    x.startTime == moment(startTime).format("h:mm A")) 
+                    x.startTime == moment(startTime).format("h:mm A")) ||
+                    (x.studentId == id &&
+                    x.affinityResourceId == student[0].resourceId && 
+                    x.dayId == self.getDayValue(startTime) &&
+                    x.startTime == moment(startTime).format("h:mm A"))) 
           });
           if(isPinned[0] != undefined){
             objPinnedStudent.hub_sch_pinned_students_teachersid = isPinned[0].id;
@@ -2481,10 +2503,20 @@ function SylvanCalendar(){
       objPinnedStudent.hub_day = this.getDayValue(today);
       objPinnedStudent.hub_session_date = moment(today).format("YYYY-MM-DD");
       var responseObj = data.savePinStudent(objPinnedStudent);
-      if(responseObj != undefined){
-        var txt = wjQuery(element)[0].innerHTML;
-        wjQuery(element).html("<img src='/webresources/hub_/calendar/images/pin.png'/>"+txt);
-        wjQuery(element).attr('pinnedId',responseObj['hub_pinned_student_teacher_id']);
+      if(typeof(responseObj) == 'boolean'){
+        if(responseObj){
+          var txt = wjQuery(element)[0].innerHTML;
+          wjQuery(element).html("<img src='/webresources/hub_/calendar/images/pin.png'/>"+txt);
+          wjQuery(element).attr('pinnedId',objPinnedStudent.hub_sch_pinned_students_teachersid);
+        }
+      }
+      else if(typeof(responseObj) == 'Object'){
+        if(responseObj != undefined){
+          this.convertPinnedData(responseObj,true);
+          var txt = wjQuery(element)[0].innerHTML;
+          wjQuery(element).html("<img src='/webresources/hub_/calendar/images/pin.png'/>"+txt);
+          wjQuery(element).attr('pinnedId',responseObj['hub_pinned_student_teacher_id']);
+        }
       }
     };
 
@@ -2495,15 +2527,17 @@ function SylvanCalendar(){
       var today = this.calendar.fullCalendar('getDate');
       var student = this.convertedStudentObj.filter(function(x){
         return x.id == id && 
-               x.resourceId == uniqueId.split('_')[1];
+               x.resourceId == uniqueId.split('_')[1]
+               moment(x.startHour).format("h:mm A") == moment(startTime).format("h:mm A"));
       });
+
       var objUnPinnedStudent = {};
       if(student != undefined){
         objUnPinnedStudent['hub_center@odata.bind'] = student[0].locationId;
         objUnPinnedStudent['hub_enrollment@odata.bind'] = student[0].enrollmentId;
         objUnPinnedStudent['hub_service@odata.bind'] = student[0].serviceId;
         objUnPinnedStudent['hub_student@odata.bind'] = id;
-        objUnPinnedStudent['hub_resource@odata.bind'] = student[0].resourceId;
+        objUnPinnedStudent['hub_resourceid@odata.bind'] = student[0].resourceId;
       }
       objUnPinnedStudent.hub_start_time = this.convertToMinutes(moment(startTime).format("h:mm A"));
       objUnPinnedStudent.hub_end_time = objUnPinnedStudent.hub_start_time + 60;
@@ -2531,12 +2565,12 @@ function SylvanCalendar(){
         objPinnedStaff.hub_day = this.getDayValue(today);
         objPinnedStaff.hub_date = moment(today).format("YYYY-MM-DD");
         if(pinFor == 'time'){
-          objPinnedStaff['hub_resource@odata.bind'] = null;
+          objPinnedStaff['hub_resourceid@odata.bind'] = null;
           objPinnedStaff.hub_start_time = this.convertToMinutes(moment(startTime).format("h:mm A"));
           objPinnedStaff.hub_end_time = objPinnedStaff.hub_start_time + 60;
         }
         else{
-          objPinnedStaff['hub_resource@odata.bind'] = teacher[0].resourceId;
+          objPinnedStaff['hub_resourceid@odata.bind'] = teacher[0].resourceId;
           objPinnedStaff.hub_start_time = null;
           objPinnedStaff.hub_end_time = null;
         }
@@ -2566,7 +2600,7 @@ function SylvanCalendar(){
         objUnPinnedStaff.hub_date = moment(today).format("YYYY-MM-DD");
         objUnPinnedStaff.hub_start_time = this.convertToMinutes(moment(startTime).format("h:mm A"));
         objUnPinnedStaff.hub_end_time = objUnPinnedStaff.hub_start_time + 60;
-        objUnPinnedStaff['hub_resource@odata.bind'] = teacher[0].resourceId;
+        objUnPinnedStaff['hub_resourceid@odata.bind'] = teacher[0].resourceId;
         if(data.saveUnPinTeacher(objUnPinnedStaff)){
           wjQuery(element).removeAttr('pinnedId');
           wjQuery(element).find("img").remove();
@@ -3090,34 +3124,59 @@ function SylvanCalendar(){
       });
     };
 
-    this.convertPinnedData = function(data){
-      if(data.length){
-        for (var i = 0; i < data.length; i++) {
-          var obj={
-            id: data[i]['hub_sch_pinned_students_teachersid'],
-            enrollmentId : data[i]['_hub_enrollment_value'],
-            startTime : data[i]['hub_start_time@OData.Community.Display.V1.FormattedValue'],
-            endTime: data[i]['hub_end_time@OData.Community.Display.V1.FormattedValue'],
-            studentId : data[i]['_hub_student_value'],
-            studentName : data[i]['_hub_student_value@OData.Community.Display.V1.FormattedValue'],
-            teacherId: data[i]['_hub_teacher_value'],
-            teacherName: data[i]['_hub_teacher_value@OData.Community.Display.V1.FormattedValue'],
-            dayId: data[i]['hub_day'],
-            dayValue : data[i]['hub_day@OData.Community.Display.V1.FormattedValue']
-          };
-          if(data[i]['_hub_resource_value'] != undefined){
-            obj.resourceId =  data[i]['_hub_resource_value'];
-            obj.resourceName = data[i]['_hub_resource_value@OData.Community.Display.V1.FormattedValue'];
-          }
-          if(data[i]['_hub_affinity_resourceid_value'] != undefined){
-            obj.affinityResourceId =  data[i]['_hub_affinity_resourceid_value'];
-            obj.affinityResourceName = data[i]['_hub_affinity_resourceid_value@OData.Community.Display.V1.FormattedValue'];
-          }
-          this.convertedPinnedList.push(obj);
+    this.convertPinnedData = function(data,isFromSave){
+      if(isFromSave){
+        var obj={
+              id: data['hub_sch_pinned_students_teachersid'],
+              enrollmentId : data['_hub_enrollment_value'],
+              startTime : data['hub_start_time@OData.Community.Display.V1.FormattedValue'],
+              endTime: data['hub_end_time@OData.Community.Display.V1.FormattedValue'],
+              studentId : data['_hub_student_value'],
+              studentName : data['_hub_student_value@OData.Community.Display.V1.FormattedValue'],
+              teacherId: data['_hub_teacher_value'],
+              teacherName: data['_hub_teacher_value@OData.Community.Display.V1.FormattedValue'],
+              dayId: data['hub_day'],
+              dayValue : data['hub_day@OData.Community.Display.V1.FormattedValue']
+            };
+        if(data['_hub_resource_value'] != undefined){
+          obj.resourceId =  data['_hub_resource_value'];
+          obj.resourceName = data['_hub_resource_value@OData.Community.Display.V1.FormattedValue'];
         }
+        if(data['_hub_affinity_resourceid_value'] != undefined){
+          obj.affinityResourceId =  data['_hub_affinity_resourceid_value'];
+          obj.affinityResourceName = data['_hub_affinity_resourceid_value@OData.Community.Display.V1.FormattedValue'];
+        }
+        this.convertedPinnedList.push(obj);
       }
       else{
-        this.convertedPinnedList = [];
+        if(data.length){
+          for (var i = 0; i < data.length; i++) {
+            var obj={
+              id: data[i]['hub_sch_pinned_students_teachersid'],
+              enrollmentId : data[i]['_hub_enrollment_value'],
+              startTime : data[i]['hub_start_time@OData.Community.Display.V1.FormattedValue'],
+              endTime: data[i]['hub_end_time@OData.Community.Display.V1.FormattedValue'],
+              studentId : data[i]['_hub_student_value'],
+              studentName : data[i]['_hub_student_value@OData.Community.Display.V1.FormattedValue'],
+              teacherId: data[i]['_hub_teacher_value'],
+              teacherName: data[i]['_hub_teacher_value@OData.Community.Display.V1.FormattedValue'],
+              dayId: data[i]['hub_day'],
+              dayValue : data[i]['hub_day@OData.Community.Display.V1.FormattedValue']
+            };
+            if(data[i]['_hub_resource_value'] != undefined){
+              obj.resourceId =  data[i]['_hub_resource_value'];
+              obj.resourceName = data[i]['_hub_resource_value@OData.Community.Display.V1.FormattedValue'];
+            }
+            if(data[i]['_hub_affinity_resourceid_value'] != undefined){
+              obj.affinityResourceId =  data[i]['_hub_affinity_resourceid_value'];
+              obj.affinityResourceName = data[i]['_hub_affinity_resourceid_value@OData.Community.Display.V1.FormattedValue'];
+            }
+            this.convertedPinnedList.push(obj);
+          }
+        }
+        else{
+          this.convertedPinnedList = [];
+        }
       }
     };
 
