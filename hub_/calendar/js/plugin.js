@@ -781,9 +781,6 @@ function SylvanCalendar(){
                 return x.id;
         }).indexOf(stuId);
         var prevStudObj = t.convertedStudentObj[index];
-        if(wjQuery(elm).attr("pinnedId")){
-          t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "This student will be temporarily un pinned. Do you wish to continue?");
-        }else{
           if(newResourceObj.deliveryType != "Group Instruction"){
             if(newEvent.length == 0){
               if(newResourceObj.deliveryType == prevStudObj.deliveryType){
@@ -804,7 +801,9 @@ function SylvanCalendar(){
                   return x.id;
                 }).indexOf(stuId);
                 if(studentIndex == -1){
-                  if(newResourceObj.deliveryType != "Group Instruction"){
+                  if(wjQuery(elm).attr("pinnedId")){
+                    t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "This student will be temporarily un pinned. Do you wish to continue?");
+                  }else{
                     if(newResourceObj.deliveryType == prevStudObj.deliveryType){
                       if(newResourceObj.deliveryType == "Personal Instruction"){
                         //  Validation for oneToOne check
@@ -891,7 +890,6 @@ function SylvanCalendar(){
           }else{
             t.prompt("Can not be placed to a GI session.");
           }
-        }
       }
       else if(wjQuery(elm).attr("type") == 'teacherSession'){
         var teacherId = wjQuery(elm).attr("value"); 

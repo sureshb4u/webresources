@@ -3,7 +3,7 @@
 
     // Localize jQuery variable
     /******** Load jQuery if not present *********/
-    if (window.jQuery === undefined || window.jQuery.fn.jquery !== '1.8.2') {
+    if (window.jQuery === undefined || window.jQuery.fn.jquery !== '1.9.0') {
         var jQ_script_tag = document.createElement('script');
         jQ_script_tag.setAttribute("type","text/javascript");
         jQ_script_tag.setAttribute("src","/webresources/hub_/calendar/js/jquery_1.9.0.min.js");
