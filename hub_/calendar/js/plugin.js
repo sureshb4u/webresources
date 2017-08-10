@@ -652,8 +652,8 @@ function SylvanCalendar(){
           return x._hub_student_value == student[0].id;
         });
         var objSession = {};
-            objSession['hub_center@odata.bind'] = "/hub_centers(" + student[0].locationId + ")";
-            objSession['hub_resourceid@odata.bind'] = "/hub_center_resourceses(" + student[0].resourceId + ")";
+            objSession['hub_center@odata.bind'] = student[0].locationId;
+            objSession['hub_resourceid@odata.bind'] = student[0].resourceId;
             objSession.hub_session_date = moment(student[0].start).format("YYYY-MM-DD");
             objSession.hub_start_time = this.convertToMinutes(moment(student[0].start).format("h:mm A"));
             objSession.hub_end_time = this.convertToMinutes(moment(student[0].end).format("h:mm A"));
@@ -664,11 +664,11 @@ function SylvanCalendar(){
     this.saveTAtoSession = function(teacher){
       if(teacher != undefined){
         var objStaff = {};
-            objStaff['hub_staff@odata.bind'] = "/hub_staffs(" + teacher.id + ")";
-            objStaff['hub_center@odata.bind'] = "/hub_centers(" + teacher.locationId + ")";
+            objStaff['hub_staff@odata.bind'] = teacher.id;
+            objStaff['hub_center@odata.bind'] = teacher.locationId;
         var objNewSession = {};
             objNewSession.hub_deliverytype = teacher.deliveryTypeId;
-            objNewSession['hub_resourceid@odata.bind'] = "/hub_center_resourceses(" + teacher.resourceId + ")";
+            objNewSession['hub_resourceid@odata.bind'] = teacher.resourceId;
             objNewSession.hub_date = moment(teacher.start).format("YYYY-MM-DD");
             objNewSession.hub_start_time = this.convertToMinutes(moment(teacher.start).format("h:mm A"));
             objNewSession.hub_end_time  = this.convertToMinutes(moment(teacher.end).format("h:mm A"));
@@ -3366,23 +3366,30 @@ function SylvanCalendar(){
         }
 
         objPrevSession['hub_studentsessionid'] = objStudent[0]['hub_studentsessionid'];
+        objPrevSession['hub_enrollment@odata.bind'] = objStudent[0]['_hub_enrollment_value'];
         objPrevSession['hub_deliverytype'] = objStudent[0]['aproductservice_x002e_hub_deliverytype'];
         objPrevSession['hub_start_time'] = this.convertToMinutes(moment(prevStudent.start).format("h:mm A"));
         objPrevSession['hub_end_time'] = this.convertToMinutes(moment(prevStudent.end).format("h:mm A"));
-        objPrevSession['hub_resourceid@odata.bind'] = "/hub_center_resourceses(" + prevStudent.resourceId + ")";
+        objPrevSession['hub_resourceid@odata.bind'] = prevStudent.resourceId;
+        objPrevSession['hub_service@odata.bind'] = objStudent[0]['_hub_service_value'];
+        objPrevSession['hub_student@odata.bind'] = objStudent[0]['_hub_student_value'];
+        objPrevSession['hub_center@odata.bind'] = objStudent[0]["_hub_center_value"];
         objPrevSession['hub_deliverytype@OData.Community.Display.V1.FormattedValue'] = objStudent[0]['aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue'];
         objPrevSession['hub_session_date'] = objStudent[0]['hub_session_date'];
+        objPrevSession['hub_is_1to1'] = objStudent[0]['hub_is_1to1'];
+        objPrevSession.hub_ratio = objStudent[0]['hub_is_1to1'];
 
         objNewSession['hub_studentsessionid'] = objStudent[0]['hub_studentsessionid'];
-        objNewSession['hub_center@odata.bind'] = "/hub_centers(" + objStudent[0]["_hub_center_value"] + ")";
-        objNewSession['hub_enrollment@odata.bind'] = "/hub_enrollments(" + objStudent[0]['_hub_enrollment_value'] + ")";
-        objNewSession['hub_student@odata.bind'] = "/contacts(" + objStudent[0]['_hub_student_value'] + ")";
-        objNewSession['hub_resourceid@odata.bind'] = "/hub_center_resourceses(" + student.resourceId + ")";
-        objNewSession['hub_service@odata.bind'] = "/hub_productservices(" + objStudent[0]['_hub_service_value'] + ")";
+        objNewSession['hub_center@odata.bind'] = objStudent[0]["_hub_center_value"];
+        objNewSession['hub_enrollment@odata.bind'] = objStudent[0]['_hub_enrollment_value'];
+        objNewSession['hub_student@odata.bind'] = objStudent[0]['_hub_student_value'];
+        objNewSession['hub_resourceid@odata.bind'] = student.resourceId;
+        objNewSession['hub_service@odata.bind'] = objStudent[0]['_hub_service_value'];
         objNewSession['hub_session_date'] = sessionDate;
         objNewSession['hub_start_time'] = this.convertToMinutes(moment(student.start).format("h:mm A"));
         objNewSession['hub_end_time'] = this.convertToMinutes(moment(student.end).format("h:mm A"));
         objNewSession['hub_deliverytype'] = student.deliveryTypeId;
+        objNewSession['hub_is_1to1'] = objStudent[0]['hub_is_1to1'];
         objNewSession['hub_deliverytype@OData.Community.Display.V1.FormattedValue'] = student.deliveryType;
         data.saveStudenttoSession(objPrevSession,objNewSession);
       }
@@ -3398,15 +3405,15 @@ function SylvanCalendar(){
         if(objTeacher.length){
         // Old object
         objPrevSession['hub_staff_scheduleid'] = objTeacher[0]['hub_staff_scheduleid'];
-        objPrevSession['hub_resourceid@odata.bind'] = "/hub_center_resourceses(" + prevTeacher['resourceId']+ ")";
+        objPrevSession['hub_resourceid@odata.bind'] = prevTeacher['resourceId'];
         objPrevSession['hub_start_time'] = this.convertToMinutes(moment(prevTeacher.start).format("h:mm A"));
         objPrevSession['hub_end_time'] = this.convertToMinutes(moment(prevTeacher.end).format("h:mm A"));
         objPrevSession['hub_center_value'] = prevTeacher['locationId'];
         // New object
-        objNewSession['hub_staff@odata.bind'] = "/hub_staffs(" + teacher['id']+ ")";
+        objNewSession['hub_staff@odata.bind'] = teacher['id'];
         objNewSession['hub_center_value'] = teacher['locationId'];
-        objNewSession['hub_product_service@odata.bind'] = "/hub_productservices(" + objTeacher[0]['_hub_product_service_value'] + ")";
-        objNewSession['hub_resourceid@odata.bind'] = "/hub_center_resourceses(" + teacher['resourceId']+ ")";
+        objNewSession['hub_product_service@odata.bind'] = objTeacher[0]['_hub_product_service_value'];
+        objNewSession['hub_resourceid@odata.bind'] = teacher['resourceId'];
         objNewSession['hub_date'] = moment(teacher.start).format("YYYY-MM-DD");
         objNewSession['hub_start_time'] = this.convertToMinutes(moment(teacher.start).format("h:mm A"));
         objNewSession['hub_end_time'] = this.convertToMinutes(moment(teacher.end).format("h:mm A"));
