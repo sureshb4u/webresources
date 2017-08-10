@@ -1358,34 +1358,58 @@ function SylvanCalendar(){
         }
         // staff program fetching
         self.businessClosure = data.getBusinessClosure(locationId,startDate,endDate) == null? [] : data.getBusinessClosure(locationId,startDate,endDate);
-        self.staffProgram = data.getStaffProgram(locationId) == null? [] : data.getStaffProgram(locationId);
-        self.staffExceptions = isFetch || (self.staffExceptions.length == 0) ? data.getStaffException(locationId,startDate,endDate) : self.staffExceptions;
-        if(self.staffExceptions == null){
-          self.staffExceptions = [];
+        if(self.businessClosure == null){
+          self.businessClosure = [];
         }
-        self.teacherSchedule = isFetch || (self.teacherSchedule.length == 0) ? data.getTeacherSchedule(locationId,startDate,endDate) : self.teacherSchedule;
-        self.teacherAvailability = isFetch || (self.teacherAvailability.length == 0) ? data.getTeacherAvailability(locationId,startDate,endDate) : self.teacherAvailability;
-        self.pinnedData = isFetch || (self.pinnedData.length == 0) ? data.getPinnedData(locationId,startDate,endDate) : self.pinnedData;
-        self.enrollmentPriceList = isFetch || (self.enrollmentPriceList.length == 0) ? data.getEnrollmentPriceList(locationId,startDate,endDate) : self.enrollmentPriceList;
-        if(self.enrollmentPriceList == null){
-          self.enrollmentPriceList = [];
+        var findingLeaveFlag = true;
+        if(self.businessClosure.length){
+          for(var i=0;i<self.businessClosure.length;i++){
+            var businessStartDate = moment(self.businessClosure[i]['hub_startdatetime']).format("YYYY-MM-DD");
+            var businessEndDate = moment(self.businessClosure[i]['hub_enddatetime']).format("YYYY-MM-DD");
+            businessStartDate = new Date(businessStartDate+' '+'0:00').getTime();
+            businessEndDate = new Date(businessEndDate+' '+'0:00').getTime();
+            var calendarStartDate = new Date(startDate+' '+'0:00').getTime();
+            var calendarEndDate = new Date(endDate+' '+'0:00').getTime();  
+            if(calendarStartDate >= businessStartDate &&  calendarEndDate <= businessEndDate){
+              findingLeaveFlag = false;
+            }
+          }
         }
-        self.convertPinnedData(self.pinnedData == null ? [] : self.pinnedData);
-        if(!studentDataSource){  
-          self.students = isFetch || (self.students.length == 0) ? data.getStudentSession(locationId,startDate,endDate) : self.students;
-          self.populateStudentEvent(self.generateEventObject(self.students == null ? [] : self.students, "studentSession"), true);
-          self.filterObject.student = self.students == null ? [] : self.students;
-          self.generateFilterObject(self.filterObject);
+        if(findingLeaveFlag){
+          wjQuery('table.fc-agenda-slots td div').css('backgroundColor','');
+          self.staffProgram = data.getStaffProgram(locationId) == null? [] : data.getStaffProgram(locationId);
+          self.staffExceptions = isFetch || (self.staffExceptions.length == 0) ? data.getStaffException(locationId,startDate,endDate) : self.staffExceptions;
+          if(self.staffExceptions == null){
+            self.staffExceptions = [];
+          }
+          self.teacherSchedule = isFetch || (self.teacherSchedule.length == 0) ? data.getTeacherSchedule(locationId,startDate,endDate) : self.teacherSchedule;
+          self.teacherAvailability = isFetch || (self.teacherAvailability.length == 0) ? data.getTeacherAvailability(locationId,startDate,endDate) : self.teacherAvailability;
+          self.pinnedData = isFetch || (self.pinnedData.length == 0) ? data.getPinnedData(locationId,startDate,endDate) : self.pinnedData;
+          self.enrollmentPriceList = isFetch || (self.enrollmentPriceList.length == 0) ? data.getEnrollmentPriceList(locationId,startDate,endDate) : self.enrollmentPriceList;
+          if(self.enrollmentPriceList == null){
+            self.enrollmentPriceList = [];
+          }
+          self.convertPinnedData(self.pinnedData == null ? [] : self.pinnedData);
+          if(!studentDataSource){  
+            self.students = isFetch || (self.students.length == 0) ? data.getStudentSession(locationId,startDate,endDate) : self.students;
+            self.populateStudentEvent(self.generateEventObject(self.students == null ? [] : self.students, "studentSession"), true);
+            self.filterObject.student = self.students == null ? [] : self.students;
+            self.generateFilterObject(self.filterObject);
+          }
+          else{
+            self.students = data.getStudentMasterSchedule(locationId,startDate,endDate);
+            self.populateStudentEvent(self.generateEventObject(self.students == null ? [] : self.students, "masterStudentSession"), true);
+            self.filterObject.student = self.students == null ? [] : self.students;
+            self.generateFilterObject(self.filterObject);
+          }
+          self.populateTeacherEvent(self.generateEventObject(self.teacherSchedule== null ? [] : self.teacherSchedule, "teacherSchedule"), true);
+          self.populateTAPane(self.generateEventObject(self.teacherAvailability == null ? []:self.teacherAvailability, "teacherAvailability")); 
         }
         else{
-          self.students = data.getStudentMasterSchedule(locationId,startDate,endDate);
-          self.populateStudentEvent(self.generateEventObject(self.students == null ? [] : self.students, "masterStudentSession"), true);
-          self.filterObject.student = self.students == null ? [] : self.students;
-          self.generateFilterObject(self.filterObject);
+          wjQuery('.loading').hide();
+          wjQuery('table.fc-agenda-slots td div').css('backgroundColor','#ddd');
         }
-        self.populateTeacherEvent(self.generateEventObject(self.teacherSchedule== null ? [] : self.teacherSchedule, "teacherSchedule"), true);
-        self.populateTAPane(self.generateEventObject(self.teacherAvailability == null ? []:self.teacherAvailability, "teacherAvailability")); 
-      },500);
+      },300);
     }
 
     this.weekView = function(){
@@ -1757,81 +1781,94 @@ function SylvanCalendar(){
                 programId: val['aprogram_x002e_hub_programid'],
                 serviceId: val['aenrollment_x002e_hub_service']
             }
-            var pinnedStudent = self.convertedPinnedList.filter(function(x){
-               return x.studentId == obj.id &&
-                      x.dayId == self.getDayValue(currentCalendarDate);
-            });
-            for (var i = 0; i < pinnedStudent.length; i++) {
-              if(pinnedStudent[i] != undefined){
-                var newObj = wjQuery.extend(true, {}, obj);
-                newObj.pinId = undefined;
-                newObj.enrollmentId  = pinnedStudent[i].enrollmentId,
-                newObj.start = new Date(moment(currentCalendarDate).format('YYYY-MM-DD')+" "+pinnedStudent[i].startTime);
-                newObj.end = new Date(moment(currentCalendarDate).format('YYYY-MM-DD')+" "+pinnedStudent[i].endTime);
-                var startHour = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') +" "+ pinnedStudent[i].startTime);
-                startHour = startHour.setMinutes(0);
-                startHour = new Date(new Date(startHour).setSeconds(0));
-                newObj.startHour = startHour;
-                if (pinnedStudent[i].hasOwnProperty('resourceId')) {
-                  newObj.resourceId = pinnedStudent[i].resourceId; 
-                  newObj.pinId = pinnedStudent[i].id;
-                }
-                else if(pinnedStudent[i].hasOwnProperty('affinityResourceId')){
-                  newObj.resourceId = pinnedStudent[i].affinityResourceId;
-                }
-                var index = eventObjList.map(function(x){
-                    return x.id;
-                  }).indexOf(newObj.id);
-                if(index == -1){
-                  eventObjList.push(newObj);
-                }
-                else{
-                  if(eventObjList[index].startHour != startHour){
+            if(obj.deliveryType == 'Personal Instruction'){
+              var pinnedStudent = self.convertedPinnedList.filter(function(x){
+                 return x.studentId == obj.id &&
+                        x.dayId == self.getDayValue(currentCalendarDate);
+              });
+              for (var i = 0; i < pinnedStudent.length; i++) {
+                if(pinnedStudent[i] != undefined){
+                  var newObj = wjQuery.extend(true, {}, obj);
+                  newObj.pinId = undefined;
+                  newObj.enrollmentId  = pinnedStudent[i].enrollmentId,
+                  newObj.start = new Date(moment(currentCalendarDate).format('YYYY-MM-DD')+" "+pinnedStudent[i].startTime);
+                  newObj.end = new Date(moment(currentCalendarDate).format('YYYY-MM-DD')+" "+pinnedStudent[i].endTime);
+                  var startHour = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') +" "+ pinnedStudent[i].startTime);
+                  startHour = startHour.setMinutes(0);
+                  startHour = new Date(new Date(startHour).setSeconds(0));
+                  newObj.startHour = startHour;
+                  if (pinnedStudent[i].hasOwnProperty('resourceId')) {
+                    newObj.resourceId = pinnedStudent[i].resourceId; 
+                    newObj.pinId = pinnedStudent[i].id;
+                  }
+                  else if(pinnedStudent[i].hasOwnProperty('affinityResourceId')){
+                    newObj.resourceId = pinnedStudent[i].affinityResourceId;
+                  }
+                  var index = eventObjList.map(function(x){
+                      return x.id;
+                    }).indexOf(newObj.id);
+                  if(index == -1){
                     eventObjList.push(newObj);
                   }
-                }
-              }
-              else{
-                newObj.start = new Date(moment(currentCalendarDate).format('YYYY-MM-DD')+" "+DEFAULT_START_TIME);
-                newObj.end = new Date(moment(currentCalendarDate).format('YYYY-MM-DD')+" "+DEFAULT_END_TIME);
-                var startHour = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') +" "+ DEFAULT_START_TIME);
-                startHour = startHour.setMinutes(0);
-                startHour = new Date(new Date(startHour).setSeconds(0));
-                newObj.startHour = startHour;
-                if(self.sofList.length == 0){
-                  self.sofList['Personal Instruction'] = [];
-                  self.sofList['Group Instruction'] = [];
-                  self.sofList['Group Facilitation'] = [];
-                }
-                if(newObj.deliveryType == "Personal Instruction"){
-                  var index = self.sofList['Personal Instruction'].map(function(x){
-                    return x.id;
-                  }).indexOf(val._hub_student_value);
-                  if(index == -1){
-                    self.sofList['Personal Instruction'].push(newObj);
+                  else{
+                    if(eventObjList[index].startHour != startHour){
+                      eventObjList.push(newObj);
+                    }
                   }
-                }else if(newObj.deliveryType == "Group Instruction"){
-                  var index = self.sofList['Group Instruction'].map(function(x){
-                    return x.id;
-                  }).indexOf(val._hub_student_value);
-                  if(index == -1){
-                    self.sofList['Group Instruction'].push(newObj);
+                }
+                else{
+                  newObj.start = new Date(moment(currentCalendarDate).format('YYYY-MM-DD')+" "+DEFAULT_START_TIME);
+                  newObj.end = new Date(moment(currentCalendarDate).format('YYYY-MM-DD')+" "+DEFAULT_END_TIME);
+                  var startHour = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') +" "+ DEFAULT_START_TIME);
+                  startHour = startHour.setMinutes(0);
+                  startHour = new Date(new Date(startHour).setSeconds(0));
+                  newObj.startHour = startHour;
+                  if(Object.keys(self.sofList).length == 0){
+                    self.sofList['Personal Instruction'] = [];
+                    self.sofList['Group Instruction'] = [];
+                    self.sofList['Group Facilitation'] = [];
                   }
-                }else if(newObj.deliveryType == "Group Facilitation"){
-                  var index = self.sofList['Group Facilitation'].map(function(x){
-                    return x.id;
-                  }).indexOf(val._hub_student_value);
-                  if(index == -1){
-                    self.sofList['Group Facilitation'].push(newObj);
+                  if(newObj.deliveryType == "Personal Instruction"){
+                    var index = self.sofList['Personal Instruction'].map(function(x){
+                      return x.id;
+                    }).indexOf(val._hub_student_value);
+                    if(index == -1){
+                      self.sofList['Personal Instruction'].push(newObj);
+                    }
+                  }else if(newObj.deliveryType == "Group Instruction"){
+                    var index = self.sofList['Group Instruction'].map(function(x){
+                      return x.id;
+                    }).indexOf(val._hub_student_value);
+                    if(index == -1){
+                      self.sofList['Group Instruction'].push(newObj);
+                    }
+                  }else if(newObj.deliveryType == "Group Facilitation"){
+                    var index = self.sofList['Group Facilitation'].map(function(x){
+                      return x.id;
+                    }).indexOf(val._hub_student_value);
+                    if(index == -1){
+                      self.sofList['Group Facilitation'].push(newObj);
+                    }
                   }
                 }
               }
             }
+            else{
+              obj.start = new Date(moment(currentCalendarDate).format('YYYY-MM-DD')+" "+val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+              obj.end = new Date(moment(currentCalendarDate).format('YYYY-MM-DD')+" "+val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
+              var startHour = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') +" "+ val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+              startHour = startHour.setMinutes(0);
+              startHour = new Date(new Date(startHour).setSeconds(0));
+              obj.startHour = startHour;
+              if(val.hasOwnProperty('aproductservice_x002e_hub_resource')){
+                obj.resourceId = val['aproductservice_x002e_hub_resource']; 
+              }
+            }
           });
           setTimeout(function(){
-             /* if(self.sofList['Personal Instruction'].length > 0 || self.sofList['Group Instruction'].length > 0 || self.sofList['Group Facilitation'].length > 0){
+              if(self.sofList['Personal Instruction'].length > 0 || self.sofList['Group Instruction'].length > 0 || self.sofList['Group Facilitation'].length > 0){
                   self.populateSOFPane(self.sofList,self.calendarOptions.minTime,self.calendarOptions.maxTime);
-              }*/
+              }
           },800);
           self.convertedStudentObj = eventObjList;
         }else if(label == "teacherAvailability"){
