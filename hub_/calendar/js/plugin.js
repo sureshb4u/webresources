@@ -663,8 +663,8 @@ function SylvanCalendar(){
             objSession['hub_center@odata.bind'] = student[0].locationId;
             objSession['hub_resourceid@odata.bind'] = student[0].resourceId;
             objSession.hub_session_date = moment(student[0].start).format("YYYY-MM-DD");
-            objSession.hub_start_time = this.convertToMinutes(moment(student[0].start).format("h:mm A"));
-            objSession.hub_end_time = this.convertToMinutes(moment(student[0].end).format("h:mm A"));
+            objSession.hub_start_time = objStudent[0]['hub_start_time'];
+            objSession.hub_end_time = objStudent[0]['hub_end_time'];
         
         if(objStudent[0] != undefined){
           var objNewSession = {};
@@ -3285,7 +3285,7 @@ function SylvanCalendar(){
       var self = this;
       var uniqueIds = wjQuery(element).attr("uniqueId").split('_');
       var h = new Date(uniqueIds[2]).getHours();
-      var uniqueId = wjQuery(elm).attr('uniqueId');
+      var uniqueId = wjQuery(element).attr('uniqueId');
       var startTime = uniqueId.split('_')[2];
 
       if(h > 12){
