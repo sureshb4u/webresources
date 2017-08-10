@@ -648,16 +648,41 @@ function SylvanCalendar(){
      */
     this.saveSOFtoSession = function(student){
       if(student[0] != undefined){
+        var h = new Date(student[0].startHour).getHours();
+        if(h > 12){
+          h -= 12;
+        }
         var objStudent = this.students.filter(function(x){
           return x._hub_student_value == student[0].id;
+                 x._hub_resourceid_value == student[0].resourceId &&
+                 parseInt(x['hub_start_time@OData.Community.Display.V1.FormattedValue'].split(':')[0]) == h;
+        
         });
+
         var objSession = {};
             objSession['hub_center@odata.bind'] = student[0].locationId;
             objSession['hub_resourceid@odata.bind'] = student[0].resourceId;
             objSession.hub_session_date = moment(student[0].start).format("YYYY-MM-DD");
             objSession.hub_start_time = this.convertToMinutes(moment(student[0].start).format("h:mm A"));
             objSession.hub_end_time = this.convertToMinutes(moment(student[0].end).format("h:mm A"));
-        data.saveSOFtoSession(objStudent[0],objSession);
+        
+        if(objStudent[0] != undefined){
+          var objNewSession = {};
+          objNewSession['hub_studentsessionid'] = objStudent[0]['hub_studentsessionid'];
+          objNewSession['hub_center@odata.bind'] = objStudent[0]["_hub_center_value"];
+          objNewSession['hub_enrollment@odata.bind'] = objStudent[0]['_hub_enrollment_value'];
+          objNewSession['hub_student@odata.bind'] = objStudent[0]['_hub_student_value'];
+          objNewSession['hub_resourceid@odata.bind'] = student[0].resourceId;
+          objNewSession['hub_service@odata.bind'] = objStudent[0]['_hub_service_value'];
+          objNewSession['hub_session_date'] = moment(student[0].start).format("YYYY-MM-DD");
+          objNewSession['hub_start_time'] = this.convertToMinutes(moment(student[0].start).format("h:mm A"));
+          objNewSession['hub_end_time'] = this.convertToMinutes(moment(student[0].end).format("h:mm A"));
+          objNewSession['hub_is_1to1'] = objStudent[0]['hub_is_1to1'];
+          objNewSession['hub_deliverytype'] = student[0].deliveryTypeId;
+          objNewSession['hub_deliverytype@OData.Community.Display.V1.FormattedValue'] = student[0].deliveryType;
+          
+          data.saveSOFtoSession(objNewSession,objSession);
+        }
       }
     };
     
@@ -1874,7 +1899,23 @@ function SylvanCalendar(){
                   startHour = startHour.setMinutes(0);
                   startHour = new Date(new Date(startHour).setSeconds(0));
                   newObj.startHour = startHour;
-                  self.pushStudentToSOF(newObj);
+                  for (var i = 0; i < self.resourceList.length; i++) {
+                    if(self.resourceList[i].deliveryType == 'Personal Instruction'){
+                      obj.resourceId = self.resourceList[i].id;
+                      break;
+                    }
+                  }
+                  var index = eventObjList.map(function(x){
+                      return x.id;
+                    }).indexOf(newObj.id);
+                  if(index == -1){
+                    eventObjList.push(newObj);
+                  }
+                  else{
+                    if(eventObjList[index].startHour != startHour){
+                      eventObjList.push(newObj);
+                    }
+                  }
                 }
               }
             }
@@ -3348,8 +3389,15 @@ function SylvanCalendar(){
       var objPrevSession = {};
       var objNewSession = {};
       if(student != undefined){
+        var h = new Date(student.startHour).getHours();
+        if(h > 12){
+          h -= 12;
+        }
         var objStudent = this.students.filter(function(x){
           return x._hub_student_value == student.id;
+                 x._hub_resourceid_value == student.resourceId &&
+                 parseInt(x['hub_start_time@OData.Community.Display.V1.FormattedValue'].split(':')[0]) == h;
+        
         });
         var oldDate = objStudent[0].hub_session_date;
         var sessionDate = moment(student.start).format("YYYY-MM-DD");
