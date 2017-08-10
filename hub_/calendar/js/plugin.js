@@ -2419,7 +2419,7 @@ function SylvanCalendar(){
                 if(event.length){
                     wjQuery.each(event, function(k, v){
                       if(event[k].hasOwnProperty("students") && event[k]['students'].length !=0 ){
-                        if(is1to1 || event[k].students[0].is1to1){
+                        if((is1to1 || event[k].students[0].is1to1) && event[k].students[0].id != id){
                           self.pushStudentToSOF(value);
                         }
                         else{
