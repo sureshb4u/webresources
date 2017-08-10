@@ -3504,7 +3504,7 @@ function SylvanCalendar(){
         objPrevSession['hub_enrollment@odata.bind'] = objStudent[0]['_hub_enrollment_value'];
         objPrevSession['hub_deliverytype'] = objStudent[0]['aproductservice_x002e_hub_deliverytype'];
         objPrevSession['hub_start_time'] = this.convertToMinutes(moment(prevStudent.start).format("h:mm A"));
-        objPrevSession['hub_end_time'] = this.convertToMinutes(moment(prevStudent.end).format("h:mm A"));
+        objPrevSession['hub_end_time'] = objPrevSession['hub_start_time'] + 60;
         objPrevSession['hub_resourceid@odata.bind'] = prevStudent.resourceId;
         objPrevSession['hub_service@odata.bind'] = objStudent[0]['_hub_service_value'];
         objPrevSession['hub_student@odata.bind'] = objStudent[0]['_hub_student_value'];
@@ -3522,7 +3522,7 @@ function SylvanCalendar(){
         objNewSession['hub_service@odata.bind'] = objStudent[0]['_hub_service_value'];
         objNewSession['hub_session_date'] = sessionDate;
         objNewSession['hub_start_time'] = this.convertToMinutes(moment(student.start).format("h:mm A"));
-        objNewSession['hub_end_time'] = this.convertToMinutes(moment(student.end).format("h:mm A"));
+        objNewSession['hub_end_time'] = objNewSession['hub_start_time'] + 60;
         objNewSession['hub_deliverytype'] = student.deliveryTypeId;
         objNewSession['hub_is_1to1'] = objStudent[0]['hub_is_1to1'];
         objNewSession['hub_deliverytype@OData.Community.Display.V1.FormattedValue'] = student.deliveryType;
