@@ -1502,12 +1502,12 @@ function SylvanCalendar(){
             self.staffExceptions = [];
           }
           self.teacherSchedule = isFetch || (self.teacherSchedule.length == 0) ? data.getTeacherSchedule(locationId,startDate,endDate) : self.teacherSchedule;
+          if(self.teacherSchedule == null){
+            self.teacherSchedule = [];
+          }
           self.teacherAvailability = isFetch || (self.teacherAvailability.length == 0) ? data.getTeacherAvailability(locationId,startDate,endDate) : self.teacherAvailability;
           if(self.teacherAvailability == null){
             self.teacherAvailability = [];
-          }
-          if(self.teacherSchedule == null){
-            self.teacherSchedule = [];
           }
           self.pinnedData = isFetch || (self.pinnedData.length == 0) ? data.getPinnedData(locationId,startDate,endDate) : self.pinnedData;
           if(self.pinnedData == null){
