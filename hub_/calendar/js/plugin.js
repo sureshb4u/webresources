@@ -1494,6 +1494,9 @@ function SylvanCalendar(){
         if(findingLeaveFlag){
           wjQuery('table.fc-agenda-slots td div').css('backgroundColor','');
           self.staffProgram = data.getStaffProgram(locationId) == null? [] : data.getStaffProgram(locationId);
+          if(self.staffProgram == null){
+            self.staffProgram = [];
+          }
           self.staffExceptions = isFetch || (self.staffExceptions.length == 0) ? data.getStaffException(locationId,startDate,endDate) : self.staffExceptions;
           if(self.staffExceptions == null){
             self.staffExceptions = [];
@@ -1507,6 +1510,9 @@ function SylvanCalendar(){
             self.teacherSchedule = [];
           }
           self.pinnedData = isFetch || (self.pinnedData.length == 0) ? data.getPinnedData(locationId,startDate,endDate) : self.pinnedData;
+          if(self.pinnedData == null){
+            self.pinnedData = [];
+          }
           self.enrollmentPriceList = isFetch || (self.enrollmentPriceList.length == 0) ? data.getEnrollmentPriceList(locationId,startDate,endDate) : self.enrollmentPriceList;
           if(self.enrollmentPriceList == null){
             self.enrollmentPriceList = [];
