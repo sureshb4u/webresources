@@ -2772,15 +2772,15 @@ function SylvanCalendar(){
         objPinnedStudent['hub_service@odata.bind'] = student[0].serviceId;
         objPinnedStudent['hub_student@odata.bind'] = id;
         objPinnedStudent['hub_resourceid@odata.bind'] = student[0].resourceId;
-        if(self.convertedPinnedList.length){
-          var isPinned = self.convertedPinnedList.filter(function(x){
+        if(this.convertedPinnedList.length){
+          var isPinned = this.convertedPinnedList.filter(function(x){
             return ((x.studentId == id &&
                     x.resourceId == student[0].resourceId && 
-                    x.dayId == self.getDayValue(startTime) &&
+                    x.dayId == this.getDayValue(startTime) &&
                     x.startTime == moment(startTime).format("h:mm A")) ||
                     (x.studentId == id &&
                     x.affinityResourceId == student[0].resourceId && 
-                    x.dayId == self.getDayValue(startTime) &&
+                    x.dayId == this.getDayValue(startTime) &&
                     x.startTime == moment(startTime).format("h:mm A"))) 
           });
           if(isPinned[0] != undefined){
