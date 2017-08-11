@@ -1500,6 +1500,12 @@ function SylvanCalendar(){
           }
           self.teacherSchedule = isFetch || (self.teacherSchedule.length == 0) ? data.getTeacherSchedule(locationId,startDate,endDate) : self.teacherSchedule;
           self.teacherAvailability = isFetch || (self.teacherAvailability.length == 0) ? data.getTeacherAvailability(locationId,startDate,endDate) : self.teacherAvailability;
+          if(self.teacherAvailability == null){
+            self.teacherAvailability = [];
+          }
+          if(self.teacherSchedule == null){
+            self.teacherSchedule = [];
+          }
           self.pinnedData = isFetch || (self.pinnedData.length == 0) ? data.getPinnedData(locationId,startDate,endDate) : self.pinnedData;
           self.enrollmentPriceList = isFetch || (self.enrollmentPriceList.length == 0) ? data.getEnrollmentPriceList(locationId,startDate,endDate) : self.enrollmentPriceList;
           if(self.enrollmentPriceList == null){
@@ -1520,7 +1526,7 @@ function SylvanCalendar(){
           }
           self.populateTeacherEvent(self.generateEventObject(self.teacherSchedule== null ? [] : self.teacherSchedule, "teacherSchedule"), true);
           self.populateTAPane(self.generateEventObject(self.teacherAvailability == null ? []:self.teacherAvailability, "teacherAvailability")); 
-		  self.showConflictMsg();
+		      self.showConflictMsg();
         }
         else{
           wjQuery('.loading').hide();
