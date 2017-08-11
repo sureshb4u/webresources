@@ -1045,6 +1045,7 @@ function SylvanCalendar(){
               self.updateConflictMsg(prevEvent[0]);
               if(!prevEvent[0].title.includes('<span class="student-placeholder">Student name</span>')){
                 prevEvent[0].title += '<span class="student-placeholder">Student name</span>'; 
+                self.addContext("",'studentPlaceholder',true, "");
               }
             }
           }                
@@ -1222,6 +1223,7 @@ function SylvanCalendar(){
           if(resourceObj['capacity'] > prevEvent[0]['students'].length){
             if(!prevEvent[0].title.includes('<span class="student-placeholder">Student name</span>')){
               prevEvent[0].title += '<span class="student-placeholder">Student name</span>';
+              self.addContext("",'studentPlaceholder',true, "");
             }
           }
         }
@@ -2325,6 +2327,7 @@ function SylvanCalendar(){
                       if(resourceObj['capacity'] > event[k].students.length){
                         if(!event[k].title.includes('<span class="student-placeholder">Student name</span>')){
                           event[k].title += '<span class="student-placeholder">Student name</span>';
+                          self.addContext("",'studentPlaceholder',true, "");
                         }
                       }
                     }
@@ -2372,7 +2375,7 @@ function SylvanCalendar(){
                 if(event[k].students != undefined){
                   if(event[k].students.length < resourceObj["capacity"] || resourceObj["capacity"] == undefined){
                     event[k].title += '<span class="student-placeholder">Student name</span>';                  
-                    
+                    self.addContext("",'studentPlaceholder',true, "");
                     // Conflict removal 
                     // Capacity conflict reamoval
                     var msgIndex = event[k].conflictMsg.map(function(y){
@@ -2399,12 +2402,10 @@ function SylvanCalendar(){
                   if(resourceObj['capacity'] > event[k].students.length){
                     if(!event[k].title.includes('<span class="student-placeholder">Student name</span>')){
                       event[k].title += '<span class="student-placeholder">Student name</span>';
+                      self.addContext("",'studentPlaceholder',true, "");
                     }
                   }
                 }
-                // if(!event[k].title.includes('<span class="student-placeholder">Student name</span>')){
-                //   event[k].title +='<span class="student-placeholder">Student name</span>';
-                // }
               });
               self.calendar.fullCalendar('updateEvent', event);
               if(value['pinId'] != undefined){
@@ -2441,6 +2442,7 @@ function SylvanCalendar(){
               }
               
               obj.title += '<span class="student-placeholder">Student name</span>';
+              self.addContext("",'studentPlaceholder',true, "");
               if(obj.deliveryType == "Group Facilitation"){
                   obj.backgroundColor = "#dff0d5";
                   obj.borderColor = "#7bc143";
@@ -2585,7 +2587,8 @@ function SylvanCalendar(){
                         event[k].title = event[k].title.replace('<span class="student-placeholder">Student name</span>', '');
                       }
                       if(event[k].students.length < resourceObj["capacity"] || resourceObj["capacity"] == undefined){
-                        event[k].title += '<span class="student-placeholder">Student name</span>';                  
+                        event[k].title += '<span class="student-placeholder">Student name</span>'; 
+                        self.addContext("",'studentPlaceholder',true, "");                 
                         // Conflict removal
                         // capacity conflict removal
                         var msgIndex = event[k].conflictMsg.map(function(x){
@@ -2669,7 +2672,8 @@ function SylvanCalendar(){
                     }
                     var resourceObj = self.getResourceObj(value['resourceId']);
                     if(resourceObj["capacity"] >= 1 || resourceObj["capacity"] == undefined){
-                      obj.title += '<span class="student-placeholder">Student name</span>';                  
+                      obj.title += '<span class="student-placeholder">Student name</span>'; 
+                      self.addContext("",'studentPlaceholder',true, "");                 
                     } 
                     if(value['deliveryType'] != "Group Instruction"){
                       if(value['pinId'] != undefined){
@@ -2968,6 +2972,7 @@ function SylvanCalendar(){
             }
             if(!prevEvent[0].title.includes('<span class="student-placeholder">Student name</span>')){
               prevEvent[0].title += '<span class="student-placeholder">Student name</span>';
+              self.addContext("",'studentPlaceholder',true, "");
             }
           }
         }
@@ -3040,6 +3045,7 @@ function SylvanCalendar(){
             }
             if(!prevEvent[0].title.includes('<span class="student-placeholder">Student name</span>')){
               prevEvent[0].title += '<span class="student-placeholder">Student name</span>';
+              self.addContext("",'studentPlaceholder',true, "");
             }
           }
         }
@@ -3174,6 +3180,7 @@ function SylvanCalendar(){
               }
               if(!prevEvent[0].title.includes('<span class="student-placeholder">Student name</span>')){
                 prevEvent[0].title += '<span class="student-placeholder">Student name</span>';
+                self.addContext("",'studentPlaceholder',true, "");
               }
             }
           }
@@ -3238,7 +3245,17 @@ function SylvanCalendar(){
             self.removeStudentFromSession(options.$trigger[0]);
           }
         }*/
-      }else{
+        if(deliveryType == "Personal Instruction"){
+          if(isPinned){
+            obj.unpin.visible = true;
+            obj.pin.visible = false;
+          }
+          else{
+            obj.unpin.visible = false;
+            obj.pin.visible = true;
+          }
+        }
+      }else if(labelFor == 'teacher'){
         obj.pin = {
           "name": "Pin",
           "visible": true,
@@ -3277,21 +3294,36 @@ function SylvanCalendar(){
           obj.unpin.visible = false;
           obj.pin.visible = true;
         }
+        if(deliveryType == "Personal Instruction"){
+          if(isPinned){
+            obj.unpin.visible = true;
+            obj.pin.visible = false;
+          }
+          else{
+            obj.unpin.visible = false;
+            obj.pin.visible = true;
+          }
+        }   
+      }else if(labelFor == "studentPlaceholder"){
+        obj.makeup = {
+          name: "Makeup",
+          callback : function(key, options) {
+            // self.omitStudentFromSession(options.$trigger[0]);
+              alert("Makeup called");
+          }
+        }
+        obj.float = {
+          name: "Float",
+          callback : function(key, options) {
+              alert("Float called");
+            // self.omitStudentFromSession(options.$trigger[0]);
+          }
+        }
       }   
 
-      if(deliveryType == "Personal Instruction"){
-        if(isPinned){
-          obj.unpin.visible = true;
-          obj.pin.visible = false;
-        }
-        else{
-          obj.unpin.visible = false;
-          obj.pin.visible = true;
-        }
-      }   
       wjQuery(function() {
         wjQuery.contextMenu({
-            selector: 'span[uniqueId="'+uniqueId+'"]', 
+            selector: 'span[uniqueId="'+uniqueId+'"], .student-placeholder', 
             build: function($trigger, e) {
               return {
                 items: obj
@@ -3380,6 +3412,7 @@ function SylvanCalendar(){
             }
             if(!prevEvent[0].title.includes('<span class="student-placeholder">Student name</span>')){
               prevEvent[0].title += '<span class="student-placeholder">Student name</span>';
+              self.addContext("",'studentPlaceholder',true, "");
             }
           }
         }
