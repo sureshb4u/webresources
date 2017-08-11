@@ -2768,11 +2768,12 @@ function SylvanCalendar(){
     }
 
     this.pinStudent = function(element){
+      var self = this;
       var id = wjQuery(element).attr('value');
       var uniqueId = wjQuery(element).attr('uniqueId');
       var startTime = uniqueId.split('_')[2];
-      var today = this.calendar.fullCalendar('getDate');
-      var student = this.convertedStudentObj.filter(function(x){
+      var today = self.calendar.fullCalendar('getDate');
+      var student = self.convertedStudentObj.filter(function(x){
         return x.id == id && 
                x.resourceId == uniqueId.split('_')[1];
       });
@@ -2783,15 +2784,15 @@ function SylvanCalendar(){
         objPinnedStudent['hub_service@odata.bind'] = student[0].serviceId;
         objPinnedStudent['hub_student@odata.bind'] = id;
         objPinnedStudent['hub_resourceid@odata.bind'] = student[0].resourceId;
-        if(this.convertedPinnedList.length){
-          var isPinned = this.convertedPinnedList.filter(function(x){
+        if(self.convertedPinnedList.length){
+          var isPinned = self.convertedPinnedList.filter(function(x){
             return ((x.studentId == id &&
                     x.resourceId == student[0].resourceId && 
-                    x.dayId == this.getDayValue(startTime) &&
+                    x.dayId == self.getDayValue(startTime) &&
                     x.startTime == moment(startTime).format("h:mm A")) ||
                     (x.studentId == id &&
                     x.affinityResourceId == student[0].resourceId && 
-                    x.dayId == this.getDayValue(startTime) &&
+                    x.dayId == self.getDayValue(startTime) &&
                     x.startTime == moment(startTime).format("h:mm A"))) 
           });
           if(isPinned[0] != undefined){
@@ -2799,9 +2800,9 @@ function SylvanCalendar(){
           }
         }
       }
-      objPinnedStudent.hub_start_time = this.convertToMinutes(moment(startTime).format("h:mm A"));
+      objPinnedStudent.hub_start_time = self.convertToMinutes(moment(startTime).format("h:mm A"));
       objPinnedStudent.hub_end_time = objPinnedStudent.hub_start_time + 60;
-      objPinnedStudent.hub_day = this.getDayValue(today);
+      objPinnedStudent.hub_day = self.getDayValue(today);
       objPinnedStudent.hub_session_date = moment(today).format("YYYY-MM-DD");
       var responseObj = data.savePinStudent(objPinnedStudent);
       if(typeof(responseObj) == 'boolean'){
@@ -2813,7 +2814,7 @@ function SylvanCalendar(){
       }
       else if(typeof(responseObj) == 'object'){
         if(responseObj != undefined){
-          this.convertPinnedData(responseObj,true);
+          self.convertPinnedData(responseObj,true);
           var txt = wjQuery(element)[0].innerHTML;
           wjQuery(element).html("<img src='/webresources/hub_/calendar/images/pin.png'/>"+txt);
           wjQuery(element).attr('pinnedId',responseObj['hub_pinned_student_teacher_id']);
