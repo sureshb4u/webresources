@@ -663,8 +663,8 @@ function SylvanCalendar(){
             objSession['hub_center@odata.bind'] = student[0].locationId;
             objSession['hub_resourceid@odata.bind'] = student[0].resourceId;
             objSession.hub_session_date = moment(student[0].start).format("YYYY-MM-DD");
-            objSession.hub_start_time = objStudent[0]['hub_start_time'];
-            objSession.hub_end_time = objStudent[0]['hub_end_time'];
+            objSession.hub_start_time = this.convertToMinutes(moment(student[0].start).format("h:mm A"));
+            objSession.hub_end_time = this.convertToMinutes(moment(student[0].end).format("h:mm A"));
         
         if(objStudent[0] != undefined){
           var objNewSession = {};
@@ -675,8 +675,8 @@ function SylvanCalendar(){
           objNewSession['hub_resourceid@odata.bind'] = student[0].resourceId;
           objNewSession['hub_service@odata.bind'] = objStudent[0]['_hub_service_value'];
           objNewSession['hub_session_date'] = moment(student[0].start).format("YYYY-MM-DD");
-          objNewSession['hub_start_time'] = this.convertToMinutes(moment(student[0].start).format("h:mm A"));
-          objNewSession['hub_end_time'] = this.convertToMinutes(moment(student[0].end).format("h:mm A"));
+          objNewSession['hub_start_time'] = objStudent[0]['hub_start_time'];
+          objNewSession['hub_end_time'] = objStudent[0]['hub_end_time'];
           objNewSession['hub_is_1to1'] = objStudent[0]['hub_is_1to1'];
           objNewSession['hub_deliverytype'] = student[0].deliveryTypeId;
           objNewSession['hub_deliverytype@OData.Community.Display.V1.FormattedValue'] = student[0].deliveryType;
@@ -1193,7 +1193,7 @@ function SylvanCalendar(){
             this.calendar.fullCalendar('removeEvents', prevEventId);
           }
 
-          var resourceObj = self.getResourceObj(prevEvent[0]["resourceId"]);
+          var resourceObj = t.getResourceObj(prevEvent[0]["resourceId"]);
 
           // oneToOne conflict removal prevevent student Darg
           if(prevEvent[0]['is1to1']){
@@ -1204,7 +1204,7 @@ function SylvanCalendar(){
               if (msgIndex > -1) {
                   prevEvent[0].conflictMsg.splice(msgIndex, 1);
               }
-              self.updateConflictMsg(prevEvent[0]);
+              t.updateConflictMsg(prevEvent[0]);
             }
           }
           // Conflict removal
@@ -1216,7 +1216,7 @@ function SylvanCalendar(){
             if (msgIndex > -1) {
                 prevEvent[0].conflictMsg.splice(msgIndex, 1);
             }
-            self.updateConflictMsg(prevEvent[0]);
+            t.updateConflictMsg(prevEvent[0]);
           }
 
           if(resourceObj['capacity'] > prevEvent[0]['students'].length){
@@ -3257,6 +3257,14 @@ function SylvanCalendar(){
           self.unPinTeacher(options.$trigger[0]);
         }
         };
+        if(isPinned){
+          obj.unpin.visible = true;
+          obj.pin.visible = false;
+        }
+        else{
+          obj.unpin.visible = false;
+          obj.pin.visible = true;
+        }
       }   
 
       if(deliveryType == "Personal Instruction"){
