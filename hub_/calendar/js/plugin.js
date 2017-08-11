@@ -1297,7 +1297,6 @@ function SylvanCalendar(){
             slotEventOverlap:false,
             selectHelper: true,
             select: function(start, end, allDay, event, resourceId) {
-                //var title = prompt('Event Title:');
                 if (title) {
                     console.log("@@ adding event " + title + ", start " + start + ", end " + end + ", allDay " + allDay + ", resource " + resourceId);
                     this.calendar.fullCalendar('renderEvent',
@@ -3313,15 +3312,11 @@ function SylvanCalendar(){
           delete objStudent[0]['resourceId'];
         }
         if(data.moveStudentToSOF(objMovetoSOF)){
-            
             var index = self.convertedStudentObj.findIndex(function(x){
              return x.id == objStudent[0].id && 
                      x.resourceId == uniqueId.split('_')[1] &&
                      moment(x.startHour).format("h:mm A") == moment(startTime).format("h:mm A");
             });
-            // var index = self.convertedStudentObj.map(function(x){
-            //   return x.id;
-            // }).indexOf(objStudent[0].id);
             self.convertedStudentObj.splice(index, 1);
             self.pushStudentToSOF(objStudent[0]);
             setTimeout(function(){
