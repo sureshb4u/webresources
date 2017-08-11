@@ -3534,7 +3534,29 @@ function SylvanCalendar(){
         objNewSession['hub_deliverytype'] = student.deliveryTypeId;
         objNewSession['hub_is_1to1'] = objStudent[0]['hub_is_1to1'];
         objNewSession['hub_deliverytype@OData.Community.Display.V1.FormattedValue'] = student.deliveryType;
-        data.saveStudenttoSession(objPrevSession,objNewSession);
+        var responseObj = data.saveStudenttoSession(objPrevSession,objNewSession);
+        if(typeof responseObj == 'boolean'){
+          if(responseObj){
+            return responseObj;
+          }
+        }
+        else if(typeof responseObj == 'Object' && responseObj != null){
+          if(responseObj.hasOwnProperty('hub_studentsessionid')){
+            objStudent[0]['hub_studentsessionid'] = responseObj['hub_studentsessionid'];
+            objStudent[0]['hub_start_time'] = this.convertToMinutes(moment(student.start).format("h:mm A"));
+            objStudent[0]['hub_end_time'] = objNewSession['hub_start_time'] + 60;
+            objStudent[0]['_hub_resourceid_value'] = student.resourceId;
+            var index = this.students.findIndex(function(x){
+              return x._hub_student_value == student.id;
+                     x._hub_resourceid_value == student.resourceId &&
+                     parseInt(x['hub_start_time@OData.Community.Display.V1.FormattedValue'].split(':')[0]) == h;
+            
+            });
+            if(index != -1){
+              this.students[index] = objStudent[0];
+            }
+          }
+        }
       }
     }
 
