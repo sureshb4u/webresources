@@ -2805,7 +2805,7 @@ function SylvanCalendar(){
           wjQuery(element).attr('pinnedId',objPinnedStudent.hub_sch_pinned_students_teachersid);
         }
       }
-      else if(typeof(responseObj) == 'Object'){
+      else if(typeof(responseObj) == 'object'){
         if(responseObj != undefined){
           this.convertPinnedData(responseObj,true);
           var txt = wjQuery(element)[0].innerHTML;
@@ -3541,12 +3541,12 @@ function SylvanCalendar(){
             return responseObj;
           }
         }
-        else if(typeof responseObj == 'Object' && responseObj != null){
+        else if(typeof responseObj == 'object' && responseObj != null){
           if(responseObj.hasOwnProperty('hub_studentsessionid')){
             objStudent[0]['hub_studentsessionid'] = responseObj['hub_studentsessionid'];
             objStudent[0]['hub_start_time'] = this.convertToMinutes(moment(student.start).format("h:mm A"));
             objStudent[0]['hub_end_time'] = objNewSession['hub_start_time'] + 60;
-            objStudent[0]['_hub_resourceid_value'] = student.resourceId;
+            objStudent[0]['_hub_resourceid_value'] = responseObj['hub_resourceid@odata.bind'];
             var index = this.students.findIndex(function(x){
               return x._hub_student_value == student.id;
                      x._hub_resourceid_value == student.resourceId &&
