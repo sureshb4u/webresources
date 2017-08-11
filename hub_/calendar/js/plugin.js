@@ -653,7 +653,7 @@ function SylvanCalendar(){
           h -= 12;
         }
         var objStudent = this.students.filter(function(x){
-          return x._hub_student_value == student[0].id;
+          return x._hub_student_value == student[0].id &&
                  x._hub_resourceid_value == student[0].resourceId &&
                  parseInt(x['hub_start_time@OData.Community.Display.V1.FormattedValue'].split(':')[0]) == h;
         
@@ -3499,7 +3499,7 @@ function SylvanCalendar(){
           h -= 12;
         }
         var objStudent = this.students.filter(function(x){
-          return x._hub_student_value == student.id;
+          return x._hub_student_value == student.id &&
                  x._hub_resourceid_value == student.resourceId &&
                  parseInt(x['hub_start_time@OData.Community.Display.V1.FormattedValue'].split(':')[0]) == h;
         
@@ -3555,7 +3555,7 @@ function SylvanCalendar(){
             objStudent[0]['hub_end_time'] = objNewSession['hub_start_time'] + 60;
             objStudent[0]['_hub_resourceid_value'] = responseObj['hub_resourceid@odata.bind'];
             var index = this.students.findIndex(function(x){
-              return x._hub_student_value == student.id;
+              return x._hub_student_value == student.id &&
                      x._hub_resourceid_value == student.resourceId &&
                      parseInt(x['hub_start_time@OData.Community.Display.V1.FormattedValue'].split(':')[0]) == h;
             
@@ -3572,8 +3572,16 @@ function SylvanCalendar(){
       var objPrevSession = {};
       var objNewSession = {};
       if(teacher != undefined){
+
+        var h = new Date(teacher.startHour).getHours();
+        if(h > 12){
+          h -= 12;
+        }
         var objTeacher = this.teacherSchedule.filter(function(x){
-          return x._hub_staff_value == teacher.id;
+          return x._hub_staff_value == teacher.id &&
+                 x._hub_resourceid_value == teacher.resourceId &&
+                 parseInt(x['hub_start_time@OData.Community.Display.V1.FormattedValue'].split(':')[0]) == h;
+        
         });
         if(objTeacher.length){
         // Old object
@@ -3591,7 +3599,28 @@ function SylvanCalendar(){
         objNewSession['hub_start_time'] = this.convertToMinutes(moment(teacher.start).format("h:mm A"));
         objNewSession['hub_end_time'] = this.convertToMinutes(moment(teacher.end).format("h:mm A"));
         objNewSession['hub_schedule_type'] = 3;
-        data.saveTeachertoSession(objPrevSession,objNewSession);
+        var responseObj = data.saveTeachertoSession(objPrevSession,objNewSession);
+        if(typeof responseObj == 'boolean'){
+          if(responseObj){
+            return responseObj;
+          }
+        }
+        else if(typeof responseObj == 'object' && responseObj != null){
+          if(responseObj.hasOwnProperty('hub_staff_scheduleid')){
+            objTeacher[0]['hub_staff_scheduleid'] = responseObj['hub_staff_scheduleid'];
+            objTeacher[0]['hub_start_time'] = this.convertToMinutes(moment(teacher.start).format("h:mm A"));
+            objTeacher[0]['hub_end_time'] = objNewSession['hub_start_time'] + 60;
+            objTeacher[0]['_hub_resourceid_value'] = responseObj['hub_resourceid@odata.bind'];
+            var objTeacher = this.teacherSchedule.findIndex(function(x){
+              return x._hub_staff_value == teacher.id &&
+                 x._hub_resourceid_value == teacher.resourceId &&
+                 parseInt(x['hub_start_time@OData.Community.Display.V1.FormattedValue'].split(':')[0]) == h;
+            });
+            if(index != -1){
+              this.teacherSchedule[index] = objTeacher[0];
+            }
+          }
+        }
         }
       }
     }
