@@ -3608,8 +3608,8 @@ function SylvanCalendar(){
         else if(typeof responseObj == 'object' && responseObj != null){
           if(responseObj.hasOwnProperty('hub_staff_scheduleid')){
             objTeacher[0]['hub_staff_scheduleid'] = responseObj['hub_staff_scheduleid'];
-            objTeacher[0]['hub_start_time'] = this.convertToMinutes(moment(teacher.start).format("h:mm A"));
-            objTeacher[0]['hub_end_time'] = objNewSession['hub_start_time'] + 60;
+            objTeacher[0]['hub_start_time'] = objNewSession['hub_start_time'];
+            objTeacher[0]['hub_end_time'] = objNewSession['hub_end_time'];
             objTeacher[0]['_hub_resourceid_value'] = responseObj['hub_resourceid@odata.bind'];
             var objTeacher = this.teacherSchedule.findIndex(function(x){
               return x._hub_staff_value == teacher.id &&
