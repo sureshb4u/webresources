@@ -4944,6 +4944,10 @@ function Data(){
   this.excuseAndMakeUpStudent = function(objStudentSession){
     return true;
   }
+
+  this.rescheduleStudentSession = function(objPrevSession,objNewSession){
+    return true;
+  }
 }
 
 

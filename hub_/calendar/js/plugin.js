@@ -3301,6 +3301,152 @@ function SylvanCalendar(){
       }
     };
 
+    this.rescheduleStudentSession =function(element){
+      var self = this;
+      var uniqueIds = wjQuery(element).attr("uniqueId").split('_');
+      var h = new Date(uniqueIds[2]).getHours();
+      if(h > 12){
+        h -= 12;
+      }
+      var objStudent = self.convertedStudentObj.filter(function(x){
+          return x.id == uniqueIds[0] &&
+                 x.resourceId == uniqueIds[1] &&
+                 moment(x.startHour).format('h') == h;
+        });
+      if(objStudent[0] != undefined){
+
+        var objNewSession = {};
+        objNewSession.hub_resourceid = null;
+
+        var objPrevSession = {};
+        objPrevSession.hub_studentsessionid = objStudent[0]['sessionId'];
+        objPrevSession['hub_enrollment@odata.bind'] = objStudent[0]['enrollmentId'];
+        objPrevSession['hub_service@odata.bind'] = objStudent[0]['serviceId'];
+        objPrevSession['hub_center@odata.bind'] = objStudent[0]["locationId"];
+        objPrevSession['hub_student@odata.bind'] = objStudent[0]['id'];
+        objPrevSession['hub_session_date'] = objStudent[0]['sessionDate'];
+        objPrevSession['hub_resourceid@odata.bind'] = null;
+        objPrevSession.hub_start_time = self.convertToMinutes(moment(new Date(uniqueIds[2])).format("h:mm A"));
+        objPrevSession.hub_end_time = objPrevSession.hub_start_time + 60;
+         
+        wjQuery( "#studentNameofExcuse").text(objStudent[0]['name']);
+        wjQuery( ".excuse-datepicker-input" ).datepicker({
+          minDate: self.calendar.fullCalendar('getDate'),
+          format: 'mm/dd/yyyy'
+        });
+        var selectedFromDate; 
+        wjQuery(".excuse-datepicker-input").on("change",function(){
+            selectedFromDate = wjQuery(this).val();
+        });
+        wjQuery('#error_block').text('');
+        setTimeout(function(){                      
+          wjQuery(".excuse-from-timepicker-input" ).timepicker({
+            timeFormat: 'h:mm p', 
+            interval: 60,                            
+            minTime: '8',                            
+            maxTime: '19',                            
+            dynamic: false,                            
+            dropdown: true,                            
+            scrollbar: true      
+          });                                   
+          wjQuery( ".excuse-to-timepicker-input" ).timepicker({    
+            timeFormat: 'h:mm p',                            
+            interval: 60, 
+            minTime: '9',                            
+            maxTime: '20',                            
+            dynamic: false,                            
+            dropdown: true,                            
+            scrollbar: true                        
+          });                                   
+        },300); 
+        wjQuery("#excuseModal").dialog({
+          modal: true
+        });
+        wjQuery("#excuseModal").dialog('option', 'title', 'Re-Schedule');
+        wjQuery("#excuseSave").click(function(){
+          var flag = true;
+          if(selectedFromDate != ''){
+            objNewSession.hub_session_date = moment(moment(selectedFromDate).format('MM/DD/YYYY')).format('YYYY-MM-DD');
+          }
+          else{
+            flag = false;
+          }
+          if(wjQuery(".excuse-from-timepicker-input").val() != '' && flag){
+            objNewSession.hub_start_time = self.convertToMinutes(wjQuery(".excuse-from-timepicker-input").val());
+          }
+          else{
+            flag = false;
+          }
+          if(wjQuery(".excuse-from-timepicker-input").val() != '' && flag){
+            objNewSession.hub_end_time = self.convertToMinutes(wjQuery(".excuse-to-timepicker-input").val());
+            if(objNewSession.hub_end_time <=  objNewSession.hub_start_time){
+              wjQuery('#error_block').text('End Time is less than or equal to Start Time');
+              wjQuery('#error_block').css('color','red');
+              flag = false;
+            }
+          } 
+          else{
+            flag = false;
+          }
+          var responseObj = data.rescheduleStudentSession(objPrevSession,objNewSession);
+          if(responseObj != undefined && flag){
+            wjQuery("#excuseModal").dialog( "close" );
+            var prevEventId = wjQuery(element).attr("eventid");
+            var prevEvent = self.calendar.fullCalendar('clientEvents', prevEventId);
+            if(prevEvent){
+              var eventTitleHTML = wjQuery(prevEvent[0].title);
+              for (var i = 0; i < eventTitleHTML.length; i++) {
+                if(wjQuery(eventTitleHTML[i]).attr('value') == wjQuery(element).attr('value')){
+                  eventTitleHTML.splice(i,1);
+                }
+              }
+              if(eventTitleHTML.prop('outerHTML') != undefined){
+                if(eventTitleHTML.length == 1){ 
+                  prevEvent[0].title = eventTitleHTML.prop('outerHTML');                
+                }else{                  
+                  prevEvent[0].title = "";
+                  for (var i = 0; i < eventTitleHTML.length; i++) {                    
+                    prevEvent[0].title += eventTitleHTML[i].outerHTML;                  
+                  }                
+                }                
+                var removeStudentIndex = prevEvent[0].students.map(function(x){
+                        return x.id;
+                }).indexOf(wjQuery(element).attr('value'));
+                prevEvent[0].students.splice(removeStudentIndex,1);
+                if((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "student-placeholder")) || 
+                  (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder" && eventTitleHTML[1].className == "student-placeholder") ||
+                  (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder" && eventTitleHTML[2].className == "student-placeholder")){
+                  for (var i = 0; i < self.eventList.length; i++) {
+                    if(self.eventList[i].id == prevEventId)
+                      self.eventList.splice(i,1);
+                  }
+                  self.calendar.fullCalendar('removeEvents', prevEventId);
+                }
+                self.calendar.fullCalendar('updateEvent', prevEvent); 
+              }
+              else{
+                for (var i = 0; i < self.eventList.length; i++) {
+                  if(self.eventList[i].id == prevEventId)
+                    self.eventList.splice(i,1);
+                }
+                self.calendar.fullCalendar('removeEvents', prevEventId);
+              }
+              if(!prevEvent[0].title.includes('<span class="student-placeholder">Student name</span>')){
+                prevEvent[0].title += '<span class="student-placeholder">Student name</span>';
+                self.addContext("",'studentPlaceholder',true, "");
+              }
+            }
+          }
+          else{
+            if(wjQuery('#error_block').text() == ''){
+              wjQuery('#error_block').text('All Fields are mandatory');
+              wjQuery('#error_block').css('color','red');
+            }
+          }
+        });
+      }
+    };
+
     //Method to add the context menu for Student and Teacher
     this.addContext = function(uniqueId,labelFor,isPinned, deliveryType){
       var self = this;
