@@ -3613,10 +3613,11 @@ function SylvanCalendar(){
           h -= 12;
         }
         var objTeacher = this.teacherSchedule.filter(function(x){
-          return x._hub_staff_value == teacher.id &&
-                 x._hub_resourceid_value == teacher.resourceId &&
-                 parseInt(x['hub_start_time@OData.Community.Display.V1.FormattedValue'].split(':')[0]) == h;
-        
+          return x._hub_staff_value == teacher.id;  
+          /*&&
+           x._hub_resourceid_value == teacher.resourceId &&
+           parseInt(x['hub_start_time@OData.Community.Display.V1.FormattedValue'].split(':')[0]) == h;
+          */       
         });
         if(objTeacher.length){
         // Old object
@@ -3646,11 +3647,13 @@ function SylvanCalendar(){
             objTeacher[0]['hub_start_time'] = objNewSession['hub_start_time'];
             objTeacher[0]['hub_end_time'] = objNewSession['hub_end_time'];
             objTeacher[0]['_hub_resourceid_value'] = responseObj['hub_resourceid@odata.bind'];
-            var objTeacher = this.teacherSchedule.findIndex(function(x){
-              return x._hub_staff_value == teacher.id &&
+            var index = this.teacherSchedule.findIndex(function(x){
+              return x._hub_staff_value == teacher.id;
+               /*&&
                  x._hub_resourceid_value == teacher.resourceId &&
                  parseInt(x['hub_start_time@OData.Community.Display.V1.FormattedValue'].split(':')[0]) == h;
-            });
+                */            
+              });
             if(index != -1){
               this.teacherSchedule[index] = objTeacher[0];
             }
