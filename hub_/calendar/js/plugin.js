@@ -200,6 +200,7 @@ function SylvanCalendar(){
     this.selectedDeliveryType = [];
     this.convertedPinnedList = [];
     this.staffProgram = [];
+    this.programList = [];
     this.businessClosure = [];
     this.staffExceptions = [];
     this.enrollmentPriceList = [];
@@ -417,6 +418,7 @@ function SylvanCalendar(){
       this.teacherAvailability = [];
       this.convertedPinnedList = [];
       this.staffProgram = [];
+      this.programList = [];
       this.businessClosure = [];
       this.staffExceptions = [];
       this.enrollmentPriceList = [];
@@ -1263,6 +1265,7 @@ function SylvanCalendar(){
       self.students = [];
       self.convertedPinnedList = [];
       self.staffProgram = [];
+      self.programList = [];
       self.staffExceptions = [];
       self.businessClosure = [];
       self.enrollmentPriceList = [];
@@ -1501,6 +1504,19 @@ function SylvanCalendar(){
           if(self.staffProgram == null){
             self.staffProgram = [];
           }
+          self.programList = data.getProgramList(locationId) == null? [] : data.getProgramList(locationId);
+          if(self.programList == null){
+            self.programList = [];
+          }
+          if(self.programList.length){
+            var msg = '';
+            for (var i = 0; i < self.programList.length; i++) {
+              msg += "<div style='margin:0 5px;display:inline-block;width:10px;height:10px;background:"+self.programList[i].hub_color+"'></div>"+
+                     "<span style='padding:5px'>"+self.programList[i].hub_name+"</span><br/>";
+            }
+            wjQuery('.icon-info-sign').attr('title',msg);
+          }
+
           self.staffExceptions = isFetch || (self.staffExceptions.length == 0) ? data.getStaffException(locationId,startDate,endDate) : self.staffExceptions;
           if(self.staffExceptions == null){
             self.staffExceptions = [];
@@ -3818,10 +3834,10 @@ function SylvanCalendar(){
           var newTime = moment(student.start).format("h:mm A");
 
           // Session type condition
-          objNewSession['hub_sessiontype'] = 5;
-          if(oldDate == sessionDate && newTime != oldTime && student.deliveryType == "Personal Instruction"){
+          objNewSession['hub_sessiontype'] = 1;
+          /*if(oldDate == sessionDate && newTime != oldTime && student.deliveryType == "Personal Instruction"){
             objNewSession['hub_sessiontype'] = 1;
-          }
+          }*/
           
           objPrevSession['hub_studentsessionid'] = objStudent[0]['sessionId'];
           objPrevSession['hub_enrollment@odata.bind'] = objStudent[0]['enrollmentId'];
@@ -4052,11 +4068,11 @@ function SylvanCalendar(){
     }
 
     this.showConflictMsg = function(){
-      wjQuery(".sof-btn, .fc-event").tooltip({
+      wjQuery(".sof-btn, .fc-event,.icon-info-sign").tooltip({
         tooltipClass:"custom-conflict",
         track: true,
         content: function () {
-          return wjQuery(this).prop('title').replace('|','<br />');
+          return wjQuery(this).prop('title').replace('|','<br/>');
         }
       });
     }

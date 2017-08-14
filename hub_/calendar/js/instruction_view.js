@@ -4838,6 +4838,35 @@ var enrollmentPriceList = [
   }
 ];
 
+var programList = [{
+  
+  "@odata.etag": "W/\"3206451\"",
+  "hub_name": "Algebra Fundamentals",
+  "hub_programid": "f81f8cb0-6d3f-e711-80ef-c4346bad526c",
+  "hub_color": "#45f011"
+},
+{
+  
+  "@odata.etag": "W/\"3206451\"",
+  "hub_name": "Math Fundamentals",
+  "hub_programid": "f81f8cb0-6d3f-e711-80ef-c4346bad526c",
+  "hub_color": "#498011"
+},
+{
+  
+  "@odata.etag": "W/\"3206451\"",
+  "hub_name": "Tutoring",
+  "hub_programid": "f81f8cb0-6d3f-e711-80ef-c4346bad526c",
+  "hub_color": "#ebf011"
+},
+{
+  
+  "@odata.etag": "W/\"3206451\"",
+  "hub_name": "Algebra ",
+  "hub_programid": "f81f8cb0-6d3f-e711-80ef-c4346bad526c",
+  "hub_color": "#bce011"
+}];
+
 
 function Data(){
 
@@ -4947,6 +4976,10 @@ function Data(){
 
   this.rescheduleStudentSession = function(objPrevSession,objNewSession){
     return true;
+  }
+
+  this.getProgramList = function(locationId){
+    return programList;
   }
 }
 
