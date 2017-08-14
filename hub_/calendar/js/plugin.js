@@ -1924,7 +1924,7 @@ function SylvanCalendar(){
                       pinnedList.push(newObj);
                     }
                     else{
-                      if(pinnedList[index].startHour != startHour){
+                      if(pinnedList[index].startHour.getTime() != startHour.getTime()){
                         pinnedList.push(newObj);
                       }
                     }
@@ -1938,7 +1938,7 @@ function SylvanCalendar(){
                       affinityList.push(newObj);
                     }
                     else{
-                      if(affinityList[index].startHour != startHour){
+                      if(affinityList[index].startHour.getTime() != startHour.getTime()){
                         affinityList.push(newObj);
                       }
                     }
@@ -1958,7 +1958,7 @@ function SylvanCalendar(){
                     noResourceList.push(newObj);
                   }
                   else{
-                    if(noResourceList[index].startHour != startHour){
+                    if(noResourceList[index].startHour.getTime() != startHour.getTime()){
                       noResourceList.push(newObj);
                     }
                   }
@@ -1981,7 +1981,7 @@ function SylvanCalendar(){
                   eventObjList.push(obj);
                 }
                 else{
-                  if(eventObjList[index].startHour != startHour){
+                  if(eventObjList[index].startHour.getTime() != startHour.getTime()){
                     eventObjList.push(obj);
                   }
                 }
@@ -2009,7 +2009,7 @@ function SylvanCalendar(){
                     eventObjList.push(obj);
                   }
                   else{
-                    if(eventObjList[index].startHour != startHour){
+                    if(eventObjList[index].startHour.getTime() != startHour.getTime()){
                       eventObjList.push(obj);
                     }
                   }
@@ -2036,7 +2036,7 @@ function SylvanCalendar(){
                     eventObjList.push(obj);
                   }
                   else{
-                    if(eventObjList[index].startHour != startHour){
+                    if(eventObjList[index].startHour.getTime() != startHour.getTime()){
                       eventObjList.push(obj);
                     }
                   }
@@ -2044,8 +2044,15 @@ function SylvanCalendar(){
               }
             }
           });
-          if(pinnedList.length != 0){
+          if(pinnedList.length){
             self.populateStudentEvent(pinnedList,true);
+            self.convertedStudentObj.concat(pinnedList);
+          }
+          if(affinityList.length){
+            self.populateAffinityStudents(affinityList);
+          }
+          if(noResourceList.length){
+            self.populateNoResourceStudent(noResourceList);
           }
           setTimeout(function(){
               if(self.sofList['Personal Instruction'].length > 0 || self.sofList['Group Instruction'].length > 0 || self.sofList['Group Facilitation'].length > 0){
@@ -2483,6 +2490,97 @@ function SylvanCalendar(){
         }
         wjQuery(".loading").hide();
         this.showConflictMsg();
+    }
+
+    this.populateAffinityStudents = function(affinityList){
+      var self = this;
+      var affinityNotPlaceStudents = [];
+      for (var i = 0; i < affinityList.length; i++) {
+        var eventId = affinityList[i].resourceId+affinityList[i].startHour;
+        var event = self.calendar.fullCalendar('clientEvents',eventId);
+        if(event.length){
+          wjQuery.each(event, function(k, v){
+            if(event[k].hasOwnProperty("students") && event[k]['students'].length !=0 ){
+              var resourceObj = self.getResourceObj(affinityList[i].resourceId);
+              if(resourceObj.capacity > event[k]['students'].length){
+                var obj = [];
+                obj.push(affinityList[i]);
+                self.populateStudentEvent(obj,true);
+                self.convertedStudentObj.push(affinityList[i]);
+              }
+              else{
+                affinityNotPlaceStudents.push(affinityList[i]);
+              }
+            }
+            else{
+              var obj = [];
+              obj.push(affinityList[i]);
+              self.populateStudentEvent(obj,true);
+              self.convertedStudentObj.push(affinityList[i]);
+            }
+          });
+        }
+        else{
+          var obj = [];
+          obj.push(affinityList[i]);
+          self.populateStudentEvent(obj,true);
+          self.convertedStudentObj.push(affinityList[i]);
+        }
+      }
+      if(affinityNotPlaceStudents.length){
+        self.populateNoResourceStudent(affinityNotPlaceStudents);
+      }
+    }
+
+    this.populateNoResourceStudent = function(studentList){
+      var studentsForSOF = [];
+      var self = this;
+      for (var i = 0; i < studentList.length; i++) {
+        var studentNotPlacedFlag = true;
+        for(var j=0; j< self.resourceList ; j++){
+          var eventId = self.resourceList[j].id+studentList[i].startHour;
+          var event = self.calendar.fullCalendar('clientEvents',eventId);
+          if(event.length){
+            wjQuery.each(event, function(k, v){
+              if(event[k].hasOwnProperty("students") && event[k]['students'].length !=0 ){
+                var resourceObj = self.getResourceObj(studentList[i].resourceId);
+                if(resourceObj.capacity > event[k]['students'].length){
+                  studentList[i].resourceId = self.resourceList[j].id;
+                  var obj = [];
+                  studentNotPlacedFlag = false;
+                  obj.push(studentList[i]);
+                  self.populateStudentEvent(obj,true);
+                  self.convertedStudentObj.push(studentList[i]);
+                }
+              }
+              else{
+                studentList[i].resourceId = self.resourceList[j].id;
+                var obj = [];
+                studentNotPlacedFlag = false;
+                obj.push(studentList[i]);
+                self.populateStudentEvent(obj,true);
+                self.convertedStudentObj.push(studentList[i]);
+              }
+            });
+          }
+          else{
+            studentList[i].resourceId = self.resourceList[j].id;
+            var obj = [];
+            studentNotPlacedFlag = false;
+            obj.push(studentList[i]);
+            self.populateStudentEvent(obj,true);
+            self.convertedStudentObj.push(studentList[i]);
+          }
+        }
+        if(studentNotPlacedFlag){
+          studentsForSOF.push(studentList[i]);
+        }
+      }
+      if (studentsForSOF.length) {
+        for (var i = 0; i < studentsForSOF.length; i++) {
+          self.pushStudentToSOF(studentsForSOF[i]);
+        }
+      }
     }
 
     this.pushStudentToSOF = function(data){
@@ -3239,6 +3337,26 @@ function SylvanCalendar(){
             name: "Excuse & MakeUp",
             callback : function(key, options) {
               self.excuseAndMakeUpStudent(options.$trigger[0]);
+            }
+          }
+          obj.moveToSof = {
+            name: "Move to SOF",
+            callback : function(key, options) {
+              self.moveStudentToSOF(options.$trigger[0]);
+            }
+          }
+        }
+        if(deliveryType == "Group Facilitation"){
+          obj.reschedule = {
+            name: "Reschedule",
+            callback : function(key, options) {
+              self.rescheduleStudentSession(options.$trigger[0]);
+            }
+          }
+          obj.omit = {
+            name: "Omit",
+            callback : function(key, options) {
+              self.omitStudentFromSession(options.$trigger[0]);
             }
           }
           obj.moveToSof = {
