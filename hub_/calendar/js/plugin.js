@@ -2554,13 +2554,23 @@ function SylvanCalendar(){
       for (var i = 0; i < studentList.length; i++) {
         var studentNotPlacedFlag = true;
         for(var j=0; j< self.resourceList ; j++){
-          var eventId = self.resourceList[j].id+studentList[i].startHour;
-          var event = self.calendar.fullCalendar('clientEvents',eventId);
-          if(event.length){
-            wjQuery.each(event, function(k, v){
-              if(event[k].hasOwnProperty("students") && event[k]['students'].length !=0 ){
-                var resourceObj = self.getResourceObj(studentList[i].resourceId);
-                if(resourceObj.capacity > event[k]['students'].length){
+          if(studentList[i].deliveryType == self.resourceList[j].deliveryType){
+            var eventId = self.resourceList[j].id+studentList[i].startHour;
+            var event = self.calendar.fullCalendar('clientEvents',eventId);
+            if(event.length){
+              wjQuery.each(event, function(k, v){
+                if(event[k].hasOwnProperty("students") && event[k]['students'].length !=0 ){
+                  var resourceObj = self.getResourceObj(studentList[i].resourceId);
+                  if(resourceObj.capacity > event[k]['students'].length){
+                    studentList[i].resourceId = self.resourceList[j].id;
+                    var obj = [];
+                    studentNotPlacedFlag = false;
+                    obj.push(studentList[i]);
+                    self.populateStudentEvent(obj,true);
+                    self.convertedStudentObj.push(studentList[i]);
+                  }
+                }
+                else{
                   studentList[i].resourceId = self.resourceList[j].id;
                   var obj = [];
                   studentNotPlacedFlag = false;
@@ -2568,24 +2578,16 @@ function SylvanCalendar(){
                   self.populateStudentEvent(obj,true);
                   self.convertedStudentObj.push(studentList[i]);
                 }
-              }
-              else{
-                studentList[i].resourceId = self.resourceList[j].id;
-                var obj = [];
-                studentNotPlacedFlag = false;
-                obj.push(studentList[i]);
-                self.populateStudentEvent(obj,true);
-                self.convertedStudentObj.push(studentList[i]);
-              }
-            });
-          }
-          else{
-            studentList[i].resourceId = self.resourceList[j].id;
-            var obj = [];
-            studentNotPlacedFlag = false;
-            obj.push(studentList[i]);
-            self.populateStudentEvent(obj,true);
-            self.convertedStudentObj.push(studentList[i]);
+              });
+            }
+            else{
+              studentList[i].resourceId = self.resourceList[j].id;
+              var obj = [];
+              studentNotPlacedFlag = false;
+              obj.push(studentList[i]);
+              self.populateStudentEvent(obj,true);
+              self.convertedStudentObj.push(studentList[i]);
+            }
           }
         }
         if(studentNotPlacedFlag){
