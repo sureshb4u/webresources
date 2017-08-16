@@ -1581,39 +1581,39 @@ function SylvanCalendar(){
     }
 
     this.dayView = function(){
-        var filterElement = undefined;
-        var self = this;
-        if(self.calendar.fullCalendar('getView').name != 'resourceDay'){
-            var isFilterOpen = false;
-            if(wjQuery('.filter-section').length){
-                isFilterOpen = wjQuery('.filter-section').css("marginLeft");
-                filterElement = wjQuery('.filter-section');
-                wjQuery('.filter-section').remove();
-            }
-            self.calendar.fullCalendar('changeView','resourceDay');
-            setTimeout(function(){
-                var currentCalendarDate = self.calendar.fullCalendar('getDate');
-                wjQuery('.headerDate').text(moment(currentCalendarDate).format('MM/DD/YYYY'));
-                if(moment(currentCalendarDate).format('MM/DD/YYYY') == moment(new Date()).format('MM/DD/YYYY')){
-                  wjQuery('.headerDate').addClass('today');
-                }
-                else{
-                  wjQuery('.headerDate').removeClass('today');
-                }
-                var dayOfWeek = moment(currentCalendarDate).format('dddd');
-                var dayofMonth = moment(currentCalendarDate).format('M/D');
-                wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').html(dayOfWeek +" <br/> "+ dayofMonth);
-                
-            },500); 
-            if(filterElement != undefined){
-                wjQuery(".fc-agenda-divider.fc-widget-header:visible").after(filterElement);
+      var filterElement = undefined;
+      var self = this;
+      if(self.calendar.fullCalendar('getView').name != 'resourceDay'){
+        var isFilterOpen = false;
+        if(wjQuery('.filter-section').length){
+            isFilterOpen = wjQuery('.filter-section').css("marginLeft");
+            filterElement = wjQuery('.filter-section');
+            wjQuery('.filter-section').remove();
+        }
+        self.calendar.fullCalendar('changeView','resourceDay');
+        setTimeout(function(){
+            var currentCalendarDate = self.calendar.fullCalendar('getDate');
+            wjQuery('.headerDate').text(moment(currentCalendarDate).format('MM/DD/YYYY'));
+            if(moment(currentCalendarDate).format('MM/DD/YYYY') == moment(new Date()).format('MM/DD/YYYY')){
+              wjQuery('.headerDate').addClass('today');
             }
             else{
-                wjQuery(".fc-agenda-divider.fc-widget-header:visible").after("<div class='filter-section'></div>");
-                self.calendarFilter();
+              wjQuery('.headerDate').removeClass('today');
             }
-            self.filterSlide(wjQuery,isFilterOpen == '0px');
+            var dayOfWeek = moment(currentCalendarDate).format('dddd');
+            var dayofMonth = moment(currentCalendarDate).format('M/D');
+            wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').html(dayOfWeek +" <br/> "+ dayofMonth);
+            
+        },500); 
+        if(filterElement != undefined){
+            wjQuery(".fc-agenda-divider.fc-widget-header:visible").after(filterElement);
         }
+        else{
+            wjQuery(".fc-agenda-divider.fc-widget-header:visible").after("<div class='filter-section'></div>");
+            self.calendarFilter();
+        }
+        self.filterSlide(wjQuery,isFilterOpen == '0px');
+      }
     }
 
     this.addAppointment = function(){
@@ -1622,71 +1622,71 @@ function SylvanCalendar(){
         });
         wjQuery("#appointmentModal").dialog('option', 'title', 'Add New Appointment Slot');
         setTimeout(function(){                      
-            var etime;                        
-            wjQuery(".from-timepicker-input" ).timepicker({
-                timeFormat: 'h:mm p', 
-                interval: 30,                            
-                minTime: '9',                            
-                maxTime: '6:00pm',                            
-                startTime: '9:00',                            
-                dynamic: false,                            
-                dropdown: true,                            
-                scrollbar: true,       
-                change: function ()
-                {                            
-                    var stime = new Date;                            
-                    stime.setMinutes(stime.getMinutes() + 30);    
-                    var hours = stime.getHours();       
-                    var minutes = stime.getMinutes();  
-                    var ampm = hours >= 12 ? 'PM' : 'AM';    
-                    hours = hours % 12;            
-                    hours = hours ? hours : 12; 
-                    minutes = minutes < 10 ? '0'+minutes : minutes; 
-                    var etime = hours + ':' + minutes + ' ' + ampm; 
-                    wjQuery(".to-timepicker-input").val(etime);  
-                    wjQuery(".to-timepicker-input").timepicker('option',{'minTime': stime.getHours()});
-                } 
-                });                                   
-                wjQuery( ".to-timepicker-input" ).timepicker({    
-                    timeFormat: 'h:mm p',                            
-                    interval: 30,                            
-                    minTime: wjQuery(".to-timepicker-input").val().split(' ')[0]+':00', 
-                    maxTime: '6:00pm',                            
-                    dynamic: false,                            
-                    dropdown: true,                            
-                    scrollbar: true                        
-                });                                   
+          var etime;                        
+          wjQuery(".from-timepicker-input" ).timepicker({
+          timeFormat: 'h:mm p', 
+          interval: 30,                            
+          minTime: '9',                            
+          maxTime: '6:00pm',                            
+          startTime: '9:00',                            
+          dynamic: false,                            
+          dropdown: true,                            
+          scrollbar: true,       
+          change: function ()
+          {                            
+            var stime = new Date;                            
+            stime.setMinutes(stime.getMinutes() + 30);    
+            var hours = stime.getHours();       
+            var minutes = stime.getMinutes();  
+            var ampm = hours >= 12 ? 'PM' : 'AM';    
+            hours = hours % 12;            
+            hours = hours ? hours : 12; 
+            minutes = minutes < 10 ? '0'+minutes : minutes; 
+            var etime = hours + ':' + minutes + ' ' + ampm; 
+            wjQuery(".to-timepicker-input").val(etime);  
+            wjQuery(".to-timepicker-input").timepicker('option',{'minTime': stime.getHours()});
+          } 
+          });                                   
+          wjQuery( ".to-timepicker-input" ).timepicker({    
+            timeFormat: 'h:mm p',                            
+            interval: 30,                            
+            minTime: wjQuery(".to-timepicker-input").val().split(' ')[0]+':00', 
+            maxTime: '6:00pm',                            
+            dynamic: false,                            
+            dropdown: true,                            
+            scrollbar: true                        
+          });                                   
         },300);              
     }
     
      this.sofPane = function(){
-        wjQuery('.sof-pane').show();
-        wjQuery("#scrollarea").scroll(function() {
-            wjQuery('.sof-pane').prop("scrollTop", this.scrollTop)
-                .prop("scrollLeft", this.scrollLeft);
-        });
-        wjQuery('.student-overflow').on( 'mousewheel DOMMouseScroll', function (e) { 
-          var e0 = e.originalEvent;
-          var delta = e0.wheelDelta || -e0.detail;
-          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
-          e.preventDefault();  
-        });
-        if(taExpanded){
-            taExpanded = !taExpanded; // to change the slide
-            taExpanded ? wjQuery('.ta-pane').addClass('open') : wjQuery('.ta-pane').removeClass('open');
-            wjQuery('.ta-pane').animate(taExpanded?{'marginRight':'-15px'} : {marginRight:'-260px'},500);
-        }
-        sofExpanded = !sofExpanded;
-        if(sofExpanded){
-            wjQuery('.ta-pane').hide();
-        }
-        sofExpanded ? wjQuery('.sof-pane').addClass('open') : wjQuery('.sof-pane').removeClass('open');
-        wjQuery('.sof-pane').animate(sofExpanded?{'marginRight':'-15px'} : {marginRight:'-260px'},500);
-        if(!sofExpanded){
-          setTimeout(function(){
-            wjQuery('.sof-pane').hide();
-          },600);
-        }
+      wjQuery('.sof-pane').show();
+      wjQuery("#scrollarea").scroll(function() {
+          wjQuery('.sof-pane').prop("scrollTop", this.scrollTop)
+              .prop("scrollLeft", this.scrollLeft);
+      });
+      wjQuery('.student-overflow').on( 'mousewheel DOMMouseScroll', function (e) { 
+        var e0 = e.originalEvent;
+        var delta = e0.wheelDelta || -e0.detail;
+        this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+        e.preventDefault();  
+      });
+      if(taExpanded){
+          taExpanded = !taExpanded; // to change the slide
+          taExpanded ? wjQuery('.ta-pane').addClass('open') : wjQuery('.ta-pane').removeClass('open');
+          wjQuery('.ta-pane').animate(taExpanded?{'marginRight':'-15px'} : {marginRight:'-260px'},500);
+      }
+      sofExpanded = !sofExpanded;
+      if(sofExpanded){
+          wjQuery('.ta-pane').hide();
+      }
+      sofExpanded ? wjQuery('.sof-pane').addClass('open') : wjQuery('.sof-pane').removeClass('open');
+      wjQuery('.sof-pane').animate(sofExpanded?{'marginRight':'-15px'} : {marginRight:'-260px'},500);
+      if(!sofExpanded){
+        setTimeout(function(){
+          wjQuery('.sof-pane').hide();
+        },600);
+      }
     }
 
     this.taPane = function(){
@@ -2071,9 +2071,9 @@ function SylvanCalendar(){
             self.populateNoResourceStudent(noResourceList);
           }
           setTimeout(function(){
-              if(self.sofList['Personal Instruction'].length > 0 || self.sofList['Group Instruction'].length > 0 || self.sofList['Group Facilitation'].length > 0){
-                  self.populateSOFPane(self.sofList,self.calendarOptions.minTime,self.calendarOptions.maxTime);
-              }
+            if(self.sofList['Personal Instruction'].length > 0 || self.sofList['Group Instruction'].length > 0 || self.sofList['Group Facilitation'].length > 0){
+                self.populateSOFPane(self.sofList,self.calendarOptions.minTime,self.calendarOptions.maxTime);
+            }
           },800);
           self.convertedStudentObj = eventObjList;
         }else if(label == "teacherAvailability"){
