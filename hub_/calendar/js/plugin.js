@@ -1558,26 +1558,26 @@ function SylvanCalendar(){
     }
 
     this.weekView = function(){
-        var filterElement = undefined;
-        wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').css('text-align','center');
-        if(this.calendar.fullCalendar('getView').name != 'agendaWeek'){
-            var isFilterOpen = false;
-            if(wjQuery('.filter-section').length){
-                isFilterOpen = wjQuery('.filter-section').css("marginLeft");
-                filterElement = wjQuery('.filter-section');
-                wjQuery('.filter-section').remove();
-            }
-            this.calendar.fullCalendar('changeView','agendaWeek');
-            
-            if(filterElement != undefined){
-                wjQuery(".fc-agenda-divider.fc-widget-header:visible").after(filterElement);
-            }
-            else{
-                wjQuery(".fc-agenda-divider.fc-widget-header:visible").after("<div class='filter-section'></div>");
-                this.calendarFilter();
-            }
-            this.filterSlide(wjQuery,isFilterOpen == '0px');
+      var filterElement = undefined;
+      wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').css('text-align','center');
+      if(this.calendar.fullCalendar('getView').name != 'agendaWeek'){
+        var isFilterOpen = false;
+        if(wjQuery('.filter-section').length){
+            isFilterOpen = wjQuery('.filter-section').css("marginLeft");
+            filterElement = wjQuery('.filter-section');
+            wjQuery('.filter-section').remove();
         }
+        this.calendar.fullCalendar('changeView','agendaWeek');
+        
+        if(filterElement != undefined){
+            wjQuery(".fc-agenda-divider.fc-widget-header:visible").after(filterElement);
+        }
+        else{
+            wjQuery(".fc-agenda-divider.fc-widget-header:visible").after("<div class='filter-section'></div>");
+            this.calendarFilter();
+        }
+        this.filterSlide(wjQuery,isFilterOpen == '0px');
+      }
     }
 
     this.dayView = function(){
