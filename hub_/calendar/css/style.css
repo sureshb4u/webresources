@@ -334,6 +334,7 @@ button{
     text-align: left;
     display: block;
     z-index: 100;
+    font-weight: normal;
 }
 
 .drag-teacher{
@@ -400,7 +401,7 @@ button{
     position: absolute;
     top: 0;
     height: 100%;
-    z-index: 2;
+    z-index: 2003;
     display: none;
 }
 .loading > img {
@@ -473,4 +474,27 @@ button{
     background: #ffffff;
     color: #333333;
     padding: 5px;
+}
+
+
+ul{
+    list-style-type: none;
+}
+
+.makeup-item{
+    padding: 5px 2px;
+    cursor: pointer;
+    list-style-type: none;
+    transition: all 0.2s;
+}
+.makeup-item:hover{
+    color: #fff;
+    text-decoration: none;
+    background-color: #0081c2;
+    /*background-image: -moz-linear-gradient(top,#08c,#0077b3);
+    background-image: -webkit-gradient(linear,0 0,0 100%,from(#08c),to(#0077b3));
+    background-image: -webkit-linear-gradient(top,#08c,#0077b3);
+    background-image: -o-linear-gradient(top,#08c,#0077b3);
+    background-image: linear-gradient(to bottom,#08c,#0077b3);
+    background-repeat: repeat-x;*/
 }

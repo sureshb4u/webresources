@@ -49,6 +49,7 @@ setTimeout(function(){
       wjQuery(".loading").show();
       // asign deliverytpeList to  
       sylvanCalendar.selectedDeliveryType = selectedDeliveryType;
+      sylvanCalendar.locationId = locationId;
       var resourceList = [];
       if(fetchData){
         var obj = data.getResources(locationId);
@@ -181,6 +182,8 @@ function SylvanCalendar(){
     this.filters = new Object();
     this.eventList = [];
     this.sofList = [];
+    this.makeupList = [];
+    this.locationId = "";
     this.sofList['Personal Instruction'] = [];
     this.sofList['Group Instruction'] = [];
     this.sofList['Group Facilitation'] = [];
@@ -403,6 +406,7 @@ function SylvanCalendar(){
       this.resourceList = [];
       this.eventList = [];
       this.sofList = [];
+      this.makeupList = [];
       this.sofList['Personal Instruction'] = [];
       this.sofList['Group Instruction'] = [];
       this.sofList['Group Facilitation'] = [];
@@ -812,24 +816,10 @@ function SylvanCalendar(){
                  x.resourceId == uniqueId.split('_')[1] &&
                  moment(x.startHour).format("h:mm A") == moment(startTime).format("h:mm A");
         });
-        // var index = t.convertedStudentObj.map(function(x){
-        //         return x.id;
-        // }).indexOf(stuId);
         var prevStudObj = t.convertedStudentObj[index];
-        if(newResourceObj.deliveryType != "Group Instruction"){
-          if(newEvent.length == 0){
-            if(wjQuery(elm).attr("pinnedId")){
-              t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "This student will be temporarily un pinned. Do you wish to continue?");
-            }else{
-              if(newResourceObj.deliveryType == prevStudObj.deliveryType){
-                t.studentSessionConflictCheck(t,date, allDay,ev,ui,resource,elm);
-              }else{
-                t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "DeliveryType is different. Do you wish to continue?");
-              }
-            }
-          }
-          else if(newEvent.length == 1){
-            if(newEvent[0]['students'] == undefined){
+        if(index != -1){
+          if(newResourceObj.deliveryType != "Group Instruction"){
+            if(newEvent.length == 0){
               if(wjQuery(elm).attr("pinnedId")){
                 t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "This student will be temporarily un pinned. Do you wish to continue?");
               }else{
@@ -839,99 +829,112 @@ function SylvanCalendar(){
                   t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "DeliveryType is different. Do you wish to continue?");
                 }
               }
-            }else{
-              var studentIndex = newEvent[0]['students'].map(function(x){
-                return x.id;
-              }).indexOf(stuId);
-              if(studentIndex == -1){
+            }
+            else if(newEvent.length == 1){
+              if(newEvent[0]['students'] == undefined){
                 if(wjQuery(elm).attr("pinnedId")){
                   t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "This student will be temporarily un pinned. Do you wish to continue?");
                 }else{
                   if(newResourceObj.deliveryType == prevStudObj.deliveryType){
-                    if(newResourceObj.deliveryType == "Personal Instruction"){
-                      //  Validation for oneToOne check
-                      //* if oneToOne then show popup
-                      if(newEvent[0]['is1to1']){
-                        // OneToOne Conflict
-                        var msgIndex = newEvent[0].conflictMsg.map(function(x){
-                          return x;
-                        }).indexOf(2);
-                        if (msgIndex == -1) {
-                          newEvent[0].conflictMsg.push(2);
-                          self.updateConflictMsg(newEvent[0]);
-                        }
-                        t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "Session is 'OneToOne' Type. Do you wish to continue?");
-                      }else{
-                        if(!(newEvent[0].hasOwnProperty('students')) || newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length < resource.capacity || resource.capacity == undefined)){
-                            t.studentSessionConflictCheck(t,date, allDay,ev,ui,resource,elm);
-                        }else if(newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length >= resource.capacity || resource.capacity == undefined)){
-                          t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "Capacity has reached the maximum. Do you wish to continue?");
-                        }
-                      }
-                    }else if(newResourceObj.deliveryType == "Group Facilitation"){
-                      // Check Services for same DI
-                      var studentIndex = prevEvent[0]['students'].map(function(x){
-                        return x.id;
-                      }).indexOf(stuId);
-                      prevServiceId = prevEvent[0]['students'][studentIndex]['serviceId'];
-                      var showPromt = true;
-                      wjQuery.each(newEvent[0]['students'], function(k, v){
-                        if(v.serviceId == prevServiceId){
-                          showPromt = false;
-                        }
-                      });
-                      if(showPromt){
-                        t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "Servieces are not matching. Do you wish to continue?");
-                      }else{
-                        t.studentSessionConflictCheck(t,date, allDay,ev,ui,resource,elm);
-                      }
-                    }
+                    t.studentSessionConflictCheck(t,date, allDay,ev,ui,resource,elm);
                   }else{
-                    if(newResourceObj.deliveryType == "Personal Instruction"){
-                      //  Validation for oneToOne check
-                      //* if oneToOne then show popup
-                      if(newEvent[0]['is1to1']){
-                        // OneToOne Conflict
-                        var msgIndex = newEvent[0].conflictMsg.map(function(x){
-                          return x;
-                        }).indexOf(2);
-                        if (msgIndex == -1) {
-                          newEvent[0].conflictMsg.push(2);
-                          self.updateConflictMsg(newEvent[0]);
+                    t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "DeliveryType is different. Do you wish to continue?");
+                  }
+                }
+              }else{
+                var studentIndex = newEvent[0]['students'].map(function(x){
+                  return x.id;
+                }).indexOf(stuId);
+                if(studentIndex == -1){
+                  if(wjQuery(elm).attr("pinnedId")){
+                    t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "This student will be temporarily un pinned. Do you wish to continue?");
+                  }else{
+                    if(newResourceObj.deliveryType == prevStudObj.deliveryType){
+                      if(newResourceObj.deliveryType == "Personal Instruction"){
+                        //  Validation for oneToOne check
+                        //* if oneToOne then show popup
+                        if(newEvent[0]['is1to1']){
+                          // OneToOne Conflict
+                          var msgIndex = newEvent[0].conflictMsg.map(function(x){
+                            return x;
+                          }).indexOf(2);
+                          if (msgIndex == -1) {
+                            newEvent[0].conflictMsg.push(2);
+                            self.updateConflictMsg(newEvent[0]);
+                          }
+                          t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "Session is 'OneToOne' Type. Do you wish to continue?");
+                        }else{
+                          if(!(newEvent[0].hasOwnProperty('students')) || newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length < resource.capacity || resource.capacity == undefined)){
+                              t.studentSessionConflictCheck(t,date, allDay,ev,ui,resource,elm);
+                          }else if(newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length >= resource.capacity || resource.capacity == undefined)){
+                            t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "Capacity has reached the maximum. Do you wish to continue?");
+                          }
                         }
-                        t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "DeliveryType is different and Session is 'OneToOne' Type. Do you wish to continue?");
-                      }else{
-                        if(!(newEvent[0].hasOwnProperty('students')) || newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length < resource.capacity || resource.capacity == undefined)){
-                            t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "DeliveryType is different. Do you wish to continue?");
-                        }else if(newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length >= resource.capacity || resource.capacity == undefined)){
-                          t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "DeliveryType is different and Capacity has reached the maximum. Do you wish to continue?");
+                      }else if(newResourceObj.deliveryType == "Group Facilitation"){
+                        // Check Services for same DI
+                        var studentIndex = prevEvent[0]['students'].map(function(x){
+                          return x.id;
+                        }).indexOf(stuId);
+                        prevServiceId = prevEvent[0]['students'][studentIndex]['serviceId'];
+                        var showPromt = true;
+                        wjQuery.each(newEvent[0]['students'], function(k, v){
+                          if(v.serviceId == prevServiceId){
+                            showPromt = false;
+                          }
+                        });
+                        if(showPromt){
+                          t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "Servieces are not matching. Do you wish to continue?");
+                        }else{
+                          t.studentSessionConflictCheck(t,date, allDay,ev,ui,resource,elm);
                         }
                       }
-                    }else if(newResourceObj.deliveryType == "Group Facilitation"){
-                      // Check Services for same DI
-                      var studentIndex = prevEvent[0]['students'].map(function(x){
-                        return x.id;
-                      }).indexOf(stuId);
-                      prevServiceId = prevEvent[0]['students'][studentIndex]['serviceId'];
-                      var showPromt = true;
-                      wjQuery.each(newEvent[0]['students'], function(k, v){
-                        if(v.serviceId == prevServiceId){
-                          showPromt = false;
+                    }else{
+                      if(newResourceObj.deliveryType == "Personal Instruction"){
+                        //  Validation for oneToOne check
+                        //* if oneToOne then show popup
+                        if(newEvent[0]['is1to1']){
+                          // OneToOne Conflict
+                          var msgIndex = newEvent[0].conflictMsg.map(function(x){
+                            return x;
+                          }).indexOf(2);
+                          if (msgIndex == -1) {
+                            newEvent[0].conflictMsg.push(2);
+                            self.updateConflictMsg(newEvent[0]);
+                          }
+                          t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "DeliveryType is different and Session is 'OneToOne' Type. Do you wish to continue?");
+                        }else{
+                          if(!(newEvent[0].hasOwnProperty('students')) || newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length < resource.capacity || resource.capacity == undefined)){
+                              t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "DeliveryType is different. Do you wish to continue?");
+                          }else if(newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length >= resource.capacity || resource.capacity == undefined)){
+                            t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "DeliveryType is different and Capacity has reached the maximum. Do you wish to continue?");
+                          }
                         }
-                      });
-                      if(showPromt){
-                        t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "DeliveryType is different and Servieces are not matching. Do you wish to continue?");
-                      }else{
-                        t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "DeliveryType is different. Do you wish to continue?");
+                      }else if(newResourceObj.deliveryType == "Group Facilitation"){
+                        // Check Services for same DI
+                        var studentIndex = prevEvent[0]['students'].map(function(x){
+                          return x.id;
+                        }).indexOf(stuId);
+                        prevServiceId = prevEvent[0]['students'][studentIndex]['serviceId'];
+                        var showPromt = true;
+                        wjQuery.each(newEvent[0]['students'], function(k, v){
+                          if(v.serviceId == prevServiceId){
+                            showPromt = false;
+                          }
+                        });
+                        if(showPromt){
+                          t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "DeliveryType is different and Servieces are not matching. Do you wish to continue?");
+                        }else{
+                          t.studentSessionCnfmPopup(t,date, allDay,ev,ui,resource,elm, "DeliveryType is different. Do you wish to continue?");
+                        }
                       }
                     }
                   }
                 }
               }
             }
+          }else{
+            t.prompt("Can not be placed to a GI session.");
           }
-        }else{
-          t.prompt("Can not be placed to a GI session.");
         }
       }
       else if(wjQuery(elm).attr("type") == 'teacherSession'){
@@ -3628,15 +3631,13 @@ function SylvanCalendar(){
         obj.makeup = {
           name: "Makeup",
           callback : function(key, options) {
-            // self.omitStudentFromSession(options.$trigger[0]);
-              alert("Makeup called");
+            self.makeupPopup(data.getMakeupNFloat({"hub_center@odata.bind":self.locationId, "isForMakeup":true}), options.$trigger[0], true);
           }
         }
         obj.float = {
           name: "Float",
           callback : function(key, options) {
-              alert("Float called");
-            // self.omitStudentFromSession(options.$trigger[0]);
+              self.makeupPopup(data.getMakeupNFloat({"hub_center@odata.bind":self.locationId, "isForMakeup":false}), options.$trigger[0], false);
           }
         }
       }   
@@ -4128,11 +4129,145 @@ function SylvanCalendar(){
           msg += (k+1)+". "+ self.conflictMsg[v]+"|";
         });
         var lastIndex = msg.lastIndexOf("|");
+
+
+
         msg = msg.substring(0, lastIndex);
         if(!event.title.includes('<img class="conflict" title="'+msg+'" src="/webresources/hub_/calendar/images/warning.png">')){
           event.title +=  '<img class="conflict" title="'+msg+'" src="/webresources/hub_/calendar/images/warning.png">';
         }
       }
+    }
+
+    this.makeupPopup = function(makeupList, placeholderEvent, isForMakeup){
+      var self = this;
+      (makeupList == null || makeupList == undefined ) ? [] : makeupList;
+      var makeupList = this.convertMakeupNFloatObj(makeupList);
+      var idArry = wjQuery(placeholderEvent).prev("span").attr("uniqueid").split('_');
+      if(makeupList.length){
+        var list = "";
+        wjQuery.each(makeupList, function(k, v){
+          list += "<li id='"+v.id+"' class='makeup-item' >"+v.name+", "+v.grade+"</li>";
+        });
+        wjQuery("#makeup > .makeup-lst").html(list);
+        wjQuery("#makeup").dialog({
+          resizable: false,
+          height: "auto",
+          width: 400,
+          modal: true,
+          buttons: {
+            Cancel: function() {
+              wjQuery( this ).dialog( "close" );
+            }
+          }
+        });
+
+        // On click Makup student save makeup session will be called
+        wjQuery(".makeup-item").click(function(event) {
+          wjQuery(".loading").show();
+          var objSession = {};
+          var id = wjQuery(this).attr("id");
+          var nameNGrade = wjQuery(this).text();
+
+          var start = self.convertToMinutes(moment(idArry[2]).format("h:mm A"));
+          var studentObj = makeupList.filter(function( obj ) {
+            return obj.id == id;
+          });
+          if(studentObj.length == 1){
+            if(isForMakeup){
+              objSession['hub_studentsessionid'] = studentObj[0].sessionId;
+              objSession["isForMakeup"] = true; 
+            }else{
+              objSession['hub_studentsessionid'] = "";
+              objSession["isForMakeup"] = false;
+            }
+            objSession["hub_enrollment@odata.bind"] = studentObj[0]["enrollmentId"];
+            objSession["hub_student@odata.bind"] = id;
+            objSession["hub_service@odata.bind"] = studentObj[0]["serviceId"];
+            objSession["hub_center@odata.bind"] = studentObj[0]["locationId"];
+            objSession["hub_session_date@odata.bind"] = moment(new Date(idArry[2])).format("YYYY-MM-DD");
+            objSession["hub_start_time@odata.bind"] = start;
+            objSession["hub_end_time@odata.bind"] = start+60;
+            objSession["resource@odata.bind "] = idArry[1];
+            // objSession.["hub_ratio@odata.bind"] = studentObj[0]
+            // objSession.["hub_session_status@odata.bind"] = studentObj[0]
+
+            var eventId = idArry[1]+idArry[2];
+            var eventObj = self.calendar.fullCalendar('clientEvents', eventId);
+            var callSave = false;
+            if(eventObj[0].hasOwnProperty("students") && eventObj[0].students.length > 0 ){
+              var stdIndex = eventObj[0].students.map(function(x){
+                return x.id;
+              }).indexOf(id);
+              if(stdIndex == -1){
+                callSave = true;
+              }
+            }
+            else{
+              callSave = true;
+            }
+            if(callSave){
+              if(data.saveMakeupNFloat(objSession)){
+                var uniqueid = id+"_"+idArry[1]+"_"+idArry[2];
+
+                // Update New student Session
+                studentObj[0]['resourceId'] =  idArry[1];
+                studentObj[0]['start'] =  new Date(idArry[2]);
+                studentObj[0]['startHour'] =  new Date(idArry[2]);
+                studentObj[0]['end'] =  new Date(new Date(idArry[2]).setHours(new Date(idArry[2]).getHours()+1));
+                // update All Students and teacher 
+                self.convertedStudentObj.push(studentObj[0]);
+                self.populateStudentEvent(self.convertedStudentObj, true);
+                self.populateTeacherEvent(self.convertedTeacherObj, true);
+                wjQuery("#makeup").dialog( "close" );
+                wjQuery(".loading").hide();
+                self.draggable('draggable');
+              }else{
+                wjQuery(".loading").hide();
+                wjQuery("#makeup").dialog( "close" );
+              }
+            }else{
+              wjQuery(".loading").hide();
+              wjQuery("#makeup").dialog( "close" );
+            }
+          }
+        });
+      }
+    } 
+
+    this.convertMakeupNFloatObj = function(makeupList){
+      eventObjList = [];
+      wjQuery.each(makeupList, function(ke, val) {
+        var sDate = new Date(val['hub_session_date'] +" "+ val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
+        var eDate = new Date(val['hub_session_date'] +" "+ val['hub_end_time@OData.Community.Display.V1.FormattedValue']);
+        var startHour = new Date(val['hub_session_date'] +" "+ val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
+        startHour = startHour.setMinutes(0);
+        startHour = new Date(new Date(startHour).setSeconds(0));
+        var obj = {
+            id: val._hub_student_value, 
+            name: val["_hub_student_value@OData.Community.Display.V1.FormattedValue"],
+            start: sDate,
+            end : eDate,
+            sessionDate:val['hub_session_date'],
+            startHour : startHour,
+            gradeId:val['astudent_x002e_hub_grade'],
+            grade: val['astudent_x002e_hub_grade@OData.Community.Display.V1.FormattedValue'],
+            deliveryTypeId: val['aproductservice_x002e_hub_deliverytype'],
+            deliveryType: val['aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue'],
+            locationId: val['_hub_center_value'],
+            locationName: val['_hub_center_value@OData.Community.Display.V1.FormattedValue'],
+            enrollmentId :val['_hub_enrollment_value'],
+            subject:val['aprogram_x002e_hub_areaofinterest@OData.Community.Display.V1.FormattedValue'],
+            subjectId:val['aprogram_x002e_hub_areaofinterest'],
+            subjectColorCode: val['aprogram_x002e_hub_color'],
+            is1to1 : val["hub_is_1to1"],
+            programId: val['aprogram_x002e_hub_programid'],
+            serviceId:val['_hub_service_value'],
+            sessionId:val['hub_studentsessionid']
+        }   
+        eventObjList.push(obj);
+      });
+      return eventObjList;
     }
 }
 
