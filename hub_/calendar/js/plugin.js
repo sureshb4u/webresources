@@ -650,44 +650,37 @@ function SylvanCalendar(){
     /*
      * Method accepts from where student comes and student
      */
-    this.saveSOFtoSession = function(student){
+    this.saveSOFtoSession = function(student,oldStudent){
       if(student[0] != undefined){
         var h = new Date(student[0].startHour).getHours();
         if(h > 12){
           h -= 12;
         }
-        var objStudent = this.convertedStudentObj.filter(function(x){
-          return x.id == student[0].id &&
-                 x.resourceId == student[0].resourceId &&
-                 moment(x.startHour).format('h') == h;
-        });
-
-        var objRawStudent = this.students.filter(function(x){
-          return x._hub_student_value == student[0].id
-        });
+       
 
         var objSession = {};
         objSession['hub_center@odata.bind'] = student[0].locationId;
         objSession['hub_resourceid@odata.bind'] = student[0].resourceId;
         objSession.hub_session_date = moment(student[0].start).format("YYYY-MM-DD");
         
-        if(objRawStudent[0] != undefined){
-          objSession.hub_start_time = objRawStudent[0]['hub_start_time'];
-          objSession.hub_end_time = objRawStudent[0]['hub_end_time'];
+        if(oldStudent != undefined){
+          objSession.hub_start_time = this.convertToMinutes(moment(oldStudent['start']).format("h:mm A"));
+          objSession.hub_end_time = this.convertToMinutes(moment(oldStudent['end']).format("h:mm A"));;
         }
         
-        if(objStudent[0] != undefined){
+        if(student[0] != undefined){
           var objNewSession = {};
-          objNewSession['hub_studentsessionid'] = objStudent[0]['sessionId'];
-          objNewSession['hub_center@odata.bind'] = objStudent[0]["locationId"];
-          objNewSession['hub_enrollment@odata.bind'] = objStudent[0]['enrollmentId'];
-          objNewSession['hub_student@odata.bind'] = objStudent[0]['id'];
+          objNewSession['hub_studentsessionid'] = oldStudent['sessionId'];
+          objNewSession['hub_enrollment@odata.bind'] = oldStudent['enrollmentId'];
+          objNewSession['hub_service@odata.bind'] = oldStudent['serviceId'];
+          
+          objNewSession['hub_center@odata.bind'] = student[0]["locationId"];
+          objNewSession['hub_student@odata.bind'] = student[0].id;
           objNewSession['hub_resourceid@odata.bind'] = student[0].resourceId;
-          objNewSession['hub_service@odata.bind'] = objStudent[0]['serviceId'];
           objNewSession['hub_session_date'] = moment(student[0].start).format("YYYY-MM-DD");
-          objNewSession['hub_start_time'] = this.convertToMinutes(moment(objStudent[0]['start']).format("h:mm A"));
-          objNewSession['hub_end_time'] = this.convertToMinutes(moment(objStudent[0]['end']).format("h:mm A"));
-          objNewSession['hub_is_1to1'] = objStudent[0]['is1to1'];
+          objNewSession['hub_start_time'] = this.convertToMinutes(moment(student[0]['start']).format("h:mm A"));
+          objNewSession['hub_end_time'] = this.convertToMinutes(moment(student[0]['end']).format("h:mm A"));
+          objNewSession['hub_is_1to1'] = student[0]['is1to1'];
           objNewSession['hub_deliverytype'] = student[0].deliveryTypeId;
           objNewSession['hub_deliverytype@OData.Community.Display.V1.FormattedValue'] = student[0].deliveryType;
           
@@ -1132,6 +1125,7 @@ function SylvanCalendar(){
       }      
       if(student){
           elm.remove();
+          var prevStudent = wjQuery.extend(true, {}, student[0]);
           if(wjQuery(parentElement).html() == ''){
             parentElement.remove();
           }
@@ -1142,7 +1136,7 @@ function SylvanCalendar(){
           // student[0].deliveryType = t.getResourceObj(resource.id)['deliveryType'];
           // student[0].deliveryTypeId = t.getResourceObj(resource.id)['deliveryTypeId'];
           this.convertedStudentObj.push(student[0]);
-          this.saveSOFtoSession(student);
+          this.saveSOFtoSession(student,prevStudent);
           t.populateStudentEvent(student,true);
       }          
     }
