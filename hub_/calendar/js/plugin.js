@@ -4365,17 +4365,17 @@ function SylvanCalendar(){
         }   
 
         if(val['_hub_enrollment_value'] != undefined){
-          obj['enrollmentId'] :val['_hub_enrollment_value'];
+          obj['enrollmentId'] =val['_hub_enrollment_value'];
         }else if(val['hub_enrollmentid'] != undefined){
-          obj['enrollmentId'] :val['hub_enrollmentid'];
+          obj['enrollmentId'] =val['hub_enrollmentid'];
         }
 
         if(val['_hub_center_value'] != undefined){
-          obj['locationId'] :val['_hub_center_value'];
-          obj['locationName']: val['_hub_center_value@OData.Community.Display.V1.FormattedValue'],
+          obj['locationId'] =val['_hub_center_value'];
+          obj['locationName']= val['_hub_center_value@OData.Community.Display.V1.FormattedValue'],
         }else if(val['_hub_location_value'] != undefined){
-          obj['locationId'] :val['_hub_location_value'];
-          obj['locationName']: val['_hub_location_value@OData.Community.Display.V1.FormattedValue'],
+          obj['locationId'] =val['_hub_location_value'];
+          obj['locationName']= val['_hub_location_value@OData.Community.Display.V1.FormattedValue'],
         }
 
         eventObjList.push(obj);
