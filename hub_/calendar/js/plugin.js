@@ -2269,8 +2269,7 @@ function SylvanCalendar(){
                   if(event.length == 0){
                     value['resourceId'] = self.resourceList[i].id;
                     break;
-                  }
-                  else{
+                  }else{
                     if(!event[0].hasOwnProperty("teachers") ||
                       (event[0].hasOwnProperty("teachers") && event[0]['teachers'].length == 0))
                     {
@@ -2330,16 +2329,16 @@ function SylvanCalendar(){
                     }
 
                     event[k].teachers.push({id:id, name:name});
-                    wjQuery.each(event[k].teachers, function(ka, v){
+                    wjQuery.each(event[k].teachers, function(ka, teacherObj){
                       uniqueId = v.id+"_"+value['resourceId']+"_"+value['startHour'];
                       if(value['pinId'] != undefined){
-                        event[k].title += "<span class='draggable drag-teacher' pinnedId='"+ value['pinId']+"' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+v.id+value['resourceId']+"' type='teacherSession' value='"+v.id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+v.name+"</span>";
+                        event[k].title += "<span class='draggable drag-teacher' pinnedId='"+ value['pinId']+"' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+teacherObj.id+value['resourceId']+"' type='teacherSession' value='"+teacherObj.id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+teacherObj.name+"</span>";
                       }else{
                         // temp unpin teacher
                         if(value['tempPinId'] != undefined){
-                          event[k].title += "<span class='draggable drag-teacher' tempPinId='"+ value['tempPinId']+"' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+v.id+value['resourceId']+"' type='teacherSession' value='"+v.id+"'><img style='transform:rotate(45deg);' src='/webresources/hub_/calendar/images/pin.png'/>"+v.name+"</span>";
+                          event[k].title += "<span class='draggable drag-teacher' tempPinId='"+ value['tempPinId']+"' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+teacherObj.id+value['resourceId']+"' type='teacherSession' value='"+teacherObj.id+"'><img style='transform:rotate(45deg);' src='/webresources/hub_/calendar/images/pin.png'/>"+teacherObj.name+"</span>";
                         }else{
-                          event[k].title += "<span class='draggable drag-teacher' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+v.id+value['resourceId']+"' type='teacherSession' value='"+v.id+"'>"+v.name+"</span>";
+                          event[k].title += "<span class='draggable drag-teacher' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+teacherObj.id+value['resourceId']+"' type='teacherSession' value='"+teacherObj.id+"'>"+teacherObj.name+"</span>";
                         }
                       }
                       event[k].isConflict = true;
@@ -2377,24 +2376,24 @@ function SylvanCalendar(){
                   if(event[k].title.includes("<img class='onetoone' src='/webresources/hub_/calendar/images/lock.png'>")){
                     event[k].title = "<img class='onetoone' src='/webresources/hub_/calendar/images/lock.png'>";
                     if(value['pinId'] != undefined){
-                      event[k].title += "<span class='draggable drag-teacher' pinnedId='"+ value['pinId']+"' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+v.id+value['resourceId']+"' type='teacherSession' value='"+id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+value.name+"</span>";
+                      event[k].title += "<span class='draggable drag-teacher' pinnedId='"+ value['pinId']+"' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+value.name+"</span>";
                     }else{
                       // temp unpin teacher
                       if(value['tempPinId'] != undefined){
-                        event[k].title += "<span class='draggable drag-teacher' tempPinId='"+ value['tempPinId']+"' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+v.id+value['resourceId']+"' type='teacherSession' value='"+v.id+"'><img style='transform:rotate(45deg);' src='/webresources/hub_/calendar/images/pin.png'/>"+v.name+"</span>";
+                        event[k].title += "<span class='draggable drag-teacher' tempPinId='"+ value['tempPinId']+"' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'><img style='transform:rotate(45deg);' src='/webresources/hub_/calendar/images/pin.png'/>"+value.name+"</span>";
                       }else{
-                        event[k].title += "<span class='draggable drag-teacher' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+v.id+value['resourceId']+"' type='teacherSession' value='"+v.id+"'>"+v.name+"</span>";
+                        event[k].title += "<span class='draggable drag-teacher' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'>"+value.name+"</span>";
                       }
                     }
                   }else{
                     if(value['pinId'] != undefined){
-                      event[k].title = "<span class='draggable drag-teacher' pinnedId='"+ value['pinId']+"' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+v.id+value['resourceId']+"' type='teacherSession' value='"+id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+value.name+"</span>";
+                      event[k].title = "<span class='draggable drag-teacher' pinnedId='"+ value['pinId']+"' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+value.name+"</span>";
                     }else{
                       // temp unpin teacher
                       if(value['tempPinId'] != undefined){
-                        event[k].title += "<span class='draggable drag-teacher' tempPinId='"+ value['tempPinId']+"' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+v.id+value['resourceId']+"' type='teacherSession' value='"+v.id+"'><img style='transform:rotate(45deg);' src='/webresources/hub_/calendar/images/pin.png'/>"+v.name+"</span>";
+                        event[k].title += "<span class='draggable drag-teacher' tempPinId='"+ value['tempPinId']+"' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'><img style='transform:rotate(45deg);' src='/webresources/hub_/calendar/images/pin.png'/>"+value.name+"</span>";
                       }else{
-                        event[k].title += "<span class='draggable drag-teacher' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+v.id+value['resourceId']+"' type='teacherSession' value='"+v.id+"'>"+v.name+"</span>";
+                        event[k].title += "<span class='draggable drag-teacher' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'>"+value.name+"</span>";
                       }
                     }
                   }
@@ -4267,7 +4266,7 @@ function SylvanCalendar(){
 
         // On click Makup student save makeup session will be called
         wjQuery(".makeup-item").click(function(event) {
-          // wjQuery(".loading").show();
+          wjQuery(".loading").show();
           var objSession = {};
           var id = wjQuery(this).attr("id");
           var nameNGrade = wjQuery(this).text();
@@ -4294,7 +4293,6 @@ function SylvanCalendar(){
               objSession["hub_is_1to1"] = studentObj[0]["is1to1"];
             }
             objSession["hub_resourceid@odata.bind"] = idArry[1];
-
             var eventId = idArry[1]+idArry[2];
             var eventObj = self.calendar.fullCalendar('clientEvents', eventId);
             var callSave = false;
@@ -4305,8 +4303,7 @@ function SylvanCalendar(){
               if(stdIndex == -1){
                 callSave = true;
               }
-            }
-            else{
+            }else{
               callSave = true;
             }
             if(callSave){
