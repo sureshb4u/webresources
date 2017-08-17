@@ -4217,8 +4217,8 @@ function SylvanCalendar(){
                 studentObj[0]['end'] =  new Date(new Date(idArry[2]).setHours(new Date(idArry[2]).getHours()+1));
                 // update All Students and teacher 
                 self.convertedStudentObj.push(studentObj[0]);
-                self.populateStudentEvent(self.convertedStudentObj, true);
                 self.populateTeacherEvent(self.convertedTeacherObj, true);
+                self.populateStudentEvent(self.convertedStudentObj, true);
                 wjQuery("#makeup").dialog( "close" );
                 wjQuery(".loading").hide();
                 self.draggable('draggable');
