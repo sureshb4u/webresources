@@ -4193,6 +4193,9 @@ function SylvanCalendar(){
             objSession["hub_session_date"] = moment(new Date(idArry[2])).format("YYYY-MM-DD");
             objSession["hub_start_time"] = start;
             objSession["hub_end_time"] = start+60;
+            if(studentObj[0]["is1to1"] != undefined){
+              objSession["hub_is_1to1"] = studentObj[0]["is1to1"];
+            }
             objSession["resource@odata.bind"] = idArry[1];
 
             var eventId = idArry[1]+idArry[2];
