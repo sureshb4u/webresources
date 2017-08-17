@@ -4207,9 +4207,8 @@ function SylvanCalendar(){
               callSave = true;
             }
             if(callSave){
-              if(data.saveMakeupNFloat(objSession)){
+              if(data.saveMakeupNFloat(objSession) != null){
                 var uniqueid = id+"_"+idArry[1]+"_"+idArry[2];
-
                 // Update New student Session
                 studentObj[0]['resourceId'] =  idArry[1];
                 studentObj[0]['start'] =  new Date(idArry[2]);
