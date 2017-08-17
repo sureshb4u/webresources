@@ -2262,8 +2262,6 @@ function SylvanCalendar(){
           wjQuery.each(teacherObject, function(key, value) {
             var id = value['id'];
             var name = value['name'];
-            var eventId = '';
-            var event = [];
             if(value['resourceId'] == undefined){
               for (var i = 0; i < self.resourceList.length; i++) {
                 if(self.resourceList[i].deliveryType == 'Personal Instruction' || 
@@ -2307,8 +2305,8 @@ function SylvanCalendar(){
                 }
               }
             }
-            eventId = value['resourceId']+value['startHour'];
-            event = self.calendar.fullCalendar('clientEvents', eventId);
+            var eventId = value['resourceId']+value['startHour'];
+            var event = self.calendar.fullCalendar('clientEvents', eventId);
             var resourceObj = self.getResourceObj(value['resourceId']);
             if(event.length == 1){
               var uniqueId ='';
@@ -2334,7 +2332,7 @@ function SylvanCalendar(){
 
                     event[k].teachers.push({id:id, name:name});
                     wjQuery.each(event[k].teachers, function(ka, teacherObj){
-                      uniqueId = v.id+"_"+value['resourceId']+"_"+value['startHour'];
+                      var uniqueId = teacherObj.id+"_"+value['resourceId']+"_"+value['startHour'];
                       if(value['pinId'] != undefined){
                         event[k].title += "<span class='draggable drag-teacher' pinnedId='"+ value['pinId']+"' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+teacherObj.id+value['resourceId']+"' type='teacherSession' value='"+teacherObj.id+"'><img src='/webresources/hub_/calendar/images/pin.png'/>"+teacherObj.name+"</span>";
                       }else{
@@ -2376,7 +2374,7 @@ function SylvanCalendar(){
                     }
                   }
                 }else{
-                  uniqueId = id+"_"+value['resourceId']+"_"+value['startHour'];
+                  var uniqueId = id+"_"+value['resourceId']+"_"+value['startHour'];
                   if(event[k].title.includes("<img class='onetoone' src='/webresources/hub_/calendar/images/lock.png'>")){
                     event[k].title = "<img class='onetoone' src='/webresources/hub_/calendar/images/lock.png'>";
                     if(value['pinId'] != undefined){
