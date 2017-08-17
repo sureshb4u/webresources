@@ -4141,8 +4141,8 @@ function SylvanCalendar(){
 
     this.makeupPopup = function(makeupList, placeholderEvent, isForMakeup){
       var self = this;
-      (makeupList == null || makeupList == undefined ) ? [] : makeupList;
-      var makeupList = this.convertMakeupNFloatObj(makeupList);
+      makeupList = (makeupList == null || makeupList == undefined ) ? [] : makeupList;
+      makeupList = this.convertMakeupNFloatObj(makeupList);
       var idArry = wjQuery(placeholderEvent).prev("span").attr("uniqueid").split('_');
       if(makeupList.length){
         var list = "";
