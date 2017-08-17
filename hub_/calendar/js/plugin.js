@@ -2454,6 +2454,7 @@ function SylvanCalendar(){
                 }
               });
               self.calendar.fullCalendar('updateEvent', event);
+              self.calendar.fullCalendar('refetchEvents');
               if(value['pinId'] != undefined){
                 self.addContext(uniqueId,'teacher',true, "");
               }
@@ -2736,7 +2737,7 @@ function SylvanCalendar(){
                                   }
                                 }
                               }
-                            event[k].students.push({id:id, name:name,is1to1:is1to1,pinId:value['pinId'], grade:grade, serviceId:serviceId, programId:programId});
+                            event[k].students.push({id:id,subjectColorCode:value['subjectColorCode'], name:name,is1to1:is1to1,pinId:value['pinId'], grade:grade, serviceId:serviceId, programId:programId});
                           }
                         }
                       }else{
@@ -2763,7 +2764,7 @@ function SylvanCalendar(){
                             }
                           }
                         }
-                        event[k].students = [{id:id, name:name, grade:grade,pinId:value['pinId'],is1to1:is1to1, serviceId:serviceId, programId:programId }];
+                        event[k].students = [{id:id, name:name, grade:grade,pinId:value['pinId'],subjectColorCode:value['subjectColorCode'],is1to1:is1to1, serviceId:serviceId, programId:programId }];
                       }
                       if(event[k].title.includes('<span class="student-placeholder">Student name</span>')){
                         event[k].title = event[k].title.replace('<span class="student-placeholder">Student name</span>', '');
@@ -2802,7 +2803,7 @@ function SylvanCalendar(){
                 }else{
                     var obj = {
                         id: eventId,
-                        students:[{id:id, name:name, grade:grade,is1to1: is1to1,pinId:value['pinId'] ,serviceId:serviceId, programId:programId }],
+                        students:[{id:id, name:name, subjectColorCode:value['subjectColorCode'],grade:grade,is1to1: is1to1,pinId:value['pinId'] ,serviceId:serviceId, programId:programId }],
                         start:value['startHour'],
                         //end:value['end'],
                         allDay: false,
