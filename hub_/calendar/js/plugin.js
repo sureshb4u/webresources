@@ -668,12 +668,15 @@ function SylvanCalendar(){
         objSession.hub_session_date = moment(student[0].start).format("YYYY-MM-DD");
         
         if(oldStudent != undefined){
-          objNewSession.hub_end_time = this.convertToMinutes(moment(oldStudent['end']).format("h:mm A"));;
-          objNewSession.hub_start_time = this.convertToMinutes(moment(oldStudent['start']).format("h:mm A"));
-          
+          objNewSession['hub_end_time'] = this.convertToMinutes(moment(oldStudent['end']).format("h:mm A"));;
+          objNewSession['hub_start_time'] = this.convertToMinutes(moment(oldStudent['start']).format("h:mm A"));
         }
         
         if(student[0] != undefined){
+          var objNewSession = {};
+          objSession['hub_start_time'] = this.convertToMinutes(moment(student[0]['start']).format("h:mm A"));
+          objSession['hub_end_time'] = this.convertToMinutes(moment(student[0]['end']).format("h:mm A"));
+         
           if(student[0]['isFromMasterSchedule']){
             objNewSession['hub_ratio'] = student[0]['is1to1'];
           }else{
@@ -4352,9 +4355,6 @@ function SylvanCalendar(){
             grade: val['astudent_x002e_hub_grade@OData.Community.Display.V1.FormattedValue'],
             deliveryTypeId: val['aproductservice_x002e_hub_deliverytype'],
             deliveryType: val['aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue'],
-            locationId: val['_hub_center_value'],
-            locationName: val['_hub_center_value@OData.Community.Display.V1.FormattedValue'],
-            enrollmentId :val['_hub_enrollment_value'],
             subject:val['aprogram_x002e_hub_areaofinterest@OData.Community.Display.V1.FormattedValue'],
             subjectId:val['aprogram_x002e_hub_areaofinterest'],
             subjectColorCode: val['aprogram_x002e_hub_color'],
@@ -4363,6 +4363,21 @@ function SylvanCalendar(){
             serviceId:val['_hub_service_value'],
             sessionId:val['hub_studentsessionid']
         }   
+
+        if(val['_hub_enrollment_value'] != undefined){
+          obj['enrollmentId'] :val['_hub_enrollment_value'];
+        }else if(val['hub_enrollmentid'] != undefined){
+          obj['enrollmentId'] :val['hub_enrollmentid'];
+        }
+
+        if(val['_hub_center_value'] != undefined){
+          obj['locationId'] :val['_hub_center_value'];
+          obj['locationName']: val['_hub_center_value@OData.Community.Display.V1.FormattedValue'],
+        }else if(val['_hub_location_value'] != undefined){
+          obj['locationId'] :val['_hub_location_value'];
+          obj['locationName']: val['_hub_location_value@OData.Community.Display.V1.FormattedValue'],
+        }
+
         eventObjList.push(obj);
       });
       return eventObjList;
