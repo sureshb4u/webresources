@@ -4240,11 +4240,6 @@ function SylvanCalendar(){
           list += "<li id='"+v.id+"' class='makeup-item' >"+v.name+", "+v.grade+"</li>";
         });
         wjQuery("#makeup > .makeup-lst").html(list);
-        if(isForMakeup){
-          wjQuery("#makeup").dialog('option', 'title', 'Add Makup');
-        }else{
-          wjQuery("#makeup").dialog('option', 'title', 'Add Float');
-        }
         wjQuery("#makeup").dialog({
           resizable: false,
           height: "auto",
@@ -4256,6 +4251,12 @@ function SylvanCalendar(){
             }
           }
         });
+        
+        if(isForMakeup){
+          wjQuery("#makeup").dialog('option', 'title', 'Add Makup');
+        }else{
+          wjQuery("#makeup").dialog('option', 'title', 'Add Float');
+        }
 
         // On click Makup student save makeup session will be called
         wjQuery(".makeup-item").click(function(event) {
@@ -4286,7 +4287,7 @@ function SylvanCalendar(){
             if(studentObj[0]["is1to1"] != undefined){
               objSession["hub_is_1to1"] = studentObj[0]["is1to1"];
             }
-            objSession["resource@odata.bind"] = idArry[1];
+            objSession["hub_resourceid@odata.bind"] = idArry[1];
 
             var eventId = idArry[1]+idArry[2];
             var eventObj = self.calendar.fullCalendar('clientEvents', eventId);
