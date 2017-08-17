@@ -2519,10 +2519,15 @@ function SylvanCalendar(){
             if(event[k].hasOwnProperty("students") && event[k]['students'].length !=0 ){
               var resourceObj = self.getResourceObj(affinityList[i].resourceId);
               if(resourceObj.capacity > event[k]['students'].length){
-                var obj = [];
-                obj.push(affinityList[i]);
-                self.convertedStudentObj.push(affinityList[i]);
-                self.populateStudentEvent(obj,true,true);
+                if(!event[k]['students'][0].is1to1 && !affinityList[i].is1to1){
+                  var obj = [];
+                  obj.push(affinityList[i]);
+                  self.convertedStudentObj.push(affinityList[i]);
+                  self.populateStudentEvent(obj,true,true);
+                }
+                else{
+                affinityNotPlaceStudents.push(affinityList[i]);
+                }
               }
               else{
                 affinityNotPlaceStudents.push(affinityList[i]);
@@ -2562,12 +2567,14 @@ function SylvanCalendar(){
                 if(event[k].hasOwnProperty("students") && event[k]['students'].length !=0 ){
                   var resourceObj = self.getResourceObj(studentList[i].resourceId);
                   if(resourceObj.capacity > event[k]['students'].length){
-                    studentList[i].resourceId = self.resourceList[j].id;
-                    var obj = [];
-                    studentNotPlacedFlag = false;
-                    obj.push(studentList[i]);
-                    self.convertedStudentObj.push(studentList[i]);
-                    self.populateStudentEvent(obj,true,true);
+                    if(!event[k]['students'][0].is1to1 && !studentList[i].is1to1){
+                      studentList[i].resourceId = self.resourceList[j].id;
+                      var obj = [];
+                      studentNotPlacedFlag = false;
+                      obj.push(studentList[i]);
+                      self.convertedStudentObj.push(studentList[i]);
+                      self.populateStudentEvent(obj,true,true);
+                    }
                   }
                 }
                 else{
