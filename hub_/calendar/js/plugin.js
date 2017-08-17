@@ -2365,6 +2365,11 @@ function SylvanCalendar(){
                           self.addContext("",'studentPlaceholder',true, "");
                         }
                       }
+                    }else{
+                      if(!event[k].title.includes('<span class="student-placeholder">Student name</span>')){
+                        event[k].title += '<span class="student-placeholder">Student name</span>';
+                        self.addContext("",'studentPlaceholder',true, "");
+                      }
                     }
                   }
                 }else{
@@ -2439,6 +2444,11 @@ function SylvanCalendar(){
                       event[k].title += '<span class="student-placeholder">Student name</span>';
                       self.addContext("",'studentPlaceholder',true, "");
                     }
+                  }
+                }else{
+                  if(!event[k].title.includes('<span class="student-placeholder">Student name</span>')){
+                    event[k].title += '<span class="student-placeholder">Student name</span>';
+                    self.addContext("",'studentPlaceholder',true, "");
                   }
                 }
               });
@@ -4219,9 +4229,6 @@ function SylvanCalendar(){
           msg += (k+1)+". "+ self.conflictMsg[v]+"|";
         });
         var lastIndex = msg.lastIndexOf("|");
-
-
-
         msg = msg.substring(0, lastIndex);
         if(!event.title.includes('<img class="conflict" title="'+msg+'" src="/webresources/hub_/calendar/images/warning.png">')){
           event.title +=  '<img class="conflict" title="'+msg+'" src="/webresources/hub_/calendar/images/warning.png">';
@@ -4260,11 +4267,10 @@ function SylvanCalendar(){
 
         // On click Makup student save makeup session will be called
         wjQuery(".makeup-item").click(function(event) {
-          wjQuery(".loading").show();
+          // wjQuery(".loading").show();
           var objSession = {};
           var id = wjQuery(this).attr("id");
           var nameNGrade = wjQuery(this).text();
-
           var start = self.convertToMinutes(moment(idArry[2]).format("h:mm A"));
           var studentObj = makeupList.filter(function( obj ) {
             return obj.id == id;
@@ -4315,9 +4321,9 @@ function SylvanCalendar(){
                 self.convertedStudentObj.push(studentObj[0]);
                 self.populateTeacherEvent(self.convertedTeacherObj, true);
                 self.populateStudentEvent(self.convertedStudentObj, true);
+                self.draggable('draggable');
                 wjQuery("#makeup").dialog( "close" );
                 wjQuery(".loading").hide();
-                self.draggable('draggable');
               }else{
                 wjQuery(".loading").hide();
                 wjQuery("#makeup").dialog( "close" );
