@@ -2393,9 +2393,9 @@ function SylvanCalendar(){
                     }else{
                       // temp unpin teacher
                       if(value['tempPinId'] != undefined){
-                        event[k].title += "<span class='draggable drag-teacher' tempPinId='"+ value['tempPinId']+"' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'><img style='transform:rotate(45deg);' src='/webresources/hub_/calendar/images/pin.png'/>"+value.name+"</span>";
+                        event[k].title = "<span class='draggable drag-teacher' tempPinId='"+ value['tempPinId']+"' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'><img style='transform:rotate(45deg);' src='/webresources/hub_/calendar/images/pin.png'/>"+value.name+"</span>";
                       }else{
-                        event[k].title += "<span class='draggable drag-teacher' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'>"+value.name+"</span>";
+                        event[k].title = "<span class='draggable drag-teacher' eventid='"+eventId+"' uniqueId='"+uniqueId+"' id='"+id+value['resourceId']+"' type='teacherSession' value='"+id+"'>"+value.name+"</span>";
                       }
                     }
                   }
@@ -2454,7 +2454,6 @@ function SylvanCalendar(){
                 }
               });
               self.calendar.fullCalendar('updateEvent', event);
-              self.calendar.fullCalendar('refetchEvents');
               if(value['pinId'] != undefined){
                 self.addContext(uniqueId,'teacher',true, "");
               }
@@ -4373,10 +4372,10 @@ function SylvanCalendar(){
 
         if(val['_hub_center_value'] != undefined){
           obj['locationId'] =val['_hub_center_value'];
-          obj['locationName']= val['_hub_center_value@OData.Community.Display.V1.FormattedValue'],
+          obj['locationName']= val['_hub_center_value@OData.Community.Display.V1.FormattedValue'];
         }else if(val['_hub_location_value'] != undefined){
           obj['locationId'] =val['_hub_location_value'];
-          obj['locationName']= val['_hub_location_value@OData.Community.Display.V1.FormattedValue'],
+          obj['locationName']= val['_hub_location_value@OData.Community.Display.V1.FormattedValue'];
         }
 
         eventObjList.push(obj);
