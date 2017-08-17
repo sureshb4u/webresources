@@ -54,8 +54,10 @@ body {
     padding:3px 0px;
     display:block;
 }
-.action-icon{
-    margin: 8px;
+i.material-icons.cursor.float-right {
+    margin: 14px 5px;
+    font-size: 20px;
+    color: #333;
 }
 
 #pi-btn label input,#gi-btn label input {

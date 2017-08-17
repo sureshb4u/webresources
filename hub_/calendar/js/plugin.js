@@ -135,7 +135,7 @@ setTimeout(function(){
           sylvanCalendar.taPane();
         });
         sylvanCalendar.draggable('teacher-container');
-        wjQuery(".icon-refresh").click(function(event) {
+        wjQuery(".refresh-icon").click(function(event) {
           fetchResources(locationId,deliveryTypeList,false);
         });
        
@@ -1521,7 +1521,7 @@ function SylvanCalendar(){
               msg += "<div style='margin:0 5px;display:inline-block;width:10px;height:10px;background:"+self.programList[i].hub_color+"'></div>"+
                      "<span style='padding:5px'>"+self.programList[i].hub_name+"</span><br/>";
             }
-            wjQuery('.icon-info-sign').attr('title',msg);
+            wjQuery('.info-icon').attr('title',msg);
           }
 
           self.staffExceptions = isFetch || (self.staffExceptions.length == 0) ? data.getStaffException(locationId,startDate,endDate) : self.staffExceptions;
@@ -4166,7 +4166,7 @@ function SylvanCalendar(){
     }
 
     this.showConflictMsg = function(){
-      wjQuery(".sof-btn, .fc-event,.icon-info-sign").tooltip({
+      wjQuery(".sof-btn, .fc-event,.info-icon").tooltip({
         tooltipClass:"custom-conflict",
         track: true,
         content: function () {
