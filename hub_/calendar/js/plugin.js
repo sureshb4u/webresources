@@ -3113,6 +3113,14 @@ function SylvanCalendar(){
           objCancelSession['hub_studentsessionid'] = objStudent[0]['sessionId'];
         }
         if(data.omitStudentSession(objCancelSession)){
+          var index = this.convertedStudentObj.findIndex(function(x){
+          return x.id == uniqueIds[0] && 
+                 x.resourceId == uniqueIds[1] &&
+                 moment(x.startHour).format("h") == h;
+          });
+          if(index != -1){
+            this.convertedStudentObj.splice(index,1);
+          }
           var prevEventId = wjQuery(element).attr("eventid");
           var prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
           if(prevEvent){
@@ -3193,6 +3201,14 @@ function SylvanCalendar(){
         objCancelSession['hub_student@odata.bind'] = objStudent[0]['id'];
         objCancelSession['hub_resourceid@odata.bind'] = null;
         if(data.excuseStudentFromSession(objCancelSession)){
+          var index = this.convertedStudentObj.findIndex(function(x){
+          return x.id == uniqueIds[0] &&
+                 x.resourceId == uniqueIds[1] &&
+                 moment(x.startHour).format('h') == h;
+          });
+          if(index != -1){
+            this.convertedStudentObj.splice(index,1);
+          }
           var prevEventId = wjQuery(element).attr("eventid");
           var prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
           if(prevEvent){
@@ -3333,6 +3349,14 @@ function SylvanCalendar(){
             flag = false;
           }
           if(data.excuseAndMakeUpStudent(objSession) && flag){
+            var index = self.convertedStudentObj.findIndex(function(x){
+            return x.id == uniqueIds[0] &&
+                   x.resourceId == uniqueIds[1] &&
+                   moment(x.startHour).format('h') == h;
+            });
+            if(index != -1){
+              self.convertedStudentObj.splice(index,1);
+            }
             wjQuery("#excuseModal").dialog( "close" );
             var prevEventId = wjQuery(element).attr("eventid");
             var prevEvent = self.calendar.fullCalendar('clientEvents', prevEventId);
