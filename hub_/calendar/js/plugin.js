@@ -663,6 +663,7 @@ function SylvanCalendar(){
 
         var objSession = {};
         var objNewSession = {};
+        
         objSession['hub_center@odata.bind'] = student[0].locationId;
         objSession['hub_resourceid@odata.bind'] = student[0].resourceId;
         objSession.hub_session_date = moment(student[0].start).format("YYYY-MM-DD");
@@ -673,7 +674,6 @@ function SylvanCalendar(){
         }
         
         if(student[0] != undefined){
-          var objNewSession = {};
           objSession['hub_start_time'] = this.convertToMinutes(moment(student[0]['start']).format("h:mm A"));
           objSession['hub_end_time'] = this.convertToMinutes(moment(student[0]['end']).format("h:mm A"));
          
@@ -1242,19 +1242,19 @@ function SylvanCalendar(){
           }
         }
         if(t.convertedStudentObj[index]){
-          var prevSessionObj = wjQuery.extend(true, {}, t.convertedStudentObj[index]);
+          var newStudentObj = wjQuery.extend(true, {}, t.convertedStudentObj[index]);
           elm.remove(); 
-          t.convertedStudentObj[index].start = date;
-          t.convertedStudentObj[index].startHour = startHour;
-          t.convertedStudentObj[index].end = new Date(endDate.setHours(endDate.getHours() + 1));
-          t.convertedStudentObj[index].resourceId = resource.id;
+          newStudentObj.start = date;
+          newStudentObj.startHour = startHour;
+          newStudentObj.end = new Date(endDate.setHours(endDate.getHours() + 1));
+          newStudentObj.resourceId = resource.id;
           if(wjQuery(elm).attr("tempPinId")){
-            t.convertedStudentObj[index].tempPinId = wjQuery(elm).attr("tempPinId");
-            delete t.convertedStudentObj[index].pinId;
+            newStudentObj.tempPinId = wjQuery(elm).attr("tempPinId");
+            delete newStudentObj.pinId;
           }
           // t.convertedStudentObj[index].deliveryTypeId = t.getResourceObj(resource.id).deliveryTypeId;
           // t.convertedStudentObj[index].deliveryType = t.getResourceObj(resource.id).deliveryType;
-          t.saveStudentToSession(t.convertedStudentObj[index],prevSessionObj);
+          t.saveStudentToSession(t.convertedStudentObj[index],newStudentObj);
           t.populateStudentEvent([t.convertedStudentObj[index]],true);  
         } 
       }
@@ -3944,73 +3944,58 @@ function SylvanCalendar(){
       return deliveryType;
     }
 
-    this.saveStudentToSession = function(student,prevStudent){
+    this.saveStudentToSession = function(prevStudent,newStudent){
       var objPrevSession = {};
       var objNewSession = {};
-      if(student != undefined){
-        var h = new Date(student.startHour).getHours();
-        if(h > 12){
-          h -= 12;
-        }
-        var objStudent = this.convertedStudentObj.filter(function(x){
-          return x.id == student.id &&
-                 x.enrollmentId == student.enrollmentId;
-        
-        });
-        if(objStudent[0]){
-
-          var oldDate = objStudent[0].sessionDate;
-          var sessionDate = moment(student.start).format("YYYY-MM-DD");
-          var OldDeliveryType = prevStudent.deliveryTypeId;
-          var oldTime = moment(prevStudent.start).format("h:mm A");
-          var newTime = moment(student.start).format("h:mm A");
+      if(prevStudent != undefined){
           // Session type condition
           /*if(oldDate == sessionDate && newTime != oldTime && student.deliveryType == "Personal Instruction"){
             objNewSession['hub_sessiontype'] = 1;
           }*/
-          if(objStudent[0]['isFromMasterSchedule']){
-            objPrevSession.hub_session_date = moment(objStudent[0].start).format("YYYY-MM-DD");
-            objPrevSession.hub_start_time = this.convertToMinutes(moment(objStudent[0].start).format("h:mm A"));
-            objPrevSession.hub_end_time = this.convertToMinutes(moment(objStudent[0].end).format("h:mm A"));
+          if(prevStudent['isFromMasterSchedule']){
+            objPrevSession.hub_session_date = moment(prevStudent.start).format("YYYY-MM-DD");
+            objPrevSession.hub_start_time = this.convertToMinutes(moment(prevStudent.start).format("h:mm A"));
+            objPrevSession.hub_end_time = this.convertToMinutes(moment(prevStudent.end).format("h:mm A"));
             objPrevSession['hub_resourceid@odata.bind'] = null
-            objPrevSession.hub_ratio = objStudent[0]['is1to1'];
+            objPrevSession.hub_ratio = prevStudent['is1to1'];
 
-            objNewSession.hub_ratio = objStudent[0]['is1to1'];
+            objNewSession.hub_ratio = newStudent['is1to1'];
           }else{
-            objPrevSession['hub_session_date'] = objStudent[0]['sessionDate'];
-            objPrevSession['hub_is_1to1'] = objStudent[0]['is1to1'];
-            objPrevSession['hub_studentsessionid'] = objStudent[0]['sessionId'];
+            objPrevSession['hub_session_date'] = prevStudent['sessionDate'];
+            objPrevSession['hub_is_1to1'] = prevStudent['is1to1'];
+            objPrevSession['hub_studentsessionid'] = prevStudent['sessionId'];
             objPrevSession['hub_start_time'] = this.convertToMinutes(moment(prevStudent.start).format("h:mm A"));
             objPrevSession['hub_end_time'] = this.convertToMinutes(moment(prevStudent.end).format("h:mm A"));
             objPrevSession['hub_resourceid@odata.bind'] = prevStudent.resourceId;
             
             objNewSession['hub_sessiontype'] = 1;
 
-            if(objStudent[0]['sessiontype'] != undefined){
-              objNewSession['hub_sessiontype'] = objStudent[0]['sessiontype'];
+            if(prevStudent['sessiontype'] != undefined){
+              objNewSession['hub_sessiontype'] = prevStudent['sessiontype'];
             }
 
-            objNewSession['hub_studentsessionid'] = objStudent[0]['sessionId'];
-            objNewSession['hub_is_1to1'] = objStudent[0]['is1to1'];
+            objNewSession['hub_studentsessionid'] = prevStudent['sessionId'];
+            objNewSession['hub_is_1to1'] = newStudent['is1to1'];
           }
 
-          objPrevSession['hub_enrollment@odata.bind'] = objStudent[0]['enrollmentId'];
-          objPrevSession['hub_deliverytype'] = objStudent[0]['deliveryTypeId'];
-          objPrevSession['hub_service@odata.bind'] = objStudent[0]['serviceId'];
-          objPrevSession['hub_student@odata.bind'] = objStudent[0]['id'];
-          objPrevSession['hub_center@odata.bind'] = objStudent[0]["locationId"];
-          objPrevSession['hub_deliverytype@OData.Community.Display.V1.FormattedValue'] = objStudent[0]['deliveryType'];
+          objPrevSession['hub_enrollment@odata.bind'] = prevStudent['enrollmentId'];
+          objPrevSession['hub_deliverytype'] = prevStudent['deliveryTypeId'];
+          objPrevSession['hub_service@odata.bind'] = prevStudent['serviceId'];
+          objPrevSession['hub_student@odata.bind'] = prevStudent['id'];
+          objPrevSession['hub_center@odata.bind'] = prevStudent["locationId"];
+          objPrevSession['hub_deliverytype@OData.Community.Display.V1.FormattedValue'] = prevStudent['deliveryType'];
 
-          objNewSession['hub_center@odata.bind'] = objStudent[0]["locationId"];
-          objNewSession['hub_enrollment@odata.bind'] = objStudent[0]['enrollmentId'];
-          objNewSession['hub_student@odata.bind'] = objStudent[0]['id'];
-          objNewSession['hub_resourceid@odata.bind'] = student.resourceId;
-          objNewSession['hub_service@odata.bind'] = objStudent[0]['serviceId'];
-          objNewSession['hub_session_date'] = sessionDate;
-          objNewSession['hub_start_time'] = this.convertToMinutes(moment(student.start).format("h:mm A"));
+          objNewSession['hub_center@odata.bind'] = prevStudent["locationId"];
+          objNewSession['hub_enrollment@odata.bind'] = prevStudent['enrollmentId'];
+          objNewSession['hub_student@odata.bind'] = prevStudent['id'];
+          objNewSession['hub_service@odata.bind'] = prevStudent['serviceId'];
+
+          objNewSession['hub_resourceid@odata.bind'] = newStudent.resourceId;
+          objNewSession['hub_session_date'] = moment(newStudent.startHour).format('YYYY-MM-DD');
+          objNewSession['hub_start_time'] = this.convertToMinutes(moment(newStudent.start).format("h:mm A"));
           objNewSession['hub_end_time'] = objNewSession['hub_start_time'] + 60;
-          objNewSession['hub_deliverytype'] = student.deliveryTypeId;
-          objNewSession['hub_deliverytype@OData.Community.Display.V1.FormattedValue'] = student.deliveryType;
+          objNewSession['hub_deliverytype'] = newStudent.deliveryTypeId;
+          objNewSession['hub_deliverytype@OData.Community.Display.V1.FormattedValue'] = newStudent.deliveryType;
           var responseObj = data.saveStudenttoSession(objPrevSession,objNewSession);
           if(typeof responseObj == 'boolean'){
             if(responseObj){
@@ -4019,17 +4004,17 @@ function SylvanCalendar(){
           }
           else if(typeof responseObj == 'object' && responseObj != null){
             if(responseObj.hasOwnProperty('hub_studentsessionid')){
-              objStudent[0]['sessionId'] = responseObj['hub_studentsessionid'];
-              objStudent[0]['start'] = student.start;
-              objStudent[0]['end'] = student.end;
-              objStudent[0]['resourceId'] = responseObj['hub_resourceid@odata.bind'];
+              newStudent['sessionId'] = responseObj['hub_studentsessionid'];
+              newStudent['start'] = newStudent.start;
+              newStudent['end'] = newStudent.end;
+              newStudent['resourceId'] = responseObj['hub_resourceid@odata.bind'];
               var index = this.convertedStudentObj.findIndex(function(x){
-                return x.id == student.id &&
-                       x.resourceId == student.resourceId &&
-                       moment(x.startHour).format('h') == h;
+                return x.id == prevStudent.id &&
+                       x.resourceId == prevStudent.resourceId &&
+                       moment(x.startHour).format('h') == moment(prevStudent.startHour).format('h');
               });
               if(index != -1){
-                this.convertedStudentObj[index] = objStudent[0];
+                this.convertedStudentObj[index] = newStudent;
               }
             }
           }
