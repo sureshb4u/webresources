@@ -3530,7 +3530,7 @@ function SylvanCalendar(){
             }
           }
           obj.excuseAndMakeUp = {
-            name: "Excuse & MakeUp",
+            name: "Add Makeup",
             callback : function(key, options) {
               self.excuseAndMakeUpStudent(options.$trigger[0]);
             }
@@ -4150,6 +4150,11 @@ function SylvanCalendar(){
           list += "<li id='"+v.id+"' class='makeup-item' >"+v.name+", "+v.grade+"</li>";
         });
         wjQuery("#makeup > .makeup-lst").html(list);
+        if(isForMakeup){
+          wjQuery("#makeup").dialog('option', 'title', 'Add Makup');
+        }else{
+          wjQuery("#makeup").dialog('option', 'title', 'Add Float');
+        }
         wjQuery("#makeup").dialog({
           resizable: false,
           height: "auto",
@@ -4185,12 +4190,10 @@ function SylvanCalendar(){
             objSession["hub_student@odata.bind"] = id;
             objSession["hub_service@odata.bind"] = studentObj[0]["serviceId"];
             objSession["hub_center@odata.bind"] = studentObj[0]["locationId"];
-            objSession["hub_session_date@odata.bind"] = moment(new Date(idArry[2])).format("YYYY-MM-DD");
-            objSession["hub_start_time@odata.bind"] = start;
-            objSession["hub_end_time@odata.bind"] = start+60;
-            objSession["resource@odata.bind "] = idArry[1];
-            // objSession.["hub_ratio@odata.bind"] = studentObj[0]
-            // objSession.["hub_session_status@odata.bind"] = studentObj[0]
+            objSession["hub_session_date"] = moment(new Date(idArry[2])).format("YYYY-MM-DD");
+            objSession["hub_start_time"] = start;
+            objSession["hub_end_time"] = start+60;
+            objSession["resource@odata.bind"] = idArry[1];
 
             var eventId = idArry[1]+idArry[2];
             var eventObj = self.calendar.fullCalendar('clientEvents', eventId);
