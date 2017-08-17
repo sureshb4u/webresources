@@ -667,12 +667,17 @@ function SylvanCalendar(){
         objSession.hub_session_date = moment(student[0].start).format("YYYY-MM-DD");
         
         if(oldStudent != undefined){
-          objSession.hub_start_time = this.convertToMinutes(moment(oldStudent['start']).format("h:mm A"));
-          objSession.hub_end_time = this.convertToMinutes(moment(oldStudent['end']).format("h:mm A"));;
+          objNewSession.hub_end_time = this.convertToMinutes(moment(oldStudent['end']).format("h:mm A"));;
+          objNewSession.hub_start_time = this.convertToMinutes(moment(oldStudent['start']).format("h:mm A"));
+          
         }
         
         if(student[0] != undefined){
           var objNewSession = {};
+
+          objSession['hub_start_time'] = this.convertToMinutes(moment(student[0]['start']).format("h:mm A"));
+          objSession['hub_end_time'] = this.convertToMinutes(moment(student[0]['end']).format("h:mm A"));
+         
           if(student[0]['isFromMasterSchedule']){
             objNewSession['hub_ratio'] = student[0]['is1to1'];
           }else{
@@ -686,8 +691,7 @@ function SylvanCalendar(){
           objNewSession['hub_student@odata.bind'] = student[0].id;
           objNewSession['hub_resourceid@odata.bind'] = student[0].resourceId;
           objNewSession['hub_session_date'] = moment(student[0].start).format("YYYY-MM-DD");
-          objNewSession['hub_start_time'] = this.convertToMinutes(moment(student[0]['start']).format("h:mm A"));
-          objNewSession['hub_end_time'] = this.convertToMinutes(moment(student[0]['end']).format("h:mm A"));
+         
           objNewSession['hub_deliverytype'] = student[0].deliveryTypeId;
           objNewSession['hub_deliverytype@OData.Community.Display.V1.FormattedValue'] = student[0].deliveryType;
           
