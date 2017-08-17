@@ -662,6 +662,7 @@ function SylvanCalendar(){
         }
 
         var objSession = {};
+        var objNewSession = {};
         objSession['hub_center@odata.bind'] = student[0].locationId;
         objSession['hub_resourceid@odata.bind'] = student[0].resourceId;
         objSession.hub_session_date = moment(student[0].start).format("YYYY-MM-DD");
@@ -673,7 +674,6 @@ function SylvanCalendar(){
         }
         
         if(student[0] != undefined){
-          var objNewSession = {};
           if(student[0]['isFromMasterSchedule']){
             objNewSession['hub_ratio'] = student[0]['is1to1'];
           }else{
