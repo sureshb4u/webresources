@@ -5225,6 +5225,10 @@ function Data(){
   this.saveMakeupNFloat = function(objNewSession){
     return true;
   }
+
+  this.removeTeacher = function(){
+    return true;
+  }
 }
 
 

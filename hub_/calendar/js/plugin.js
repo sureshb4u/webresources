@@ -1817,7 +1817,8 @@ function SylvanCalendar(){
                     deliveryType: val['aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue'],
                     locationId: val['astaff_x002e_hub_center'],
                     locationName: val['astaff_x002e_hub_center@OData.Community.Display.V1.FormattedValue'],
-                    subjectId: val['subjectId']
+                    subjectId: val['subjectId'],
+                    scheduleId:val['hub_staff_scheduleid']
                 };
                 if(self.convertedPinnedList.length){
                   var isPinned = self.convertedPinnedList.filter(function(obj){
@@ -1919,7 +1920,8 @@ function SylvanCalendar(){
                 serviceId: val['aenrollment_x002e_hub_service'],
                 enrollmentId : val['aenrollment_x002e_hub_enrollmentid'],
                 isFromMasterSchedule:true,
-                is1to1 : false
+                is1to1 : false,
+                sessiontype: val['hub_sessiontype']
             }
             if(obj.deliveryType == 'Personal Instruction'){
               var pinnedStudent = self.convertedPinnedList.filter(function(x){
@@ -3681,6 +3683,12 @@ function SylvanCalendar(){
             }
           }
         };
+        obj.moveToSof = {
+          name: "Remove",
+          callback : function(key, options) {
+            self.removeTeacher(options.$trigger[0]);
+          }
+        }
         obj.unpin = {
           "name": "Unpin",
           "visible": false,
@@ -3977,6 +3985,11 @@ function SylvanCalendar(){
             objPrevSession['hub_resourceid@odata.bind'] = prevStudent.resourceId;
             
             objNewSession['hub_sessiontype'] = 1;
+
+            if(objStudent[0]['sessiontype'] != undefined){
+              objNewSession['hub_sessiontype'] = objStudent[0]['sessiontype'];
+            }
+
             objNewSession['hub_studentsessionid'] = objStudent[0]['sessionId'];
             objNewSession['hub_is_1to1'] = objStudent[0]['is1to1'];
           }
@@ -4291,6 +4304,7 @@ function SylvanCalendar(){
             objSession["hub_session_date"] = moment(new Date(idArry[2])).format("YYYY-MM-DD");
             objSession["hub_start_time"] = start;
             objSession["hub_end_time"] = start+60;
+
             if(studentObj[0]["is1to1"] != undefined){
               objSession["hub_is_1to1"] = studentObj[0]["is1to1"];
             }
@@ -4309,13 +4323,17 @@ function SylvanCalendar(){
               callSave = true;
             }
             if(callSave){
-              if(data.saveMakeupNFloat(objSession) != null){
+              var responseObj = data.saveMakeupNFloat(objSession);
+              if(responseObj != null){
                 var uniqueid = id+"_"+idArry[1]+"_"+idArry[2];
                 // Update New student Session
                 studentObj[0]['resourceId'] =  idArry[1];
                 studentObj[0]['start'] =  new Date(idArry[2]);
                 studentObj[0]['startHour'] =  new Date(idArry[2]);
                 studentObj[0]['end'] =  new Date(new Date(idArry[2]).setHours(new Date(idArry[2]).getHours()+1));
+                studentObj[0]['sessionId'] = responseObj['hub_studentsessionid'];
+                studentObj[0]['sessiontype'] = responseObj['hub_sessiontype'];
+
                 // update All Students and teacher 
                 self.convertedStudentObj.push(studentObj[0]);
                 self.populateTeacherEvent(self.convertedTeacherObj, true);
@@ -4363,7 +4381,7 @@ function SylvanCalendar(){
             serviceId:val['_hub_service_value'],
             sessionId:val['hub_studentsessionid']
         }   
-
+        
         if(val['_hub_enrollment_value'] != undefined){
           obj['enrollmentId'] =val['_hub_enrollment_value'];
         }else if(val['hub_enrollmentid'] != undefined){
@@ -4377,10 +4395,26 @@ function SylvanCalendar(){
           obj['locationId'] =val['_hub_location_value'];
           obj['locationName']= val['_hub_location_value@OData.Community.Display.V1.FormattedValue'];
         }
-
         eventObjList.push(obj);
       });
       return eventObjList;
+    }
+
+    this.removeTeacher = function(event){
+      var teacherId = wjQuery(event).attr("uniqueid").split("_")[0];
+      var saveTeacherObj = {};
+      var index = this.convertedTeacherObj.map(function(x){
+        return x.id;
+      }).indexOf(teacherId);
+      var teacherObj = this.convertedTeacherObj[index];
+      saveTeacherObj['hub_staff_scheduleid'] = teacherObj["scheduleId"];
+      if(data.removeTeacher(saveTeacherObj)){
+        this.convertedTeacherObj.splice(index,1);
+
+        // remove taecher and move it to the TA pane
+      }else{
+        // Dont remove taecher from event in which he is assigned
+      }
     }
 }
 
