@@ -3676,6 +3676,16 @@ function SylvanCalendar() {
                     obj.pin.visible = true;
                 }
             }
+            wjQuery(function () {
+                wjQuery.contextMenu({
+                    selector: 'span[uniqueId="' + uniqueId + '"]',
+                    build: function ($trigger, e) {
+                        return {
+                            items: obj
+                        };
+                    }
+                });
+            });
         } else if (labelFor == 'teacher') {
             obj.pin = {
                 "name": "Pin",
@@ -3700,12 +3710,6 @@ function SylvanCalendar() {
                     }
                 }
             };
-            obj.moveToSof = {
-                name: "Remove",
-                callback: function (key, options) {
-                    self.removeTeacher(options.$trigger[0]);
-                }
-            }
             obj.unpin = {
                 "name": "Unpin",
                 "visible": false,
@@ -3715,6 +3719,12 @@ function SylvanCalendar() {
                     self.unPinTeacher(options.$trigger[0]);
                 }
             };
+            obj.moveToSof = {
+                name: "Remove",
+                callback: function (key, options) {
+                    self.removeTeacher(options.$trigger[0]);
+                }
+            }
             if (isPinned) {
                 obj.unpin.visible = true;
                 obj.pin.visible = false;
@@ -3723,19 +3733,9 @@ function SylvanCalendar() {
                 obj.unpin.visible = false;
                 obj.pin.visible = true;
             }
-            if (deliveryType == "Personal Instruction") {
-                if (isPinned) {
-                    obj.unpin.visible = true;
-                    obj.pin.visible = false;
-                }
-                else {
-                    obj.unpin.visible = false;
-                    obj.pin.visible = true;
-                }
-            }
             wjQuery(function () {
                 wjQuery.contextMenu({
-                    selector: 'span[uniqueId="' + uniqueId + '"], .student-placeholder',
+                    selector: 'span[uniqueId="' + uniqueId + '"]',
                     build: function ($trigger, e) {
                         return {
                             items: obj
