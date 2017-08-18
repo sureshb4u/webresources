@@ -4293,7 +4293,7 @@ function SylvanCalendar() {
                 var studentObj = makeupList.filter(function (obj) {
                     return obj.id == id;
                 });
-                if (studentObj.length == 1) {
+                if (studentObj.length) {
                     if (isForMakeup) {
                         objSession['hub_studentsessionid'] = studentObj[0].sessionId;
                         objSession["isForMakeup"] = true;
