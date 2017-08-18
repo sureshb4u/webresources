@@ -373,7 +373,7 @@ button{
     opacity: 0.5;
     display: block;
 }
-.student-placeholder{
+.student-placeholder-Personal-Instruction, .student-placeholder-Group-Facilitation, .student-placeholder-Group-Instruction{
     opacity: 0.5;
     display: block;
     text-align: left;
