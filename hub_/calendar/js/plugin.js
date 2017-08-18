@@ -4382,7 +4382,6 @@ function SylvanCalendar() {
 
                             // update All Students and teacher 
                             self.convertedStudentObj.push(studentObj[0]);
-                            self.populateTeacherEvent(self.convertedTeacherObj, true);
                             self.populateStudentEvent(self.convertedStudentObj, true);
                             self.draggable('draggable');
                             wjQuery("#makeup").dialog("close");
