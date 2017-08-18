@@ -1682,11 +1682,13 @@ function SylvanCalendar() {
         if (taExpanded) {
             taExpanded = !taExpanded; // to change the slide
             taExpanded ? wjQuery('.ta-pane').addClass('open') : wjQuery('.ta-pane').removeClass('open');
+            wjQuery('.ta-pane').css('opacity', '1');
             wjQuery('.ta-pane').animate(taExpanded ? { 'marginRight': '-15px' } : { marginRight: '-260px' }, 500);
         }
         sofExpanded = !sofExpanded;
         if (sofExpanded) {
             wjQuery('.ta-pane').hide();
+            wjQuery('.sof-pane').css('opacity', '1');
         }
         sofExpanded ? wjQuery('.sof-pane').addClass('open') : wjQuery('.sof-pane').removeClass('open');
         wjQuery('.sof-pane').animate(sofExpanded ? { 'marginRight': '-15px' } : { marginRight: '-260px' }, 500);
@@ -1713,10 +1715,12 @@ function SylvanCalendar() {
         if (sofExpanded) {
             sofExpanded = !sofExpanded;
             sofExpanded ? wjQuery('.sof-pane').addClass('open') : wjQuery('.sof-pane').removeClass('open');
+            wjQuery('.sof-pane').css('opacity', '1');
             wjQuery('.sof-pane').animate(sofExpanded ? { 'marginRight': '-15px' } : { marginRight: '-260px' }, 500);
         }
         taExpanded = !taExpanded;
         if (taExpanded) {
+            wjQuery('.ta-pane').css('opacity', '1');
             wjQuery('.sof-pane').hide();
         }
         taExpanded ? wjQuery('.ta-pane').addClass('open') : wjQuery('.ta-pane').removeClass('open');
@@ -3322,11 +3326,16 @@ function SylvanCalendar() {
                     scrollbar: true
                 });
             }, 300);
+            wjQuery(".excuse-from-timepicker-input").val('');
+            wjQuery(".excuse-to-timepicker-input").val('');
+            wjQuery(".excuse-datepicker-input").val('');
             wjQuery("#excuseModal").dialog({
                 modal: true
             });
-            wjQuery("#excuseModal").dialog('option', 'title', 'Excuse and MakeUp');
-            wjQuery("#excuseSave").click(function () {
+            wjQuery(".excuseSave").removeClass('reschedule').addClass('makeup');
+            wjQuery("#excuseModal").dialog('option', 'title', 'Add MakeUp');
+            wjQuery(".makeup").click(function () {
+
                 var flag = true;
                 if (selectedFromDate != '') {
                     objSession.hub_makeup_date = moment(moment(selectedFromDate).format('MM/DD/YYYY')).format('YYYY-MM-DD');
@@ -3352,6 +3361,7 @@ function SylvanCalendar() {
                     flag = false;
                 }
                 if (data.excuseAndMakeUpStudent(objSession) && flag) {
+                  wjQuery(".excuseSave").removeClass('makeup');
                     var index = self.convertedStudentObj.findIndex(function (x) {
                         return x.id == uniqueIds[0] &&
                                x.resourceId == uniqueIds[1] &&
@@ -3482,11 +3492,15 @@ function SylvanCalendar() {
                     scrollbar: true
                 });
             }, 300);
+            wjQuery(".excuse-from-timepicker-input").val('');
+            wjQuery(".excuse-to-timepicker-input").val('');
+            wjQuery(".excuse-datepicker-input").val('');
             wjQuery("#excuseModal").dialog({
                 modal: true
             });
+            wjQuery(".excuseSave").removeClass('makeup').addClass('reschedule');
             wjQuery("#excuseModal").dialog('option', 'title', 'Re-Schedule');
-            wjQuery("#excuseSave").click(function () {
+            wjQuery(".reschedule").click(function () {
                 var flag = true;
                 if (selectedFromDate != '') {
                     objNewSession.hub_session_date = moment(moment(selectedFromDate).format('MM/DD/YYYY')).format('YYYY-MM-DD');
@@ -3513,6 +3527,7 @@ function SylvanCalendar() {
                 }
                 var responseObj = data.rescheduleStudentSession(objPrevSession, objNewSession);
                 if (responseObj != undefined && flag) {
+                    wjQuery(".excuseSave").removeClass('reschedule');
                     wjQuery("#excuseModal").dialog("close");
                     var prevEventId = wjQuery(element).attr("eventid");
                     var prevEvent = self.calendar.fullCalendar('clientEvents', prevEventId);
@@ -3603,7 +3618,7 @@ function SylvanCalendar() {
                     }
                 }
                 obj.excuseAndMakeUp = {
-                    name: "Add Makeup",
+                    name: "Excuse with Makeup",
                     callback: function (key, options) {
                         self.excuseAndMakeUpStudent(options.$trigger[0]);
                     }
@@ -3995,8 +4010,15 @@ function SylvanCalendar() {
             var responseObj = data.saveStudenttoSession(objPrevSession, objNewSession);
             if (typeof responseObj == 'boolean') {
                 if (responseObj) {
-                    this.populateStudentEvent([newStudent], true);
-                    return responseObj;
+                    var index = this.convertedStudentObj.findIndex(function (x) {
+                        return x.id == prevStudent.id &&
+                               x.resourceId == prevStudent.resourceId &&
+                               moment(x.startHour).format('h') == moment(prevStudent.startHour).format('h');
+                    });
+                    if (index != -1) {
+                        this.convertedStudentObj[index] = newStudent;
+                        this.populateStudentEvent([newStudent], true);
+                    } 
                 }
             }
             else if (typeof responseObj == 'object' && responseObj != null) {
