@@ -4446,18 +4446,17 @@ function SylvanCalendar() {
     }
 
     this.removeTeacher = function (event) {
+        var removeTeacherObj = {};
         var teacherId = wjQuery(event).attr("uniqueid").split("_")[0];
-        var saveTeacherObj = {};
         var index = this.convertedTeacherObj.map(function (x) {
             return x.id;
         }).indexOf(teacherId);
         var teacherObj = this.convertedTeacherObj[index];
-        saveTeacherObj['hub_staff_scheduleid'] = teacherObj["scheduleId"];
-        if (data.removeTeacher(saveTeacherObj)) {
-            this.convertedTeacherObj.splice(index, 1);
-
+        removeTeacherObj['hub_staff_scheduleid'] = teacherObj["scheduleId"];
+        if (data.removeTeacher(removeTeacherObj)) {
+            // this.convertedTeacherObj.splice(index, 1);
             // remove taecher and move it to the TA pane
-        } else {
+        }else{
             // Dont remove taecher from event in which he is assigned
         }
     }

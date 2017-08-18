@@ -5226,7 +5226,7 @@ function Data(){
     return true;
   }
 
-  this.removeTeacher = function(){
+  this.removeTeacher = function(removeTeacherObj){
     return true;
   }
 }
