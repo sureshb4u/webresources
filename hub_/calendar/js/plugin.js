@@ -1869,7 +1869,8 @@ function SylvanCalendar() {
                     is1to1: val["hub_is_1to1"],
                     programId: val['aprogram_x002e_hub_programid'],
                     serviceId: val['_hub_service_value'],
-                    sessionId: val['hub_studentsessionid']
+                    sessionId: val['hub_studentsessionid'],
+                    sessiontype: val['hub_sessiontype']
                 }
                 if (val.hasOwnProperty('_hub_resourceid_value')) {
                     obj.resourceId = val['_hub_resourceid_value'];
@@ -1921,8 +1922,7 @@ function SylvanCalendar() {
                     serviceId: val['aenrollment_x002e_hub_service'],
                     enrollmentId: val['aenrollment_x002e_hub_enrollmentid'],
                     isFromMasterSchedule: true,
-                    is1to1: false,
-                    sessiontype: val['hub_sessiontype']
+                    is1to1: false
                 }
                 if (obj.deliveryType == 'Personal Instruction') {
                     var pinnedStudent = self.convertedPinnedList.filter(function (x) {
