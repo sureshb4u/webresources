@@ -4478,15 +4478,79 @@ function SylvanCalendar() {
 
     this.removeTeacher = function (event) {
         var removeTeacherObj = {};
+        var uniqueId = wjQuery(event).attr('uniqueId');
+        var startTime = uniqueId.split('_')[2];
         var teacherId = wjQuery(event).attr("uniqueid").split("_")[0];
-        var index = this.convertedTeacherObj.map(function (x) {
-            return x.id;
-        }).indexOf(teacherId);
+        var index = this.convertedTeacherObj.findIndex(function (x) {
+            return x.id == teacherId &&
+                   x.startHour.getTime() == new Date(startTime).getTime();
+        });
         var teacherObj = this.convertedTeacherObj[index];
         removeTeacherObj['hub_staff_scheduleid'] = teacherObj["scheduleId"];
         if (data.removeTeacher(removeTeacherObj)) {
-            // this.convertedTeacherObj.splice(index, 1);
-            // remove taecher and move it to the TA pane
+            var prevEventId = wjQuery(event).attr("eventid");
+                var prevEvent = self.calendar.fullCalendar('clientEvents', prevEventId);
+            if (prevEvent) {
+                var eventTitleHTML = wjQuery(prevEvent[0].title);
+                for (var i = 0; i < eventTitleHTML.length; i++) {
+                    if (wjQuery(eventTitleHTML[i]).attr('value') == teacherId) {
+                        eventTitleHTML.splice(i, 1);
+                    }
+                }
+                if (eventTitleHTML.prop('outerHTML') != undefined) {
+                    if (eventTitleHTML.length == 1) {
+                        if (prevEvent[0].teachers.length == 1) {
+                            prevEvent[0].title = "<span class='placeholder'>Teacher name</span>";
+                            prevEvent[0].title += eventTitleHTML.prop('outerHTML');
+                        } else {
+                            prevEvent[0].title = eventTitleHTML.prop('outerHTML');
+                        }
+                    } else {
+                        prevEvent[0].title = "";
+                        if (prevEvent[0].teachers.length == 1) {
+                            prevEvent[0].title += "<span class='placeholder'>Teacher name</span>";
+                        }
+                        for (var i = 0; i < eventTitleHTML.length; i++) {
+                            prevEvent[0].title += eventTitleHTML[i].outerHTML;
+                        }
+
+                        // Teacher conflict removal               
+                        if (prevEvent[0].teachers.length == 2) {
+                            var msgIndex = prevEvent[0].conflictMsg.map(function (x) {
+                                return x;
+                            }).indexOf(0);
+                            if (msgIndex > -1) {
+                                prevEvent[0].conflictMsg.splice(msgIndex, 1);
+                            }
+                            self.updateConflictMsg(prevEvent[0]);
+                            if (!prevEvent[0].title.includes('<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>')) {
+                                prevEvent[0].title += '<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>';
+                                self.addContext("", 'studentPlaceholder', true, prevEvent[0].deliveryType);
+                            }
+                        }
+                    }
+                    this.calendar.fullCalendar('updateEvent', prevEvent);
+                    var removeTeacherIndex = prevEvent[0].teachers.map(function (x) {
+                        return x.id;
+                    }).indexOf(teacherId);
+                    prevEvent[0].teachers.splice(removeTeacherIndex, 1);
+                    if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "student-placeholder-"+prevEvent[0].deliveryType)) ||
+                       (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder" && eventTitleHTML[1].className == "student-placeholder-"+prevEvent[0].deliveryType) ||
+                       (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder" && eventTitleHTML[2].className == "student-placeholder-"+prevEvent[0].deliveryType)) {
+                        for (var i = 0; i < this.eventList.length; i++) {
+                            if (this.eventList[i].id == prevEventId)
+                                this.eventList.splice(i, 1);
+                        }
+                        this.calendar.fullCalendar('removeEvents', prevEventId);
+                    }
+                } else {
+                    for (var i = 0; i < this.eventList.length; i++) {
+                        if (this.eventList[i].id == prevEventId)
+                            this.eventList.splice(i, 1);
+                    }
+                    this.calendar.fullCalendar('removeEvents', prevEventId);
+                }
+            }
         }else{
             // Dont remove taecher from event in which he is assigned
         }
