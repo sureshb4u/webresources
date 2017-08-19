@@ -3353,8 +3353,9 @@ function SylvanCalendar() {
                 draggable: false,
                 resizable: false
             });
+            wjQuery(".excuseSave").removeClass('reschedule').addClass('makeup');
             wjQuery("#excuseModal").dialog('option', 'title', 'Add MakeUp');
-            wjQuery(".excuseSave").off('click').on('click',function () {
+            wjQuery(".makeup").off('click').on('click',function () {
 
                 var flag = true;
                 if (selectedFromDate != '') {
@@ -3381,6 +3382,7 @@ function SylvanCalendar() {
                     flag = false;
                 }
                 if (data.excuseAndMakeUpStudent(objSession) && flag) {
+                  wjQuery(".excuseSave").removeClass('makeup');
                     var index = self.convertedStudentObj.findIndex(function (x) {
                         return x.id == uniqueIds[0] &&
                                x.resourceId == uniqueIds[1] &&
@@ -3483,18 +3485,18 @@ function SylvanCalendar() {
 
             var objNewSession = {};
             objNewSession['hub_resourceid@odata.bind'] = null;
-            wjQuery("#studentNameofReschedule").text(objStudent[0]['name']);
-            wjQuery(".reschedule-datepicker-input").datepicker({
+            wjQuery("#studentNameofExcuse").text(objStudent[0]['name']);
+            wjQuery(".excuse-datepicker-input").datepicker({
                 minDate: self.calendar.fullCalendar('getDate'),
                 format: 'mm/dd/yyyy'
             });
             var selectedFromDate;
-            wjQuery(".reschedule-datepicker-input").on("change", function () {
+            wjQuery(".excuse-datepicker-input").on("change", function () {
                 selectedFromDate = wjQuery(this).val();
             });
             wjQuery('#error_block').text('');
             setTimeout(function () {
-                wjQuery(".reschedule-from-timepicker-input").timepicker({
+                wjQuery(".excuse-from-timepicker-input").timepicker({
                     timeFormat: 'h:mm p',
                     interval: 60,
                     minTime: '8',
@@ -3503,7 +3505,7 @@ function SylvanCalendar() {
                     dropdown: true,
                     scrollbar: true
                 });
-                wjQuery(".reschedule-to-timepicker-input").timepicker({
+                wjQuery(".excuse-to-timepicker-input").timepicker({
                     timeFormat: 'h:mm p',
                     interval: 60,
                     minTime: '9',
@@ -3513,16 +3515,17 @@ function SylvanCalendar() {
                     scrollbar: true
                 });
             }, 300);
-            wjQuery(".reschedule-from-timepicker-input").val('');
-            wjQuery(".reschedule-to-timepicker-input").val('');
-            wjQuery(".reschedule-datepicker-input").val('');
-            wjQuery("#rescheduleModal").dialog({
+            wjQuery(".excuse-from-timepicker-input").val('');
+            wjQuery(".excuse-to-timepicker-input").val('');
+            wjQuery(".excuse-datepicker-input").val('');
+            wjQuery("#excuseModal").dialog({
                 modal: true,
                 draggable: false,
                 resizable: false
             });
-            wjQuery("#rescheduleModal").dialog('option', 'title', 'Re-Schedule');
-            wjQuery(".rescheduleSave").off('click').on('click',function () {
+            wjQuery(".excuseSave").removeClass('makeup').addClass('reschedule');
+            wjQuery("#excuseModal").dialog('option', 'title', 'Re-Schedule');
+            wjQuery(".reschedule").off('click').on('click',function () {
                 var flag = true;
                 if (selectedFromDate != '') {
                     objNewSession.hub_session_date = moment(moment(selectedFromDate).format('MM/DD/YYYY')).format('YYYY-MM-DD');
@@ -3530,14 +3533,14 @@ function SylvanCalendar() {
                 else {
                     flag = false;
                 }
-                if (wjQuery(".reschedule-from-timepicker-input").val() != '' && flag) {
-                    objNewSession.hub_start_time = self.convertToMinutes(wjQuery(".reschedule-from-timepicker-input").val());
+                if (wjQuery(".excuse-from-timepicker-input").val() != '' && flag) {
+                    objNewSession.hub_start_time = self.convertToMinutes(wjQuery(".excuse-from-timepicker-input").val());
                 }
                 else {
                     flag = false;
                 }
-                if (wjQuery(".reschedule-from-timepicker-input").val() != '' && flag) {
-                    objNewSession.hub_end_time = self.convertToMinutes(wjQuery(".reschedule-to-timepicker-input").val());
+                if (wjQuery(".excuse-from-timepicker-input").val() != '' && flag) {
+                    objNewSession.hub_end_time = self.convertToMinutes(wjQuery(".excuse-to-timepicker-input").val());
                     if (objNewSession.hub_end_time <= objNewSession.hub_start_time) {
                         wjQuery('#error_block').text('End Time is less than or equal to Start Time');
                         wjQuery('#error_block').css('color', 'red');
@@ -3549,7 +3552,8 @@ function SylvanCalendar() {
                 }
                 var responseObj = data.rescheduleStudentSession(objPrevSession, objNewSession);
                 if (responseObj != undefined && flag) {
-                    wjQuery("#rescheduleModal").dialog("close");
+                    wjQuery(".excuseSave").removeClass('reschedule');
+                    wjQuery("#excuseModal").dialog("close");
                     var prevEventId = wjQuery(element).attr("eventid");
                     var prevEvent = self.calendar.fullCalendar('clientEvents', prevEventId);
                     if (prevEvent) {
