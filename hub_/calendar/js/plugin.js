@@ -4409,6 +4409,25 @@ function SylvanCalendar() {
                 }
             });
         }
+        else{
+            wjQuery("#makeup > .makeup-lst").html('No Students found');
+            wjQuery("#makeup").dialog({
+                resizable: false,
+                height: "auto",
+                width: 400,
+                modal: true,
+                buttons: {
+                    Cancel: function () {
+                        wjQuery(this).dialog("close");
+                    }
+                }
+            });
+            if (isForMakeup) {
+                wjQuery("#makeup").dialog('option', 'title', 'Add Makup');
+            } else {
+                wjQuery("#makeup").dialog('option', 'title', 'Add Float');
+            }
+        }
     }
 
     this.convertMakeupNFloatObj = function (makeupList) {
