@@ -1026,7 +1026,7 @@ function SylvanCalendar() {
             return x.id;
         }).indexOf(teacherId);
 
-        if (prevEvent) {
+        if (prevEvent.length) {
             var eventTitleHTML = wjQuery(prevEvent[0].title);
             for (var i = 0; i < eventTitleHTML.length; i++) {
                 if (wjQuery(eventTitleHTML[i]).attr('value') == teacherId) {
