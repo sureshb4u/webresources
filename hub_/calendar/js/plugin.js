@@ -1874,7 +1874,8 @@ function SylvanCalendar() {
                     programId: val['aprogram_x002e_hub_programid'],
                     serviceId: val['_hub_service_value'],
                     sessionId: val['hub_studentsessionid'],
-                    sessiontype: val['hub_sessiontype']
+                    sessiontype: val['hub_sessiontype'],
+                    sessionStatus: val['hub_session_status']
                 }
                 if (val.hasOwnProperty('_hub_resourceid_value')) {
                     obj.resourceId = val['_hub_resourceid_value'];
@@ -4037,12 +4038,17 @@ function SylvanCalendar() {
                 objPrevSession['hub_end_time'] = this.convertToMinutes(moment(prevStudent.end).format("h:mm A"));
                 objPrevSession['hub_resourceid@odata.bind'] = prevStudent.resourceId;
 
-                objNewSession['hub_sessiontype'] = 1;
+                objPrevSession['hub_sessiontype'] = 1;
+                objPrevSession['hub_session_status'] = prevStudent['sessionStatus'];
+                if (prevStudent['sessiontype'] != undefined) {
+                    objPrevSession['hub_sessiontype'] = prevStudent['sessiontype'];
+                }
 
+                objNewSession['hub_sessiontype'] = 1;
                 if (prevStudent['sessiontype'] != undefined) {
                     objNewSession['hub_sessiontype'] = prevStudent['sessiontype'];
                 }
-
+                objNewSession['hub_session_status'] = prevStudent['sessionStatus'];
                 objNewSession['hub_studentsessionid'] = prevStudent['sessionId'];
                 objNewSession['hub_is_1to1'] = newStudent['is1to1'];
             }
@@ -4109,7 +4115,8 @@ function SylvanCalendar() {
                 h -= 12;
             }
             var objTeacher = this.teacherSchedule.filter(function (x) {
-                return x._hub_staff_value == teacher.id;
+                return x._hub_staff_value == teacher.id &&
+                       x.hub_start_time == this.convertToMinutes(moment(prevTeacher.start).format("h:mm A"));
                 /*&&
                  x._hub_resourceid_value == teacher.resourceId &&
                  parseInt(x['hub_start_time@OData.Community.Display.V1.FormattedValue'].split(':')[0]) == h;
@@ -4144,7 +4151,8 @@ function SylvanCalendar() {
                         objTeacher[0]['hub_end_time'] = objNewSession['hub_end_time'];
                         objTeacher[0]['_hub_resourceid_value'] = responseObj['hub_resourceid@odata.bind'];
                         var index = this.teacherSchedule.findIndex(function (x) {
-                            return x._hub_staff_value == teacher.id;
+                            return x._hub_staff_value == teacher.id &&
+                                x.hub_start_time == this.convertToMinutes(moment(prevTeacher.start).format("h:mm A"));
                             /*&&
                               x._hub_resourceid_value == teacher.resourceId &&
                               parseInt(x['hub_start_time@OData.Community.Display.V1.FormattedValue'].split(':')[0]) == h;
@@ -4319,9 +4327,15 @@ function SylvanCalendar() {
         var idArry = wjQuery(placeholderEvent).prev("span").attr("uniqueid").split('_');
         if (makeupList.length) {
             var list = "";
-            wjQuery.each(makeupList, function (k, v) {
-                list += "<li id='" + v.sessionId + "' class='makeup-item' >" + v.name + ", " + v.grade + "</li>";
-            });
+            if (isForMakeup) {
+                wjQuery.each(makeupList, function (k, v) {
+                    list += "<li id='" + v.sessionId + "' class='makeup-item' >" + v.name + ", " + v.grade + "</li>";
+                });
+            } else {
+                wjQuery.each(makeupList, function (k, v) {
+                    list += "<li id='" + v.id + "' class='makeup-item' >" + v.name + ", " + v.grade + "</li>";
+                });
+            }
             wjQuery("#makeup > .makeup-lst").html(list);
             wjQuery("#makeup").dialog({
                 resizable: false,
@@ -4348,9 +4362,16 @@ function SylvanCalendar() {
                 var id = wjQuery(this).attr("id");
                 var nameNGrade = wjQuery(this).text();
                 var start = self.convertToMinutes(moment(idArry[2]).format("h:mm A"));
-                var studentObj = makeupList.filter(function (obj) {
-                    return obj.sessionId == id;
-                });
+                var studentObj = [];
+                if (isForMakeup) {
+                    studentObj = makeupList.filter(function (obj) {
+                        return obj.sessionId == id;
+                    });
+                }else{
+                    studentObj = makeupList.filter(function (obj) {
+                        return obj.id == id;
+                    });
+                }
                 if (studentObj.length) {
                     if (isForMakeup) {
                         objSession['hub_studentsessionid'] = studentObj[0].sessionId;
@@ -4395,6 +4416,7 @@ function SylvanCalendar() {
                             studentObj[0]['end'] = new Date(new Date(idArry[2]).setHours(new Date(idArry[2]).getHours() + 1));
                             studentObj[0]['sessionId'] = responseObj['hub_studentsessionid'];
                             studentObj[0]['sessiontype'] = responseObj['hub_sessiontype'];
+                            studentObj[0]['sessionStatus'] = responseObj['hub_session_status'];
 
                             // update All Students and teacher 
                             self.convertedStudentObj.push(studentObj[0]);
@@ -4459,7 +4481,9 @@ function SylvanCalendar() {
                 is1to1: val["hub_is_1to1"],
                 programId: val['aprogram_x002e_hub_programid'],
                 serviceId: val['_hub_service_value'],
-                sessionId: val['hub_studentsessionid']
+                enrollmentId: val['hub_enrollmentid']
+                sessionId: val['hub_studentsessionid'],
+                sessionStatus : val['hub_session_status']
             }
 
             if (val['_hub_enrollment_value'] != undefined) {
