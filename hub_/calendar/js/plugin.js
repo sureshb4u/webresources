@@ -722,6 +722,7 @@ function SylvanCalendar() {
             newScheduleObj._hub_staff_value = teacher.id;
             // update teacher schedule object
             this.teacherSchedule.push(newScheduleObj);
+            return responseObj;
         }
     };
 
@@ -1004,8 +1005,11 @@ function SylvanCalendar() {
                 deliveryType: this.getResourceObj(resource.id).deliveryType,
                 locationId: teacher[0].locationId,
             };
+            var responseObj = this.saveTAtoSession(teacherObj);
+            if(responseObj != undefined &&responseObj != null){
+                teacherObj.scheduleId = responseObj['hub_staff_scheduleid'];
+            }
             this.convertedTeacherObj.push(teacherObj);
-            this.saveTAtoSession(teacherObj);
             t.populateTeacherEvent([teacherObj], false);
         }
     }
