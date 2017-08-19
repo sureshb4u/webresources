@@ -3344,11 +3344,13 @@ function SylvanCalendar() {
             wjQuery(".excuse-to-timepicker-input").val('');
             wjQuery(".excuse-datepicker-input").val('');
             wjQuery("#excuseModal").dialog({
-                modal: true
+                modal: true,
+                draggable: false,
+                resizable: false
             });
             wjQuery(".excuseSave").removeClass('reschedule').addClass('makeup');
             wjQuery("#excuseModal").dialog('option', 'title', 'Add MakeUp');
-            wjQuery(".makeup").click(function () {
+            wjQuery(".makeup").off('click').on('click',function () {
 
                 var flag = true;
                 if (selectedFromDate != '') {
@@ -3512,11 +3514,13 @@ function SylvanCalendar() {
             wjQuery(".excuse-to-timepicker-input").val('');
             wjQuery(".excuse-datepicker-input").val('');
             wjQuery("#excuseModal").dialog({
-                modal: true
+                modal: true,
+                draggable: false,
+                resizable: false
             });
             wjQuery(".excuseSave").removeClass('makeup').addClass('reschedule');
             wjQuery("#excuseModal").dialog('option', 'title', 'Re-Schedule');
-            wjQuery(".reschedule").click(function () {
+            wjQuery(".reschedule").off('click').on('click',function () {
                 var flag = true;
                 if (selectedFromDate != '') {
                     objNewSession.hub_session_date = moment(moment(selectedFromDate).format('MM/DD/YYYY')).format('YYYY-MM-DD');
