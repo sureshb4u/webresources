@@ -3160,6 +3160,12 @@ function SylvanCalendar() {
                             return x.id;
                         }).indexOf(wjQuery(element).attr('value'));
                         prevEvent[0].students.splice(removeStudentIndex, 1);
+                        if (this.getResourceObj(uniqueIds[1])['capacity'] > prevEvent[0].students.length) {
+                            if (!prevEvent[0].title.includes('<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>')) {
+                                prevEvent[0].title += '<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>';
+                                this.addContext("", 'studentPlaceholder', true, prevEvent[0].deliveryType);
+                            }
+                        }
                         if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "student-placeholder-"+prevEvent[0].deliveryType)) ||
                           (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder" && eventTitleHTML[1].className == "student-placeholder-"+prevEvent[0].deliveryType) ||
                           (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder" && eventTitleHTML[2].className == "student-placeholder-"+prevEvent[0].deliveryType)) {
@@ -3177,10 +3183,6 @@ function SylvanCalendar() {
                                 this.eventList.splice(i, 1);
                         }
                         this.calendar.fullCalendar('removeEvents', prevEventId);
-                    }
-                    if (!prevEvent[0].title.includes('<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>')) {
-                        prevEvent[0].title += '<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>';
-                        self.addContext("", 'studentPlaceholder', true, prevEvent[0].deliveryType);
                     }
                 }
             }
@@ -3248,6 +3250,12 @@ function SylvanCalendar() {
                             return x.id;
                         }).indexOf(wjQuery(element).attr('value'));
                         prevEvent[0].students.splice(removeStudentIndex, 1);
+                        if (this.getResourceObj(uniqueIds[1])['capacity'] > prevEvent[0].students.length) {
+                            if (!prevEvent[0].title.includes('<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>')) {
+                                prevEvent[0].title += '<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>';
+                                this.addContext("", 'studentPlaceholder', true, prevEvent[0].deliveryType);
+                            }
+                        }
                         if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "student-placeholder-"+prevEvent[0].deliveryType)) ||
                           (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder" && eventTitleHTML[1].className == "student-placeholder-"+prevEvent[0].deliveryType) ||
                           (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder" && eventTitleHTML[2].className == "student-placeholder-"+prevEvent[0].deliveryType)) {
@@ -3265,10 +3273,6 @@ function SylvanCalendar() {
                                 this.eventList.splice(i, 1);
                         }
                         this.calendar.fullCalendar('removeEvents', prevEventId);
-                    }
-                    if (!prevEvent[0].title.includes('<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>')) {
-                        prevEvent[0].title += '<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>';
-                        self.addContext("", 'studentPlaceholder', true, prevEvent[0].deliveryType);
                     }
                 }
             }
@@ -3403,6 +3407,12 @@ function SylvanCalendar() {
                                 return x.id;
                             }).indexOf(wjQuery(element).attr('value'));
                             prevEvent[0].students.splice(removeStudentIndex, 1);
+                             if (this.getResourceObj(uniqueIds[1])['capacity'] > prevEvent[0].students.length) {
+                                if (!prevEvent[0].title.includes('<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>')) {
+                                    prevEvent[0].title += '<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>';
+                                    this.addContext("", 'studentPlaceholder', true, prevEvent[0].deliveryType);
+                                }
+                            }
                             if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "student-placeholder-"+prevEvent[0].deliveryType)) ||
                               (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder" && eventTitleHTML[1].className == "student-placeholder-"+prevEvent[0].deliveryType) ||
                               (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder" && eventTitleHTML[2].className == "student-placeholder-"+prevEvent[0].deliveryType)) {
@@ -3420,10 +3430,6 @@ function SylvanCalendar() {
                                     self.eventList.splice(i, 1);
                             }
                             self.calendar.fullCalendar('removeEvents', prevEventId);
-                        }
-                        if (!prevEvent[0].title.includes('<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>')) {
-                            prevEvent[0].title += '<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>';
-                            self.addContext("", 'studentPlaceholder', true, prevEvent[0].deliveryType);
                         }
                     }
                 }
@@ -3561,6 +3567,12 @@ function SylvanCalendar() {
                                 return x.id;
                             }).indexOf(wjQuery(element).attr('value'));
                             prevEvent[0].students.splice(removeStudentIndex, 1);
+                            if (this.getResourceObj(uniqueIds[1])['capacity'] > prevEvent[0].students.length) {
+                                if (!prevEvent[0].title.includes('<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>')) {
+                                    prevEvent[0].title += '<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>';
+                                    this.addContext("", 'studentPlaceholder', true, prevEvent[0].deliveryType);
+                                }
+                            }
                             if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "student-placeholder-"+prevEvent[0].deliveryType)) ||
                               (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder" && eventTitleHTML[1].className == "student-placeholder-"+prevEvent[0].deliveryType) ||
                               (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder" && eventTitleHTML[2].className == "student-placeholder-"+prevEvent[0].deliveryType)) {
@@ -3578,10 +3590,6 @@ function SylvanCalendar() {
                                     self.eventList.splice(i, 1);
                             }
                             self.calendar.fullCalendar('removeEvents', prevEventId);
-                        }
-                        if (!prevEvent[0].title.includes('<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>')) {
-                            prevEvent[0].title += '<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>';
-                            self.addContext("", 'studentPlaceholder', true, prevEvent[0].deliveryType);
                         }
                     }
                 }
