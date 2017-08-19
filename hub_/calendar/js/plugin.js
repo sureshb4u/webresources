@@ -4312,7 +4312,7 @@ function SylvanCalendar() {
         if (makeupList.length) {
             var list = "";
             wjQuery.each(makeupList, function (k, v) {
-                list += "<li id='" + v.id + "' class='makeup-item' >" + v.name + ", " + v.grade + "</li>";
+                list += "<li id='" + v.sessionId + "' class='makeup-item' >" + v.name + ", " + v.grade + "</li>";
             });
             wjQuery("#makeup > .makeup-lst").html(list);
             wjQuery("#makeup").dialog({
@@ -4341,7 +4341,7 @@ function SylvanCalendar() {
                 var nameNGrade = wjQuery(this).text();
                 var start = self.convertToMinutes(moment(idArry[2]).format("h:mm A"));
                 var studentObj = makeupList.filter(function (obj) {
-                    return obj.id == id;
+                    return obj.sessionId == id;
                 });
                 if (studentObj.length) {
                     if (isForMakeup) {
@@ -4352,7 +4352,7 @@ function SylvanCalendar() {
                         objSession["isForMakeup"] = false;
                     }
                     objSession["hub_enrollment@odata.bind"] = studentObj[0]["enrollmentId"];
-                    objSession["hub_student@odata.bind"] = id;
+                    objSession["hub_student@odata.bind"] = studentObj[0].id;
                     objSession["hub_service@odata.bind"] = studentObj[0]["serviceId"];
                     objSession["hub_center@odata.bind"] = studentObj[0]["locationId"];
                     objSession["hub_session_date"] = moment(new Date(idArry[2])).format("YYYY-MM-DD");
@@ -4367,9 +4367,9 @@ function SylvanCalendar() {
                     var eventObj = self.calendar.fullCalendar('clientEvents', eventId);
                     var callSave = false;
                     if (eventObj[0].hasOwnProperty("students") && eventObj[0].students.length > 0) {
-                        var stdIndex = eventObj[0].students.map(function (x) {
-                            return x.id;
-                        }).indexOf(id);
+                        var stdIndex = eventObj[0].students.findIndex(function (x) {
+                            return x.id == studentObj[0].id;
+                        });
                         if (stdIndex == -1) {
                             callSave = true;
                         }
@@ -4379,7 +4379,7 @@ function SylvanCalendar() {
                     if (callSave) {
                         var responseObj = data.saveMakeupNFloat(objSession);
                         if (responseObj != null) {
-                            var uniqueid = id + "_" + idArry[1] + "_" + idArry[2];
+                            var uniqueid = studentObj[0].id + "_" + idArry[1] + "_" + idArry[2];
                             // Update New student Session
                             studentObj[0]['resourceId'] = idArry[1];
                             studentObj[0]['start'] = new Date(idArry[2]);
