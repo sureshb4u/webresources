@@ -1023,10 +1023,8 @@ function SylvanCalendar() {
         var prevEventId = wjQuery(elm).attr("eventid");
         var uniqueId = wjQuery(elm).attr('uniqueId');
         var prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
-        // var index = t.convertedTeacherObj.map(function (x) {
-        //     return x.id;
-        // }).indexOf(teacherId);
 
+        // get teacher index based on prev resourceId and start time
         var index = t.convertedTeacherObj.findIndex(function (x) {
           return x.id == teacherId &&
               x.resourceId == uniqueId.split('_')[1] &&
@@ -1175,7 +1173,7 @@ function SylvanCalendar() {
         var index = t.convertedStudentObj.findIndex(function (x) {
             return x.id == stuId &&
                     x.resourceId == uniqueId.split('_')[1] &&
-                    moment(x.startHour).format("h:mm A") == moment(startTime).format("h:mm A");
+                    moment(x.startHour).format("h:mm A") == moment(uniqueId.split('_')[1]).format("h:mm A");
         });
 
         if (resource.id + date != prevEventId) {
