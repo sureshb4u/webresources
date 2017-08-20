@@ -4444,7 +4444,7 @@ function SylvanCalendar() {
                             studentObj[0]['sessionId'] = responseObj['hub_studentsessionid'];
                             studentObj[0]['sessiontype'] = responseObj['hub_sessiontype'];
                             studentObj[0]['sessionStatus'] = responseObj['hub_session_status'];
-
+                            studentObj[0]['sessionDate'] = responseObj['hub_session_date'];
                             // update All Students and teacher 
                             self.convertedStudentObj.push(studentObj[0]);
                             self.populateStudentEvent(self.convertedStudentObj, true);
