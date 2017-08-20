@@ -1009,7 +1009,7 @@ function SylvanCalendar() {
                 teacherObj.scheduleId = responseObj['hub_staff_scheduleid'];
             }
             this.convertedTeacherObj.push(teacherObj);
-            t.populateTeacherEvent([teacherObj], false);
+            t.populateTeacherEvent([teacherObj], true);
         }
     }
 
@@ -4505,12 +4505,17 @@ function SylvanCalendar() {
                 subject: val['aprogram_x002e_hub_areaofinterest@OData.Community.Display.V1.FormattedValue'],
                 subjectId: val['aprogram_x002e_hub_areaofinterest'],
                 subjectColorCode: val['aprogram_x002e_hub_color'],
-                is1to1: val["hub_is_1to1"],
                 programId: val['aprogram_x002e_hub_programid'],
                 serviceId: val['_hub_service_value'],
                 enrollmentId: val['hub_enrollmentid'],
                 sessionId: val['hub_studentsessionid'],
                 sessionStatus : val['hub_session_status']
+            }
+
+            if(val["hub_is_1to1"] == undefined){
+                obj['is1to1'] = false;
+            }else{
+                obj['is1to1'] = val["hub_is_1to1"];
             }
 
             if (val['_hub_enrollment_value'] != undefined) {
