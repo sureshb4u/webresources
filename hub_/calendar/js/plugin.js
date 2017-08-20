@@ -693,8 +693,7 @@ function SylvanCalendar() {
 
                 objSession['hub_start_time'] = this.convertToMinutes(moment(student[0]['start']).format("h:mm A"));
                 objSession['hub_end_time'] = this.convertToMinutes(moment(student[0]['end']).format("h:mm A"));
-
-                data.saveSOFtoSession(objNewSession, objSession);
+                return data.saveSOFtoSession(objNewSession, objSession);
             }
         }
     };
@@ -1153,8 +1152,19 @@ function SylvanCalendar() {
             student[0].resourceId = resource.id;
             // student[0].deliveryType = t.getResourceObj(resource.id)['deliveryType'];
             // student[0].deliveryTypeId = t.getResourceObj(resource.id)['deliveryTypeId'];
+            var responseObj = this.saveSOFtoSession(student, prevStudent);
+            if (typeof (responseObj) == 'boolean') {
+              if (responseObj) {
+                  // var txt = wjQuery(element)[0].innerHTML;
+                  // wjQuery(element).html("<img src='/webresources/hub_/calendar/images/pin.png'/>" + txt);
+                  // wjQuery(element).attr('pinnedId', objPinnedStudent.hub_sch_pinned_students_teachersid);
+              }
+            }else if (typeof (responseObj) == 'object') {
+                if (responseObj != undefined) {
+                  student[0].sessionId = responseObj['hub_studentsessionid']; 
+                }
+            }
             this.convertedStudentObj.push(student[0]);
-            this.saveSOFtoSession(student, prevStudent);
             t.populateStudentEvent(student, true);
         }
     }
@@ -1173,7 +1183,7 @@ function SylvanCalendar() {
         var index = t.convertedStudentObj.findIndex(function (x) {
             return x.id == stuId &&
                     x.resourceId == uniqueId.split('_')[1] &&
-                    moment(x.startHour).format("h:mm A") == moment(uniqueId.split('_')[1]).format("h:mm A");
+                    moment(x.startHour).format("h:mm A") == moment(startTime).format("h:mm A");
         });
 
         if (resource.id + date != prevEventId) {
