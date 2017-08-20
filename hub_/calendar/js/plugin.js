@@ -3656,6 +3656,16 @@ function SylvanCalendar() {
                         self.moveStudentToSOF(options.$trigger[0]);
                     }
                 }
+              wjQuery(function () {
+                  wjQuery.contextMenu({
+                      selector: 'span[uniqueId="' + uniqueId + '"]',
+                      build: function ($trigger, e) {
+                          return {
+                              items: obj
+                          };
+                      }
+                  });
+              });
             }
             if (deliveryType == "Group Facilitation") {
                 obj.reschedule = {
@@ -3676,6 +3686,17 @@ function SylvanCalendar() {
                         self.moveStudentToSOF(options.$trigger[0]);
                     }
                 }
+
+                wjQuery(function () {
+                    wjQuery.contextMenu({
+                        selector: 'span[uniqueId="' + uniqueId + '"]',
+                        build: function ($trigger, e) {
+                            return {
+                                items: obj
+                            };
+                        }
+                    });
+                });
             }
             /*obj.cancel = {
               name: "Cancel",
@@ -3693,16 +3714,6 @@ function SylvanCalendar() {
                     obj.pin.visible = true;
                 }
             }
-            wjQuery(function () {
-                wjQuery.contextMenu({
-                    selector: 'span[uniqueId="' + uniqueId + '"]',
-                    build: function ($trigger, e) {
-                        return {
-                            items: obj
-                        };
-                    }
-                });
-            });
         } else if (labelFor == 'teacher') {
             obj.pin = {
                 "name": "Pin",
