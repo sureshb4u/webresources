@@ -2429,8 +2429,10 @@ function SylvanCalendar() {
                         }
                         if (event[k].students != undefined) {
                             if (event[k].students.length < resourceObj["capacity"] || resourceObj["capacity"] == undefined) {
-                                event[k].title += '<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>';
-                                self.addContext("", 'studentPlaceholder', true, event[k].deliveryType);
+                                if (!event[k].title.includes('<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>')){
+                                  event[k].title += '<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>';
+                                  self.addContext("", 'studentPlaceholder', true, event[k].deliveryType);
+                                }
                                 // Conflict removal 
                                 // Capacity conflict reamoval
                                 var msgIndex = event[k].conflictMsg.map(function (y) {
@@ -3588,7 +3590,7 @@ function SylvanCalendar() {
                       self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
                       self.convertedStudentObj.splice(index, 1);
                     }
-                    
+
                     wjQuery("#excuseModal").dialog("close");
                     var prevEventId = wjQuery(element).attr("eventid");
                     var prevEvent = self.calendar.fullCalendar('clientEvents', prevEventId);
