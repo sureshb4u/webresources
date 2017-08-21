@@ -1182,8 +1182,8 @@ function SylvanCalendar() {
 
         var index = t.convertedStudentObj.findIndex(function (x) {
             return x.id == stuId &&
-                    x.resourceId == uniqueId.split('_')[1] &&
-                    moment(x.startHour).format("h:mm A") == moment(startTime).format("h:mm A");
+                   x.resourceId == uniqueId.split('_')[1] &&
+                   x.startHour.getTime() == new Date(startTime).getTime();
         });
 
         if (resource.id + date != prevEventId) {
@@ -3105,14 +3105,10 @@ function SylvanCalendar() {
 
     this.omitStudentFromSession = function (element) {
         var uniqueIds = wjQuery(element).attr("uniqueId").split('_');
-        var h = new Date(uniqueIds[2]).getHours();
-        if (h > 12) {
-            h -= 12;
-        }
         var objStudent = this.convertedStudentObj.filter(function (x) {
             return x.id == uniqueIds[0] &&
                    x.resourceId == uniqueIds[1] &&
-                   moment(x.startHour).format("h") == h;
+                   x.startHour.getTime() == new Date(uniqueIds[2]).getTime();
         });
         if (objStudent[0] != undefined) {
             var objCancelSession = {};
@@ -3134,7 +3130,7 @@ function SylvanCalendar() {
                 var index = this.convertedStudentObj.findIndex(function (x) {
                     return x.id == uniqueIds[0] &&
                            x.resourceId == uniqueIds[1] &&
-                           moment(x.startHour).format("h") == h;
+                           x.startHour.getTime() == new Date(uniqueIds[2]).getTime();
                 });
                 if (index != -1) {
                     this.convertedStudentObj.splice(index, 1);
