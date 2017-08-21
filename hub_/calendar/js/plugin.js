@@ -3412,6 +3412,7 @@ function SylvanCalendar() {
                       self.convertedStudentObj[index].startHour =  self.convertedStudentObj[index].start;
                       self.pushStudentToSOF(self.convertedStudentObj[index]);
                       self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
+                      self.openSofPane();
                       self.convertedStudentObj.splice(index, 1);
                     }
                     wjQuery("#excuseModal").dialog("close");
@@ -3588,6 +3589,7 @@ function SylvanCalendar() {
                       self.convertedStudentObj[index].startHour =  self.convertedStudentObj[index].start;
                       self.pushStudentToSOF(self.convertedStudentObj[index]);
                       self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
+                      self.openSofPane();
                       self.convertedStudentObj.splice(index, 1);
                     }
 
