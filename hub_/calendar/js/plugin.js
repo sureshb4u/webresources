@@ -2815,10 +2815,10 @@ function SylvanCalendar() {
                     });
                     if (value['deliveryType'] != "Group Instruction") {
                         if (value['pinId'] != undefined) {
-                            self.addContext(uniqueId, 'student', true, resourceObj.deliveryType);
+                            self.addContext(uniqueId, 'student', true, value['deliveryType']);
                         }
                         else {
-                            self.addContext(uniqueId, 'student', false, resourceObj.deliveryType);
+                            self.addContext(uniqueId, 'student', false, value['deliveryType']);
                         }
                     }
                     self.calendar.fullCalendar('updateEvent', event);
@@ -2885,10 +2885,10 @@ function SylvanCalendar() {
                     }
                     if (value['deliveryType'] != "Group Instruction") {
                         if (value['pinId'] != undefined) {
-                            self.addContext(uniqueId, 'student', true, resourceObj.deliveryType);
+                            self.addContext(uniqueId, 'student', true, value['deliveryType']);
                         }
                         else {
-                            self.addContext(uniqueId, 'student', false, resourceObj.deliveryType);
+                            self.addContext(uniqueId, 'student', false, value['deliveryType']);
                         }
                     }
                     self.eventList.push(obj);
