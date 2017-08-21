@@ -1999,11 +1999,11 @@ function SylvanCalendar() {
                         startHour = new Date(new Date(startHour).setSeconds(0));
                         obj.startHour = startHour;
                         var index = noResourceList.findIndex(function (x) {
-                            return x.id == newObj.id &&
+                            return x.id == obj.id &&
                                    x.startHour.getTime() == startHour.getTime();
                         });
                         if (index == -1) {
-                            noResourceList.push(newObj);
+                            noResourceList.push(obj);
                         }
                     }
                 }
@@ -2567,14 +2567,14 @@ function SylvanCalendar() {
         var self = this;
         for (var i = 0; i < studentList.length; i++) {
             var studentNotPlacedFlag = true;
-            for (var j = 0; j < self.resourceList ; j++) {
+            for (var j = 0; j < self.resourceList.length; j++) {
                 if (studentList[i].deliveryType == self.resourceList[j].deliveryType) {
                     var eventId = self.resourceList[j].id + studentList[i].startHour;
                     var event = self.calendar.fullCalendar('clientEvents', eventId);
                     if (event.length) {
                         wjQuery.each(event, function (k, v) {
                             if (event[k].hasOwnProperty("students") && event[k]['students'].length != 0) {
-                                var resourceObj = self.getResourceObj(studentList[i].resourceId);
+                                var resourceObj = self.getResourceObj(self.resourceList[j].id);
                                 if (resourceObj.capacity > event[k]['students'].length) {
                                     if (!event[k]['students'][0].is1to1 && !studentList[i].is1to1) {
                                         studentList[i].resourceId = self.resourceList[j].id;
@@ -2604,6 +2604,9 @@ function SylvanCalendar() {
                         self.convertedStudentObj.push(studentList[i]);
                         self.populateStudentEvent(obj, true, true);
                     }
+                }
+                if (!studentNotPlacedFlag) {
+                    break;
                 }
             }
             if (studentNotPlacedFlag) {
