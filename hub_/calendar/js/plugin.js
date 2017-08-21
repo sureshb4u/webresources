@@ -1971,30 +1971,22 @@ function SylvanCalendar() {
                             if (pinnedStudent[i].hasOwnProperty('resourceId')) {
                                 newObj.resourceId = pinnedStudent[i].resourceId;
                                 newObj.pinId = pinnedStudent[i].id;
-                                var index = pinnedList.map(function (x) {
-                                    return x.id;
-                                }).indexOf(newObj.id);
+                                var index = pinnedList.findIndex(function (x) {
+                                    return x.id == newObj.id &&
+                                           x.startHour.getTime() == startHour.getTime();
+                                });
                                 if (index == -1) {
                                     pinnedList.push(newObj);
-                                }
-                                else {
-                                    if (pinnedList[index].startHour.getTime() != startHour.getTime()) {
-                                        pinnedList.push(newObj);
-                                    }
                                 }
                             }
                             else if (pinnedStudent[i].hasOwnProperty('affinityResourceId')) {
                                 newObj.resourceId = pinnedStudent[i].affinityResourceId;
-                                var index = affinityList.map(function (x) {
-                                    return x.id;
-                                }).indexOf(newObj.id);
+                                var index = affinityList.findIndex(function (x) {
+                                    return x.id == newObj.id &&
+                                           x.startHour.getTime() == startHour.getTime();
+                                });
                                 if (index == -1) {
                                     affinityList.push(newObj);
-                                }
-                                else {
-                                    if (affinityList[index].startHour.getTime() != startHour.getTime()) {
-                                        affinityList.push(newObj);
-                                    }
                                 }
                             }
                         }
@@ -2006,16 +1998,12 @@ function SylvanCalendar() {
                         startHour = startHour.setMinutes(0);
                         startHour = new Date(new Date(startHour).setSeconds(0));
                         obj.startHour = startHour;
-                        var index = noResourceList.map(function (x) {
-                            return x.id;
-                        }).indexOf(obj.id);
+                        var index = noResourceList.findIndex(function (x) {
+                            return x.id == newObj.id &&
+                                   x.startHour.getTime() == startHour.getTime();
+                        });
                         if (index == -1) {
-                            noResourceList.push(obj);
-                        }
-                        else {
-                            if (noResourceList[index].startHour.getTime() != startHour.getTime()) {
-                                noResourceList.push(obj);
-                            }
+                            noResourceList.push(newObj);
                         }
                     }
                 }
@@ -2029,30 +2017,22 @@ function SylvanCalendar() {
                     if (val.hasOwnProperty('aproductservice_x002e_hub_resource')) {
                         obj.resourceId = val['aproductservice_x002e_hub_resource'];
                         var index = self.convertedStudentObj.map(function (x) {
-                            return x.id;
-                        }).indexOf(obj.id);
+                            return x.id == obj.id &&
+                                   x.startHour.getTime() != startHour.getTime();
+                        });
                         if (index == -1) {
                             self.convertedStudentObj.push(obj);
-                        }
-                        else {
-                            if (self.convertedStudentObj[index].startHour.getTime() != startHour.getTime()) {
-                                self.convertedStudentObj.push(obj);
-                            }
                         }
                     }
                     else {
                         if (obj.deliveryType == 'Group Instruction') {
                             if (serviceGI.hasOwnProperty(obj.serviceId)) {
                                 var index = serviceGI[obj.serviceId].findIndex(function (x) {
-                                    return x.id == obj.id;
+                                    return x.id == obj.id &&
+                                           x.startHour.getTime() == obj.startHour.getTime();
                                 });
                                 if (index == -1) {
                                     serviceGI[obj.serviceId].push(obj);
-                                }
-                                else {
-                                    if (serviceGI[obj.serviceId][index].startHour.getTime() != obj.startHour.getTime()) {
-                                        serviceGI[obj.serviceId].push(obj);
-                                    }
                                 }
                             }
                             else {
@@ -2063,15 +2043,11 @@ function SylvanCalendar() {
                         else if (obj.deliveryType == 'Group Facilitation') {
                             if (serviceGF.hasOwnProperty(obj.serviceId)) {
                                 var index = serviceGF[obj.serviceId].findIndex(function (x) {
-                                    return x.id == obj.id;
+                                    return x.id == obj.id &&
+                                           x.startHour.getTime() == obj.startHour.getTime();
                                 });
                                 if (index == -1) {
                                     serviceGF[obj.serviceId].push(obj);
-                                }
-                                else {
-                                    if (serviceGF[obj.serviceId][index].startHour.getTime() != obj.startHour.getTime()) {
-                                        serviceGF[obj.serviceId].push(obj);
-                                    }
                                 }
                             }
                             else {
