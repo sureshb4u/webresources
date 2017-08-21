@@ -2016,9 +2016,9 @@ function SylvanCalendar() {
                     obj.startHour = startHour;
                     if (val.hasOwnProperty('aproductservice_x002e_hub_resource')) {
                         obj.resourceId = val['aproductservice_x002e_hub_resource'];
-                        var index = self.convertedStudentObj.map(function (x) {
+                        var index = self.convertedStudentObj.findIndex(function (x) {
                             return x.id == obj.id &&
-                                   x.startHour.getTime() != startHour.getTime();
+                                   x.startHour.getTime() == startHour.getTime();
                         });
                         if (index == -1) {
                             self.convertedStudentObj.push(obj);
@@ -3007,7 +3007,8 @@ function SylvanCalendar() {
         }
         else if (typeof (responseObj) == 'object') {
             if (responseObj != undefined) {
-                self.convertPinnedData(responseObj, true);
+
+                //self.convertPinnedData(responseObj, true);
                 var txt = wjQuery(element)[0].innerHTML;
                 wjQuery(element).html("<img src='/webresources/hub_/calendar/images/pin.png'/>" + txt);
                 wjQuery(element).attr('pinnedId', responseObj['hub_pinned_student_teacher_id']);
