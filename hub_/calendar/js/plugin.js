@@ -3404,7 +3404,13 @@ function SylvanCalendar() {
                                moment(x.startHour).format('h') == h;
                     });
                     if (index != -1) {
-                        self.convertedStudentObj.splice(index, 1);
+                      delete self.convertedStudentObj[index].resourceId;
+                      self.convertedStudentObj[index].start =  new Date(moment(self.convertedStudentObj[index].start).format("YYYY-MM-DD")+" "+wjQuery(".excuse-from-timepicker-input").val());
+                      self.convertedStudentObj[index].end =  new Date(moment(self.convertedStudentObj[index].end).format("YYYY-MM-DD")+" "+wjQuery(".excuse-to-timepicker-input").val());
+                      self.convertedStudentObj[index].startHour =  self.convertedStudentObj[index].start;
+                      self.pushStudentToSOF(self.convertedStudentObj[index]);
+                      self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
+                      self.convertedStudentObj.splice(index, 1);
                     }
                     wjQuery("#excuseModal").dialog("close");
                     var prevEventId = wjQuery(element).attr("eventid");
@@ -3568,6 +3574,21 @@ function SylvanCalendar() {
                 var responseObj = data.rescheduleStudentSession(objPrevSession, objNewSession);
                 if (responseObj != undefined && flag) {
                     wjQuery(".excuseSave").removeClass('reschedule');
+                    var index = self.convertedStudentObj.findIndex(function (x) {
+                        return x.id == uniqueIds[0] &&
+                               x.resourceId == uniqueIds[1] &&
+                               moment(x.startHour).format('h') == h;
+                    });
+                    if (index != -1) {
+                      delete self.convertedStudentObj[index].resourceId;
+                      self.convertedStudentObj[index].start =  new Date(moment(self.convertedStudentObj[index].start).format("YYYY-MM-DD")+" "+wjQuery(".excuse-from-timepicker-input").val());
+                      self.convertedStudentObj[index].end =  new Date(moment(self.convertedStudentObj[index].end).format("YYYY-MM-DD")+" "+wjQuery(".excuse-to-timepicker-input").val());
+                      self.convertedStudentObj[index].startHour =  self.convertedStudentObj[index].start;
+                      self.pushStudentToSOF(self.convertedStudentObj[index]);
+                      self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
+                      self.convertedStudentObj.splice(index, 1);
+                    }
+                    
                     wjQuery("#excuseModal").dialog("close");
                     var prevEventId = wjQuery(element).attr("eventid");
                     var prevEvent = self.calendar.fullCalendar('clientEvents', prevEventId);
@@ -3607,17 +3628,16 @@ function SylvanCalendar() {
                                 self.calendar.fullCalendar('removeEvents', prevEventId);
                             }
                             self.calendar.fullCalendar('updateEvent', prevEvent);
-                        }
-                        else {
+                        }else {
                             for (var i = 0; i < self.eventList.length; i++) {
                                 if (self.eventList[i].id == prevEventId)
                                     self.eventList.splice(i, 1);
                             }
                             self.calendar.fullCalendar('removeEvents', prevEventId);
                         }
+                        
                     }
-                }
-                else {
+                }else {
                     if (wjQuery('#error_block').text() == '') {
                         wjQuery('#error_block').text('All Fields are mandatory');
                         wjQuery('#error_block').css('color', 'red');
