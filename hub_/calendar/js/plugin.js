@@ -1998,23 +1998,23 @@ function SylvanCalendar() {
                                 }
                             }
                         }
+                    }
+                    if(pinnedStudent.length == 0){
+                        newObj.start = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+                        newObj.end = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
+                        var startHour = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+                        startHour = startHour.setMinutes(0);
+                        startHour = new Date(new Date(startHour).setSeconds(0));
+                        newObj.startHour = startHour;
+                        var index = noResourceList.map(function (x) {
+                            return x.id;
+                        }).indexOf(newObj.id);
+                        if (index == -1) {
+                            noResourceList.push(newObj);
+                        }
                         else {
-                            newObj.start = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
-                            newObj.end = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
-                            var startHour = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
-                            startHour = startHour.setMinutes(0);
-                            startHour = new Date(new Date(startHour).setSeconds(0));
-                            newObj.startHour = startHour;
-                            var index = noResourceList.map(function (x) {
-                                return x.id;
-                            }).indexOf(newObj.id);
-                            if (index == -1) {
+                            if (noResourceList[index].startHour.getTime() != startHour.getTime()) {
                                 noResourceList.push(newObj);
-                            }
-                            else {
-                                if (noResourceList[index].startHour.getTime() != startHour.getTime()) {
-                                    noResourceList.push(newObj);
-                                }
                             }
                         }
                     }
