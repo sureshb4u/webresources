@@ -2056,6 +2056,7 @@ function SylvanCalendar() {
                                    x.startHour.getTime() == startHour.getTime();
                         });
                         if (index == -1) {
+                            self.populateStudentEvent([obj], true, true);
                             self.convertedStudentObj.push(obj);
                         }
                     }
