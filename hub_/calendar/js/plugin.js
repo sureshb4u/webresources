@@ -4733,7 +4733,7 @@ function SylvanCalendar() {
         }
     }
 
-    this.getStudentTimings = function(locationId, selectedFromDate, timeSlotType){
+    this.getStudentTimings = function(locationId, selectedDate, timeSlotType){
       var day = this.getDayValue(new Date(selectedDate));
       if(day != undefined){
         var selectedDate = moment(selectedFromDate).format("YYYY-MM-DD");
