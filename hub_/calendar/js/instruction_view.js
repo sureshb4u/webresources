@@ -5375,7 +5375,7 @@ function Data(){
     return true;
   }
 
-  this.getStudentAvailableTime = function(){
+  this.getStudentAvailableTime = function(locationId, selectedDate, timeSlotType){
     return studentTimings;
   }
 

@@ -752,6 +752,7 @@ function SylvanCalendar() {
     };
 
     this.createEventOnDrop = function (t, date, allDay, ev, ui, resource, elm) {
+        wjQuery(".loading").show();
         if (wjQuery(elm).attr("type") == 'student') {
             var newEvent = this.calendar.fullCalendar('clientEvents', resource.id + date);
             var stuId = wjQuery(elm).attr("value");
@@ -1943,7 +1944,8 @@ function SylvanCalendar() {
                     sessionId: val['hub_studentsessionid'],
                     sessiontype: val['hub_sessiontype'],
                     sessionStatus: val['hub_session_status'],
-                    duration: val['aproductservice_x002e_hub_duration']
+                    duration: val['aproductservice_x002e_hub_duration'],
+                    timeSlotType: val['aproductservice_x002e_hub_timeslottype']
                 }
                 if (val.hasOwnProperty('_hub_resourceid_value')) {
                     obj.resourceId = val['_hub_resourceid_value'];
@@ -3401,7 +3403,7 @@ function SylvanCalendar() {
             var selectedFromDate;
             wjQuery(".excuse-datepicker-input").on("change", function () {
                 selectedFromDate = wjQuery(this).val();
-                var timeLimit = self.getStudentTimings(selectedFromDate);
+                var timeLimit = self.getStudentTimings(self.locationId, selectedFromDate, objStudent[0]['timeSlotType']);
                 var duration =  objStudent[0]['duration'] == undefined ? 60 : objStudent[0]['duration'];
                 var maximumTime = self.tConvert(self.convertMinsNumToTime(timeLimit['hub_endtime'] - duration));
                 if(timeLimit != undefined){
@@ -4598,7 +4600,8 @@ function SylvanCalendar() {
                 enrollmentId: val['hub_enrollmentid'],
                 sessionId: val['hub_studentsessionid'],
                 sessionStatus : val['hub_session_status'],
-                duration: val['aproductservice_x002e_hub_duration']
+                duration: val['aproductservice_x002e_hub_duration'],
+                timeSlotType: val['aproductservice_x002e_hub_timeslottype']
             }
 
             if(val["hub_is_1to1"] == undefined){
@@ -4705,9 +4708,9 @@ function SylvanCalendar() {
         }
     }
 
-    this.getStudentTimings = function(selectedDate){
+    this.getStudentTimings = function(locationId, selectedDate, timeSlotType){
       var day = this.getDayValue(new Date(selectedDate));
-      var availableTime = ( data.getStudentAvailableTime() == null ) ? [] : data.getStudentAvailableTime();
+      var availableTime = ( data.getStudentAvailableTime(locationId, selectedDate, timeSlotType) == null ) ? [] : data.getStudentAvailableTime(locationId, selectedFromDate, timeSlotType);
       for (var i = 0; i < availableTime.length; i++) {
         if(day == availableTime[i]['hub_days']){
           availableTime = availableTime[i];
