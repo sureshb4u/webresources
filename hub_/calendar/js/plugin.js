@@ -4732,15 +4732,17 @@ function SylvanCalendar() {
 
     this.getStudentTimings = function(locationId, selectedFromDate, timeSlotType){
       var day = this.getDayValue(new Date(selectedDate));
-      var selectedDate = moment(selectedFromDate).format("YYYY-MM-DD");
-      var availableTime = ( data.getStudentAvailableTime(locationId, selectedDate, timeSlotType) == null ) ? [] : data.getStudentAvailableTime(locationId, selectedDate, timeSlotType);
-      for (var i = 0; i < availableTime.length; i++) {
-        if(day == availableTime[i]['hub_days']){
-          availableTime = availableTime[i];
-          break;
+      if(day != undefined){
+        var selectedDate = moment(selectedFromDate).format("YYYY-MM-DD");
+        var availableTime = ( data.getStudentAvailableTime(locationId, selectedDate, timeSlotType) == null ) ? [] : data.getStudentAvailableTime(locationId, selectedDate, timeSlotType);
+        for (var i = 0; i < availableTime.length; i++) {
+          if(day == availableTime[i]['hub_days']){
+            availableTime = availableTime[i];
+            break;
+          }
         }
+        return availableTime;
       }
-      return availableTime;
     }
 
 }
