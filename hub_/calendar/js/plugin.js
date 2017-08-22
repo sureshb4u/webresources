@@ -4744,7 +4744,7 @@ function SylvanCalendar() {
             break;
           }
         }
-        return availableTime;
+        return [availableTime];
       }
     }
 
