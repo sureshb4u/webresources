@@ -3486,12 +3486,13 @@ function SylvanCalendar() {
                       self.convertedStudentObj[index].start =  new Date(moment(self.convertedStudentObj[index].start).format("YYYY-MM-DD")+" "+wjQuery(".excuse-from-timepicker-input").val());
                       self.convertedStudentObj[index].end =  new Date(moment(self.convertedStudentObj[index].end).format("YYYY-MM-DD")+" "+wjQuery(".excuse-to-timepicker-input").val());
                       self.convertedStudentObj[index].startHour =  self.convertedStudentObj[index].start;
-                      self.pushStudentToSOF(self.convertedStudentObj[index]);
-                      self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
-                      self.openSofPane();
+                      setTimeout(function() {
+                          self.pushStudentToSOF(self.convertedStudentObj[index]);
+                          self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
+                          self.openSofPane();
+                      },500);
                       self.convertedStudentObj.splice(index, 1);
                     }
-                    wjQuery()
                     wjQuery("#excuseModal").dialog("close");
                     var prevEventId = wjQuery(element).attr("eventid");
                     var prevEvent = self.calendar.fullCalendar('clientEvents', prevEventId);
@@ -3671,9 +3672,11 @@ function SylvanCalendar() {
                       self.convertedStudentObj[index].start =  new Date(moment(self.convertedStudentObj[index].start).format("YYYY-MM-DD")+" "+wjQuery(".excuse-from-timepicker-input").val());
                       self.convertedStudentObj[index].end =  new Date(moment(self.convertedStudentObj[index].end).format("YYYY-MM-DD")+" "+wjQuery(".excuse-to-timepicker-input").val());
                       self.convertedStudentObj[index].startHour =  self.convertedStudentObj[index].start;
-                      self.pushStudentToSOF(self.convertedStudentObj[index]);
-                      self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
-                      self.openSofPane();
+                     setTimeout(function() {
+                          self.pushStudentToSOF(self.convertedStudentObj[index]);
+                          self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
+                          self.openSofPane();
+                      },500);
                       self.convertedStudentObj.splice(index, 1);
                     }
 
@@ -3985,8 +3988,8 @@ function SylvanCalendar() {
                            moment(x.startHour).format("h:mm A") == moment(startTime).format("h:mm A");
                 });
                 self.convertedStudentObj.splice(index, 1);
-                self.pushStudentToSOF(objStudent[0]);
                 setTimeout(function () {
+                    self.pushStudentToSOF(objStudent[0]);
                     if (self.sofList['Personal Instruction'].length > 0 || self.sofList['Group Instruction'].length > 0 || self.sofList['Group Facilitation'].length > 0) {
                         self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
                     }
