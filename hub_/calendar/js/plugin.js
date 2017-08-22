@@ -1285,6 +1285,13 @@ function SylvanCalendar() {
                         self.addContext("", 'studentPlaceholder', true, prevEvent[0].deliveryType);
                     }
                 }
+
+                if(prevEvent[0]['students'] == undefined || prevEvent[0].hasOwnProperty('students') && prevEvent[0]['students'].length == 0){
+                  if (prevEvent[0].title.includes('<img class="onetoone" src="/webresources/hub_/calendar/images/lock.png">')) {
+                      prevEvent[0].title = prevEvent[0].title.replace('<img class="onetoone" src="/webresources/hub_/calendar/images/lock.png">', "");
+                      prevEvent[0].is1to1 = false;
+                  }
+                }
             }
             if (t.convertedStudentObj[index]) {
                 var newStudentObj = wjQuery.extend(true, {}, t.convertedStudentObj[index]);
@@ -2472,6 +2479,11 @@ function SylvanCalendar() {
                                 self.addContext("", 'studentPlaceholder', true, event[k].deliveryType);
                             }
                         }
+                    if(event[k].is1to1){
+                      if(!event[k].title.includes('<img class="onetoone" src="/webresources/hub_/calendar/images/lock.png">')){
+                        event[k].title += '<img class="onetoone" src="/webresources/hub_/calendar/images/lock.png">';
+                      }
+                    }
                     });
                     self.calendar.fullCalendar('updateEvent', event);
                     if (value['pinId'] != undefined) {
@@ -2736,6 +2748,11 @@ function SylvanCalendar() {
                 var resourceObj = self.getResourceObj(value['resourceId']);
                 if (event.length) {
                     wjQuery.each(event, function (k, v) {
+                        if(is1to1){
+                          if(!event[k].title.includes('<img class="onetoone" src="/webresources/hub_/calendar/images/lock.png">')){
+                            event[k].title += '<img class="onetoone" src="/webresources/hub_/calendar/images/lock.png">';
+                          }
+                        }
                         if (event[k].hasOwnProperty("students") && event[k]['students'].length != 0) {
                             if (checkFor1to1 && ((is1to1 || event[k].students[0].is1to1) && event[k].students[0].id != id)) {
                                 self.pushStudentToSOF(value);
@@ -2796,6 +2813,7 @@ function SylvanCalendar() {
                                 }
                             }
                             event[k].students = [{ id: id, name: name, grade: grade, pinId: value['pinId'], subjectColorCode: value['subjectColorCode'], is1to1: is1to1, serviceId: serviceId, programId: programId }];
+                            event[k].is1to1 =  value['is1to1'];
                         }
                         if (event[k].title.includes('<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>')) {
                             event[k].title = event[k].title.replace('<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>', '');
