@@ -1194,10 +1194,12 @@ function SylvanCalendar() {
               }
             }else if (typeof (responseObj) == 'object') {
                 if (responseObj != undefined) {
-                  student[0].sessionId = responseObj['hub_studentsessionid']; 
-                  if(student[0].hasOwnProperty('isFromMasterSchedule')){
-                    delete student[0].isFromMasterSchedule;
-                  }
+                    student[0].sessionId = responseObj['hub_studentsessionid']; 
+                    student[0]['sessiontype'] = responseObj['hub_sessiontype'];
+                    student[0]['sessionStatus'] = responseObj['hub_session_status'];
+                    if(student[0].hasOwnProperty('isFromMasterSchedule')){
+                        delete student[0].isFromMasterSchedule;
+                    }
                 }
             }
             this.convertedStudentObj.push(student[0]);
@@ -4222,6 +4224,8 @@ function SylvanCalendar() {
                     newStudent['start'] = newStudent.start;
                     newStudent['end'] = newStudent.end;
                     newStudent['resourceId'] = responseObj['hub_resourceid@odata.bind'];
+                    newStudent['sessiontype'] = responseObj['hub_sessiontype'];
+                    newStudent['sessionStatus'] = responseObj['hub_session_status'];
                     delete newStudent.isFromMasterSchedule;
                     var index = this.convertedStudentObj.findIndex(function (x) {
                         return x.id == prevStudent.id &&
