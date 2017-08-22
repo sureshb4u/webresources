@@ -1188,6 +1188,8 @@ function SylvanCalendar() {
             var responseObj = this.saveSOFtoSession(student, prevStudent);
             if (typeof (responseObj) == 'boolean') {
               if (responseObj) {
+                    this.convertedStudentObj.push(student[0]);
+                    t.populateStudentEvent(student, true);
                   // var txt = wjQuery(element)[0].innerHTML;
                   // wjQuery(element).html("<img src='/webresources/hub_/calendar/images/pin.png'/>" + txt);
                   // wjQuery(element).attr('pinnedId', objPinnedStudent.hub_sch_pinned_students_teachersid);
@@ -1200,10 +1202,10 @@ function SylvanCalendar() {
                     if(student[0].hasOwnProperty('isFromMasterSchedule')){
                         delete student[0].isFromMasterSchedule;
                     }
+                    this.convertedStudentObj.push(student[0]);
+                    t.populateStudentEvent(student, true);
                 }
             }
-            this.convertedStudentObj.push(student[0]);
-            t.populateStudentEvent(student, true);
         }
     }
 
