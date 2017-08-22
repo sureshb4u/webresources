@@ -752,7 +752,6 @@ function SylvanCalendar() {
     };
 
     this.createEventOnDrop = function (t, date, allDay, ev, ui, resource, elm) {
-        wjQuery(".loading").show();
         if (wjQuery(elm).attr("type") == 'student') {
             var newEvent = this.calendar.fullCalendar('clientEvents', resource.id + date);
             var stuId = wjQuery(elm).attr("value");
@@ -3407,9 +3406,9 @@ function SylvanCalendar() {
             wjQuery(".excuse-datepicker-input").on("change", function () {
                 selectedFromDate = wjQuery(this).val();
                 var timeLimit = self.getStudentTimings(self.locationId, selectedFromDate, objStudent[0]['timeSlotType']);
-                var duration =  objStudent[0]['duration'] == undefined ? 60 : objStudent[0]['duration'];
-                var maximumTime = self.tConvert(self.convertMinsNumToTime(timeLimit['hub_endtime'] - duration));
-                if(timeLimit != undefined){
+                if(timeLimit[0] != undefined){
+                  var duration =  objStudent[0]['duration'] == undefined ? 60 : objStudent[0]['duration'];
+                  var maximumTime = self.tConvert(self.convertMinsNumToTime(timeLimit[0]['hub_endtime'] - duration));
                     wjQuery(".excuse-from-timepicker-input").timepicker({
                         timeFormat: 'h:mm p',
                         interval: 60,
@@ -3419,7 +3418,7 @@ function SylvanCalendar() {
                         dropdown: true,
                         scrollbar: true
                     });
-                    wjQuery(".excuse-to-timepicker-input").text(timeLimit['hub_endtime@OData.Community.Display.V1.FormattedValue']);
+                    wjQuery(".excuse-to-timepicker-input").text(timeLimit[0]['hub_endtime@OData.Community.Display.V1.FormattedValue']);
                     // wjQuery(".excuse-to-timepicker-input").timepicker({
                     //     timeFormat: 'h:mm p',
                     //     interval: 60,
@@ -4712,9 +4711,9 @@ function SylvanCalendar() {
         }
     }
 
-    this.getStudentTimings = function(locationId, selectedDate, timeSlotType){
+    this.getStudentTimings = function(selectedDate){
       var day = this.getDayValue(new Date(selectedDate));
-      var availableTime = ( data.getStudentAvailableTime(locationId, moment(selectedDate).format('YYYY-MM-DD'), timeSlotType) == null ) ? [] : data.getStudentAvailableTime(locationId, selectedFromDate, timeSlotType);
+      var availableTime = ( data.getStudentAvailableTime() == null ) ? [] : data.getStudentAvailableTime();
       for (var i = 0; i < availableTime.length; i++) {
         if(day == availableTime[i]['hub_days']){
           availableTime = availableTime[i];
