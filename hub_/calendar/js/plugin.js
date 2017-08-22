@@ -2706,29 +2706,47 @@ function SylvanCalendar() {
             this.sofList['Group Instruction'] = [];
             this.sofList['Group Facilitation'] = [];
         }
-        if (data.deliveryType == "Personal Instruction") {
-            var index = this.sofList['Personal Instruction'].findIndex(function (x) {
-                return x.id == data.id &&
-                       x.startHour.getTime() == data.startHour.getTime();
-            });
-            if (index == -1) {
-                this.sofList['Personal Instruction'].push(data);
+        var studentPushFlagDecision = true;
+        for (var j = 0; j < self.resourceList.length; j++) {
+            var eventId = self.resourceList[j].id + data.startHour;
+            var event = self.calendar.fullCalendar('clientEvents', eventId);
+            if(event.length){
+                wjQuery.each(event, function (k, v) {
+                    if (event[k].hasOwnProperty("students") && event[k]['students'].length != 0) {
+                        for (var i = 0; i < event[k]['students'].length; i++) {
+                            if(event[k]['students'][i].id == data.id){
+                                studentPushFlagDecision = false;
+                            }
+                        }
+                    }
+                });
             }
-        } else if (data.deliveryType == "Group Instruction") {
-            var index = this.sofList['Group Instruction'].findIndex(function (x) {
-                return x.id == data.id &&
-                       x.startHour.getTime() == data.startHour.getTime();
-            });
-            if (index == -1) {
-                this.sofList['Group Instruction'].push(data);
-            }
-        } else if (data.deliveryType == "Group Facilitation") {
-            var index = this.sofList['Group Facilitation'].findIndex(function (x) {
-                return x.id == data.id &&
-                       x.startHour.getTime() == data.startHour.getTime();
-            });
-            if (index == -1) {
-                this.sofList['Group Facilitation'].push(data);
+        }
+        if(studentPushFlagDecision){
+            if (data.deliveryType == "Personal Instruction") {
+                var index = this.sofList['Personal Instruction'].findIndex(function (x) {
+                    return x.id == data.id &&
+                           x.startHour.getTime() == data.startHour.getTime();
+                });
+                if (index == -1) {
+                    this.sofList['Personal Instruction'].push(data);
+                }
+            } else if (data.deliveryType == "Group Instruction") {
+                var index = this.sofList['Group Instruction'].findIndex(function (x) {
+                    return x.id == data.id &&
+                           x.startHour.getTime() == data.startHour.getTime();
+                });
+                if (index == -1) {
+                    this.sofList['Group Instruction'].push(data);
+                }
+            } else if (data.deliveryType == "Group Facilitation") {
+                var index = this.sofList['Group Facilitation'].findIndex(function (x) {
+                    return x.id == data.id &&
+                           x.startHour.getTime() == data.startHour.getTime();
+                });
+                if (index == -1) {
+                    this.sofList['Group Facilitation'].push(data);
+                }
             }
         }
     };
@@ -3173,12 +3191,13 @@ function SylvanCalendar() {
                 objCancelSession.hub_start_time = this.convertToMinutes(moment(new Date(uniqueIds[2])).format("h:mm A"));
                 objCancelSession.hub_end_time = this.convertToMinutes(moment(objStudent[0]['end']).format("h:mm A"));
                 objCancelSession.hub_resourceid = objStudent[0]['resourceId'];
-                objCancelSession.hub_ratio = objStudent[0]['is1to1'];
+                objCancelSession.hub_is_1to1 = objStudent[0]['is1to1'];
             }
             else {
                 objCancelSession['hub_studentsessionid'] = objStudent[0]['sessionId'];
             }
-            if (data.omitStudentSession(objCancelSession)) {
+            var responseObj = data.omitStudentSession(objCancelSession);
+            if (typeof(responseObj) == 'boolean' || typeof(responseObj) == 'object') {
                 var index = this.convertedStudentObj.findIndex(function (x) {
                     return x.id == uniqueIds[0] &&
                            x.resourceId == uniqueIds[1] &&
@@ -3255,7 +3274,7 @@ function SylvanCalendar() {
                 objCancelSession.hub_session_date = moment(objStudent[0].start).format("YYYY-MM-DD");
                 objCancelSession.hub_start_time = this.convertToMinutes(moment(objStudent[0].start).format("h:mm A"));
                 objCancelSession.hub_end_time = this.convertToMinutes(moment(objStudent[0].end).format("h:mm A"));
-                objCancelSession.hub_ratio = objStudent[0]['is1to1'];
+                objCancelSession.hub_is_1to1 = objStudent[0]['is1to1'];
             }
             else {
                 objCancelSession['hub_studentsessionid'] = objStudent[0]['sessionId'];
@@ -3268,7 +3287,8 @@ function SylvanCalendar() {
             objCancelSession['hub_center@odata.bind'] = objStudent[0]["locationId"];
             objCancelSession['hub_student@odata.bind'] = objStudent[0]['id'];
             objCancelSession['hub_resourceid@odata.bind'] = null;
-            if (data.excuseStudentFromSession(objCancelSession)) {
+            var responseObj = data.excuseStudentFromSession(objCancelSession);
+            if (typeof(responseObj) == 'boolean' || typeof(responseObj) == 'object') {
                 var index = this.convertedStudentObj.findIndex(function (x) {
                     return x.id == uniqueIds[0] &&
                            x.resourceId == uniqueIds[1] &&
@@ -3346,7 +3366,7 @@ function SylvanCalendar() {
                 objSession.hub_session_date = moment(objStudent[0].start).format("YYYY-MM-DD");
                 objSession.hub_start_time = this.convertToMinutes(moment(objStudent[0].start).format("h:mm A"));
                 objSession.hub_end_time = this.convertToMinutes(moment(objStudent[0].end).format("h:mm A"));
-                objSession.hub_ratio = objStudent[0]['is1to1'];
+                objSession.hub_is_1to1 = objStudent[0]['is1to1'];
             }
             else {
                 objSession['hub_session_date'] = objStudent[0]['sessionDate'];
@@ -3526,7 +3546,7 @@ function SylvanCalendar() {
                 objPrevSession.hub_session_date = moment(objStudent[0].start).format("YYYY-MM-DD");
                 objPrevSession.hub_start_time = this.convertToMinutes(moment(objStudent[0].start).format("h:mm A"));
                 objPrevSession.hub_end_time = this.convertToMinutes(moment(objStudent[0].end).format("h:mm A"));
-                objPrevSession.hub_ratio = objStudent[0]['is1to1'];
+                objPrevSession.hub_is_1to1 = objStudent[0]['is1to1'];
             }
             else {
                 objPrevSession.hub_studentsessionid = objStudent[0]['sessionId'];
@@ -3914,7 +3934,7 @@ function SylvanCalendar() {
                 objMovetoSOF.hub_session_date = moment(objStudent[0].start).format("YYYY-MM-DD");
                 objMovetoSOF.hub_start_time = this.convertToMinutes(moment(objStudent[0].start).format("h:mm A"));
                 objMovetoSOF.hub_end_time = this.convertToMinutes(moment(objStudent[0].end).format("h:mm A"));
-                objMovetoSOF.hub_ratio = objStudent[0]['is1to1'];
+                objMovetoSOF.hub_is_1to1 = objStudent[0]['is1to1'];
             } else {
                 objMovetoSOF['hub_studentsessionid'] = objStudent[0]['sessionId'];
             }
@@ -3922,7 +3942,8 @@ function SylvanCalendar() {
             if (objStudent[0].hasOwnProperty('resourceId')) {
                 delete objStudent[0]['resourceId'];
             }
-            if (data.moveStudentToSOF(objMovetoSOF)) {
+            var responseObj = data.moveStudentToSOF(objMovetoSOF);
+            if (typeof(responseObj) == 'boolean' || typeof(responseObj) == 'object') {
                 var index = self.convertedStudentObj.findIndex(function (x) {
                     return x.id == objStudent[0].id &&
                             x.resourceId == uniqueId.split('_')[1] &&
