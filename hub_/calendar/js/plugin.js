@@ -89,12 +89,12 @@ setTimeout(function () {
             }
             sylvanCalendar.populateResource(resourceList, fetchData);
             if (resourceList.length) {
-                sylvanCalendar.refreshCalendarEvent(locationId, currentCalendarDate, currentCalendarDate, false, false);
+                sylvanCalendar.refreshCalendarEvent(locationId, currentCalendarDate, currentCalendarDate, false);
                 $(window).resize(function () {
                     // location.reload();
                     wjQuery(".loading").show();
                     sylvanCalendar.populateResource(resourceList, fetchData);
-                    sylvanCalendar.refreshCalendarEvent(locationId, currentCalendarDate, currentCalendarDate, false, false);
+                    sylvanCalendar.refreshCalendarEvent(locationId, currentCalendarDate, currentCalendarDate, false);
                 });
                 wjQuery('.prevBtn').off('click').on('click', function () {
                     wjQuery(".loading").show();
@@ -136,7 +136,7 @@ setTimeout(function () {
                 });
                 sylvanCalendar.draggable('teacher-container');
                 wjQuery(".refresh-icon").click(function (event) {
-                    fetchResources(locationId, deliveryTypeList, false);
+                    fetchResources(locationId, deliveryTypeList, true);
                 });
 
             } else {
@@ -704,11 +704,10 @@ function SylvanCalendar() {
                 objSession['hub_end_time'] = this.convertToMinutes(moment(student[0]['end']).format("h:mm A"));
 
                 if (student[0]['isFromMasterSchedule']) {
-                    objNewSession['hub_ratio'] = student[0]['is1to1'];
                 } else {
                     objNewSession['hub_studentsessionid'] = oldStudent['sessionId'];
-                    objNewSession['hub_is_1to1'] = student[0]['is1to1'];
                 }
+                objNewSession['hub_is_1to1'] = student[0]['is1to1'];
                 objNewSession['hub_enrollment@odata.bind'] = oldStudent['enrollmentId'];
                 objNewSession['hub_service@odata.bind'] = oldStudent['serviceId'];
                 objNewSession['hub_center@odata.bind'] = student[0]["locationId"];
@@ -1355,6 +1354,7 @@ function SylvanCalendar() {
             minTime: 8,
             maxTime: 20,
             allDayText: '',
+            allDaySlot:false,
             droppable: true,
             drop: function (date, allDay, ev, ui, resource) {
                 t.createEventOnDrop(t, date, allDay, ev, ui, resource, this);
@@ -1486,9 +1486,8 @@ function SylvanCalendar() {
         var dayofMonth = moment(currentCalendarDate).format('M/D');
         wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').html(dayOfWeek + " <br/> " + dayofMonth);
         this.clearEvents();
-        var flag = this.findDataSource(currentCalendarDate);
         currentCalendarDate = moment(currentCalendarDate).format("YYYY-MM-DD");
-        this.refreshCalendarEvent(locationId, currentCalendarDate, currentCalendarDate, flag, true);
+        this.refreshCalendarEvent(locationId, currentCalendarDate, currentCalendarDate, true);
     }
 
     this.dateFromCalendar = function (date, locationId) {
@@ -1506,9 +1505,8 @@ function SylvanCalendar() {
         var dayofMonth = moment(date).format('M/D');
         wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').html(dayOfWeek + " <br/> " + dayofMonth);
         self.clearEvents();
-        var flag = this.findDataSource(new Date(date));
         var currentCalendarDate = moment(date).format("YYYY-MM-DD");
-        self.refreshCalendarEvent(locationId, currentCalendarDate, currentCalendarDate, flag, true);
+        self.refreshCalendarEvent(locationId, currentCalendarDate, currentCalendarDate, true);
     }
 
     this.next = function (locationId) {
@@ -1525,15 +1523,15 @@ function SylvanCalendar() {
         var dayofMonth = moment(currentCalendarDate).format('M/D');
         wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').html(dayOfWeek + " <br/> " + dayofMonth);
         this.clearEvents();
-        var flag = this.findDataSource(currentCalendarDate);
         currentCalendarDate = moment(currentCalendarDate).format("YYYY-MM-DD");
-        this.refreshCalendarEvent(locationId, currentCalendarDate, currentCalendarDate, flag, true);
+        this.refreshCalendarEvent(locationId, currentCalendarDate, currentCalendarDate, true);
     }
 
-    this.refreshCalendarEvent = function (locationId, startDate, endDate, studentDataSource, isFetch) {
+    this.refreshCalendarEvent = function (locationId, startDate, endDate, isFetch) {
         var self = this;
         setTimeout(function () {
             var currentCalendarDate = self.calendar.fullCalendar('getDate');
+            var studentDataSource = self.findDataSource(currentCalendarDate);
             if (self.calendar.fullCalendar('getView').name == 'resourceDay') {
                 startDate = endDate = moment(currentCalendarDate).format("YYYY-MM-DD");
             }
@@ -1601,11 +1599,17 @@ function SylvanCalendar() {
                 }
                 self.convertPinnedData(self.pinnedData == null ? [] : self.pinnedData, false);
                 self.students = isFetch || (self.students.length == 0) ? data.getStudentSession(locationId, startDate, endDate) : self.students;
+                if (self.students == null) {
+                    self.students = [];
+                }
                 self.populateStudentEvent(self.generateEventObject(self.students == null ? [] : self.students, "studentSession"), true);
                 self.filterObject.student = self.students == null ? [] : self.students;
                 self.generateFilterObject(self.filterObject);
                 if (studentDataSource) {
                     self.masterScheduleStudents = data.getStudentMasterSchedule(locationId, startDate, endDate)
+                    if (self.masterScheduleStudents == null) {
+                        self.masterScheduleStudents = [];
+                    }
                     self.generateEventObject(self.masterScheduleStudents == null ? [] : self.masterScheduleStudents, "masterStudentSession");
                 }
                 self.populateTeacherEvent(self.generateEventObject(self.teacherSchedule == null ? [] : self.teacherSchedule, "teacherSchedule"), true);
@@ -4102,9 +4106,9 @@ function SylvanCalendar() {
                 objPrevSession.hub_start_time = this.convertToMinutes(moment(prevStudent.start).format("h:mm A"));
                 objPrevSession.hub_end_time = this.convertToMinutes(moment(prevStudent.end).format("h:mm A"));
                 objPrevSession['hub_resourceid@odata.bind'] = null
-                objPrevSession.hub_ratio = prevStudent['is1to1'];
+                objPrevSession.hub_is_1to1 = prevStudent['is1to1'];
 
-                objNewSession.hub_ratio = newStudent['is1to1'];
+                objNewSession.hub_is_1to1 = newStudent['is1to1'];
             } else {
                 objPrevSession['hub_session_date'] = prevStudent['sessionDate'];
                 objPrevSession['hub_is_1to1'] = prevStudent['is1to1'];
