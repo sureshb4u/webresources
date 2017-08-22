@@ -4710,7 +4710,7 @@ function SylvanCalendar() {
 
     this.getStudentTimings = function(locationId, selectedDate, timeSlotType){
       var day = this.getDayValue(new Date(selectedDate));
-      var availableTime = ( data.getStudentAvailableTime(locationId, selectedDate, timeSlotType) == null ) ? [] : data.getStudentAvailableTime(locationId, selectedFromDate, timeSlotType);
+      var availableTime = ( data.getStudentAvailableTime(locationId, moment(selectedDate).format('YYYY-MM-DD'), timeSlotType) == null ) ? [] : data.getStudentAvailableTime(locationId, selectedFromDate, timeSlotType);
       for (var i = 0; i < availableTime.length; i++) {
         if(day == availableTime[i]['hub_days']){
           availableTime = availableTime[i];
