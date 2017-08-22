@@ -3412,7 +3412,7 @@ function SylvanCalendar() {
                 if(selectedFromDate != undefined){
                   var timeLimit = self.getStudentTimings(self.locationId, selectedFromDate, objStudent[0]['timeSlotType']);
                 }
-                if(timeLimit[0] != undefined){
+                if(timeLimit != undefined){
                   var duration =  objStudent[0]['duration'] == undefined ? 60 : objStudent[0]['duration'];
                   var maximumTime = self.tConvert(self.convertMinsNumToTime(timeLimit[0]['hub_endtime'] - duration));
                     wjQuery(".excuse-from-timepicker-input").timepicker({
