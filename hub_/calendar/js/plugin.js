@@ -2118,7 +2118,7 @@ function SylvanCalendar() {
             });
             if (pinnedList.length) {
                 self.populateStudentEvent(pinnedList, true, true);
-                self.convertedStudentObj.concat(pinnedList);
+                self.convertedStudentObj.push.apply(self.convertedStudentObj,pinnedList);
             }
             if (affinityList.length) {
                 self.populateAffinityStudents(affinityList);
@@ -2707,7 +2707,7 @@ function SylvanCalendar() {
                 }
             }
             if (studentNotPlacedFlag) {
-                studentsForSOF.concat(Object.values(serviceStudentList)[i]);
+                studentsForSOF = studentsForSOF.concat(Object.values(serviceStudentList)[i]);
             }
         }
         if (studentsForSOF.length) {
