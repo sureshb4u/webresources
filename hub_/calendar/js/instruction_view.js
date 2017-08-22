@@ -377,7 +377,9 @@ var student =  [
     "aenrollment_x002e_hub_enrollmentid": "cf646e8c-6361-e711-80f3-c4346badc680",
     "aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue": "Personal Instruction",
     "aproductservice_x002e_hub_deliverytype": "d6c706eb-a534-e711-80ed-c4346bad526c",
-    "aprogram_x002e_hub_name": "College Prep Writing: English 101"
+    "aprogram_x002e_hub_name": "College Prep Writing: English 101",
+    "aproductservice_x002e_hub_duration@OData.Community.Display.V1.FormattedValue": "1 Hour",
+    "aproductservice_x002e_hub_duration": 60
   },
   {
     "@odata.etag": "W/\"1723104\"",
@@ -422,7 +424,9 @@ var student =  [
     "aenrollment_x002e_hub_enrollmentid": "cf646e8c-6361-e711-80f3-c4346badc680",
     "aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue": "Personal Instruction",
     "aproductservice_x002e_hub_deliverytype": "d6c706eb-a534-e711-80ed-c4346bad526c",
-    "aprogram_x002e_hub_name": "College Prep Writing: English 101"
+    "aprogram_x002e_hub_name": "College Prep Writing: English 101",
+    "aproductservice_x002e_hub_duration@OData.Community.Display.V1.FormattedValue": "1 Hour",
+    "aproductservice_x002e_hub_duration": 60
   },
   {
     "@odata.etag": "W/\"1723126\"",
@@ -469,7 +473,9 @@ var student =  [
     "aproductservice_x002e_hub_deliverytype": "d6c706eb-a534-e711-80ed-c4346bad526c",
     "aprogram_x002e_hub_name": "College Prep Writing: English 101",
     "aprogram_x002e_hub_areaofinterest@OData.Community.Display.V1.FormattedValue": "Math Tutoring",
-    "aprogram_x002e_hub_areaofinterest": 2
+    "aprogram_x002e_hub_areaofinterest": 2,
+    "aproductservice_x002e_hub_duration@OData.Community.Display.V1.FormattedValue": "1 Hour",
+    "aproductservice_x002e_hub_duration": 60
   },
   {
     "@odata.etag": "W/\"1723126\"",
@@ -516,7 +522,9 @@ var student =  [
     "aproductservice_x002e_hub_deliverytype": "d6c706eb-a534-e711-80ed-c4346bad526c",
     "aprogram_x002e_hub_name": "College Prep Writing: English 101",
     "aprogram_x002e_hub_areaofinterest@OData.Community.Display.V1.FormattedValue": "Math Tutoring",
-    "aprogram_x002e_hub_areaofinterest": 2
+    "aprogram_x002e_hub_areaofinterest": 2,
+    "aproductservice_x002e_hub_duration@OData.Community.Display.V1.FormattedValue": "1 Hour",
+    "aproductservice_x002e_hub_duration": 60
   },
   {
     "@odata.etag": "W/\"1723135\"",
@@ -561,7 +569,9 @@ var student =  [
     "aenrollment_x002e_hub_enrollmentid": "cf646e8c-6361-e711-80f3-c4346badc680",
     "aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue": "Personal Instruction",
     "aproductservice_x002e_hub_deliverytype": "d6c706eb-a534-e711-80ed-c4346bad526c",
-    "aprogram_x002e_hub_name": "College Prep Writing: English 101"
+    "aprogram_x002e_hub_name": "College Prep Writing: English 101",
+    "aproductservice_x002e_hub_duration@OData.Community.Display.V1.FormattedValue": "1 Hour",
+    "aproductservice_x002e_hub_duration": 60
   },
   {
     "@odata.etag": "W/\"1723101\"",
@@ -610,7 +620,9 @@ var student =  [
     "aprogram_x002e_hub_areaofinterest@OData.Community.Display.V1.FormattedValue": "Math Tutoring",
     "aprogram_x002e_hub_areaofinterest": 2,
     "astudent_x002e_hub_grade@OData.Community.Display.V1.FormattedValue": "4",
-    "astudent_x002e_hub_grade": 6
+    "astudent_x002e_hub_grade": 6,
+    "aproductservice_x002e_hub_duration@OData.Community.Display.V1.FormattedValue": "1 Hour",
+    "aproductservice_x002e_hub_duration": 60
   },
   {
     "@odata.etag": "W/\"1723123\"",
@@ -659,7 +671,9 @@ var student =  [
     "aprogram_x002e_hub_areaofinterest@OData.Community.Display.V1.FormattedValue": "Math Tutoring",
     "aprogram_x002e_hub_areaofinterest": 2,
     "astudent_x002e_hub_grade@OData.Community.Display.V1.FormattedValue": "4",
-    "astudent_x002e_hub_grade": 6
+    "astudent_x002e_hub_grade": 6,
+    "aproductservice_x002e_hub_duration@OData.Community.Display.V1.FormattedValue": "1 Hour",
+    "aproductservice_x002e_hub_duration": 60
   },
   {
     "@odata.etag": "W/\"1723094\"",
@@ -706,7 +720,9 @@ var student =  [
     "aprogram_x002e_hub_areaofinterest@OData.Community.Display.V1.FormattedValue": "Math Tutoring",
     "aprogram_x002e_hub_areaofinterest": 2,
     "astudent_x002e_hub_grade@OData.Community.Display.V1.FormattedValue": "5",
-    "astudent_x002e_hub_grade": 7
+    "astudent_x002e_hub_grade": 7,
+    "aproductservice_x002e_hub_duration@OData.Community.Display.V1.FormattedValue": "1 Hour",
+    "aproductservice_x002e_hub_duration": 60
   },
   {
     "@odata.etag": "W/\"1723111\"",
@@ -753,7 +769,9 @@ var student =  [
     "aprogram_x002e_hub_areaofinterest@OData.Community.Display.V1.FormattedValue": "Math Tutoring",
     "aprogram_x002e_hub_areaofinterest": 2,
     "astudent_x002e_hub_grade@OData.Community.Display.V1.FormattedValue": "5",
-    "astudent_x002e_hub_grade": 7
+    "astudent_x002e_hub_grade": 7,
+    "aproductservice_x002e_hub_duration@OData.Community.Display.V1.FormattedValue": "1 Hour",
+    "aproductservice_x002e_hub_duration": 60
   },
   {
     "@odata.etag": "W/\"1723127\"",
@@ -800,7 +818,9 @@ var student =  [
     "aprogram_x002e_hub_areaofinterest@OData.Community.Display.V1.FormattedValue": "Math Tutoring",
     "aprogram_x002e_hub_areaofinterest": 2,
     "astudent_x002e_hub_grade@OData.Community.Display.V1.FormattedValue": "5",
-    "astudent_x002e_hub_grade": 7
+    "astudent_x002e_hub_grade": 7,
+    "aproductservice_x002e_hub_duration@OData.Community.Display.V1.FormattedValue": "1 Hour",
+    "aproductservice_x002e_hub_duration": 60
   },
   {
     "@odata.etag": "W/\"1723137\"",
@@ -847,7 +867,9 @@ var student =  [
     "aprogram_x002e_hub_areaofinterest@OData.Community.Display.V1.FormattedValue": "Math Tutoring",
     "aprogram_x002e_hub_areaofinterest": 2,
     "astudent_x002e_hub_grade@OData.Community.Display.V1.FormattedValue": "5",
-    "astudent_x002e_hub_grade": 7
+    "astudent_x002e_hub_grade": 7,
+    "aproductservice_x002e_hub_duration@OData.Community.Display.V1.FormattedValue": "1 Hour",
+    "aproductservice_x002e_hub_duration": 60
   },
   {
     "@odata.etag": "W/\"1723112\"",
@@ -892,7 +914,9 @@ var student =  [
     "aenrollment_x002e_hub_enrollmentid": "6c759ac7-6d61-e711-80f3-c4346badc680",
     "aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue": "Personal Instruction",
     "aproductservice_x002e_hub_deliverytype": "d6c706eb-a534-e711-80ed-c4346bad526c",
-    "aprogram_x002e_hub_name": "Robotics Part2"
+    "aprogram_x002e_hub_name": "Robotics Part2",
+    "aproductservice_x002e_hub_duration@OData.Community.Display.V1.FormattedValue": "1 Hour",
+    "aproductservice_x002e_hub_duration": 60
   },
   {
     "@odata.etag": "W/\"1723106\"",
@@ -937,7 +961,9 @@ var student =  [
     "aenrollment_x002e_hub_enrollmentid": "f1788c3f-3466-e711-80f2-c4346bacfbbc",
     "aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue": "Group Facilitation",
     "aproductservice_x002e_hub_deliverytype": "d6493b3e-4e35-e711-80ed-c4346bad526c",
-    "aprogram_x002e_hub_name": "GF Program"
+    "aprogram_x002e_hub_name": "GF Program",
+    "aproductservice_x002e_hub_duration@OData.Community.Display.V1.FormattedValue": "1 Hour",
+    "aproductservice_x002e_hub_duration": 60
   },
   {
     "@odata.etag": "W/\"1723113\"",
@@ -982,7 +1008,9 @@ var student =  [
     "aenrollment_x002e_hub_enrollmentid": "f1788c3f-3466-e711-80f2-c4346bacfbbc",
     "aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue": "Group Facilitation",
     "aproductservice_x002e_hub_deliverytype": "d6493b3e-4e35-e711-80ed-c4346bad526c",
-    "aprogram_x002e_hub_name": "GF Program"
+    "aprogram_x002e_hub_name": "GF Program",
+    "aproductservice_x002e_hub_duration@OData.Community.Display.V1.FormattedValue": "1 Hour",
+    "aproductservice_x002e_hub_duration": 60
   },
   {
     "@odata.etag": "W/\"1723128\"",
@@ -5116,6 +5144,109 @@ var saveFloat = [{
   "hub_studentsessionid":"25a40f6e-4083-e711-80f4-c4346bac4304"
 }];
 
+var studentTimings = [
+  
+    {
+    "@odata.etag": "W/\"3165242\"",
+    "hub_starttime@OData.Community.Display.V1.FormattedValue": "2:00 PM",
+    "hub_starttime": 840,
+    "hub_timeslottype@OData.Community.Display.V1.FormattedValue": "Non Standard",
+    "hub_timeslottype": 2,
+    "hub_days@OData.Community.Display.V1.FormattedValue": "Friday",
+    "hub_days": 5,
+    "hub_endtime@OData.Community.Display.V1.FormattedValue": "3:00 PM",
+    "hub_endtime": 900,
+    "hub_timingsid": "e7a0ba86-9970-e711-80f2-c4346bacfbbc",
+    "hub_effectivestartdate@OData.Community.Display.V1.FormattedValue": "7/23/2017",
+    "hub_effectivestartdate": "2017-07-23"
+  },
+  {
+    "@odata.etag": "W/\"3165274\"",
+    "hub_starttime@OData.Community.Display.V1.FormattedValue": "2:00 PM",
+    "hub_starttime": 840,
+    "hub_timeslottype@OData.Community.Display.V1.FormattedValue": "Non Standard",
+    "hub_timeslottype": 2,
+    "hub_days@OData.Community.Display.V1.FormattedValue": "Saturday",
+    "hub_days": 6,
+    "hub_endtime@OData.Community.Display.V1.FormattedValue": "4:00 PM",
+    "hub_endtime": 960,
+    "hub_timingsid": "02ebd46a-f272-e711-80f2-c4346bad526c",
+    "hub_effectivestartdate@OData.Community.Display.V1.FormattedValue": "7/26/2017",
+    "hub_effectivestartdate": "2017-07-26"
+  },
+  {
+    "@odata.etag": "W/\"3165310\"",
+    "hub_starttime@OData.Community.Display.V1.FormattedValue": "2:00 PM",
+    "hub_starttime": 840,
+    "hub_timeslottype@OData.Community.Display.V1.FormattedValue": "Non Standard",
+    "hub_timeslottype": 2,
+    "hub_days@OData.Community.Display.V1.FormattedValue": "Thursday",
+    "hub_days": 4,
+    "hub_endtime@OData.Community.Display.V1.FormattedValue": "4:30 PM",
+    "hub_endtime": 990,
+    "hub_timingsid": "f01a9ea9-b26b-e711-80f3-c4346badc680",
+    "hub_effectivestartdate@OData.Community.Display.V1.FormattedValue": "7/17/2017",
+    "hub_effectivestartdate": "2017-07-17"
+  },
+  {
+    "@odata.etag": "W/\"3177563\"",
+    "hub_starttime@OData.Community.Display.V1.FormattedValue": "8:30 AM",
+    "hub_starttime": 510,
+    "hub_timeslottype@OData.Community.Display.V1.FormattedValue": "Non Standard",
+    "hub_timeslottype": 2,
+    "hub_days@OData.Community.Display.V1.FormattedValue": "Sunday",
+    "hub_days": 7,
+    "hub_endtime@OData.Community.Display.V1.FormattedValue": "11:30 AM",
+    "hub_endtime": 690,
+    "hub_timingsid": "16c97acc-5e77-e711-80f4-c4346badc680",
+    "hub_effectivestartdate@OData.Community.Display.V1.FormattedValue": "8/1/2017",
+    "hub_effectivestartdate": "2017-08-01"
+  },
+  {
+    "@odata.etag": "W/\"3346974\"",
+    "hub_starttime@OData.Community.Display.V1.FormattedValue": "9:00 AM",
+    "hub_starttime": 540,
+    "hub_timeslottype@OData.Community.Display.V1.FormattedValue": "Non Standard",
+    "hub_timeslottype": 2,
+    "hub_days@OData.Community.Display.V1.FormattedValue": "Thursday",
+    "hub_days": 4,
+    "hub_endtime@OData.Community.Display.V1.FormattedValue": "9:30 AM",
+    "hub_endtime": 570,
+    "hub_timingsid": "b46cb6a2-f172-e711-80f2-c4346bad526c",
+    "hub_effectivestartdate@OData.Community.Display.V1.FormattedValue": "7/26/2017",
+    "hub_effectivestartdate": "2017-07-26"
+  },
+  {
+    "@odata.etag": "W/\"3165248\"",
+    "hub_starttime@OData.Community.Display.V1.FormattedValue": "9:00 AM",
+    "hub_starttime": 540,
+    "hub_timeslottype@OData.Community.Display.V1.FormattedValue": "Non Standard",
+    "hub_timeslottype": 2,
+    "hub_days@OData.Community.Display.V1.FormattedValue": "Friday",
+    "hub_days": 5,
+    "hub_endtime@OData.Community.Display.V1.FormattedValue": "10:00 AM",
+    "hub_endtime": 600,
+    "hub_timingsid": "47d769c8-f172-e711-80f2-c4346bad526c",
+    "hub_effectivestartdate@OData.Community.Display.V1.FormattedValue": "7/26/2017",
+    "hub_effectivestartdate": "2017-07-26"
+  },
+  {
+    "@odata.etag": "W/\"3165255\"",
+    "hub_starttime@OData.Community.Display.V1.FormattedValue": "9:00 AM",
+    "hub_starttime": 540,
+    "hub_timeslottype@OData.Community.Display.V1.FormattedValue": "Non Standard",
+    "hub_timeslottype": 2,
+    "hub_days@OData.Community.Display.V1.FormattedValue": "Saturday",
+    "hub_days": 6,
+    "hub_endtime@OData.Community.Display.V1.FormattedValue": "10:00 AM",
+    "hub_endtime": 600,
+    "hub_timingsid": "713bb352-f272-e711-80f2-c4346bad526c",
+    "hub_effectivestartdate@OData.Community.Display.V1.FormattedValue": "7/26/2017",
+    "hub_effectivestartdate": "2017-07-26"
+  }
+];
+
+
 
 
 function Data(){
@@ -5243,6 +5374,11 @@ function Data(){
   this.removeTeacher = function(removeTeacherObj){
     return true;
   }
+
+  this.getStudentAvailableTime = function(){
+    return studentTimings;
+  }
+
 }
 
 
