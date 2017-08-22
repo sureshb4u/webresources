@@ -1808,15 +1808,15 @@ function SylvanCalendar() {
                 wjQuery('.ta-pane').hide();
                 if (self.selectedDeliveryType.length == 1) {
                     if (self.sofList['Personal Instruction'].length > 0) {
-                        self.sofPane();
+                        // self.sofPane();
                     }
                 } else if (self.selectedDeliveryType.length == 2) {
                     if (self.sofList['Personal Facilitation'].length > 0) {
-                        self.sofPane();
+                        // self.sofPane();
                     }
                 } else {
                     if (self.sofList['Personal Instruction'].length > 0 || self.sofList['Group Instruction'].length > 0 || self.sofList['Group Facilitation'].length > 0) {
-                        self.sofPane();
+                        // self.sofPane();
                     }
                 }
             }, 600);
