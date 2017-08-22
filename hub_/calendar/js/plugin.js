@@ -1095,6 +1095,13 @@ function SylvanCalendar() {
                         }
                     }
                 }
+                // No students remove lock from prev event
+                if(prevEvent[0]['students'] == undefined || prevEvent[0].hasOwnProperty('students') && prevEvent[0]['students'].length == 0){
+                  if (prevEvent[0].title.includes('<img class="onetoone" src="/webresources/hub_/calendar/images/lock.png">')) {
+                      prevEvent[0].title = prevEvent[0].title.replace('<img class="onetoone" src="/webresources/hub_/calendar/images/lock.png">', "");
+                      prevEvent[0].is1to1 = false;
+                  }
+                }
                 this.calendar.fullCalendar('updateEvent', prevEvent);
                 var removeTeacherIndex = prevEvent[0].teachers.map(function (x) {
                     return x.id;
@@ -1233,6 +1240,13 @@ function SylvanCalendar() {
                         return x.id;
                     }).indexOf(stuId);
                     prevEvent[0].students.splice(removeStudentIndex, 1);
+                    // No students remove lock from prev event
+                    if(prevEvent[0]['students'] == undefined || prevEvent[0].hasOwnProperty('students') && prevEvent[0]['students'].length == 0){
+                      if (prevEvent[0].title.includes('<img class="onetoone" src="/webresources/hub_/calendar/images/lock.png">')) {
+                          prevEvent[0].title = prevEvent[0].title.replace('<img class="onetoone" src="/webresources/hub_/calendar/images/lock.png">', "");
+                          prevEvent[0].is1to1 = false;
+                      }
+                    }
                     if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "student-placeholder-"+prevEvent[0].deliveryType)) ||
                       (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder" && eventTitleHTML[1].className == "student-placeholder-"+prevEvent[0].deliveryType) ||
                       (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder" && eventTitleHTML[2].className == "student-placeholder-"+prevEvent[0].deliveryType)) {
