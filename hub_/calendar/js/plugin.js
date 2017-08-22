@@ -3411,10 +3411,9 @@ function SylvanCalendar() {
                 selectedFromDate = wjQuery(this).val();
                 if(selectedFromDate != undefined){
                   var timeLimit = self.getStudentTimings(self.locationId, selectedFromDate, objStudent[0]['timeSlotType']);
-                }
-                if(timeLimit != undefined){
-                  var duration =  objStudent[0]['duration'] == undefined ? 60 : objStudent[0]['duration'];
-                  var maximumTime = self.tConvert(self.convertMinsNumToTime(timeLimit[0]['hub_endtime'] - duration));
+                  if(timeLimit != undefined){
+                    var duration =  objStudent[0]['duration'] == undefined ? 60 : objStudent[0]['duration'];
+                    var maximumTime = self.tConvert(self.convertMinsNumToTime(timeLimit[0]['hub_endtime'] - duration));
                     wjQuery(".excuse-from-timepicker-input").timepicker({
                         timeFormat: 'h:mm p',
                         interval: 60,
@@ -3425,15 +3424,7 @@ function SylvanCalendar() {
                         scrollbar: true
                     });
                     wjQuery(".excuse-to-timepicker-input").text(timeLimit[0]['hub_endtime@OData.Community.Display.V1.FormattedValue']);
-                    // wjQuery(".excuse-to-timepicker-input").timepicker({
-                    //     timeFormat: 'h:mm p',
-                    //     interval: 60,
-                    //     minTime: timeLimit['hub_starttime@OData.Community.Display.V1.FormattedValue'],
-                    //     maxTime: timeLimit['hub_endtime@OData.Community.Display.V1.FormattedValue'],
-                    //     dynamic: false,
-                    //     dropdown: true,
-                    //     scrollbar: true
-                    // });
+                  }
                 }
             });
             wjQuery('#error_block').text('');
@@ -3597,10 +3588,9 @@ function SylvanCalendar() {
                 selectedFromDate = wjQuery(this).val();
                 if(selectedFromDate != undefined){
                   var timeLimit = self.getStudentTimings(self.locationId, selectedFromDate, objStudent[0]['timeSlotType']);
-                }
-                if(timeLimit[0] != undefined){
-                  var duration =  objStudent[0]['duration'] == undefined ? 60 : objStudent[0]['duration'];
-                  var maximumTime = self.tConvert(self.convertMinsNumToTime(timeLimit[0]['hub_endtime'] - duration));
+                  if(timeLimit != undefined){
+                    var duration =  objStudent[0]['duration'] == undefined ? 60 : objStudent[0]['duration'];
+                    var maximumTime = self.tConvert(self.convertMinsNumToTime(timeLimit[0]['hub_endtime'] - duration));
                     wjQuery(".excuse-from-timepicker-input").timepicker({
                         timeFormat: 'h:mm p',
                         interval: 60,
@@ -3611,15 +3601,7 @@ function SylvanCalendar() {
                         scrollbar: true
                     });
                     wjQuery(".excuse-to-timepicker-input").text(timeLimit[0]['hub_endtime@OData.Community.Display.V1.FormattedValue']);
-                    // wjQuery(".excuse-to-timepicker-input").timepicker({
-                    //     timeFormat: 'h:mm p',
-                    //     interval: 60,
-                    //     minTime: timeLimit['hub_starttime@OData.Community.Display.V1.FormattedValue'],
-                    //     maxTime: timeLimit['hub_endtime@OData.Community.Display.V1.FormattedValue'],
-                    //     dynamic: false,
-                    //     dropdown: true,
-                    //     scrollbar: true
-                    // });
+                  }
                 }
             });
             wjQuery('#error_block').text('');
