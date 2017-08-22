@@ -3959,8 +3959,7 @@ function SylvanCalendar() {
         var objStudent = self.convertedStudentObj.filter(function (x) {
             return x.id == uniqueIds[0] &&
                    x.resourceId == uniqueIds[1] &&
-                   moment(x.startHour).format('YYYY-MM-DD') == moment(uniqueIds[2]).format('YYYY-MM-DD') &&
-                   parseInt(moment(x.startHour).format('h')) == h;
+                   x.startHour.getTime() == new Date(uniqueIds[2]).getTime();
         });
         if (objStudent[0] != undefined) {
             var objMovetoSOF = {};
@@ -3983,9 +3982,9 @@ function SylvanCalendar() {
             var responseObj = data.moveStudentToSOF(objMovetoSOF);
             if (typeof(responseObj) == 'boolean' || typeof(responseObj) == 'object') {
                 var index = self.convertedStudentObj.findIndex(function (x) {
-                    return x.id == objStudent[0].id &&
-                           x.resourceId == uniqueId.split('_')[1] &&
-                           moment(x.startHour).format("h:mm A") == moment(startTime).format("h:mm A");
+                    return x.id == uniqueIds[0] &&
+                           x.resourceId == uniqueIds[1] &&
+                           x.startHour.getTime() == new Date(uniqueIds[2]).getTime();;
                 });
                 self.convertedStudentObj.splice(index, 1);
                 setTimeout(function () {
@@ -4215,7 +4214,7 @@ function SylvanCalendar() {
                     var index = this.convertedStudentObj.findIndex(function (x) {
                         return x.id == prevStudent.id &&
                                x.resourceId == prevStudent.resourceId &&
-                               moment(x.startHour).format('h') == moment(prevStudent.startHour).format('h');
+                               x.startHour.getTime() == prevStudent.startHour.getTime();
                     });
                     if (index != -1) {
                         this.convertedStudentObj[index] = newStudent;
@@ -4235,7 +4234,7 @@ function SylvanCalendar() {
                     var index = this.convertedStudentObj.findIndex(function (x) {
                         return x.id == prevStudent.id &&
                                x.resourceId == prevStudent.resourceId &&
-                               moment(x.startHour).format('h') == moment(prevStudent.startHour).format('h');
+                               x.startHour.getTime() == prevStudent.startHour.getTime();;
                     });
                     if (index != -1) {
                         this.convertedStudentObj[index] = newStudent;
