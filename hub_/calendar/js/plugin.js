@@ -2670,26 +2670,26 @@ function SylvanCalendar() {
         var studentsForSOF = [];
         for (var i = 0; i < Object.keys(serviceStudentList).length; i++) {
             var studentNotPlacedFlag = true;
-            for (var j = 0; j < self.resourceList ; j++) {
-                if (Object.keys(serviceStudentList)[i][0].deliveryType == self.resourceList[j].deliveryType) {
-                    var eventId = self.resourceList[j].id + Object.keys(serviceStudentList)[i][0].startHour;
+            for (var j = 0; j < self.resourceList.length; j++) {
+                if (Object.values(serviceStudentList)[i][0].deliveryType == self.resourceList[j].deliveryType) {
+                    var eventId = self.resourceList[j].id + Object.values(serviceStudentList)[i][0].startHour;
                     var event = self.calendar.fullCalendar('clientEvents', eventId);
                     if (event.length) {
                         studentNotPlacedFlag = true;
                     }
                     else {
-                        Object.keys(serviceStudentList)[i].forEach(function (e) {
+                        Object.values(serviceStudentList)[i].forEach(function (e) {
                             e.resourceId = self.resourceList[j].id;
+                            self.convertedStudentObj.push(e);
                         });
                         studentNotPlacedFlag = false;
-                        self.convertedStudentObj.push(Object.keys(serviceStudentList)[i]);
-                        self.populateStudentEvent(Object.keys(serviceStudentList)[i], true, true);
+                        self.populateStudentEvent(Object.values(serviceStudentList)[i], true, true);
                         break;
                     }
                 }
             }
             if (studentNotPlacedFlag) {
-                studentsForSOF.push(Object.keys(serviceStudentList)[i]);
+                studentsForSOF.concat(Object.values(serviceStudentList)[i]);
             }
         }
         if (studentsForSOF.length) {
@@ -2707,9 +2707,9 @@ function SylvanCalendar() {
             this.sofList['Group Facilitation'] = [];
         }
         var studentPushFlagDecision = true;
-        for (var j = 0; j < self.resourceList.length; j++) {
-            var eventId = self.resourceList[j].id + data.startHour;
-            var event = self.calendar.fullCalendar('clientEvents', eventId);
+        for (var j = 0; j < this.resourceList.length; j++) {
+            var eventId = this.resourceList[j].id + data.startHour;
+            var event = this.calendar.fullCalendar('clientEvents', eventId);
             if(event.length){
                 wjQuery.each(event, function (k, v) {
                     if (event[k].hasOwnProperty("students") && event[k]['students'].length != 0) {
