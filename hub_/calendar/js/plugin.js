@@ -4735,7 +4735,7 @@ function SylvanCalendar() {
     this.getStudentTimings = function(locationId, selectedDate, timeSlotType){
       var day = this.getDayValue(new Date(selectedDate));
       if(day != undefined){
-        var selectedDate = moment(selectedFromDate).format("YYYY-MM-DD");
+        var selectedDate = moment(selectedDate).format("YYYY-MM-DD");
         var availableTime = data.getStudentAvailableTime(locationId, selectedDate, timeSlotType);
         availableTime = ( availableTime == null ) ? [] : availableTime;
         for (var i = 0; i < availableTime.length; i++) {
