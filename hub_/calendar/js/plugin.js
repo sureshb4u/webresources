@@ -44,6 +44,25 @@ setTimeout(function () {
                 return fetchResources(locationId, deliveryTypeList, true);
             }
         });
+        var rtime;
+        var timeout = false;
+        var delta = 300;
+        wjQuery(window).resize(function() {
+            rtime = new Date();
+            if (timeout === false) {
+                timeout = true;
+                setTimeout(resizeend, delta);
+            }
+        });
+
+        function resizeend() {
+            if (new Date() - rtime < delta) {
+                setTimeout(resizeend, delta);
+            } else {
+                timeout = false;
+                fetchResources(locationId, deliveryTypeList, true);
+            }               
+        }
         var resources = [];
         function fetchResources(locationId, selectedDeliveryType, fetchData) {
             wjQuery(".loading").show();
@@ -90,27 +109,7 @@ setTimeout(function () {
             sylvanCalendar.populateResource(resourceList, fetchData);
             if (resourceList.length) {
                 sylvanCalendar.refreshCalendarEvent(locationId, currentCalendarDate, currentCalendarDate, true);
-                var rtime;
-                var timeout = false;
-                var delta = 300;
-                wjQuery(window).resize(function() {
-                    rtime = new Date();
-                    if (timeout === false) {
-                        timeout = true;
-                        setTimeout(resizeend, delta);
-                    }
-                });
-
-                function resizeend() {
-                    if (new Date() - rtime < delta) {
-                        setTimeout(resizeend, delta);
-                    } else {
-                        timeout = false;
-                        wjQuery(".loading").show();
-                        sylvanCalendar.populateResource(resourceList, true);
-                        sylvanCalendar.refreshCalendarEvent(locationId, currentCalendarDate, currentCalendarDate, true);
-                    }               
-                }
+                
                
                 wjQuery('.prevBtn').off('click').on('click', function () {
                     wjQuery(".loading").show();
@@ -3552,7 +3551,7 @@ function SylvanCalendar() {
             });
             var selectedFromDate;
             wjQuery("#start-space, #end-space, .excuseSave").css("visibility", "hidden");
-            wjQuery(".excuse-datepicker-input").on("change", function () {
+            wjQuery(".excuse-datepicker-input").off('change').on("change", function () {
                 selectedFromDate = wjQuery(this).val();
                 if(selectedFromDate != undefined){
                   var duration =  objStudent[0]['duration'] == undefined ? 60 : objStudent[0]['duration'];
@@ -3743,7 +3742,7 @@ function SylvanCalendar() {
             });
             var selectedFromDate;
             wjQuery("#start-space, #end-space, .excuseSave").css("visibility", "hidden");
-            wjQuery(".excuse-datepicker-input").on("change", function () {
+            wjQuery(".excuse-datepicker-input").off('change').on("change", function () {
                 wjQuery("#error_block").text("");
                 selectedFromDate = wjQuery(this).val();
                 if(selectedFromDate != undefined){
@@ -4905,10 +4904,11 @@ function SylvanCalendar() {
       var ConvertedTimingArry = [];
       if(day != undefined){
         var selectedDate = moment(selectedDate).format("YYYY-MM-DD");
-        if(istimeSlotType){
-          var availableTime = data.getPiStudentAvailableTime(locationId, selectedDate, timeSlotType);
+        var availableTime = [];
+        if(!isNaN(timeSlotType)){
+          availableTime = data.getPiStudentAvailableTime(locationId, selectedDate, timeSlotType);
         }else{
-          var availableTime = data.getGfStudentAvailableTime(locationId, selectedDate, timeSlotType);
+          availableTime = data.getGfStudentAvailableTime(locationId, selectedDate, timeSlotType);
         }
         availableTime = ( availableTime == null ) ? [] : availableTime;
         for (var i = 0; i < availableTime.length; i++) {
