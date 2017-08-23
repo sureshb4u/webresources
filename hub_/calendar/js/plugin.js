@@ -2819,14 +2819,14 @@ function SylvanCalendar() {
         for (var i = 0; i < Object.keys(serviceStudentList).length; i++) {
             var studentNotPlacedFlag = true;
             for (var j = 0; j < self.resourceList.length; j++) {
-                if (Object.values(serviceStudentList)[i][0].deliveryType == self.resourceList[j].deliveryType) {
-                    var eventId = self.resourceList[j].id + Object.values(serviceStudentList)[i][0].startHour;
+                if (serviceStudentList[Object.keys(serviceStudentList)[i]][0].deliveryType == self.resourceList[j].deliveryType) {
+                    var eventId = self.resourceList[j].id + serviceStudentList[Object.keys(serviceStudentList)[i]][0].startHour;
                     var event = self.calendar.fullCalendar('clientEvents', eventId);
                     if (event.length) {
                         studentNotPlacedFlag = true;
                     }
                     else {
-                        Object.values(serviceStudentList)[i].forEach(function (e) {
+                        serviceStudentList[Object.keys(serviceStudentList)[i]].forEach(function (e) {
                             e.resourceId = self.resourceList[j].id;
                             var index = self.convertedStudentObj.findIndex(function (x) {
                             return x.id == e.id &&
@@ -2838,13 +2838,13 @@ function SylvanCalendar() {
                             }
                         });
                         studentNotPlacedFlag = false;
-                        self.populateStudentEvent(Object.values(serviceStudentList)[i], true, true);
+                        self.populateStudentEvent(serviceStudentList[Object.keys(serviceStudentList)[i]], true, true);
                         break;
                     }
                 }
             }
             if (studentNotPlacedFlag) {
-                studentsForSOF = studentsForSOF.concat(Object.values(serviceStudentList)[i]);
+                studentsForSOF = studentsForSOF.concat(serviceStudentList[Object.keys(serviceStudentList)[i]]);
             }
         }
         if (studentsForSOF.length) {
