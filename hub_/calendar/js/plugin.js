@@ -90,12 +90,28 @@ setTimeout(function () {
             sylvanCalendar.populateResource(resourceList, fetchData);
             if (resourceList.length) {
                 sylvanCalendar.refreshCalendarEvent(locationId, currentCalendarDate, currentCalendarDate, true);
-                $(window).resize(function () {
-                    // location.reload();
-                    wjQuery(".loading").show();
-                    sylvanCalendar.populateResource(resourceList, true);
-                    sylvanCalendar.refreshCalendarEvent(locationId, currentCalendarDate, currentCalendarDate, true);
+                var rtime;
+                var timeout = false;
+                var delta = 300;
+                wjQuery(window).resize(function() {
+                    rtime = new Date();
+                    if (timeout === false) {
+                        timeout = true;
+                        setTimeout(resizeend, delta);
+                    }
                 });
+
+                function resizeend() {
+                    if (new Date() - rtime < delta) {
+                        setTimeout(resizeend, delta);
+                    } else {
+                        timeout = false;
+                        wjQuery(".loading").show();
+                        sylvanCalendar.populateResource(resourceList, true);
+                        sylvanCalendar.refreshCalendarEvent(locationId, currentCalendarDate, currentCalendarDate, true);
+                    }               
+                }
+               
                 wjQuery('.prevBtn').off('click').on('click', function () {
                     wjQuery(".loading").show();
                     sylvanCalendar.prev(locationId);
@@ -2055,7 +2071,8 @@ function SylvanCalendar() {
                     isFromMasterSchedule: true,
                     is1to1: false,
                     sessionDate: moment(currentCalendarDate).format('YYYY-MM-DD'),
-                    timeSlotType : val['aproductservice_x002e_hub_timeslottype']
+                    timeSlotType : val['aproductservice_x002e_hub_timeslottype'],
+                    namedHoursId: val['aproductservice_x002e_hub_namedgfhoursid']
                 }
                 if (obj.deliveryType == 'Personal Instruction') {
                     var pinnedStudent = self.convertedPinnedList.filter(function (x) {
