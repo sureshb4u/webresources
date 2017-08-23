@@ -3991,9 +3991,9 @@ function SylvanCalendar() {
                     self.pushStudentToSOF(objStudent[0]);
                     if (self.sofList['Personal Instruction'].length > 0 || self.sofList['Group Instruction'].length > 0 || self.sofList['Group Facilitation'].length > 0) {
                         self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
+                        self.openSofPane();
                     }
                 }, 500);
-                self.openSofPane();
                 var prevEventId = wjQuery(element).attr("eventid");
                 var prevEvent = self.calendar.fullCalendar('clientEvents', prevEventId);
                 if (prevEvent) {
