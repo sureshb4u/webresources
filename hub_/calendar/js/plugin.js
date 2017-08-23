@@ -2085,7 +2085,14 @@ function SylvanCalendar() {
                         });
                         if (index == -1) {
                             self.populateStudentEvent([obj], true, true);
-                            self.convertedStudentObj.push(obj);
+                            var index = self.convertedStudentObj.findIndex(function (x) {
+                            return x.id == obj.id &&
+                                   x.resourceId == obj.resourceId &&
+                                   x.startHour.getTime() == obj.startHour.getTime();
+                            });
+                            if (index == -1) {
+                                self.convertedStudentObj.push(obj);
+                            }
                         }
                     }
                     else {
@@ -2124,7 +2131,16 @@ function SylvanCalendar() {
             });
             if (pinnedList.length) {
                 self.populateStudentEvent(pinnedList, true, true);
-                self.convertedStudentObj.push.apply(self.convertedStudentObj,pinnedList);
+                for(var i=0; i<pinnedList.length; i++){
+                    var index = self.convertedStudentObj.findIndex(function (x) {
+                        return x.id == pinnedList[i].id &&
+                               x.resourceId == pinnedList[i].resourceId &&
+                               x.startHour.getTime() == pinnedList[i].startHour.getTime();
+                    });
+                    if (index == -1) {
+                        self.convertedStudentObj.push(pinnedList[i]);
+                    }
+                }
             }
             if (affinityList.length) {
                 self.populateAffinityStudents(affinityList);
@@ -2600,7 +2616,14 @@ function SylvanCalendar() {
                             if (!event[k]['students'][0].is1to1 && !affinityList[i].is1to1) {
                                 var obj = [];
                                 obj.push(affinityList[i]);
-                                self.convertedStudentObj.push(affinityList[i]);
+                                var index = self.convertedStudentObj.findIndex(function (x) {
+                                    return x.id == affinityList[i].id &&
+                                           x.resourceId == affinityList[i].resourceId &&
+                                           x.startHour.getTime() == affinityList[i].startHour.getTime();
+                                });
+                                if (index == -1) {
+                                    self.convertedStudentObj.push(affinityList[i]);
+                                }
                                 self.populateStudentEvent(obj, true, true);
                             }
                             else {
@@ -2614,7 +2637,14 @@ function SylvanCalendar() {
                     else {
                         var obj = [];
                         obj.push(affinityList[i]);
-                        self.convertedStudentObj.push(affinityList[i]);
+                        var index = self.convertedStudentObj.findIndex(function (x) {
+                            return x.id == affinityList[i].id &&
+                                   x.resourceId == affinityList[i].resourceId &&
+                                   x.startHour.getTime() == affinityList[i].startHour.getTime();
+                        });
+                        if (index == -1) {
+                            self.convertedStudentObj.push(affinityList[i]);
+                        }
                         self.populateStudentEvent(obj, true, true);
                     }
                 });
@@ -2622,7 +2652,14 @@ function SylvanCalendar() {
             else {
                 var obj = [];
                 obj.push(affinityList[i]);
-                self.convertedStudentObj.push(affinityList[i]);
+                var index = self.convertedStudentObj.findIndex(function (x) {
+                    return x.id == affinityList[i].id &&
+                           x.resourceId == affinityList[i].resourceId &&
+                           x.startHour.getTime() == affinityList[i].startHour.getTime();
+                });
+                if (index == -1) {
+                    self.convertedStudentObj.push(affinityList[i]);
+                }
                 self.populateStudentEvent(obj, true, true);
             }
         }
@@ -2650,7 +2687,14 @@ function SylvanCalendar() {
                                         var obj = [];
                                         studentNotPlacedFlag = false;
                                         obj.push(studentList[i]);
-                                        self.convertedStudentObj.push(studentList[i]);
+                                        var index = self.convertedStudentObj.findIndex(function (x) {
+                                            return x.id == studentList[i].id &&
+                                                   x.resourceId == studentList[i].resourceId &&
+                                                   x.startHour.getTime() == studentList[i].startHour.getTime();
+                                        });
+                                        if (index == -1) {
+                                            self.convertedStudentObj.push(studentList[i]);
+                                        }
                                         self.populateStudentEvent(obj, true, true);
                                     }
                                 }
@@ -2660,7 +2704,14 @@ function SylvanCalendar() {
                                 var obj = [];
                                 studentNotPlacedFlag = false;
                                 obj.push(studentList[i]);
-                                self.convertedStudentObj.push(studentList[i]);
+                                var index = self.convertedStudentObj.findIndex(function (x) {
+                                    return x.id == studentList[i].id &&
+                                           x.resourceId == studentList[i].resourceId &&
+                                           x.startHour.getTime() == studentList[i].startHour.getTime();
+                                });
+                                if (index == -1) {
+                                    self.convertedStudentObj.push(studentList[i]);
+                                }
                                 self.populateStudentEvent(obj, true, true);
                             }
                         });
@@ -2670,7 +2721,14 @@ function SylvanCalendar() {
                         var obj = [];
                         studentNotPlacedFlag = false;
                         obj.push(studentList[i]);
-                        self.convertedStudentObj.push(studentList[i]);
+                        var index = self.convertedStudentObj.findIndex(function (x) {
+                            return x.id == studentList[i].id &&
+                                   x.resourceId == studentList[i].resourceId &&
+                                   x.startHour.getTime() == studentList[i].startHour.getTime();
+                        });
+                        if (index == -1) {
+                            self.convertedStudentObj.push(studentList[i]);
+                        }
                         self.populateStudentEvent(obj, true, true);
                     }
                 }
@@ -2704,7 +2762,14 @@ function SylvanCalendar() {
                     else {
                         Object.values(serviceStudentList)[i].forEach(function (e) {
                             e.resourceId = self.resourceList[j].id;
-                            self.convertedStudentObj.push(e);
+                            var index = self.convertedStudentObj.findIndex(function (x) {
+                            return x.id == e.id &&
+                                   x.resourceId == e.resourceId &&
+                                   x.startHour.getTime() == e.startHour.getTime();
+                            });
+                            if (index == -1) {
+                                self.convertedStudentObj.push(e);
+                            }
                         });
                         studentNotPlacedFlag = false;
                         self.populateStudentEvent(Object.values(serviceStudentList)[i], true, true);
