@@ -3502,7 +3502,7 @@ function SylvanCalendar() {
                             var endTime = self.tConvert(self.convertMinsNumToTime(self.convertToMinutes(startTime) + duration));
                             wjQuery(".excuse-to-timepicker-input").text(endTime);
                         }
-                        timeHTML.push('<li><a tabindex="-1" value-id=' + timeList[i] + ' href="javascript:void(0)">' + timeList[i] + '</a></li>');
+                        timeHTML.push('<li><a tabindex="-1" value-id="' + timeList[i] + '" href="javascript:void(0)">' + timeList[i] + '</a></li>');
                     }
                     wjQuery(".timing-dropdown ul").html(timeHTML);
                     wjQuery(".timing-dropdown .dropdown-menu").on('click', 'li a', function () {
@@ -3695,7 +3695,7 @@ function SylvanCalendar() {
                             var endTime = self.tConvert(self.convertMinsNumToTime(self.convertToMinutes(startTime) + duration));
                             wjQuery(".excuse-to-timepicker-input").text(endTime);
                         }
-                        timeHTML.push('<li><a tabindex="-1" value-id=' + timeList[i] + ' href="javascript:void(0)">' + timeList[i] + '</a></li>');
+                        timeHTML.push('<li><a tabindex="-1" value-id="' + timeList[i] + '" href="javascript:void(0)">' + timeList[i] + '</a></li>');
                     }
                     wjQuery(".timing-dropdown ul").html(timeHTML);
                     wjQuery(".timing-dropdown .dropdown-menu").on('click', 'li a', function () {
