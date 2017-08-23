@@ -594,19 +594,56 @@ function SylvanCalendar() {
                     }
                 }
             }
-            if (this.selectedDeliveryType.length == 1) {
-                wjQuery(".sof-pi").css("width", "calc(100% - 10px)");
-            } else if (this.selectedDeliveryType.length == 2) {
-                wjQuery(".sof-gf").css("width", "calc(100% - 10px)");
-            } else {
-                if (this.sofList['Personal Instruction'].length == 0) {
-                    wjQuery(".sof-gf").css("width", "calc(100% - 10px)");
-                } else {
-                    wjQuery(".sof-gf").css("width", "calc(50% - 10px)");
-                    wjQuery(".sof-pi").css("width", "calc(50% - 10px)");
-                }
-            }
+            this.sofWidthCalc();
             this.draggable('student-container');
+        }
+    }
+
+    this.sofWidthCalc = function(){
+        if(this.selectedDeliveryType.length == 1){
+            wjQuery(".sof-pi").css("width", "calc(100% - 10px)");
+        }else{
+            
+            if (this.sofList['Personal Instruction'].length != 0 &&
+                this.sofList['Group Instruction'].length == 0 &&
+                this.sofList['Group Facilitation'].length == 0) {
+                wjQuery(".sof-pi").css("width", "calc(100% - 10px)");
+            }
+            else if (this.sofList['Personal Instruction'].length == 0 &&
+                this.sofList['Group Instruction'].length != 0 &&
+                this.sofList['Group Facilitation'].length == 0) {
+                wjQuery(".sof-gi").css("width", "calc(100% - 10px)");
+            }
+            else if (this.sofList['Personal Instruction'].length == 0 &&
+                this.sofList['Group Instruction'].length == 0 &&
+                this.sofList['Group Facilitation'].length != 0) {
+                wjQuery(".sof-gf").css("width", "calc(100% - 10px)");
+            }
+            else if (this.sofList['Personal Instruction'].length != 0 &&
+                this.sofList['Group Instruction'].length == 0 &&
+                this.sofList['Group Facilitation'].length != 0) {
+                wjQuery(".sof-pi").css("width", "calc(50% - 10px)");
+                wjQuery(".sof-gf").css("width", "calc(50% - 10px)");
+            }
+            else if (this.sofList['Personal Instruction'].length != 0 &&
+                this.sofList['Group Instruction'].length != 0 &&
+                this.sofList['Group Facilitation'].length == 0) {
+                wjQuery(".sof-pi").css("width", "calc(50% - 10px)");
+                wjQuery(".sof-gi").css("width", "calc(50% - 10px)");
+            }
+            else if (this.sofList['Personal Instruction'].length == 0 &&
+                this.sofList['Group Instruction'].length != 0 &&
+                this.sofList['Group Facilitation'].length != 0) {
+                wjQuery(".sof-gi").css("width", "calc(50% - 10px)");
+                wjQuery(".sof-gf").css("width", "calc(50% - 10px)");
+            }
+            else if (this.sofList['Personal Instruction'].length != 0 &&
+                this.sofList['Group Instruction'].length != 0 &&
+                this.sofList['Group Facilitation'].length != 0) {
+                wjQuery(".sof-gi").css("width", "calc(33% - 10px)");
+                wjQuery(".sof-gf").css("width", "calc(33% - 10px)");
+                wjQuery(".sof-pi").css("width", "calc(33% - 10px)");
+            }
         }
     }
 
@@ -1152,6 +1189,7 @@ function SylvanCalendar() {
         if (index != -1) {
             student.push(t.sofList['Personal Instruction'][index]);
             t.sofList['Personal Instruction'].splice(index, 1);
+
         }
         if (student[0] == undefined) {
             student = [];
@@ -1175,6 +1213,7 @@ function SylvanCalendar() {
         }
         if (student) {
             elm.remove();
+            t.sofWidthCalc();
             var prevStudent = wjQuery.extend(true, {}, student[0]);
             if (wjQuery(parentElement).html() == '') {
                 parentElement.remove();
