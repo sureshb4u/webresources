@@ -5436,9 +5436,14 @@ function Data(){
     return true;
   }
 
-  this.getStudentAvailableTime = function(locationId, selectedDate, timeSlotType){
+  this.getPiStudentAvailableTime = function(locationId, selectedDate, timeSlotType){
     return studentTimings;
   }
+
+  this.getGfStudentAvailableTime = function(locationId, selectedDate, namedHoursId){
+    return studentTimings;
+  }
+
 
 }
 

@@ -3490,7 +3490,7 @@ function SylvanCalendar() {
                 selectedFromDate = wjQuery(this).val();
                 if(selectedFromDate != undefined){
                   var duration =  objStudent[0]['duration'] == undefined ? 60 : objStudent[0]['duration'];
-                  var timeList = self.getStudentTimings(self.locationId, selectedFromDate, objStudent[0]['timeSlotType'], duration);
+                  var timeList = self.getStudentTimings(self.locationId, selectedFromDate, objStudent[0]['timeSlotType'], duration, true);
                   var timeHTML = [];
                   if(timeList.length){
                     wjQuery("#start-space, #end-space, .excuseSave").css("visibility", "visible");
@@ -3682,7 +3682,7 @@ function SylvanCalendar() {
                 selectedFromDate = wjQuery(this).val();
                 if(selectedFromDate != undefined){
                   var duration =  objStudent[0]['duration'] == undefined ? 60 : objStudent[0]['duration'];
-                  var timeList = self.getStudentTimings(self.locationId, selectedFromDate, objStudent[0]['namedHoursId'], duration);
+                  var timeList = self.getStudentTimings(self.locationId, selectedFromDate, objStudent[0]['namedHoursId'], duration, false);
                   var timeHTML = [];
                   if(timeList.length){
                     wjQuery("#error_block").text("");
@@ -4825,13 +4825,17 @@ function SylvanCalendar() {
         }
     }
 
-    this.getStudentTimings = function(locationId, selectedDate, timeSlotType, studentDuration){
+    this.getStudentTimings = function(locationId, selectedDate, timeSlotType, studentDuration, istimeSlotType){
       var day = this.getDayValue(new Date(selectedDate));
       var timingArry = [];
       var ConvertedTimingArry = [];
       if(day != undefined){
         var selectedDate = moment(selectedDate).format("YYYY-MM-DD");
-        var availableTime = data.getStudentAvailableTime(locationId, selectedDate, timeSlotType);
+        if(istimeSlotType){
+          var availableTime = data.getPiStudentAvailableTime(locationId, selectedDate, timeSlotType);
+        }else{
+          var availableTime = data.getGfStudentAvailableTime(locationId, selectedDate, timeSlotType);
+        }
         availableTime = ( availableTime == null ) ? [] : availableTime;
         for (var i = 0; i < availableTime.length; i++) {
           if(day == availableTime[i]['hub_days']){
