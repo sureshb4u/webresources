@@ -1414,7 +1414,7 @@ function SylvanCalendar() {
             minTime: 8,
             maxTime: 20,
             allDayText: '',
-            allDaySlot:false,
+            //allDaySlot:false,
             droppable: true,
             drop: function (date, allDay, ev, ui, resource) {
                 t.createEventOnDrop(t, date, allDay, ev, ui, resource, this);
@@ -4112,14 +4112,22 @@ function SylvanCalendar() {
             wjQuery('.loading').show();
             var responseObj = data.moveStudentToSOF(objMovetoSOF);
             if (typeof(responseObj) == 'boolean' || typeof(responseObj) == 'object') {
+                if (responseObj.hasOwnProperty('hub_studentsessionid')) {
+                    objStudent[0]['sessionId'] = responseObj['hub_studentsessionid'];
+                    objStudent[0]['resourceId'] = responseObj['hub_resourceid@odata.bind'];
+                    objStudent[0]['sessiontype'] = responseObj['hub_sessiontype'];
+                    objStudent[0]['sessionStatus'] = responseObj['hub_session_status'];
+                    delete objStudent[0]['isFromMasterSchedule'];
+                }
                 var index = self.convertedStudentObj.findIndex(function (x) {
                     return x.id == uniqueIds[0] &&
                            x.resourceId == uniqueIds[1] &&
-                           x.startHour.getTime() == new Date(uniqueIds[2]).getTime();;
+                           x.startHour.getTime() == new Date(uniqueIds[2]).getTime();
                 });
-                self.convertedStudentObj.splice(index, 1);
+                if(index != -1){
+                    self.convertedStudentObj.splice(index, 1);
+                }
                 wjQuery('.loading').hide();
-
                 setTimeout(function () {
                     self.pushStudentToSOF(objStudent[0]);
                     if (self.sofList['Personal Instruction'].length > 0 || self.sofList['Group Instruction'].length > 0 || self.sofList['Group Facilitation'].length > 0) {
