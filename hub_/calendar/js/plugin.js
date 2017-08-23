@@ -89,12 +89,12 @@ setTimeout(function () {
             }
             sylvanCalendar.populateResource(resourceList, fetchData);
             if (resourceList.length) {
-                sylvanCalendar.refreshCalendarEvent(locationId, currentCalendarDate, currentCalendarDate, false);
+                sylvanCalendar.refreshCalendarEvent(locationId, currentCalendarDate, currentCalendarDate, true);
                 $(window).resize(function () {
                     // location.reload();
                     wjQuery(".loading").show();
-                    sylvanCalendar.populateResource(resourceList, fetchData);
-                    sylvanCalendar.refreshCalendarEvent(locationId, currentCalendarDate, currentCalendarDate, false);
+                    sylvanCalendar.populateResource(resourceList, true);
+                    sylvanCalendar.refreshCalendarEvent(locationId, currentCalendarDate, currentCalendarDate, true);
                 });
                 wjQuery('.prevBtn').off('click').on('click', function () {
                     wjQuery(".loading").show();
@@ -744,6 +744,16 @@ function SylvanCalendar() {
                 } else {
                     objNewSession['hub_studentsessionid'] = oldStudent['sessionId'];
                 }
+
+                objNewSession['hub_sessiontype'] = 1;
+                objSession['hub_sessiontype'] = 1;
+                if (student[0]['sessiontype'] != undefined) {
+                    objNewSession['hub_sessiontype'] = student[0]['sessiontype'];
+                    objSession['hub_sessiontype'] = student[0]['sessiontype'];
+                }
+                objNewSession['hub_session_status'] = student[0]['sessionStatus'];
+                objSession['hub_session_status'] = student[0]['sessionStatus'];
+                
                 objNewSession['hub_is_1to1'] = student[0]['is1to1'];
                 objNewSession['hub_enrollment@odata.bind'] = oldStudent['enrollmentId'];
                 objNewSession['hub_service@odata.bind'] = oldStudent['serviceId'];
