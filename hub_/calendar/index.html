@@ -150,17 +150,22 @@
 				<input type="text" class="custom-datepicker excuse-datepicker-input" id="rescheduleDate" required tabindex="-1">
 			</td>
 		</tr>
-		<tr>
+		<tr id="start-space">
 			<td>Start</td>
 			<td>
-				<input type="text" class="custom-timepicker excuse-from-timepicker-input" id="excuseFromTime" required tabindex="-1">
+        <div class="timing-dropdown btn-group">
+            <button class="btn dropdown-toggle" data-toggle="dropdown">
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu">
+          </ul>
+        </div>
 			</td>
 		</tr>
-		<tr>
+		<tr id="end-space">
 			<td>End</td>
 			<td>
         <label class="custom-timepicker excuse-to-timepicker-input" id="excuseToTime" tabindex="-1"></label>
-				<!-- <input type="text" class="custom-timepicker excuse-to-timepicker-input" id="excuseToTime" required tabindex="-1"> -->
 			</td>
 		</tr>
 		<tr>

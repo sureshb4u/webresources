@@ -3419,28 +3419,41 @@ function SylvanCalendar() {
                 format: 'mm/dd/yyyy'
             });
             var selectedFromDate;
+            wjQuery("#start-space, #end-space").css("visibility", "hidden");
             wjQuery(".excuse-datepicker-input").on("change", function () {
                 selectedFromDate = wjQuery(this).val();
                 if(selectedFromDate != undefined){
-                  var timeLimit = self.getStudentTimings(self.locationId, selectedFromDate, objStudent[0]['timeSlotType']);
-                  if(timeLimit != undefined){
-                    var duration =  objStudent[0]['duration'] == undefined ? 60 : objStudent[0]['duration'];
-                    var maximumTime = self.tConvert(self.convertMinsNumToTime(timeLimit[0]['hub_endtime'] - duration));
-                    wjQuery(".excuse-from-timepicker-input").timepicker({
-                        timeFormat: 'h:mm p',
-                        interval: 60,
-                        minTime: timeLimit['hub_starttime@OData.Community.Display.V1.FormattedValue'],
-                        maxTime: maximumTime,
-                        dynamic: false,
-                        dropdown: true,
-                        scrollbar: true
+                  var duration =  objStudent[0]['duration'] == undefined ? 60 : objStudent[0]['duration'];
+                  var timeList = self.getStudentTimings(self.locationId, selectedFromDate, objStudent[0]['timeSlotType'], duration);
+                  var timeHTML = [];
+                  if(timeList.length){
+                    wjQuery("#start-space, #end-space").css("visibility", "visible");
+                    for (var i = 0; i < timeList.length; i++) {
+                        if (!i) {
+                            wjQuery(".timing-dropdown .btn:first-child").text(timeList[i]);
+                            wjQuery(".timing-dropdown .btn:first-child").val(timeList[i]);
+                            var startTime = timeList[i];
+                            var endTime = self.tConvert(self.convertMinsNumToTime(self.convertToMinutes(startTime) + duration));
+                            wjQuery(".excuse-to-timepicker-input").text(endTime);
+                        }
+                        timeHTML.push('<li><a tabindex="-1" value-id=' + timeList[i] + ' href="javascript:void(0)">' + timeList[i] + '</a></li>');
+                    }
+                    wjQuery(".timing-dropdown ul").html(timeHTML);
+                    wjQuery(".timing-dropdown .dropdown-menu").on('click', 'li a', function () {
+                      if (wjQuery(".timing-dropdown .btn:first-child").val() != wjQuery(this).attr('value-id')) {
+                          wjQuery(".timing-dropdown .btn:first-child").text(wjQuery(this).text());
+                          wjQuery(".timing-dropdown .btn:first-child").val(wjQuery(this).attr('value-id'));
+                          var startTime = wjQuery(".timing-dropdown .btn:first-child").val();
+                          var endTime = self.tConvert(self.convertMinsNumToTime(self.convertToMinutes(startTime) + duration));
+                          wjQuery(".excuse-to-timepicker-input").text(endTime);
+                      }
                     });
-                    wjQuery(".excuse-to-timepicker-input").text(timeLimit[0]['hub_endtime@OData.Community.Display.V1.FormattedValue']);
+                  }else{
+                    wjQuery("#start-space, #end-space").css("visibility", "hidden");
                   }
                 }
             });
             wjQuery('#error_block').text('');
-            wjQuery(".excuse-from-timepicker-input").val('');
             wjQuery(".excuse-to-timepicker-input").val('');
             wjQuery(".excuse-to-timepicker-input").text('');
             wjQuery(".excuse-datepicker-input").val('');
@@ -3460,14 +3473,14 @@ function SylvanCalendar() {
                 else {
                     flag = false;
                 }
-                if (wjQuery(".excuse-from-timepicker-input").val() != '' && flag) {
-                    objSession.hub_makeup_start_time = self.convertToMinutes(wjQuery(".excuse-from-timepicker-input").val());
+                if (wjQuery(".timing-dropdown .btn:first-child").val() != '' && flag) {
+                    objSession.hub_makeup_start_time = self.convertToMinutes(wjQuery(".timing-dropdown .btn:first-child").val());
                 }
                 else {
                     flag = false;
                 }
-                if (wjQuery(".excuse-from-timepicker-input").val() != '' && flag) {
-                    objSession.hub_makeup_end_time = self.convertToMinutes(wjQuery(".excuse-to-timepicker-input").val());
+                if (wjQuery(".timing-dropdown .btn:first-child").val() != '' && flag) {
+                    objSession.hub_makeup_end_time = self.convertToMinutes(wjQuery(".excuse-to-timepicker-input").text());
                     if (objSession.hub_makeup_end_time <= objSession.hub_makeup_start_time) {
                         wjQuery('#error_block').text('End Time is less than or equal to Start Time');
                         wjQuery('#error_block').css('color', 'red');
@@ -3486,8 +3499,8 @@ function SylvanCalendar() {
                     });
                     if (index != -1) {
                       delete self.convertedStudentObj[index].resourceId;
-                      self.convertedStudentObj[index].start =  new Date(moment(self.convertedStudentObj[index].start).format("YYYY-MM-DD")+" "+wjQuery(".excuse-from-timepicker-input").val());
-                      self.convertedStudentObj[index].end =  new Date(moment(self.convertedStudentObj[index].end).format("YYYY-MM-DD")+" "+wjQuery(".excuse-to-timepicker-input").val());
+                      self.convertedStudentObj[index].start =  new Date(moment(self.convertedStudentObj[index].start).format("YYYY-MM-DD")+" "+wjQuery(".timing-dropdown .btn:first-child").val());
+                      self.convertedStudentObj[index].end =  new Date(moment(self.convertedStudentObj[index].end).format("YYYY-MM-DD")+" "+wjQuery(".excuse-to-timepicker-input").text());
                       self.convertedStudentObj[index].startHour =  self.convertedStudentObj[index].start;
                       setTimeout(function() {
                           self.pushStudentToSOF(self.convertedStudentObj[index]);
@@ -3597,29 +3610,41 @@ function SylvanCalendar() {
                 format: 'mm/dd/yyyy'
             });
             var selectedFromDate;
+            wjQuery("#start-space, #end-space").css("visibility", "hidden");
             wjQuery(".excuse-datepicker-input").on("change", function () {
                 selectedFromDate = wjQuery(this).val();
                 if(selectedFromDate != undefined){
-                  var timeLimit = self.getStudentTimings(self.locationId, selectedFromDate, objStudent[0]['timeSlotType']);
-                  if(timeLimit != undefined){
-                    var duration =  objStudent[0]['duration'] == undefined ? 60 : objStudent[0]['duration'];
-                    var maximumTime = self.tConvert(self.convertMinsNumToTime(timeLimit[0]['hub_endtime'] - duration));
-                    wjQuery(".excuse-from-timepicker-input").timepicker({
-                        timeFormat: 'h:mm p',
-                        interval: 60,
-                        minTime: timeLimit['hub_starttime@OData.Community.Display.V1.FormattedValue'],
-                        maxTime: maximumTime,
-                        dynamic: false,
-                        dropdown: true,
-                        scrollbar: true
+                  var duration =  objStudent[0]['duration'] == undefined ? 60 : objStudent[0]['duration'];
+                  var timeList = self.getStudentTimings(self.locationId, selectedFromDate, objStudent[0]['timeSlotType'], duration);
+                  var timeHTML = [];
+                  if(timeList.length){
+                    wjQuery("#start-space, #end-space").css("visibility", "visible");
+                    for (var i = 0; i < timeList.length; i++) {
+                        if (!i) {
+                            wjQuery(".timing-dropdown .btn:first-child").text(timeList[i]);
+                            wjQuery(".timing-dropdown .btn:first-child").val(timeList[i]);
+                            var startTime = timeList[i];
+                            var endTime = self.tConvert(self.convertMinsNumToTime(self.convertToMinutes(startTime) + duration));
+                            wjQuery(".excuse-to-timepicker-input").text(endTime);
+                        }
+                        timeHTML.push('<li><a tabindex="-1" value-id=' + timeList[i] + ' href="javascript:void(0)">' + timeList[i] + '</a></li>');
+                    }
+                    wjQuery(".timing-dropdown ul").html(timeHTML);
+                    wjQuery(".timing-dropdown .dropdown-menu").on('click', 'li a', function () {
+                      if (wjQuery(".timing-dropdown .btn:first-child").val() != wjQuery(this).attr('value-id')) {
+                          wjQuery(".timing-dropdown .btn:first-child").text(wjQuery(this).text());
+                          wjQuery(".timing-dropdown .btn:first-child").val(wjQuery(this).attr('value-id'));
+                          var startTime = wjQuery(".timing-dropdown .btn:first-child").val();
+                          var endTime = self.tConvert(self.convertMinsNumToTime(self.convertToMinutes(startTime) + duration));
+                          wjQuery(".excuse-to-timepicker-input").text(endTime);
+                      }
                     });
-                    wjQuery(".excuse-to-timepicker-input").text(timeLimit[0]['hub_endtime@OData.Community.Display.V1.FormattedValue']);
+                  }else{
+                    wjQuery("#start-space, #end-space").css("visibility", "hidden");
                   }
                 }
             });
             wjQuery('#error_block').text('');
-            wjQuery(".excuse-from-timepicker-input").val('');
-            wjQuery(".excuse-to-timepicker-input").val('');
             wjQuery(".excuse-to-timepicker-input").text('');
             wjQuery(".excuse-datepicker-input").val('');
             wjQuery("#excuseModal").dialog({
@@ -3638,14 +3663,14 @@ function SylvanCalendar() {
                 else {
                     flag = false;
                 }
-                if (wjQuery(".excuse-from-timepicker-input").val() != '' && flag) {
-                    objNewSession.hub_start_time = self.convertToMinutes(wjQuery(".excuse-from-timepicker-input").val());
+                if (wjQuery(".timing-dropdown .btn:first-child").val() != '' && flag) {
+                    objNewSession.hub_start_time = self.convertToMinutes(wjQuery(".timing-dropdown .btn:first-child").val());
                 }
                 else {
                     flag = false;
                 }
-                if (wjQuery(".excuse-from-timepicker-input").val() != '' && flag) {
-                    objNewSession.hub_end_time = self.convertToMinutes(wjQuery(".excuse-to-timepicker-input").val());
+                if (wjQuery(".timing-dropdown .btn:first-child").val() != '' && flag) {
+                    objNewSession.hub_end_time = self.convertToMinutes(wjQuery(".excuse-to-timepicker-input").text());
                     if (objNewSession.hub_end_time <= objNewSession.hub_start_time) {
                         wjQuery('#error_block').text('End Time is less than or equal to Start Time');
                         wjQuery('#error_block').css('color', 'red');
@@ -3665,8 +3690,8 @@ function SylvanCalendar() {
                     });
                     if (index != -1) {
                       delete self.convertedStudentObj[index].resourceId;
-                      self.convertedStudentObj[index].start =  new Date(moment(self.convertedStudentObj[index].start).format("YYYY-MM-DD")+" "+wjQuery(".excuse-from-timepicker-input").val());
-                      self.convertedStudentObj[index].end =  new Date(moment(self.convertedStudentObj[index].end).format("YYYY-MM-DD")+" "+wjQuery(".excuse-to-timepicker-input").val());
+                      self.convertedStudentObj[index].start =  new Date(moment(self.convertedStudentObj[index].start).format("YYYY-MM-DD")+" "+wjQuery(".timing-dropdown .btn:first-child").val());
+                      self.convertedStudentObj[index].end =  new Date(moment(self.convertedStudentObj[index].end).format("YYYY-MM-DD")+" "+wjQuery(".excuse-to-timepicker-input").text());
                       self.convertedStudentObj[index].startHour =  self.convertedStudentObj[index].start;
                      setTimeout(function() {
                           self.pushStudentToSOF(self.convertedStudentObj[index]);
@@ -4730,19 +4755,28 @@ function SylvanCalendar() {
         }
     }
 
-    this.getStudentTimings = function(locationId, selectedDate, timeSlotType){
+    this.getStudentTimings = function(locationId, selectedDate, timeSlotType, studentDuration){
       var day = this.getDayValue(new Date(selectedDate));
+      var timingArry = [];
+      var ConvertedTimingArry = [];
       if(day != undefined){
         var selectedDate = moment(selectedDate).format("YYYY-MM-DD");
         var availableTime = data.getStudentAvailableTime(locationId, selectedDate, timeSlotType);
         availableTime = ( availableTime == null ) ? [] : availableTime;
         for (var i = 0; i < availableTime.length; i++) {
           if(day == availableTime[i]['hub_days']){
-            availableTime = availableTime[i];
-            break;
+            for(var j= availableTime[i]['hub_starttime']; j < availableTime[i]['hub_endtime']; j = j+studentDuration ){
+              timingArry.push(j);
+            }
           }
         }
-        return [availableTime];
+        if(timingArry.length){
+          timingArry.sort(function(a, b){return a-b});
+          for(var i=0; i< timingArry.length; i++){
+            ConvertedTimingArry.push(this.tConvert(this.convertMinsNumToTime(timingArry[i])));
+          }
+        }
+        return ConvertedTimingArry;
       }
     }
 
