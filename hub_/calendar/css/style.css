@@ -188,6 +188,10 @@ i.material-icons.cursor.float-right {
 /*.custom-toggle{
     width: 10px;
 }*/
+
+#error_block{
+	color: red;
+}
 #excuseSave{
     margin-top: 10px;
     float: right;

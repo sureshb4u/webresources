@@ -1951,7 +1951,8 @@ function SylvanCalendar() {
                     sessiontype: val['hub_sessiontype'],
                     sessionStatus: val['hub_session_status'],
                     duration: val['aproductservice_x002e_hub_duration'],
-                    timeSlotType: val['aproductservice_x002e_hub_timeslottype']
+                    timeSlotType: val['aproductservice_x002e_hub_timeslottype'],
+                    namedHoursId: val['aproductservice_x002e_hub_namedgfhoursid']
                 }
                 if (val.hasOwnProperty('_hub_resourceid_value')) {
                     obj.resourceId = val['_hub_resourceid_value'];
@@ -3484,7 +3485,7 @@ function SylvanCalendar() {
                 format: 'mm/dd/yyyy'
             });
             var selectedFromDate;
-            wjQuery("#start-space, #end-space").css("visibility", "hidden");
+            wjQuery("#start-space, #end-space, .excuseSave").css("visibility", "hidden");
             wjQuery(".excuse-datepicker-input").on("change", function () {
                 selectedFromDate = wjQuery(this).val();
                 if(selectedFromDate != undefined){
@@ -3492,7 +3493,7 @@ function SylvanCalendar() {
                   var timeList = self.getStudentTimings(self.locationId, selectedFromDate, objStudent[0]['timeSlotType'], duration);
                   var timeHTML = [];
                   if(timeList.length){
-                    wjQuery("#start-space, #end-space").css("visibility", "visible");
+                    wjQuery("#start-space, #end-space, .excuseSave").css("visibility", "visible");
                     for (var i = 0; i < timeList.length; i++) {
                         if (!i) {
                             wjQuery(".timing-dropdown .btn:first-child").text(timeList[i]);
@@ -3514,7 +3515,7 @@ function SylvanCalendar() {
                       }
                     });
                   }else{
-                    wjQuery("#start-space, #end-space").css("visibility", "hidden");
+                    wjQuery("#start-space, #end-space, .excuseSave").css("visibility", "hidden");
                   }
                 }
             });
@@ -3675,15 +3676,17 @@ function SylvanCalendar() {
                 format: 'mm/dd/yyyy'
             });
             var selectedFromDate;
-            wjQuery("#start-space, #end-space").css("visibility", "hidden");
+            wjQuery("#start-space, #end-space, .excuseSave").css("visibility", "hidden");
             wjQuery(".excuse-datepicker-input").on("change", function () {
+                wjQuery("#error_block").text("");
                 selectedFromDate = wjQuery(this).val();
                 if(selectedFromDate != undefined){
                   var duration =  objStudent[0]['duration'] == undefined ? 60 : objStudent[0]['duration'];
-                  var timeList = self.getStudentTimings(self.locationId, selectedFromDate, objStudent[0]['timeSlotType'], duration);
+                  var timeList = self.getStudentTimings(self.locationId, selectedFromDate, objStudent[0]['namedHoursId'], duration);
                   var timeHTML = [];
                   if(timeList.length){
-                    wjQuery("#start-space, #end-space").css("visibility", "visible");
+                    wjQuery("#error_block").text("");
+                    wjQuery("#start-space, #end-space, .excuseSave").css("visibility", "visible");
                     for (var i = 0; i < timeList.length; i++) {
                         if (!i) {
                             wjQuery(".timing-dropdown .btn:first-child").text(timeList[i]);
@@ -3705,7 +3708,8 @@ function SylvanCalendar() {
                       }
                     });
                   }else{
-                    wjQuery("#start-space, #end-space").css("visibility", "hidden");
+                    wjQuery("#start-space, #end-space, .excuseSave").css("visibility", "hidden");
+                    wjQuery("#error_block").html("No timings are there for this date, Please select different date");
                   }
                 }
             });
@@ -4713,7 +4717,8 @@ function SylvanCalendar() {
                 sessionId: val['hub_studentsessionid'],
                 sessionStatus : val['hub_session_status'],
                 duration: val['aproductservice_x002e_hub_duration'],
-                timeSlotType: val['aproductservice_x002e_hub_timeslottype']
+                timeSlotType: val['aproductservice_x002e_hub_timeslottype'],
+                namedHoursId: val['aproductservice_x002e_hub_namedgfhoursid']
             }
 
             if(val["hub_is_1to1"] == undefined){
