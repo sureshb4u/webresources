@@ -135,7 +135,7 @@ setTimeout(function () {
                     sylvanCalendar.taPane();
                 });
                 sylvanCalendar.draggable('teacher-container');
-                wjQuery(".refresh-icon").click(function (event) {
+                wjQuery(".refresh-icon").off('click').on('click',function ()
                     fetchResources(locationId, deliveryTypeList, true);
                 });
 
@@ -2003,7 +2003,9 @@ function SylvanCalendar() {
                     serviceId: val['aenrollment_x002e_hub_service'],
                     enrollmentId: val['aenrollment_x002e_hub_enrollmentid'],
                     isFromMasterSchedule: true,
-                    is1to1: false
+                    is1to1: false,
+                    sessionDate: moment(currentCalendarDate).format('YYYY-MM-DD'),
+                    timeSlotType : val['aproductservice_x002e_hub_timeslottype']
                 }
                 if (obj.deliveryType == 'Personal Instruction') {
                     var pinnedStudent = self.convertedPinnedList.filter(function (x) {
@@ -4142,7 +4144,7 @@ function SylvanCalendar() {
               objNewSession['hub_sessiontype'] = 1;
             }*/
             if (prevStudent['isFromMasterSchedule']) {
-                objPrevSession.hub_session_date = moment(prevStudent.start).format("YYYY-MM-DD");
+                objPrevSession['hub_session_date'] = moment(newStudent.startHour).format('YYYY-MM-DD');
                 objPrevSession.hub_start_time = this.convertToMinutes(moment(prevStudent.start).format("h:mm A"));
                 objPrevSession.hub_end_time = this.convertToMinutes(moment(prevStudent.end).format("h:mm A"));
                 objPrevSession['hub_resourceid@odata.bind'] = null
