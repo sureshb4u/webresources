@@ -4517,7 +4517,7 @@ function SylvanCalendar() {
                     }
                 }
             }
-            t.populateTeacherEvent([teacher], true);
+            self.populateTeacherEvent([teacher], true);
         }
     }
 
