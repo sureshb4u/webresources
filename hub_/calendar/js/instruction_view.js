@@ -5352,7 +5352,7 @@ function Data(){
     return masterSchedule;
   }
 
-  this.getPinnedData = function(locationId){
+  this.getPinnedData = function(locationId,startDate,endDate){
     return pinnedData;
   }
 

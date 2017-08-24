@@ -1690,14 +1690,15 @@ function SylvanCalendar() {
                 self.populateStudentEvent(self.generateEventObject(self.students == null ? [] : self.students, "studentSession"), true);
                 self.filterObject.student = self.students == null ? [] : self.students;
                 self.generateFilterObject(self.filterObject);
+                self.populateTeacherEvent(self.generateEventObject(self.teacherSchedule == null ? [] : self.teacherSchedule, "teacherSchedule"), true);
                 if (studentDataSource) {
                     self.masterScheduleStudents = data.getStudentMasterSchedule(locationId, startDate, endDate)
                     if (self.masterScheduleStudents == null) {
                         self.masterScheduleStudents = [];
                     }
                     self.generateEventObject(self.masterScheduleStudents == null ? [] : self.masterScheduleStudents, "masterStudentSession");
+                    self.populateTeacherEvent(self.generateEventObject(self.convertedPinnedList == null ? [] : self.convertedPinnedList, "masterTeacherSchedule"),true);
                 }
-                self.populateTeacherEvent(self.generateEventObject(self.teacherSchedule == null ? [] : self.teacherSchedule, "teacherSchedule"), true);
                 self.populateTAPane(self.generateEventObject(self.teacherAvailability == null ? [] : self.teacherAvailability, "teacherAvailability"));
                 self.showConflictMsg();
             }
@@ -1938,7 +1939,39 @@ function SylvanCalendar() {
     this.generateEventObject = function (args, label) {
         var self = this;
         var eventObjList = [];
-        if (label == "teacherSchedule") {
+        if (label == "masterTeacherSchedule") {
+            var currentCalendarDate = self.calendar.fullCalendar('getDate');
+            wjQuery.each(args, function (ke, val) {
+                if(val['teacherId'] != undefined && val['dayId'] == self.getDayValue(currentCalendarDate)){
+                    var sDate, eDate, startHour;
+                    if (val['startTime'] != undefined && val['endTime'] != undefined) {
+                        sDate = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['startTime']);
+                        eDate = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['endTime']);
+                        startHour = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['startTime']);
+                        startHour = startHour.setMinutes(0);
+                        startHour = new Date(new Date(startHour).setSeconds(0));
+                    }
+                    var teacher = {
+                        id: val['teacherId'],
+                        name: val["teacherName"],
+                        start: sDate,
+                        end: eDate,
+                        startHour: startHour,
+                        resourceId: val['resourceId'],
+                        locationId: self.locationId,
+                        pinId:val['id']
+                    };
+                    var index = self.staffExceptions.findIndex(function (x) {
+                        return x['astaff_x002e_hub_staffid'] == teacher.id;
+                    });
+                    if (index == -1) {
+                        eventObjList.push(teacher);
+                    }
+                }                
+            });
+            self.convertedTeacherObj = eventObjList;
+        }
+        else if (label == "teacherSchedule") {
             wjQuery.each(args, function (ke, val) {
                 var sDate, eDate, startHour;
                 if (val['hub_date@OData.Community.Display.V1.FormattedValue'] != undefined &&
@@ -2163,33 +2196,33 @@ function SylvanCalendar() {
                     }
                     else {
                         if (obj.deliveryType == 'Group Instruction') {
-                            if (serviceGI.hasOwnProperty(obj.serviceId)) {
-                                var index = serviceGI[obj.serviceId].findIndex(function (x) {
+                            if (serviceGI.hasOwnProperty(obj.serviceId+obj.startHour)) {
+                                var index = serviceGI[obj.serviceId+obj.startHour].findIndex(function (x) {
                                     return x.id == obj.id &&
                                            x.startHour.getTime() == obj.startHour.getTime();
                                 });
                                 if (index == -1) {
-                                    serviceGI[obj.serviceId].push(obj);
+                                    serviceGI[obj.serviceId+obj.startHour].push(obj);
                                 }
                             }
                             else {
-                                serviceGI[obj.serviceId] = [];
-                                serviceGI[obj.serviceId].push(obj);
+                                serviceGI[obj.serviceId+obj.startHour] = [];
+                                serviceGI[obj.serviceId+obj.startHour].push(obj);
                             }
                         }
                         else if (obj.deliveryType == 'Group Facilitation') {
-                            if (serviceGF.hasOwnProperty(obj.serviceId)) {
-                                var index = serviceGF[obj.serviceId].findIndex(function (x) {
+                            if (serviceGF.hasOwnProperty(obj.serviceId+obj.startHour)) {
+                                var index = serviceGF[obj.serviceId+obj.startHour].findIndex(function (x) {
                                     return x.id == obj.id &&
                                            x.startHour.getTime() == obj.startHour.getTime();
                                 });
                                 if (index == -1) {
-                                    serviceGF[obj.serviceId].push(obj);
+                                    serviceGF[obj.serviceId+obj.startHour].push(obj);
                                 }
                             }
                             else {
-                                serviceGF[obj.serviceId] = [];
-                                serviceGF[obj.serviceId].push(obj);
+                                serviceGF[obj.serviceId+obj.startHour] = [];
+                                serviceGF[obj.serviceId+obj.startHour].push(obj);
                             }
                         }
                     }
@@ -2429,6 +2462,7 @@ function SylvanCalendar() {
                         if (event.length == 0) {
                             value['startHour'] = slot;
                             value['startTime'] = slot;
+                            value['endTime'] = slot.setHours(slot.getHours() + 1);
                             break;
                         }
                         else {
@@ -2436,6 +2470,7 @@ function SylvanCalendar() {
                               (event[0].hasOwnProperty("teachers") && event[0]['teachers'].length == 0)) {
                                 value['startHour'] = slot;
                                 value['startTime'] = slot;
+                                value['endTime'] = slot.setHours(slot.getHours() + 1);
                                 break;
                             }
                         }
@@ -2811,6 +2846,11 @@ function SylvanCalendar() {
                 self.pushStudentToSOF(studentsForSOF[i]);
             }
         }
+        setTimeout(function () {
+            if (self.sofList['Personal Instruction'].length > 0 || self.sofList['Group Instruction'].length > 0 || self.sofList['Group Facilitation'].length > 0) {
+                self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
+            }
+        }, 300);
     }
 
     this.populateByService = function (serviceStudentList) {
@@ -2852,6 +2892,11 @@ function SylvanCalendar() {
                 self.pushStudentToSOF(studentsForSOF[i]);
             }
         }
+        setTimeout(function () {
+            if (self.sofList['Personal Instruction'].length > 0 || self.sofList['Group Instruction'].length > 0 || self.sofList['Group Facilitation'].length > 0) {
+                self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
+            }
+        }, 300);
     }
 
 
@@ -2862,7 +2907,9 @@ function SylvanCalendar() {
             this.sofList['Group Facilitation'] = [];
         }
         var studentPushFlagDecision = true;
-        for (var j = 0; j < this.resourceList.length; j++) {
+        //Methos to find the student having a slot on the same time before Pushing
+        //the student to SOF pane
+        /*for (var j = 0; j < this.resourceList.length; j++) {
             var eventId = this.resourceList[j].id + data.startHour;
             var event = this.calendar.fullCalendar('clientEvents', eventId);
             if(event.length){
@@ -2876,7 +2923,7 @@ function SylvanCalendar() {
                     }
                 });
             }
-        }
+        }*/
         if(studentPushFlagDecision){
             if (data.deliveryType == "Personal Instruction") {
                 var index = this.sofList['Personal Instruction'].findIndex(function (x) {

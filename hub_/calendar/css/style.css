@@ -355,7 +355,7 @@ button{
     background: #ebf5fb;
     padding: 3px;
     border: 1px solid #9acaea;
-    display: inline-block;
+    display: inline-table;
     width: calc(50% - 8px);
     height: calc(100% - 8px);
 }
@@ -363,7 +363,7 @@ button{
     padding: 3px;
     border: 1px solid #f88e50;
     background: #fedeb7;
-    display: inline-block;
+    display: inline-table;
     width: calc(50% - 8px);
     height: calc(100% - 8px);
 }
@@ -371,7 +371,7 @@ button{
     padding: 3px;
     border: 1px solid #7bc143;
     background: #dff0d5;
-    display: inline-block;
+    display: inline-table;
     width: calc(50% - 8px);
     height: calc(100% - 8px);
 }
