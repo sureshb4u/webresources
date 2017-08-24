@@ -1188,16 +1188,15 @@ function SylvanCalendar() {
             }
         }
         if (t.convertedTeacherObj[index]) {
-            var prevTeacherSession = wjQuery.extend(true, {}, t.convertedTeacherObj[index]);
+            var newTeacherSession = wjQuery.extend(true, {}, t.convertedTeacherObj[index]);
             elm.remove();
-            t.convertedTeacherObj[index].start = date;
-            t.convertedTeacherObj[index].startHour = startHour;
-            t.convertedTeacherObj[index].end = new Date(endDate.setHours(endDate.getHours() + 1));
-            t.convertedTeacherObj[index].resourceId = resource.id;
-            t.convertedTeacherObj[index].deliveryTypeId = t.getResourceObj(resource.id).deliveryTypeId;
-            t.convertedTeacherObj[index].deliveryType = t.getResourceObj(resource.id).deliveryType;
-            t.saveTeacherToSession(t.convertedTeacherObj[index], prevTeacherSession);
-            t.populateTeacherEvent([t.convertedTeacherObj[index]], true);
+            newTeacherSession.start = date;
+            newTeacherSession.startHour = startHour;
+            newTeacherSession.end = new Date(endDate.setHours(endDate.getHours() + 1));
+            newTeacherSession.resourceId = resource.id;
+            newTeacherSession.deliveryTypeId = t.getResourceObj(resource.id).deliveryTypeId;
+            newTeacherSession.deliveryType = t.getResourceObj(resource.id).deliveryType;
+            t.saveTeacherToSession(newTeacherSession, t.convertedTeacherObj[index]);
         }
     }
 
@@ -1971,7 +1970,12 @@ function SylvanCalendar() {
                     }
                 }                
             });
-            self.convertedTeacherObj = eventObjList;
+            if(self.convertedTeacherObj.length != 0){
+                self.convertedTeacherObj = self.convertedTeacherObj.concat(eventObjList);
+            }
+            else{
+                self.convertedTeacherObj = eventObjList;
+            }
         }
         else if (label == "teacherSchedule") {
             wjQuery.each(args, function (ke, val) {
@@ -4471,11 +4475,6 @@ function SylvanCalendar() {
         var objPrevSession = {};
         var objNewSession = {};
         if (teacher != undefined) {
-            var h = new Date(teacher.startHour).getHours();
-            if (h > 12) {
-                h -= 12;
-            }
-            // Old object
             if(prevTeacher['isFromMasterSchedule']){
             }
             else{
@@ -4505,9 +4504,9 @@ function SylvanCalendar() {
                 if (responseObj.hasOwnProperty('hub_staff_scheduleid')) {
                     if(teacher.hasOwnProperty('isFromMasterSchedule')){
                         delete teacher.isFromMasterSchedule;
+                        delete teacher.pinId;
                     }
                     teacher['scheduleId'] = responseObj['hub_staff_scheduleid'];
-                    teacher['resourceId'] = responseObj['hub_resourceid@odata.bind'];
                     var index = this.convertedTeacherObj.findIndex(function (x) {
                         return x.id == teacher.id &&
                             x.startHour.getTime() == prevTeacher.startHour.getTime() &&
@@ -4518,6 +4517,7 @@ function SylvanCalendar() {
                     }
                 }
             }
+            t.populateTeacherEvent([teacher], true);
         }
     }
 
@@ -4878,20 +4878,26 @@ function SylvanCalendar() {
                    x.startHour.getTime() == new Date(startTime).getTime();
         });
         var teacherObj = this.convertedTeacherObj[index];
-        if(teacherObj.isFromMasterSchedule){
-            removeTeacherObj['hub_staff@odata.bind'] = teacher['id'];
-            removeTeacherObj['hub_center_value'] = teacher['locationId'];
-            removeTeacherObj['hub_resourceid@odata.bind'] = teacher['resourceId'];
-            removeTeacherObj['hub_date'] = moment(teacher.start).format("YYYY-MM-DD");
-            removeTeacherObj['hub_start_time'] = this.convertToMinutes(moment(teacher.start).format("h:mm A"));
-            removeTeacherObj['hub_end_time'] = this.convertToMinutes(moment(teacher.end).format("h:mm A"));
+        if(teacherObj.hasOwnProperty('isFromMasterSchedule')){
+            removeTeacherObj['hub_staff@odata.bind'] = teacherObj['id'];
+            removeTeacherObj['hub_center_value'] = teacherObj['locationId'];
+            removeTeacherObj['hub_resourceid@odata.bind'] = teacherObj['resourceId'];
+            removeTeacherObj['hub_date'] = moment(teacherObj.start).format("YYYY-MM-DD");
+            removeTeacherObj['hub_start_time'] = this.convertToMinutes(moment(teacherObj.start).format("h:mm A"));
+            removeTeacherObj['hub_end_time'] = this.convertToMinutes(moment(teacherObj.end).format("h:mm A"));
             removeTeacherObj['hub_schedule_type'] = 3;
         }
         else{
             removeTeacherObj['hub_staff_scheduleid'] = teacherObj["scheduleId"];
         }
-        var responseObj = data.removeTeacher(removeTeacherObj); 
-        if (typeof(responseObj) == boolean || typeof(responseObj) == 'object') {
+        var responseObj = true; 
+        if(teacherObj.hasOwnProperty('isFromMasterSchedule')){
+            responseObj = true;
+        }    
+        else{
+           responseObj = data.removeTeacher(removeTeacherObj)
+        }
+        if (typeof(responseObj) == 'boolean' || typeof(responseObj) == 'object') {
             if(typeof(responseObj) == 'object'){
                 if(teacherObj.hasOwnProperty('isFromMasterSchedule')){
                     delete teacherObj.isFromMasterSchedule;
