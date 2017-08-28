@@ -3138,7 +3138,7 @@ function SylvanCalendar() {
                         obj.deliveryType = "Personal-Instruction";
                     }
 
-                    if (resourceObj["capacity"] >= 1 && obj.deliveryType != undefined) {
+                    if (resourceObj["capacity"] > 1 && obj.deliveryType != undefined) {
                         obj.title += '<span class="student-placeholder-'+obj.deliveryType+'">Student name</span>';
                         self.addContext("", 'studentPlaceholder', true, obj.deliveryType);
                     }
