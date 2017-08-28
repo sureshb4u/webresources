@@ -318,6 +318,8 @@ button{
     padding: 10px 20px;
     border-bottom: 1px solid #ddd;
     margin-bottom: 38px;
+    position: fixed;
+    width: 200px;
 }
 .teacher-block{
     padding: 10px 10px 0px;
@@ -326,6 +328,9 @@ button{
     border-right: 1px solid #ccc;
     border-left: 1px solid #ccc;
     border-top: 1px solid #ccc;
+}
+#student_block_0, #teacher_block_0 {
+	margin-top: 81px;
 }
 .loc-dropdown.btn-group .btn {
     width: 200px;
