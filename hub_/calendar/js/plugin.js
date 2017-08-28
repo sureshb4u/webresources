@@ -4497,6 +4497,7 @@ function SylvanCalendar() {
             var responseObj = data.saveTeachertoSession(objPrevSession, objNewSession);
             if (typeof responseObj == 'boolean') {
                 if (responseObj) {
+                    self.populateTeacherEvent([teacher], true);
                     return responseObj;
                 }
             }
@@ -4514,10 +4515,10 @@ function SylvanCalendar() {
                     });
                     if (index != -1) {
                         this.convertedTeacherObj[index] = teacher;
+                        self.populateTeacherEvent([teacher], true);
                     }
                 }
             }
-            self.populateTeacherEvent([teacher], true);
         }
     }
 
