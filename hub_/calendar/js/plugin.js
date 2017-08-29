@@ -2019,7 +2019,7 @@ function SylvanCalendar() {
         }
         else if (label == "teacherSchedule") {
             wjQuery.each(args, function (ke, val) {
-                var sDate, eDate, startHour;
+                var sDate, eDate, startHour,currentCalendarDate;
                 if (val['hub_date@OData.Community.Display.V1.FormattedValue'] != undefined &&
                   val['hub_start_time@OData.Community.Display.V1.FormattedValue'] != undefined) {
                     sDate = new Date(val['hub_date@OData.Community.Display.V1.FormattedValue'] + " " + val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
@@ -2027,6 +2027,9 @@ function SylvanCalendar() {
                     startHour = new Date(val['hub_date@OData.Community.Display.V1.FormattedValue'] + " " + val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
                     startHour = startHour.setMinutes(0);
                     startHour = new Date(new Date(startHour).setSeconds(0));
+                }
+                else{
+                    currentCalendarDate = self.calendar.fullCalendar('getDate');
                 }
                 var teacher = {
                     id: val['_hub_staff_value'],
@@ -2047,10 +2050,10 @@ function SylvanCalendar() {
                     var isPinned = self.convertedPinnedList.filter(function (obj) {
                         return (obj.teacherId == teacher.id &&
                                obj.resourceId == teacher.resourceId &&
-                               obj.dayId == self.getDayValue(startHour)) ||
+                               obj.dayId == self.getDayValue(currentCalendarDate)) ||
                                (obj.teacherId == teacher.id &&
-                                obj.startTime == moment(startHour).format("h:mm A") &&
-                                obj.dayId == self.getDayValue(startHour))
+                                obj.startTime == moment(sDate).format("h:mm A") &&
+                                obj.dayId == self.getDayValue(currentCalendarDate))
                     });
                     if (isPinned[0] != undefined) {
                         teacher.pinId = isPinned[0].id;
