@@ -5140,7 +5140,8 @@ var makeupNfloatList = [
     "astudent_x002e_hub_grade@OData.Community.Display.V1.FormattedValue": "2",
     "astudent_x002e_hub_grade": 4,
     "aproductservice_x002e_hub_duration@OData.Community.Display.V1.FormattedValue": "1 Hour",
-    "aproductservice_x002e_hub_duration": 60
+    "aproductservice_x002e_hub_duration": 60,
+    "hub_expiry_date":"2017-07-28"
   }
   // ,
   // {
