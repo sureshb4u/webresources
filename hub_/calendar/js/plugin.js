@@ -2971,7 +2971,9 @@ function SylvanCalendar() {
                 });
             }
         }*/
-        if(studentPushFlagDecision){
+        var currentCalendarDate = this.calendar.fullCalendar('getDate');
+        var dateFlag = moment(currentCalendarDate).format("YYYY-MM-DD") == moment(data.startHour).format("YYYY-MM-DD");
+        if(studentPushFlagDecision && dateFlag){
             if (data.deliveryType == "Personal Instruction") {
                 var index = this.sofList['Personal Instruction'].findIndex(function (x) {
                     return x.id == data.id &&
@@ -3735,15 +3737,15 @@ function SylvanCalendar() {
                     });
                     if (index != -1) {
                       delete self.convertedStudentObj[index].resourceId;
-                      self.convertedStudentObj[index].start =  new Date(moment(self.convertedStudentObj[index].start).format("YYYY-MM-DD")+" "+wjQuery(".timing-dropdown .btn:first-child").val());
-                      self.convertedStudentObj[index].end =  new Date(moment(self.convertedStudentObj[index].end).format("YYYY-MM-DD")+" "+wjQuery(".excuse-to-timepicker-input").text());
+                      self.convertedStudentObj[index].start =  new Date(objSession.hub_makeup_date +" "+wjQuery(".timing-dropdown .btn:first-child").val());
+                      self.convertedStudentObj[index].end =  new Date(objSession.hub_makeup_date +" "+wjQuery(".excuse-to-timepicker-input").text());
                       self.convertedStudentObj[index].startHour =  self.convertedStudentObj[index].start;
                       setTimeout(function() {
                           self.pushStudentToSOF(self.convertedStudentObj[index]);
                           self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
                           self.openSofPane();
                       },500);
-                      self.convertedStudentObj.splice(index, 1);
+                      // self.convertedStudentObj.splice(index, 1);
                     }
                     wjQuery("#excuseModal").dialog("close");
                     var prevEventId = wjQuery(element).attr("eventid");
@@ -3929,15 +3931,15 @@ function SylvanCalendar() {
                     });
                     if (index != -1) {
                       delete self.convertedStudentObj[index].resourceId;
-                      self.convertedStudentObj[index].start =  new Date(moment(self.convertedStudentObj[index].start).format("YYYY-MM-DD")+" "+wjQuery(".timing-dropdown .btn:first-child").val());
-                      self.convertedStudentObj[index].end =  new Date(moment(self.convertedStudentObj[index].end).format("YYYY-MM-DD")+" "+wjQuery(".excuse-to-timepicker-input").text());
+                      self.convertedStudentObj[index].start =  new Date(objNewSession.hub_session_date+" "+wjQuery(".timing-dropdown .btn:first-child").val());
+                      self.convertedStudentObj[index].end =  new Date(objNewSession.hub_session_date+" "+wjQuery(".excuse-to-timepicker-input").text());
                       self.convertedStudentObj[index].startHour =  self.convertedStudentObj[index].start;
                      setTimeout(function() {
                           self.pushStudentToSOF(self.convertedStudentObj[index]);
                           self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
                           self.openSofPane();
                       },500);
-                      self.convertedStudentObj.splice(index, 1);
+                      // self.convertedStudentObj.splice(index, 1);
                     }
 
                     wjQuery("#excuseModal").dialog("close");
