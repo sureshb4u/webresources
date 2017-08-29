@@ -329,6 +329,7 @@ function SylvanCalendar() {
                         sofNewArray['Group Facilitation'] = [];
                         var taNewArray = [];
                         wjQuery.each(checkedList, function (k, v) {
+                            var vasdjfjsdfsjdf = self.filterItems(self.convertedStudentObj, v, "default");
                             newArray = wjQuery.merge(self.filterItems(self.convertedStudentObj, v, "default"), newArray);
                             taNewArray = wjQuery.merge(self.filterItems(self.taList, v, "tapane"), taNewArray);
                             piResponse = self.filterItems(self.sofList['Personal Instruction'], v, "sofpane");
@@ -3254,24 +3255,29 @@ function SylvanCalendar() {
         var self = this;
         if (filterFor == "tapane") {
             return obj.filter(function (el) {
+                if (el.subject != undefined || el.subject != null) {
+                  el.subject = "";
+                }
                 if ((el['subjects'].indexOf(parseInt(filterTerm)) != -1)) {
-                    return el;
+                  return el;
                 }
             });
         } else if (filterFor == "sofpane") {
             return obj.filter(function (el) {
                 if (el.subject != undefined || el.subject != null) {
-                    if ((el.id == filterTerm || el.gradeId == filterTerm || el.subject.toLowerCase() == filterTerm.toLowerCase()) && self.selectedDeliveryType.indexOf(el['deliveryTypeId']) != -1) {
-                        return el;
-                    }
+                  el.subject = "";
+                }
+                if ((el.id == filterTerm || el.gradeId == filterTerm || el.subject.toLowerCase() == filterTerm.toLowerCase()) && self.selectedDeliveryType.indexOf(el['deliveryTypeId']) != -1) {
+                  return el;
                 }
             });
         } else {
             return obj.filter(function (el) {
                 if (el.subject != undefined || el.subject != null) {
-                    if ((el.id == filterTerm || el.gradeId == filterTerm || el.subject.toLowerCase() == filterTerm.toLowerCase()) && self.selectedDeliveryType.indexOf(el['deliveryTypeId']) != -1) {
-                        return el;
-                    }
+                  el.subject = "";
+                }
+                if ((el.id == filterTerm || el.gradeId == filterTerm || el.subject.toLowerCase() == filterTerm.toLowerCase()) && self.selectedDeliveryType.indexOf(el['deliveryTypeId']) != -1) {
+                    return el;
                 }
             });
         }
