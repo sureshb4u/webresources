@@ -3255,7 +3255,7 @@ function SylvanCalendar() {
         var self = this;
         if (filterFor == "tapane") {
             return obj.filter(function (el) {
-                if (el.subject != undefined || el.subject != null) {
+                if (el.subject == undefined || el.subject == null) {
                   el.subject = "";
                 }
                 if ((el['subjects'].indexOf(parseInt(filterTerm)) != -1)) {
@@ -3264,7 +3264,7 @@ function SylvanCalendar() {
             });
         } else if (filterFor == "sofpane") {
             return obj.filter(function (el) {
-                if (el.subject != undefined || el.subject != null) {
+                if (el.subject == undefined || el.subject == null) {
                   el.subject = "";
                 }
                 if ((el.id == filterTerm || el.gradeId == filterTerm || el.subject.toLowerCase() == filterTerm.toLowerCase()) && self.selectedDeliveryType.indexOf(el['deliveryTypeId']) != -1) {
@@ -3273,8 +3273,8 @@ function SylvanCalendar() {
             });
         } else {
             return obj.filter(function (el) {
-                if (el.subject != undefined || el.subject != null) {
-                  el.subject = "";
+                if (el.subject == undefined || el.subject == null) {
+                  el.subject = ""
                 }
                 if ((el.id == filterTerm || el.gradeId == filterTerm || el.subject.toLowerCase() == filterTerm.toLowerCase()) && self.selectedDeliveryType.indexOf(el['deliveryTypeId']) != -1) {
                     return el;
