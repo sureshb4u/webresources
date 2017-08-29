@@ -5007,6 +5007,7 @@ function SylvanCalendar() {
                     }
                     this.calendar.fullCalendar('removeEvents', prevEventId);
                 }
+                self.populateTAPane(self.taList);
             }
         }else{
             // Dont remove taecher from event in which he is assigned
@@ -5077,6 +5078,10 @@ function SylvanCalendar() {
         }
       })
       return allowToDropTeacher;
+    }
+
+    this.convertTeacherSessionToTAObject = function(teacherSession){
+      console.log(teacherSession);
     }
 }
 
