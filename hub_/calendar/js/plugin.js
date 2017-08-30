@@ -1364,7 +1364,7 @@ function SylvanCalendar() {
                     prevEvent[0].students.splice(removeStudentIndex, 1);
                     // No students remove lock from prev event
                     if(prevEvent[0]['students'] == undefined || prevEvent[0].hasOwnProperty('students') && prevEvent[0]['students'].length == 0){
-                      if (prevEvent[0].title.indexOf('<img class="onetoone" src="/webresources/hub_/calendar/images/lock.png">') == -1) {
+                      if (prevEvent[0].title.indexOf('<img class="onetoone" src="/webresources/hub_/calendar/images/lock.png">') != -1) {
                           prevEvent[0].title = prevEvent[0].title.replace('<img class="onetoone" src="/webresources/hub_/calendar/images/lock.png">', "");
                           prevEvent[0].is1to1 = false;
                       }
@@ -1415,14 +1415,14 @@ function SylvanCalendar() {
                 }
 
                 if (resourceObj['capacity'] > prevEvent[0]['students'].length) {
-                    if (prevEvent[0].title.indexOf('<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>') != -1) {
+                    if (prevEvent[0].title.indexOf('<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>') == -1) {
                         prevEvent[0].title += '<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>';
                         self.addContext("", 'studentPlaceholder', true, prevEvent[0].deliveryType);
                     }
                 }
 
                 if(prevEvent[0]['students'] == undefined || prevEvent[0].hasOwnProperty('students') && prevEvent[0]['students'].length == 0){
-                  if (prevEvent[0].title.indexOf('<img class="onetoone" src="/webresources/hub_/calendar/images/lock.png">') == -1) {
+                  if (prevEvent[0].title.indexOf('<img class="onetoone" src="/webresources/hub_/calendar/images/lock.png">') != -1) {
                       prevEvent[0].title = prevEvent[0].title.replace('<img class="onetoone" src="/webresources/hub_/calendar/images/lock.png">', "");
                       prevEvent[0].is1to1 = false;
                   }
