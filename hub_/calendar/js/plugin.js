@@ -4776,7 +4776,7 @@ function SylvanCalendar() {
             wjQuery("#makeup > .makeup-lst").html(list);
             wjQuery("#makeup").dialog({
                 resizable: false,
-                height: "100px",
+                height: 300,
                 width: 400,
                 modal: true,
                 buttons: {
@@ -4876,7 +4876,7 @@ function SylvanCalendar() {
             wjQuery("#makeup > .makeup-lst").html('No Students found');
             wjQuery("#makeup").dialog({
                 resizable: false,
-                height: "100px",
+                height: 300,
                 width: 400,
                 modal: true,
                 buttons: {
