@@ -4758,7 +4758,7 @@ function SylvanCalendar() {
     this.makeupPopup = function (makeupList, placeholderEvent, isForMakeup) {
         var self = this;
         makeupList = (makeupList == null || makeupList == undefined) ? [] : makeupList;
-        makeupList = this.convertMakeupNFloatObj(makeupList);
+        makeupList = this.getUniqueFromMakeupNFloat(this.convertMakeupNFloatObj(makeupList));
         var idArry = wjQuery(placeholderEvent).prev("span").attr("uniqueid").split('_');
         if (makeupList.length) {
             var list = "";
@@ -4891,6 +4891,25 @@ function SylvanCalendar() {
         }
     }
 
+
+    this.getUniqueFromMakeupNFloat = function (makeupList){
+      var uniquewList = [];
+      wjQuery.each(makeupList, function (ke, val) {
+        var index = uniquewList.findIndex(function (x) {
+          return x.id == val.id 
+        });
+        if(index == -1){
+          uniquewList.push(val);
+        }else{
+          if((new Date(makeupList[index].expiryDate)).getTime() > (new Date(val.expiryDate)).getTime()){
+            uniquewList.splice(index, 1);
+            uniquewList.push(val);
+          }
+        }
+      });
+      return uniquewList;
+    }
+
     this.convertMakeupNFloatObj = function (makeupList) {
         eventObjList = [];
         wjQuery.each(makeupList, function (ke, val) {
@@ -4921,7 +4940,7 @@ function SylvanCalendar() {
                 duration: val['aproductservice_x002e_hub_duration'],
                 timeSlotType: val['aproductservice_x002e_hub_timeslottype'],
                 namedHoursId: val['aproductservice_x002e_hub_namedgfhoursid'],
-                expiryDate: val['hub_expiry_date']
+                expiryDate: val['hub_makeup_expiry_date']
             }
 
             if(val["hub_is_1to1"] == undefined){
@@ -5122,9 +5141,6 @@ function SylvanCalendar() {
       return allowToDropTeacher;
     }
 
-    this.convertTeacherSessionToTAObject = function(teacherSession){
-      console.log(teacherSession);
-    }
 }
 
 
