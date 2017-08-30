@@ -567,7 +567,7 @@ var student =  [
     "hub_late@OData.Community.Display.V1.FormattedValue": "No",
     "hub_late": false,
     "hub_session_status@OData.Community.Display.V1.FormattedValue": "Reschedule",
-      "hub_session_status": 2,
+    "hub_session_status": 2,
     "_hub_center_value@OData.Community.Display.V1.FormattedValue": "Bel Air Learning Center",
     "_hub_center_value@Microsoft.Dynamics.CRM.associatednavigationproperty": "hub_center",
     "_hub_center_value@Microsoft.Dynamics.CRM.lookuplogicalname": "hub_center",

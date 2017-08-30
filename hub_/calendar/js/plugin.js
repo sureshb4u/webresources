@@ -3142,12 +3142,12 @@ function SylvanCalendar() {
                                 self.updateConflictMsg(event[k]);
                             }
                         });
-                        if (value['deliveryType'] != "Group Instruction") {
+                        if (value['deliveryType'] != "Group Instruction" ) {
                             if (value['pinId'] != undefined) {
-                                self.addContext(uniqueId, 'student', true, value['deliveryType']);
+                                self.addContext(uniqueId, 'student', true, value['deliveryType'], value['sessionStatus']);
                             }
                             else {
-                                self.addContext(uniqueId, 'student', false, value['deliveryType']);
+                                self.addContext(uniqueId, 'student', false, value['deliveryType'], value['sessionStatus']);
                             }
                         }
                         self.calendar.fullCalendar('updateEvent', event);
@@ -3214,10 +3214,10 @@ function SylvanCalendar() {
                         }
                         if (value['deliveryType'] != "Group Instruction") {
                             if (value['pinId'] != undefined) {
-                                self.addContext(uniqueId, 'student', true, value['deliveryType']);
+                                self.addContext(uniqueId, 'student', true, value['deliveryType'], value['sessionStatus']);
                             }
                             else {
-                                self.addContext(uniqueId, 'student', false, value['deliveryType']);
+                                self.addContext(uniqueId, 'student', false, value['deliveryType'], value['sessionStatus']);
                             }
                         }
                         self.eventList.push(obj);
@@ -4035,7 +4035,7 @@ function SylvanCalendar() {
     };
 
     //Method to add the context menu for Student and Teacher
-    this.addContext = function (uniqueId, labelFor, isPinned, deliveryType) {
+    this.addContext = function (uniqueId, labelFor, isPinned, deliveryType, sessionStatus) {
         var self = this;
         var obj = {};
         if (labelFor == 'student') {
@@ -4062,12 +4062,14 @@ function SylvanCalendar() {
                 }
                 obj.excuse = {
                     name: "Excuse",
+                    disabled:MAKEUP_STATUS == sessionStatus,
                     callback: function (key, options) {
                         self.excuseStudentFromSession(options.$trigger[0]);
                     }
                 }
                 obj.excuseAndMakeUp = {
                     name: "Excuse with Makeup",
+                    disabled:MAKEUP_STATUS == sessionStatus,
                     callback: function (key, options) {
                         self.excuseAndMakeUpStudent(options.$trigger[0]);
                     }
