@@ -678,7 +678,7 @@ function SylvanCalendar() {
         var subjects = [];
         self = this;
         wjQuery.each(teacherObj, function (k, v) {
-            if (k.includes("astaff_x002e_hub_") && typeof (v) == 'boolean' && v == true) {
+            if (k.indexOf("astaff_x002e_hub_") != -1 && typeof (v) == 'boolean' && v == true) {
                 value = k.replace("astaff_x002e_hub_", "");
                 // Subject Key is hardcoaded here
                 var subject = self.filters["subject"].filter(function (obj) {
@@ -1203,7 +1203,7 @@ function SylvanCalendar() {
                             prevEvent[0].conflictMsg.splice(msgIndex, 1);
                         }
                         self.updateConflictMsg(prevEvent[0]);
-                        if (!prevEvent[0].title.includes('<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>')) {
+                        if (prevEvent[0].title.indexOf('<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>') == -1) {
                             prevEvent[0].title += '<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>';
                             self.addContext("", 'studentPlaceholder', true, prevEvent[0].deliveryType);
                         }
@@ -1211,7 +1211,7 @@ function SylvanCalendar() {
                 }
                 // No students remove lock from prev event
                 if(prevEvent[0]['students'] == undefined || prevEvent[0].hasOwnProperty('students') && prevEvent[0]['students'].length == 0){
-                  if (prevEvent[0].title.includes('<img class="onetoone" src="/webresources/hub_/calendar/images/lock.png">')) {
+                  if (prevEvent[0].title.indexOf('<img class="onetoone" src="/webresources/hub_/calendar/images/lock.png">') != -1) {
                       prevEvent[0].title = prevEvent[0].title.replace('<img class="onetoone" src="/webresources/hub_/calendar/images/lock.png">', "");
                       prevEvent[0].is1to1 = false;
                   }
@@ -1364,7 +1364,7 @@ function SylvanCalendar() {
                     prevEvent[0].students.splice(removeStudentIndex, 1);
                     // No students remove lock from prev event
                     if(prevEvent[0]['students'] == undefined || prevEvent[0].hasOwnProperty('students') && prevEvent[0]['students'].length == 0){
-                      if (prevEvent[0].title.includes('<img class="onetoone" src="/webresources/hub_/calendar/images/lock.png">')) {
+                      if (prevEvent[0].title.indexOf('<img class="onetoone" src="/webresources/hub_/calendar/images/lock.png">') == -1) {
                           prevEvent[0].title = prevEvent[0].title.replace('<img class="onetoone" src="/webresources/hub_/calendar/images/lock.png">', "");
                           prevEvent[0].is1to1 = false;
                       }
@@ -1415,14 +1415,14 @@ function SylvanCalendar() {
                 }
 
                 if (resourceObj['capacity'] > prevEvent[0]['students'].length) {
-                    if (!prevEvent[0].title.includes('<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>')) {
+                    if (prevEvent[0].title.indexOf('<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>') != -1) {
                         prevEvent[0].title += '<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>';
                         self.addContext("", 'studentPlaceholder', true, prevEvent[0].deliveryType);
                     }
                 }
 
                 if(prevEvent[0]['students'] == undefined || prevEvent[0].hasOwnProperty('students') && prevEvent[0]['students'].length == 0){
-                  if (prevEvent[0].title.includes('<img class="onetoone" src="/webresources/hub_/calendar/images/lock.png">')) {
+                  if (prevEvent[0].title.indexOf('<img class="onetoone" src="/webresources/hub_/calendar/images/lock.png">') == -1) {
                       prevEvent[0].title = prevEvent[0].title.replace('<img class="onetoone" src="/webresources/hub_/calendar/images/lock.png">', "");
                       prevEvent[0].is1to1 = false;
                   }
@@ -2560,7 +2560,7 @@ function SylvanCalendar() {
                             }).indexOf(id);
                             if (index == -1) {
                                 event[k].title = "";
-                                if (event[k].title.includes("<img class='onetoone' src='/webresources/hub_/calendar/images/lock.png'>")) {
+                                if (event[k].title.indexOf("<img class='onetoone' src='/webresources/hub_/calendar/images/lock.png'>") != -1) {
                                     event[k].title = event[k].title.replace("<img class='onetoone' src='/webresources/hub_/calendar/images/lock.png'>", "");
                                 }
                                 // Conflict update
@@ -2604,13 +2604,13 @@ function SylvanCalendar() {
                                 // capacity check for students place holder
                                 if (event[k].hasOwnProperty("students")) {
                                     if (resourceObj['capacity'] > event[k].students.length) {
-                                        if (!event[k].title.includes('<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>')) {
+                                        if (event[k].title.indexOf('<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>') == -1) {
                                             event[k].title += '<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>';
                                             self.addContext("", 'studentPlaceholder', true, event[k].deliveryType);
                                         }
                                     }
                                 } else {
-                                    if (!event[k].title.includes('<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>')) {
+                                    if (event[k].title.indexOf('<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>') == -1) {
                                         event[k].title += '<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>';
                                         self.addContext("", 'studentPlaceholder', true, event[k].deliveryType);
                                     }
@@ -2618,7 +2618,7 @@ function SylvanCalendar() {
                             }
                         } else {
                             var uniqueId = id + "_" + value['resourceId'] + "_" + value['startHour'];
-                            if (event[k].title.includes("<img class='onetoone' src='/webresources/hub_/calendar/images/lock.png'>")) {
+                            if (event[k].title.indexOf("<img class='onetoone' src='/webresources/hub_/calendar/images/lock.png'>") != -1) {
                                 event[k].title = "<img class='onetoone' src='/webresources/hub_/calendar/images/lock.png'>";
                                 if (value['pinId'] != undefined) {
                                     event[k].title += "<span class='draggable drag-teacher' pinnedId='" + value['pinId'] + "' eventid='" + eventId + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='teacherSession' value='" + id + "'><img src='/webresources/hub_/calendar/images/pin.png'/>" + value.name + "</span>";
@@ -2658,7 +2658,7 @@ function SylvanCalendar() {
                         }
                         if (event[k].students != undefined) {
                             if (event[k].students.length < resourceObj["capacity"] || resourceObj["capacity"] == undefined) {
-                                if (!event[k].title.includes('<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>')){
+                                if (event[k].title.indexOf('<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>') == -1){
                                   event[k].title += '<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>';
                                   self.addContext("", 'studentPlaceholder', true, event[k].deliveryType);
                                 }
@@ -2681,24 +2681,24 @@ function SylvanCalendar() {
                                 self.updateConflictMsg(event[k]);
                             }
                         }
-                        if (event[k].title.includes('<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>')) {
+                        if (event[k].title.indexOf('<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>') != -1) {
                             event[k].title = event[k].title.replace('<span class="student-placeholder-'+event[k].deliveryType+'"-'+event[k].deliveryType+'>Student name</span>', "");
                         }
                         if (event[k].hasOwnProperty("students")) {
                             if (resourceObj['capacity'] > event[k].students.length) {
-                                if (!event[k].title.includes('<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>')) {
+                                if (event[k].title.indexOf('<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>') == -1) {
                                     event[k].title += '<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>';
                                     self.addContext("", 'studentPlaceholder', true, event[k].deliveryType);
                                 }
                             }
                         } else {
-                            if (!event[k].title.includes('<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>')) {
+                            if (event[k].title.indexOf('<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>') == -1) {
                                 event[k].title += '<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>';
                                 self.addContext("", 'studentPlaceholder', true, event[k].deliveryType);
                             }
                         }
                     if(event[k].is1to1){
-                      if(!event[k].title.includes('<img class="onetoone" src="/webresources/hub_/calendar/images/lock.png">')){
+                      if(event[k].title.indexOf('<img class="onetoone" src="/webresources/hub_/calendar/images/lock.png">') == -1){
                         event[k].title += '<img class="onetoone" src="/webresources/hub_/calendar/images/lock.png">';
                       }
                     }
@@ -3051,7 +3051,7 @@ function SylvanCalendar() {
                     if (event.length) {
                         wjQuery.each(event, function (k, v) {
                             if(is1to1){
-                              if(!event[k].title.includes('<img class="onetoone" src="/webresources/hub_/calendar/images/lock.png">')){
+                              if(event[k].title.indexOf('<img class="onetoone" src="/webresources/hub_/calendar/images/lock.png">') == -1){
                                 event[k].title += '<img class="onetoone" src="/webresources/hub_/calendar/images/lock.png">';
                               }
                             }
@@ -3117,7 +3117,7 @@ function SylvanCalendar() {
                                 event[k].students = [{ id: id, name: name, grade: grade, pinId: value['pinId'], subjectColorCode: value['subjectColorCode'], is1to1: is1to1, serviceId: serviceId, programId: programId }];
                                 event[k].is1to1 =  value['is1to1'];
                             }
-                            if (event[k].title.includes('<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>')) {
+                            if (event[k].title.indexOf('<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>') != -1) {
                                 event[k].title = event[k].title.replace('<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>', '');
                             }
                             if (event[k].students.length < resourceObj["capacity"] || resourceObj["capacity"] == undefined) {
@@ -3527,7 +3527,7 @@ function SylvanCalendar() {
                         }).indexOf(wjQuery(element).attr('value'));
                         prevEvent[0].students.splice(removeStudentIndex, 1);
                         if (this.getResourceObj(uniqueIds[1])['capacity'] > prevEvent[0].students.length) {
-                            if (!prevEvent[0].title.includes('<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>')) {
+                            if (prevEvent[0].title.indexOf('<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>') == -1) {
                                 prevEvent[0].title += '<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>';
                                 this.addContext("", 'studentPlaceholder', true, prevEvent[0].deliveryType);
                             }
@@ -3621,7 +3621,7 @@ function SylvanCalendar() {
                         }).indexOf(wjQuery(element).attr('value'));
                         prevEvent[0].students.splice(removeStudentIndex, 1);
                         if (this.getResourceObj(uniqueIds[1])['capacity'] > prevEvent[0].students.length) {
-                            if (!prevEvent[0].title.includes('<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>')) {
+                            if (prevEvent[0].title.indexOf('<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>')== -1 ) {
                                 prevEvent[0].title += '<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>';
                                 this.addContext("", 'studentPlaceholder', true, prevEvent[0].deliveryType);
                             }
@@ -3803,7 +3803,7 @@ function SylvanCalendar() {
                             }).indexOf(wjQuery(element).attr('value'));
                             prevEvent[0].students.splice(removeStudentIndex, 1);
                              if (self.getResourceObj(uniqueIds[1])['capacity'] > prevEvent[0].students.length) {
-                                if (!prevEvent[0].title.includes('<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>')) {
+                                if (prevEvent[0].title.indexOf('<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>') == -1) {
                                     prevEvent[0].title += '<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>';
                                     self.addContext("", 'studentPlaceholder', true, prevEvent[0].deliveryType);
                                 }
@@ -3999,7 +3999,7 @@ function SylvanCalendar() {
                             }).indexOf(wjQuery(element).attr('value'));
                             prevEvent[0].students.splice(removeStudentIndex, 1);
                             if (self.getResourceObj(uniqueIds[1])['capacity'] > prevEvent[0].students.length) {
-                                if (!prevEvent[0].title.includes('<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>')) {
+                                if (prevEvent[0].title.indexOf('<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>') == -1) {
                                     prevEvent[0].title += '<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>';
                                     self.addContext("", 'studentPlaceholder', true, prevEvent[0].deliveryType);
                                 }
@@ -4324,7 +4324,7 @@ function SylvanCalendar() {
                         }).indexOf(wjQuery(element).attr('value'));
                         prevEvent[0].students.splice(removeStudentIndex, 1);
                         if (self.getResourceObj(uniqueIds[1])['capacity'] > prevEvent[0].students.length) {
-                            if (!prevEvent[0].title.includes('<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>')) {
+                            if (prevEvent[0].title.indexOf('<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>') == -1) {
                                 prevEvent[0].title += '<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>';
                                 self.addContext("", 'studentPlaceholder', true, prevEvent[0].deliveryType);
                             }
@@ -4749,7 +4749,7 @@ function SylvanCalendar() {
             });
             var lastIndex = msg.lastIndexOf("|");
             msg = msg.substring(0, lastIndex);
-            if (!event.title.includes('<img class="conflict" title="' + msg + '" src="/webresources/hub_/calendar/images/warning.png">')) {
+            if (event.title.indexOf('<img class="conflict" title="' + msg + '" src="/webresources/hub_/calendar/images/warning.png">') == -1) {
                 event.title += '<img class="conflict" title="' + msg + '" src="/webresources/hub_/calendar/images/warning.png">';
             }
         }
@@ -5022,7 +5022,7 @@ function SylvanCalendar() {
                                 prevEvent[0].conflictMsg.splice(msgIndex, 1);
                             }
                             self.updateConflictMsg(prevEvent[0]);
-                            if (!prevEvent[0].title.includes('<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>')) {
+                            if (prevEvent[0].title.indexOf('<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>') == -1) {
                                 prevEvent[0].title += '<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>';
                                 self.addContext("", 'studentPlaceholder', true, prevEvent[0].deliveryType);
                             }
