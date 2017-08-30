@@ -3035,7 +3035,7 @@ function SylvanCalendar() {
             wjQuery.each(studentList, function (key, value) {
                 if(value['sessionStatus'] == SCHEDULE_STATUS || 
                    value['sessionStatus'] == RESCHEDULE_STATUS ||
-                   value['sessionStatus'] == MAKEUP_STATUS ){
+                   value['sessionStatus'] == MAKEUP_STATUS ||  value['isFromMasterSchedule']){
                     var id = value['id'];
                     var name = value['name'];
                     var grade = value['grade'];
