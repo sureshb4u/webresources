@@ -201,7 +201,6 @@ setTimeout(function () {
     sylvanCalendar.generateFilterObject(filterObject);
 }, 500);
 
-
 function SylvanCalendar() {
     this.resourceList = [];
     this.calendar = undefined;
@@ -497,7 +496,6 @@ function SylvanCalendar() {
       }
       return time.join (''); 
     }
-
 
     this.getDayValue = function (date) {
         if (date != undefined) {
@@ -1481,7 +1479,6 @@ function SylvanCalendar() {
         var d = date.getDate();
         var m = date.getMonth();
         var y = date.getFullYear();
-
 
         this.calendarOptions = {
             header: false,
@@ -2979,7 +2976,20 @@ function SylvanCalendar() {
                 }
             }
             if (studentNotPlacedFlag) {
-                studentsForSOF.push(studentList[i]);
+                var index = self.convertedStudentObj.findIndex(function (x) {
+                    return x.id == studentList[i].id &&
+                           x.startHour.getTime() == studentList[i].startHour.getTime();
+                });
+                if (index == -1) {
+                }
+                else{
+                    if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS){
+                        studentList.splice(i,1);
+                    }
+                    else{
+                        studentsForSOF.push(studentList[i]);
+                    }
+                }
             }
         }
         if (studentsForSOF.length) {
@@ -3032,7 +3042,22 @@ function SylvanCalendar() {
                 }
             }
             if (studentNotPlacedFlag) {
-                studentsForSOF = studentsForSOF.concat(serviceStudentList[Object.keys(serviceStudentList)[i]]);
+                serviceStudentList[Object.keys(serviceStudentList)[i]].forEach(function (student) {
+                    var index = self.convertedStudentObj.findIndex(function (x) {
+                        return x.id == student.id &&
+                               x.startHour.getTime() == student.startHour.getTime();
+                    });
+                    if (index == -1) {
+                    }
+                    else{
+                        if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS){
+                            serviceStudentList[Object.keys(serviceStudentList)[i]].splice(i,1);
+                        }
+                        else{
+                            studentsForSOF.push(student);
+                        }
+                    }
+                });
             }
         }
         if (studentsForSOF.length) {
@@ -5217,7 +5242,4 @@ function SylvanCalendar() {
       })
       return allowToDropTeacher;
     }
-
 }
-
-
