@@ -2981,6 +2981,7 @@ function SylvanCalendar() {
                            x.startHour.getTime() == studentList[i].startHour.getTime();
                 });
                 if (index == -1) {
+                    studentsForSOF.push(studentList[i]);
                 }
                 else{
                     if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS){
@@ -3048,6 +3049,7 @@ function SylvanCalendar() {
                                x.startHour.getTime() == student.startHour.getTime();
                     });
                     if (index == -1) {
+                        studentsForSOF.push(student);
                     }
                     else{
                         if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS){
