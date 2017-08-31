@@ -267,7 +267,7 @@ function SylvanCalendar() {
 
         wjQuery('.filter-header').on('click', function () {
             var id = wjQuery(this).parent().attr('id');
-            let flag = wjQuery("#" + id).hasClass("open");
+            var flag = wjQuery("#" + id).hasClass("open");
             if (flag) {
                 wjQuery(this).parent().children('.option-header-container').remove();
                 wjQuery('#' + id).removeClass('open');
@@ -2141,6 +2141,9 @@ function SylvanCalendar() {
                 else {
                     self.pushStudentToSOF(obj);
                 }
+                if(obj.sessionStatus == INVALID_STATUS){
+                    eventObjList.push(obj);
+                }
             });
             setTimeout(function () {
                 if (self.sofList['Personal Instruction'].length > 0 || self.sofList['Group Instruction'].length > 0 || self.sofList['Group Facilitation'].length > 0) {
@@ -2258,7 +2261,6 @@ function SylvanCalendar() {
                             self.populateStudentEvent([obj], true, true);
                             var index = self.convertedStudentObj.findIndex(function (x) {
                             return x.id == obj.id &&
-                                   x.resourceId == obj.resourceId &&
                                    x.startHour.getTime() == obj.startHour.getTime();
                             });
                             if (index == -1) {
@@ -2315,7 +2317,6 @@ function SylvanCalendar() {
                 for(var i=0; i<pinnedList.length; i++){
                     var index = self.convertedStudentObj.findIndex(function (x) {
                         return x.id == pinnedList[i].id &&
-                               x.resourceId == pinnedList[i].resourceId &&
                                x.startHour.getTime() == pinnedList[i].startHour.getTime();
                     });
                     if (index == -1) {
@@ -2811,7 +2812,6 @@ function SylvanCalendar() {
                                 obj.push(affinityList[i]);
                                 var index = self.convertedStudentObj.findIndex(function (x) {
                                     return x.id == affinityList[i].id &&
-                                           x.resourceId == affinityList[i].resourceId &&
                                            x.startHour.getTime() == affinityList[i].startHour.getTime();
                                 });
                                 if (index == -1) {
@@ -2841,7 +2841,6 @@ function SylvanCalendar() {
                         obj.push(affinityList[i]);
                         var index = self.convertedStudentObj.findIndex(function (x) {
                             return x.id == affinityList[i].id &&
-                                   x.resourceId == affinityList[i].resourceId &&
                                    x.startHour.getTime() == affinityList[i].startHour.getTime();
                         });
                         if (index == -1) {
@@ -2865,7 +2864,6 @@ function SylvanCalendar() {
                 obj.push(affinityList[i]);
                 var index = self.convertedStudentObj.findIndex(function (x) {
                     return x.id == affinityList[i].id &&
-                           x.resourceId == affinityList[i].resourceId &&
                            x.startHour.getTime() == affinityList[i].startHour.getTime();
                 });
                 if (index == -1) {
@@ -2909,7 +2907,6 @@ function SylvanCalendar() {
                                         obj.push(studentList[i]);
                                         var index = self.convertedStudentObj.findIndex(function (x) {
                                             return x.id == studentList[i].id &&
-                                                   x.resourceId == studentList[i].resourceId &&
                                                    x.startHour.getTime() == studentList[i].startHour.getTime();
                                         });
                                        if (index == -1) {
@@ -2935,7 +2932,6 @@ function SylvanCalendar() {
                                 obj.push(studentList[i]);
                                 var index = self.convertedStudentObj.findIndex(function (x) {
                                     return x.id == studentList[i].id &&
-                                           x.resourceId == studentList[i].resourceId &&
                                            x.startHour.getTime() == studentList[i].startHour.getTime();
                                 });
                                 if (index == -1) {
@@ -2961,7 +2957,6 @@ function SylvanCalendar() {
                         obj.push(studentList[i]);
                         var index = self.convertedStudentObj.findIndex(function (x) {
                             return x.id == studentList[i].id &&
-                                   x.resourceId == studentList[i].resourceId &&
                                    x.startHour.getTime() == studentList[i].startHour.getTime();
                         });
                         if (index == -1) {
@@ -3016,7 +3011,6 @@ function SylvanCalendar() {
                             e.resourceId = self.resourceList[j].id;
                             var index = self.convertedStudentObj.findIndex(function (x) {
                             return x.id == e.id &&
-                                   x.resourceId == e.resourceId &&
                                    x.startHour.getTime() == e.startHour.getTime();
                             });
                             if (index == -1) {
