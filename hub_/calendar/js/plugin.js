@@ -2135,7 +2135,7 @@ function SylvanCalendar() {
                     }
                     eventObjList.push(obj);
                 }
-                else {
+                else if(obj.sessionStatus != INVALID_STATUS) {
                     self.pushStudentToSOF(obj);
                 }
                 if(obj.sessionStatus == INVALID_STATUS){
@@ -3053,7 +3053,6 @@ function SylvanCalendar() {
                     }
                     else{
                         if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS){
-                            serviceStudentList[Object.keys(serviceStudentList)[i]].splice(i,1);
                         }
                         else{
                             studentsForSOF.push(student);
