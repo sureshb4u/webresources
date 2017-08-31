@@ -399,6 +399,7 @@ button{
     left: 0;
     top:0;
     padding: 2px;
+    z-index: 1;
 }
 .student-container{
     z-index: 500;
