@@ -1211,8 +1211,8 @@ function SylvanCalendar() {
                 }
                 // No students remove lock from prev event
                 if(prevEvent[0]['students'] == undefined || prevEvent[0].hasOwnProperty('students') && prevEvent[0]['students'].length == 0){
-                  if (prevEvent[0].title.indexOf('<img class="onetoone" title="OneToOne Session" src="/webresources/hub_/calendar/images/lock.png">') != -1) {
-                      prevEvent[0].title = prevEvent[0].title.replace('<img class="onetoone" title="OneToOne Session" src="/webresources/hub_/calendar/images/lock.png">', "");
+                  if (prevEvent[0].title.indexOf('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">') != -1) {
+                      prevEvent[0].title = prevEvent[0].title.replace('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">', "");
                       prevEvent[0].is1to1 = false;
                   }
                 }
@@ -1364,8 +1364,8 @@ function SylvanCalendar() {
                     prevEvent[0].students.splice(removeStudentIndex, 1);
                     // No students remove lock from prev event
                     if(prevEvent[0]['students'] == undefined || prevEvent[0].hasOwnProperty('students') && prevEvent[0]['students'].length == 0){
-                      if (prevEvent[0].title.indexOf('<img class="onetoone" title="OneToOne Session" src="/webresources/hub_/calendar/images/lock.png">') != -1) {
-                          prevEvent[0].title = prevEvent[0].title.replace('<img class="onetoone" title="OneToOne Session" src="/webresources/hub_/calendar/images/lock.png">', "");
+                      if (prevEvent[0].title.indexOf('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">') != -1) {
+                          prevEvent[0].title = prevEvent[0].title.replace('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">', "");
                           prevEvent[0].is1to1 = false;
                       }
                     }
@@ -1422,8 +1422,8 @@ function SylvanCalendar() {
                 }
 
                 if(prevEvent[0]['students'] == undefined || prevEvent[0].hasOwnProperty('students') && prevEvent[0]['students'].length == 0){
-                  if (prevEvent[0].title.indexOf('<img class="onetoone" title="OneToOne Session" src="/webresources/hub_/calendar/images/lock.png">') != -1) {
-                      prevEvent[0].title = prevEvent[0].title.replace('<img class="onetoone" title="OneToOne Session" src="/webresources/hub_/calendar/images/lock.png">', "");
+                  if (prevEvent[0].title.indexOf('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">') != -1) {
+                      prevEvent[0].title = prevEvent[0].title.replace('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">', "");
                       prevEvent[0].is1to1 = false;
                   }
                 }
@@ -2581,8 +2581,8 @@ function SylvanCalendar() {
                             }).indexOf(id);
                             if (index == -1) {
                                 event[k].title = "";
-                                if (event[k].title.indexOf("<img class='onetoone' title='OneToOne Session' src='/webresources/hub_/calendar/images/lock.png'>") != -1) {
-                                    event[k].title = event[k].title.replace("<img class='onetoone' title='OneToOne Session' src='/webresources/hub_/calendar/images/lock.png'>", "");
+                                if (event[k].title.indexOf("<img class='onetoone' title='1:1 Session' src='/webresources/hub_/calendar/images/lock.png'>") != -1) {
+                                    event[k].title = event[k].title.replace("<img class='onetoone' title='1:1 Session' src='/webresources/hub_/calendar/images/lock.png'>", "");
                                 }
                                 // Conflict update
                                 // More than one teacher conflict 
@@ -2639,8 +2639,8 @@ function SylvanCalendar() {
                             }
                         } else {
                             var uniqueId = id + "_" + value['resourceId'] + "_" + value['startHour'];
-                            if (event[k].title.indexOf("<img class='onetoone' title='OneToOne Session' src='/webresources/hub_/calendar/images/lock.png'>") != -1) {
-                                event[k].title = "<img class='onetoone' title='OneToOne Session' src='/webresources/hub_/calendar/images/lock.png'>";
+                            if (event[k].title.indexOf("<img class='onetoone' title='1:1 Session' src='/webresources/hub_/calendar/images/lock.png'>") != -1) {
+                                event[k].title = "<img class='onetoone' title='1:1 Session' src='/webresources/hub_/calendar/images/lock.png'>";
                                 if (value['pinId'] != undefined) {
                                     event[k].title += "<span class='draggable drag-teacher' pinnedId='" + value['pinId'] + "' eventid='" + eventId + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='teacherSession' value='" + id + "'><img src='/webresources/hub_/calendar/images/pin.png'/>" + value.name + "</span>";
                                 } else {
@@ -2719,8 +2719,8 @@ function SylvanCalendar() {
                             }
                         }
                     if(event[k].is1to1){
-                      if(event[k].title.indexOf('<img class="onetoone" title="OneToOne Session" src="/webresources/hub_/calendar/images/lock.png">') == -1){
-                        event[k].title += '<img class="onetoone" title="OneToOne Session" src="/webresources/hub_/calendar/images/lock.png">';
+                      if(event[k].title.indexOf('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">') == -1){
+                        event[k].title += '<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">';
                       }
                     }
                     });
@@ -3127,8 +3127,8 @@ function SylvanCalendar() {
                     if (event.length) {
                         wjQuery.each(event, function (k, v) {
                             if(is1to1){
-                              if(event[k].title.indexOf('<img class="onetoone" title="OneToOne Session" src="/webresources/hub_/calendar/images/lock.png">') == -1){
-                                event[k].title += '<img class="onetoone" title="OneToOne Session" src="/webresources/hub_/calendar/images/lock.png">';
+                              if(event[k].title.indexOf('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">') == -1){
+                                event[k].title += '<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">';
                               }
                             }
                             if (event[k].hasOwnProperty("students") && event[k]['students'].length != 0) {
@@ -3244,7 +3244,7 @@ function SylvanCalendar() {
                         obj.title = "";
 
                         if (value['is1to1']) {
-                            obj.title += "<img class='onetoone' title='OneToOne Session' src='/webresources/hub_/calendar/images/lock.png'>";
+                            obj.title += "<img class='onetoone' title='1:1 Session' src='/webresources/hub_/calendar/images/lock.png'>";
                         }
                         obj.title += "<span class='placeholder'>Teacher name</span>";
                         if (resourceObj.deliveryType == "Group Instruction") {
