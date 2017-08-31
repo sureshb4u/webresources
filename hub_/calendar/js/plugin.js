@@ -4868,11 +4868,11 @@ function SylvanCalendar() {
             var list = "";
             if (isForMakeup) {
                 wjQuery.each(makeupList, function (k, v) {
-                    list += "<li id='" + v.sessionId + "' class='makeup-item' >" + v.name + ", " + v.grade + "</li>";
+                    list += "<li id='" + v.sessionId + "' class='makeup-item' >" + v.fullName + ", " + v.grade + "</li>";
                 });
             } else {
                 wjQuery.each(makeupList, function (k, v) {
-                    list += "<li id='" + v.id + "' class='makeup-item' >" + v.name + ", " + v.grade + "</li>";
+                    list += "<li id='" + v.id + "' class='makeup-item' >" + v.fullName + ", " + v.grade + "</li>";
                 });
             }
             wjQuery("#makeup > .makeup-lst").html(list);
@@ -4954,12 +4954,10 @@ function SylvanCalendar() {
                             studentObj[0]['startHour'] = new Date(idArry[2]);
                             studentObj[0]['end'] = new Date(new Date(idArry[2]).setHours(new Date(idArry[2]).getHours() + 1));
                             studentObj[0]['sessionId'] = responseObj['hub_studentsessionid'];
-                            studentObj[0]['sessiontype'] = responseObj['hub_sessiontype'];
-                            studentObj[0]['sessionStatus'] = responseObj['hub_session_status'];
                             studentObj[0]['sessionDate'] = responseObj['hub_session_date'];
                             // update All Students and teacher 
                             self.convertedStudentObj.push(studentObj[0]);
-                            self.populateStudentEvent(self.convertedStudentObj, true);
+                            self.populateStudentEvent([studentObj[0]], true);
                             self.draggable('draggable');
                             wjQuery("#makeup").dialog("close");
                             wjQuery(".loading").hide();
@@ -5024,7 +5022,8 @@ function SylvanCalendar() {
             startHour = new Date(new Date(startHour).setSeconds(0));
             var obj = {
                 id: val._hub_student_value,
-                name: val["_hub_enrollment_value@OData.Community.Display.V1.FormattedValue"],
+                name: val["_hub_student_value@OData.Community.Display.V1.FormattedValue"],
+                fullName: val["_hub_enrollment_value@OData.Community.Display.V1.FormattedValue"],
                 start: sDate,
                 end: eDate,
                 sessionDate: val['hub_session_date'],
@@ -5040,6 +5039,7 @@ function SylvanCalendar() {
                 serviceId: val['_hub_service_value'],
                 sessionId: val['hub_studentsessionid'],
                 sessionStatus : val['hub_session_status'],
+                sessionType: val['hub_sessiontype'],
                 duration: val['aproductservice_x002e_hub_duration'],
                 timeSlotType: val['aproductservice_x002e_hub_timeslottype'],
                 namedHoursId: val['aproductservice_x002e_hub_namedgfhoursid'],

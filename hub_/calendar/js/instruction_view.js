@@ -5229,8 +5229,9 @@ var makeupNfloatList = [
 ];
 
 
-var saveFloat = [{
-  "isForMakeup":false,"hub_enrollment@odata.bind":"bef85bff-2778-e711-80f3-c4346bad526c",
+var saveFloat = {
+  "isForMakeup":false,
+  "hub_enrollment@odata.bind":"bef85bff-2778-e711-80f3-c4346bad526c",
   "hub_student@odata.bind":"ccf05420-b477-e711-80f3-c4346bad526c",
   "hub_service@odata.bind":"58e5f2af-ac77-e711-80f3-c4346bad526c",
   "hub_center@odata.bind":"46ecf508-e26d-e711-80f2-c4346bacfbbc",
@@ -5241,7 +5242,7 @@ var saveFloat = [{
   "hub_sessiontype":2,
   "hub_session_status":1,
   "hub_studentsessionid":"25a40f6e-4083-e711-80f4-c4346bac4304"
-}];
+};
 
 var studentTimings = [
   
