@@ -59,6 +59,10 @@ i.material-icons.cursor.float-right {
     font-size: 20px;
     color: #333;
 }
+.open > .dropdown-menu {
+    max-height: 250px;
+    overflow-y: auto;
+}
 
 #pi-btn label input,#gi-btn label input {
     position:absolute;
