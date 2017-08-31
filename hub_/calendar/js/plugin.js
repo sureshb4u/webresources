@@ -4974,7 +4974,7 @@ function SylvanCalendar() {
       var uniquewList = [];
       wjQuery.each(makeupList, function (ke, val) {
         var index = uniquewList.findIndex(function (x) {
-          return x.id == val.id 
+          return x.id == val.id && x.enrollmentId == val.enrollmentId
         });
         if(index == -1){
           uniquewList.push(val);
@@ -4998,7 +4998,7 @@ function SylvanCalendar() {
             startHour = new Date(new Date(startHour).setSeconds(0));
             var obj = {
                 id: val._hub_student_value,
-                name: val["_hub_student_value@OData.Community.Display.V1.FormattedValue"],
+                name: val["_hub_enrollment_value@OData.Community.Display.V1.FormattedValue"],
                 start: sDate,
                 end: eDate,
                 sessionDate: val['hub_session_date'],
@@ -5012,7 +5012,6 @@ function SylvanCalendar() {
                 subjectColorCode: val['aprogram_x002e_hub_color'],
                 programId: val['aprogram_x002e_hub_programid'],
                 serviceId: val['_hub_service_value'],
-                enrollmentId: val['hub_enrollmentid'],
                 sessionId: val['hub_studentsessionid'],
                 sessionStatus : val['hub_session_status'],
                 duration: val['aproductservice_x002e_hub_duration'],
