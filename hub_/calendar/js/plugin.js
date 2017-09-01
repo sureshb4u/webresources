@@ -3307,6 +3307,15 @@ function SylvanCalendar() {
                                 }
                                 self.updateConflictMsg(event[k]);
                             }
+                            if(event[k].is1to1){
+                              var msgIndex = event[k].conflictMsg.map(function (x) {
+                                  return x;
+                              }).indexOf(2);
+                              if (msgIndex == -1) {
+                                  event[k].conflictMsg.push(2);
+                              }
+                              self.updateConflictMsg(event[k]);
+                            }
                         });
                         if (value['deliveryType'] != "Group Instruction" ) {
                             if (value['pinId'] != undefined) {
