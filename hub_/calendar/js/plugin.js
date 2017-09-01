@@ -217,7 +217,7 @@ function SylvanCalendar() {
     // 2. Capacity Conflict
     // 3. OneToOne Conflict
     // 4. Do not sit with stydent
-    this.conflictMsg = ["Multiple teachers are placed", "Capacity has reached max", "OneToOne Conflict"];
+    this.conflictMsg = ["Multiple teachers are placed", "Capacity has reached max", "OneToOne Conflict", "Non preferred teacher Conflict"];
     this.calendarOptions = {};
     this.convertedTeacherObj = [];
     this.convertedStudentObj = [];
@@ -2145,6 +2145,11 @@ function SylvanCalendar() {
                     timeSlotType: val['aproductservice_x002e_hub_timeslottype'],
                     namedHoursId: val['aproductservice_x002e_hub_namedgfhoursid']
                 }
+
+                if(val.hasOwnProperty('aenrollment_x002e_hub_nonpreferredteacher')){
+                  obj['nonPreferredTeacher'] = val['aenrollment_x002e_hub_nonpreferredteacher'];
+                }
+
                 if (val.hasOwnProperty('_hub_resourceid_value')) {
                     obj.resourceId = val['_hub_resourceid_value'];
                     if (self.convertedPinnedList.length) {
@@ -3306,6 +3311,9 @@ function SylvanCalendar() {
                                     event[k].conflictMsg.push(1);
                                 }
                                 self.updateConflictMsg(event[k]);
+                            }
+                            if(value.is1to1){
+                              event[k].is1to1 = value.is1to1;
                             }
                             if(event[k].is1to1){
                               var msgIndex = event[k].conflictMsg.map(function (x) {
@@ -5333,5 +5341,10 @@ function SylvanCalendar() {
         }
       })
       return allowToDropTeacher;
+    }
+
+    this.nonPreferredTeacherValidate = function(eventObj, studentObj){
+      var self = this;
+      // yet to do
     }
 }
