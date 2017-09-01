@@ -1544,7 +1544,7 @@ function SylvanCalendar() {
             events: this.eventList,
             windowResize: function (view) {
                 self.calendar.fullCalendar('option', 'height', window.innerHeight - 60);
-            },
+            }
         };
 
         if (args != undefined) {
@@ -4998,46 +4998,53 @@ function SylvanCalendar() {
                     var eventId = idArry[1] + idArry[2];
                     var eventObj = self.calendar.fullCalendar('clientEvents', eventId);
                     var callSave = false;
-                    if (eventObj[0].hasOwnProperty("students") && eventObj[0].students.length > 0) {
-                        var stdIndex = eventObj[0].students.findIndex(function (x) {
-                            return x.id == studentObj[0].id;
-                        });
-                        if (stdIndex == -1) {
-                            callSave = true;
-                        }
-                    } else {
-                        callSave = true;
-                    }
-                    if (callSave) {
-                        var responseObj = data.saveMakeupNFloat(objSession);
-                        if (responseObj != null) {
-                            var uniqueid = studentObj[0].id + "_" + idArry[1] + "_" + idArry[2];
-                            // Update New student Session
-                            studentObj[0]['resourceId'] = idArry[1];
-                            studentObj[0]['start'] = new Date(idArry[2]);
-                            studentObj[0]['startHour'] = new Date(idArry[2]);
-                            studentObj[0]['end'] = new Date(new Date(idArry[2]).setHours(new Date(idArry[2]).getHours() + 1));
-                            studentObj[0]['sessionId'] = responseObj['hub_studentsessionid'];
-                            studentObj[0]['sessionDate'] = responseObj['hub_session_date'];
-                            if(responseObj['hub_sessiontype'] != undefined){
-                              studentObj[0]['sessiontype'] = responseObj['hub_sessiontype'];
-                            }
-                            if(responseObj['hub_session_status'] != undefined){
-                              studentObj[0]['sessionStatus'] = responseObj['hub_session_status'];
-                            }
-                            // update Student
-                            self.convertedStudentObj.push(studentObj[0]);
-                            self.populateStudentEvent([studentObj[0]], true);
-                            self.draggable('draggable');
-                            wjQuery("#makeup").dialog("close");
-                            wjQuery(".loading").hide();
-                        } else {
-                            wjQuery(".loading").hide();
-                            wjQuery("#makeup").dialog("close");
-                        }
-                    } else {
-                        wjQuery(".loading").hide();
-                        wjQuery("#makeup").dialog("close");
+                    allowToDropStudent = self.validateStudentOnSameRow(studentObj[0].id, idArry[2]);
+                    if(allowToDropStudent){
+                      if (eventObj[0].hasOwnProperty("students") && eventObj[0].students.length > 0) {
+                          var stdIndex = eventObj[0].students.findIndex(function (x) {
+                              return x.id == studentObj[0].id;
+                          });
+                          if (stdIndex == -1) {
+                              callSave = true;
+                          }
+                      } else {
+                          callSave = true;
+                      }
+                      if (callSave) {
+                          var responseObj = data.saveMakeupNFloat(objSession);
+                          if (responseObj != null) {
+                              var uniqueid = studentObj[0].id + "_" + idArry[1] + "_" + idArry[2];
+                              // Update New student Session
+                              studentObj[0]['resourceId'] = idArry[1];
+                              studentObj[0]['start'] = new Date(idArry[2]);
+                              studentObj[0]['startHour'] = new Date(idArry[2]);
+                              studentObj[0]['end'] = new Date(new Date(idArry[2]).setHours(new Date(idArry[2]).getHours() + 1));
+                              studentObj[0]['sessionId'] = responseObj['hub_studentsessionid'];
+                              studentObj[0]['sessionDate'] = responseObj['hub_session_date'];
+                              if(responseObj['hub_sessiontype'] != undefined){
+                                studentObj[0]['sessiontype'] = responseObj['hub_sessiontype'];
+                              }
+                              if(responseObj['hub_session_status'] != undefined){
+                                studentObj[0]['sessionStatus'] = responseObj['hub_session_status'];
+                              }
+                              // update Student
+                              self.convertedStudentObj.push(studentObj[0]);
+                              self.populateStudentEvent([studentObj[0]], true);
+                              self.draggable('draggable');
+                              wjQuery("#makeup").dialog("close");
+                              wjQuery(".loading").hide();
+                          } else {
+                              wjQuery(".loading").hide();
+                              wjQuery("#makeup").dialog("close");
+                          }
+                      } else {
+                          wjQuery(".loading").hide();
+                          wjQuery("#makeup").dialog("close");
+                      }
+                    }else{
+                      wjQuery(".loading").hide();
+                      wjQuery("#makeup").dialog("close");
+                      self.prompt("Can not be placed to a session.");
                     }
                 }
             });
