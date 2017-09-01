@@ -972,8 +972,10 @@ function SylvanCalendar() {
                                   newEvent[0].conflictMsg.push(2);
                                   self.updateConflictMsg(newEvent[0]);
                               }
+                              t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This student will be temporarily un pinned and Session is 'OneToOne' Type . Do you wish to continue?");
+                            }else{
+                              t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This student will be temporarily un pinned. Do you wish to continue?");
                             }
-                            t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This student will be temporarily un pinned. Do you wish to continue?");
                           } else {
                               if (newResourceObj.deliveryType == prevStudObj.deliveryType) {
                                   t.studentSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
@@ -996,8 +998,10 @@ function SylvanCalendar() {
                                   newEvent[0].conflictMsg.push(2);
                                   self.updateConflictMsg(newEvent[0]);
                               }
+                              t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This student will be temporarily un pinned and Session is 'OneToOne' Type . Do you wish to continue?");
+                            }else{
+                              t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This student will be temporarily un pinned. Do you wish to continue?");
                             }
-                            t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This student will be temporarily un pinned. Do you wish to continue?");
                           } else {
                             if (newResourceObj.deliveryType == prevStudObj.deliveryType) {
                               if (newResourceObj.deliveryType == "Personal Instruction") {
