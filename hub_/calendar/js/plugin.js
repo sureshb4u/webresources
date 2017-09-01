@@ -963,7 +963,17 @@ function SylvanCalendar() {
                   else if (newEvent.length == 1) {
                       if (newEvent[0]['students'] == undefined) {
                           if (wjQuery(elm).attr("pinnedId")) {
-                              t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This student will be temporarily un pinned. Do you wish to continue?");
+                            if (newEvent[0]['is1to1']) {
+                              // OneToOne Conflict
+                              var msgIndex = newEvent[0].conflictMsg.map(function (x) {
+                                  return x;
+                              }).indexOf(2);
+                              if (msgIndex == -1) {
+                                  newEvent[0].conflictMsg.push(2);
+                                  self.updateConflictMsg(newEvent[0]);
+                              }
+                            }
+                            t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This student will be temporarily un pinned. Do you wish to continue?");
                           } else {
                               if (newResourceObj.deliveryType == prevStudObj.deliveryType) {
                                   t.studentSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
@@ -977,6 +987,16 @@ function SylvanCalendar() {
                         }).indexOf(stuId);
                         if (studentIndex == -1) {
                           if (wjQuery(elm).attr("pinnedId")) {
+                            if (newEvent[0]['is1to1']) {
+                              // OneToOne Conflict
+                              var msgIndex = newEvent[0].conflictMsg.map(function (x) {
+                                  return x;
+                              }).indexOf(2);
+                              if (msgIndex == -1) {
+                                  newEvent[0].conflictMsg.push(2);
+                                  self.updateConflictMsg(newEvent[0]);
+                              }
+                            }
                             t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This student will be temporarily un pinned. Do you wish to continue?");
                           } else {
                             if (newResourceObj.deliveryType == prevStudObj.deliveryType) {
@@ -5093,7 +5113,7 @@ function SylvanCalendar() {
             if(val['hub_name'] != undefined){
               obj['fullName'] = val['hub_name'];
             }else{
-              obj['fullName'] = val["hub_enrollment_value@OData.Community.Display.V1.FormattedValue"];
+              obj['fullName'] = val["_hub_enrollment_value@OData.Community.Display.V1.FormattedValue"];
             }
 
             if(val["hub_is_1to1"] == undefined){
