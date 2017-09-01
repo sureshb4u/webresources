@@ -1172,6 +1172,7 @@ function SylvanCalendar() {
             }
             this.convertedTeacherObj.push(teacherObj);
             t.populateTeacherEvent([teacherObj], true);
+            t.populateTAPane(t.taList);
         }
     }
 
