@@ -4955,7 +4955,13 @@ function SylvanCalendar() {
                             studentObj[0]['end'] = new Date(new Date(idArry[2]).setHours(new Date(idArry[2]).getHours() + 1));
                             studentObj[0]['sessionId'] = responseObj['hub_studentsessionid'];
                             studentObj[0]['sessionDate'] = responseObj['hub_session_date'];
-                            // update All Students and teacher 
+                            if(responseObj['hub_sessiontype'] != undefined){
+                              studentObj[0]['sessiontype'] = responseObj['hub_sessiontype'];
+                            }
+                            if(responseObj['hub_session_status'] != undefined){
+                              studentObj[0]['sessionStatus'] = responseObj['hub_session_status'];
+                            }
+                            // update Student
                             self.convertedStudentObj.push(studentObj[0]);
                             self.populateStudentEvent([studentObj[0]], true);
                             self.draggable('draggable');
@@ -5023,7 +5029,6 @@ function SylvanCalendar() {
             var obj = {
                 id: val._hub_student_value,
                 name: val["_hub_student_value@OData.Community.Display.V1.FormattedValue"],
-                fullName: val["_hub_enrollment_value@OData.Community.Display.V1.FormattedValue"],
                 start: sDate,
                 end: eDate,
                 sessionDate: val['hub_session_date'],
@@ -5044,6 +5049,12 @@ function SylvanCalendar() {
                 timeSlotType: val['aproductservice_x002e_hub_timeslottype'],
                 namedHoursId: val['aproductservice_x002e_hub_namedgfhoursid'],
                 expiryDate: val['hub_makeup_expiry_date']
+            }
+
+            if(val['hub_name'] != undefined){
+              obj['fullName'] = val['hub_name'];
+            }else{
+              obj['fullName'] = val["hub_enrollment_value@OData.Community.Display.V1.FormattedValue"];
             }
 
             if(val["hub_is_1to1"] == undefined){
