@@ -2135,10 +2135,16 @@ function SylvanCalendar() {
                     }
                     eventObjList.push(obj);
                 }
-                else if(obj.sessionStatus != INVALID_STATUS) {
+                else if(obj.sessionStatus != INVALID_STATUS &&
+                    obj.sessionStatus != UNEXCUSED_STATUS &&
+                    obj.sessionStatus != OMIT_STATUS && 
+                    obj.sessionStatus != EXCUSED_STATUS) {
                     self.pushStudentToSOF(obj);
                 }
-                if(obj.sessionStatus == INVALID_STATUS){
+                if(obj.sessionStatus == INVALID_STATUS ||
+                    obj.sessionStatus == UNEXCUSED_STATUS ||
+                    obj.sessionStatus == OMIT_STATUS || 
+                    obj.sessionStatus == EXCUSED_STATUS){
                     eventObjList.push(obj);
                 }
             });
@@ -2264,7 +2270,10 @@ function SylvanCalendar() {
                                 self.convertedStudentObj.push(obj);
                             }
                             else{
-                                if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS){
+                                if( self.convertedStudentObj[index].sessionStatus == INVALID_STATUS ||
+                                    self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
+                                    self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
+                                    self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
                                 
                                 }
                                 else
@@ -2320,7 +2329,10 @@ function SylvanCalendar() {
                         self.convertedStudentObj.push(pinnedList[i]);
                     }
                     else{
-                        if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS){
+                        if( self.convertedStudentObj[index].sessionStatus == INVALID_STATUS ||
+                            self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
+                            self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
+                            self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
                             pinnedList.splice(i,1);
                         }
                         else
@@ -2816,7 +2828,10 @@ function SylvanCalendar() {
                                     self.populateStudentEvent(obj, true, true);
                                 }
                                 else{
-                                    if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS){
+                                    if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS ||
+                                    self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
+                                    self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
+                                    self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
                                         affinityList.splice(i,1);
                                     }
                                     else{
@@ -2845,7 +2860,10 @@ function SylvanCalendar() {
                             self.populateStudentEvent(obj, true, true);
                         }
                         else{
-                           if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS){
+                           if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS ||
+                                self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
+                                self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
+                                self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
                                 affinityList.splice(i,1);
                             }
                             else{
@@ -2868,7 +2886,10 @@ function SylvanCalendar() {
                     self.populateStudentEvent(obj, true, true);
                 }
                 else{
-                    if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS){
+                    if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS||
+                        self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
+                        self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
+                        self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
                         affinityList.splice(i,1);
                     }
                     else{
@@ -2911,7 +2932,10 @@ function SylvanCalendar() {
                                             self.populateStudentEvent(obj, true, true);
                                         }
                                         else{
-                                            if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS){
+                                            if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS||
+                                                self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
+                                                self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
+                                                self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
                                                 studentList.splice(i,1);
                                             }
                                             else{
@@ -2936,7 +2960,10 @@ function SylvanCalendar() {
                                     self.populateStudentEvent(obj, true, true);
                                 }
                                 else{
-                                    if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS){
+                                    if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS||
+                                        self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
+                                        self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
+                                        self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
                                         studentList.splice(i,1);
                                     }
                                     else{
@@ -2961,7 +2988,10 @@ function SylvanCalendar() {
                             self.populateStudentEvent(obj, true, true);
                         }
                         else{
-                            if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS){
+                            if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS ||
+                                self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
+                                self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
+                                self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
                                 studentList.splice(i,1);
                             }
                             else{
@@ -2984,7 +3014,10 @@ function SylvanCalendar() {
                     studentsForSOF.push(studentList[i]);
                 }
                 else{
-                    if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS){
+                    if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS||
+                        self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
+                        self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
+                        self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
                         studentList.splice(i,1);
                     }
                     else{
@@ -3028,7 +3061,10 @@ function SylvanCalendar() {
                                 self.convertedStudentObj.push(e);
                             }
                             else{
-                                if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS){
+                                if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS||
+                                self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
+                                self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
+                                self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
                                     serviceStudentList[Object.keys(serviceStudentList)[i]].splice(i,1);
                                 }
                                 else{
@@ -3052,7 +3088,10 @@ function SylvanCalendar() {
                         studentsForSOF.push(student);
                     }
                     else{
-                        if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS){
+                        if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS||
+                            self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
+                            self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
+                            self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
                         }
                         else{
                             studentsForSOF.push(student);
