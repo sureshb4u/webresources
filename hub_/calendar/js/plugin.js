@@ -119,7 +119,7 @@ setTimeout(function () {
             }
             sylvanCalendar.populateResource(resourceList, fetchData);
             if (resourceList.length) {
-                sylvanCalendar.refreshCalendarEvent(locationId, currentCalendarDate, currentCalendarDate, true);
+                sylvanCalendar.refreshCalendarEvent(locationId, true);
                 
                
                 wjQuery('.prevBtn').off('click').on('click', function () {
@@ -1889,7 +1889,7 @@ function SylvanCalendar() {
         wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').html(dayOfWeek + " <br/> " + dayofMonth);
         this.clearEvents();
         currentCalendarDate = moment(currentCalendarDate).format("YYYY-MM-DD");
-        this.refreshCalendarEvent(locationId, currentCalendarDate, currentCalendarDate, true);
+        this.refreshCalendarEvent(locationId, true);
     }
 
     this.dateFromCalendar = function (date, locationId) {
@@ -1908,7 +1908,7 @@ function SylvanCalendar() {
         wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').html(dayOfWeek + " <br/> " + dayofMonth);
         self.clearEvents();
         var currentCalendarDate = moment(date).format("YYYY-MM-DD");
-        self.refreshCalendarEvent(locationId, currentCalendarDate, currentCalendarDate, true);
+        self.refreshCalendarEvent(locationId, true);
     }
 
     this.next = function (locationId) {
@@ -1926,62 +1926,117 @@ function SylvanCalendar() {
         wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').html(dayOfWeek + " <br/> " + dayofMonth);
         this.clearEvents();
         currentCalendarDate = moment(currentCalendarDate).format("YYYY-MM-DD");
-        this.refreshCalendarEvent(locationId, currentCalendarDate, currentCalendarDate, true);
+        this.refreshCalendarEvent(locationId, true);
     }
 
-    this.refreshCalendarEvent = function (locationId, startDate, endDate, isFetch) {
+    this.refreshCalendarEvent = function (locationId, isFetch) {
         var self = this;
         setTimeout(function () {
             var currentCalendarDate = self.calendar.fullCalendar('getDate');
             var studentDataSource = self.findDataSource(currentCalendarDate);
-            if (self.calendar.fullCalendar('getView').name == 'resourceDay') {
+            var currentView = self.calendar.fullCalendar('getView');
+            if (currentView.name == 'resourceDay') {
                 startDate = endDate = moment(currentCalendarDate).format("YYYY-MM-DD");
+                // staff program fetching
+                self.businessClosure = data.getBusinessClosure(locationId, startDate, endDate) == null ? [] : data.getBusinessClosure(locationId, startDate, endDate);
+                if (self.businessClosure == null) {
+                    self.businessClosure = [];
+                }
+                var findingLeaveFlag = true;
+                if (self.businessClosure.length) {
+                    for (var i = 0; i < self.businessClosure.length; i++) {
+                        var businessStartDate = moment(self.businessClosure[i]['hub_startdatetime']).format("YYYY-MM-DD");
+                        var businessEndDate = moment(self.businessClosure[i]['hub_enddatetime']).format("YYYY-MM-DD");
+                        businessStartDate = new Date(businessStartDate + ' ' + '0:00').getTime();
+                        businessEndDate = new Date(businessEndDate + ' ' + '0:00').getTime();
+                        var calendarStartDate = new Date(startDate + ' ' + '0:00').getTime();
+                        var calendarEndDate = new Date(endDate + ' ' + '0:00').getTime();
+                        if (calendarStartDate >= businessStartDate && calendarEndDate <= businessEndDate) {
+                            findingLeaveFlag = false;
+                        }
+                    }
+                }
+                if (findingLeaveFlag) {
+                    wjQuery('table.fc-agenda-slots td div').css('backgroundColor', '');
+                    self.staffProgram = data.getStaffProgram(locationId) == null ? [] : data.getStaffProgram(locationId);
+                    if (self.staffProgram == null) {
+                        self.staffProgram = [];
+                    }
+                    self.programList = data.getProgramList(locationId) == null ? [] : data.getProgramList(locationId);
+                    if (self.programList == null) {
+                        self.programList = [];
+                    }
+                    if (self.programList.length) {
+                        var msg = '';
+                        for (var i = 0; i < self.programList.length; i++) {
+                            msg += "<div style='margin:0 5px;display:inline-block;width:10px;height:10px;background:" + self.programList[i].hub_color + "'></div>" +
+                                   "<span style='padding:5px'>" + self.programList[i].hub_name + "</span><br/>";
+                        }
+                        wjQuery('.info-icon').attr('title', msg);
+                    }
+
+                    self.staffExceptions = isFetch || (self.staffExceptions.length == 0) ? data.getStaffException(locationId, startDate, endDate) : self.staffExceptions;
+                    if (self.staffExceptions == null) {
+                        self.staffExceptions = [];
+                    }
+                    self.teacherSchedule = isFetch || (self.teacherSchedule.length == 0) ? data.getTeacherSchedule(locationId, startDate, endDate) : self.teacherSchedule;
+                    if (self.teacherSchedule == null) {
+                        self.teacherSchedule = [];
+                    }
+                    self.teacherAvailability = isFetch || (self.teacherAvailability.length == 0) ? data.getTeacherAvailability(locationId, startDate, endDate) : self.teacherAvailability;
+                    if (self.teacherAvailability == null) {
+                        self.teacherAvailability = [];
+                    }
+                    self.pinnedData = isFetch || (self.pinnedData.length == 0) ? data.getPinnedData(locationId, startDate, endDate) : self.pinnedData;
+                    if (self.pinnedData == null) {
+                        self.pinnedData = [];
+                    }
+                    self.enrollmentPriceList = isFetch || (self.enrollmentPriceList.length == 0) ? data.getEnrollmentPriceList(locationId, startDate, endDate) : self.enrollmentPriceList;
+                    if (self.enrollmentPriceList == null) {
+                        self.enrollmentPriceList = [];
+                    }
+                    self.convertPinnedData(self.pinnedData == null ? [] : self.pinnedData, false);
+                    if (studentDataSource) {
+                        self.students = isFetch || (self.students.length == 0) ? data.getStudentMasterScheduleSession(locationId, startDate, endDate) : self.students;
+                        if (self.students == null) {
+                            self.students = [];
+                        }
+                        self.populateStudentEvent(self.generateEventObject(self.students == null ? [] : self.students, "studentSession"), true);
+                        self.filterObject.student = self.students == null ? [] : self.students;
+                        self.generateFilterObject(self.filterObject);
+                        self.populateTeacherEvent(self.generateEventObject(self.teacherSchedule == null ? [] : self.teacherSchedule, "teacherSchedule"), true);
+
+                        self.masterScheduleStudents = data.getStudentMasterSchedule(locationId, startDate, endDate)
+                        if (self.masterScheduleStudents == null) {
+                            self.masterScheduleStudents = [];
+                        }
+                        self.generateEventObject(self.masterScheduleStudents,"masterStudentSession");
+                        self.populateTeacherEvent(self.generateEventObject(self.convertedPinnedList == null ? [] : self.convertedPinnedList, "masterTeacherSchedule"),true);
+                    }
+                    else{
+                        self.students = isFetch || (self.students.length == 0) ? data.getStudentSession(locationId, startDate, endDate) : self.students;
+                        if (self.students == null) {
+                            self.students = [];
+                        }
+                        self.populateStudentEvent(self.generateEventObject(self.students == null ? [] : self.students, "studentSession"), true);
+                        self.filterObject.student = self.students == null ? [] : self.students;
+                        self.generateFilterObject(self.filterObject);
+                        self.populateTeacherEvent(self.generateEventObject(self.teacherSchedule == null ? [] : self.teacherSchedule, "teacherSchedule"), true);
+                    }
+                    self.populateTAPane(self.generateEventObject(self.teacherAvailability == null ? [] : self.teacherAvailability, "teacherAvailability"));
+                    self.showConflictMsg();
+                }
+                else {
+                    wjQuery('.loading').hide();
+                    wjQuery('table.fc-agenda-slots td div').css('backgroundColor', '#ddd');
+                }
             }
             else {
-                startDate = moment(currentCalendarDate).format("YYYY-MM-DD");
-                endDate = moment(moment(currentCalendarDate).format("YYYY-MM-DD").add(7, 'd')).format("YYYY-MM-DD");
-            }
-            // staff program fetching
-            self.businessClosure = data.getBusinessClosure(locationId, startDate, endDate) == null ? [] : data.getBusinessClosure(locationId, startDate, endDate);
-            if (self.businessClosure == null) {
-                self.businessClosure = [];
-            }
-            var findingLeaveFlag = true;
-            if (self.businessClosure.length) {
-                for (var i = 0; i < self.businessClosure.length; i++) {
-                    var businessStartDate = moment(self.businessClosure[i]['hub_startdatetime']).format("YYYY-MM-DD");
-                    var businessEndDate = moment(self.businessClosure[i]['hub_enddatetime']).format("YYYY-MM-DD");
-                    businessStartDate = new Date(businessStartDate + ' ' + '0:00').getTime();
-                    businessEndDate = new Date(businessEndDate + ' ' + '0:00').getTime();
-                    var calendarStartDate = new Date(startDate + ' ' + '0:00').getTime();
-                    var calendarEndDate = new Date(endDate + ' ' + '0:00').getTime();
-                    if (calendarStartDate >= businessStartDate && calendarEndDate <= businessEndDate) {
-                        findingLeaveFlag = false;
-                    }
-                }
-            }
-            if (findingLeaveFlag) {
-                wjQuery('table.fc-agenda-slots td div').css('backgroundColor', '');
-                self.staffProgram = data.getStaffProgram(locationId) == null ? [] : data.getStaffProgram(locationId);
-                if (self.staffProgram == null) {
-                    self.staffProgram = [];
-                }
-                self.programList = data.getProgramList(locationId) == null ? [] : data.getProgramList(locationId);
-                if (self.programList == null) {
-                    self.programList = [];
-                }
-                if (self.programList.length) {
-                    var msg = '';
-                    for (var i = 0; i < self.programList.length; i++) {
-                        msg += "<div style='margin:0 5px;display:inline-block;width:10px;height:10px;background:" + self.programList[i].hub_color + "'></div>" +
-                               "<span style='padding:5px'>" + self.programList[i].hub_name + "</span><br/>";
-                    }
-                    wjQuery('.info-icon').attr('title', msg);
-                }
-
-                self.staffExceptions = isFetch || (self.staffExceptions.length == 0) ? data.getStaffException(locationId, startDate, endDate) : self.staffExceptions;
-                if (self.staffExceptions == null) {
-                    self.staffExceptions = [];
+                startDate = moment(currentView.start).format("YYYY-MM-DD");
+                endDate = moment(moment(currentView.start).add(6, 'd')).format("YYYY-MM-DD");
+                self.businessClosure = data.getBusinessClosure(locationId, startDate, endDate) == null ? [] : data.getBusinessClosure(locationId, startDate, endDate);
+                if (self.businessClosure == null) {
+                    self.businessClosure = [];
                 }
                 self.teacherSchedule = isFetch || (self.teacherSchedule.length == 0) ? data.getTeacherSchedule(locationId, startDate, endDate) : self.teacherSchedule;
                 if (self.teacherSchedule == null) {
@@ -1991,48 +2046,25 @@ function SylvanCalendar() {
                 if (self.teacherAvailability == null) {
                     self.teacherAvailability = [];
                 }
-                self.pinnedData = isFetch || (self.pinnedData.length == 0) ? data.getPinnedData(locationId, startDate, endDate) : self.pinnedData;
-                if (self.pinnedData == null) {
-                    self.pinnedData = [];
-                }
-                self.enrollmentPriceList = isFetch || (self.enrollmentPriceList.length == 0) ? data.getEnrollmentPriceList(locationId, startDate, endDate) : self.enrollmentPriceList;
-                if (self.enrollmentPriceList == null) {
-                    self.enrollmentPriceList = [];
-                }
-                self.convertPinnedData(self.pinnedData == null ? [] : self.pinnedData, false);
                 if (studentDataSource) {
                     self.students = isFetch || (self.students.length == 0) ? data.getStudentMasterScheduleSession(locationId, startDate, endDate) : self.students;
                     if (self.students == null) {
                         self.students = [];
                     }
-                    self.populateStudentEvent(self.generateEventObject(self.students == null ? [] : self.students, "studentSession"), true);
-                    self.filterObject.student = self.students == null ? [] : self.students;
-                    self.generateFilterObject(self.filterObject);
-                    self.populateTeacherEvent(self.generateEventObject(self.teacherSchedule == null ? [] : self.teacherSchedule, "teacherSchedule"), true);
-
+                    self.generateEventObject(self.students, "studentSession");
                     self.masterScheduleStudents = data.getStudentMasterSchedule(locationId, startDate, endDate)
                     if (self.masterScheduleStudents == null) {
                         self.masterScheduleStudents = [];
                     }
-                    self.generateEventObject(self.masterScheduleStudents,"masterStudentSession");
-                    self.populateTeacherEvent(self.generateEventObject(self.convertedPinnedList == null ? [] : self.convertedPinnedList, "masterTeacherSchedule"),true);
+                    self.generateEventObject(self.masterScheduleStudents, "masterStudentSession");
                 }
                 else{
                     self.students = isFetch || (self.students.length == 0) ? data.getStudentSession(locationId, startDate, endDate) : self.students;
                     if (self.students == null) {
                         self.students = [];
                     }
-                    self.populateStudentEvent(self.generateEventObject(self.students == null ? [] : self.students, "studentSession"), true);
-                    self.filterObject.student = self.students == null ? [] : self.students;
-                    self.generateFilterObject(self.filterObject);
-                    self.populateTeacherEvent(self.generateEventObject(self.teacherSchedule == null ? [] : self.teacherSchedule, "teacherSchedule"), true);
+                    self.generateEventObject(self.students, "studentSession");
                 }
-                self.populateTAPane(self.generateEventObject(self.teacherAvailability == null ? [] : self.teacherAvailability, "teacherAvailability"));
-                self.showConflictMsg();
-            }
-            else {
-                wjQuery('.loading').hide();
-                wjQuery('table.fc-agenda-slots td div').css('backgroundColor', '#ddd');
             }
         }, 300);
     }
@@ -2058,6 +2090,7 @@ function SylvanCalendar() {
             }
             this.filterSlide(wjQuery, isFilterOpen == '0px');
         }
+        this.refreshCalendarEvent(this.locationId,true);
     }
 
     this.dayView = function () {
