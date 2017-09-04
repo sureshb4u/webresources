@@ -896,27 +896,56 @@ function SylvanCalendar() {
 
           allowToDropTeacher = self.validateTeacherOnSameRow(teacherId, startHour);
           if(allowToDropTeacher){
-            if (newEvent.length == 0) {
-              this.tapaneConflictCheck(t, date, allDay, ev, ui, resource, elm);
-            } else if (newEvent.length == 1) {
-              if (!(newEvent[0].hasOwnProperty('teachers')) || (newEvent[0].hasOwnProperty('teachers') && newEvent[0]['teachers'].length == 0)) {
-                if (!newEvent[0].hasOwnProperty('students')) {
-                  this.tapaneConflictCheck(t, date, allDay, ev, ui, resource, elm);
-                } else {
-                  var showPopup = false;
-                  wjQuery.each(newEvent[0]['students'], function (k, v) {
-                      var index = techerPrograms.map(function (x) {
-                          return x.id;
-                      }).indexOf(v.programId);
-                      if (index == -1) {
-                          showPopup = true;
-                          return false;
-                      }
-                  });
-                  if (showPopup) {
-                      this.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher program is not matching. Do you wish to continue?");
+            // Check available teacher for droapable time
+            if(self.checkForStaffAvailability(teacherId, startHour)){
+              if (newEvent.length == 0) {
+                this.tapaneConflictCheck(t, date, allDay, ev, ui, resource, elm);
+              } else if (newEvent.length == 1) {
+                if (!(newEvent[0].hasOwnProperty('teachers')) || (newEvent[0].hasOwnProperty('teachers') && newEvent[0]['teachers'].length == 0)) {
+                  if (!newEvent[0].hasOwnProperty('students')) {
+                    this.tapaneConflictCheck(t, date, allDay, ev, ui, resource, elm);
                   } else {
-                      this.tapaneConflictCheck(t, date, allDay, ev, ui, resource, elm);
+                    var showPopup = false;
+                    wjQuery.each(newEvent[0]['students'], function (k, v) {
+                        var index = techerPrograms.map(function (x) {
+                            return x.id;
+                        }).indexOf(v.programId);
+                        if (index == -1) {
+                            showPopup = true;
+                            return false;
+                        }
+                    });
+                    if (showPopup) {
+                        this.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher program is not matching. Do you wish to continue?");
+                    } else {
+                        this.tapaneConflictCheck(t, date, allDay, ev, ui, resource, elm);
+                    }
+                  }
+                }
+              }
+            }else{
+              if (newEvent.length == 0) {
+                this.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher is not available. Do you wish to continue?");
+              } else if (newEvent.length == 1) {
+                if (!(newEvent[0].hasOwnProperty('teachers')) || (newEvent[0].hasOwnProperty('teachers') && newEvent[0]['teachers'].length == 0)) {
+                  if (!newEvent[0].hasOwnProperty('students')) {
+                    this.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher is not available. Do you wish to continue?");
+                  } else {
+                    var showPopup = false;
+                    wjQuery.each(newEvent[0]['students'], function (k, v) {
+                        var index = techerPrograms.map(function (x) {
+                            return x.id;
+                        }).indexOf(v.programId);
+                        if (index == -1) {
+                            showPopup = true;
+                            return false;
+                        }
+                    });
+                    if (showPopup) {
+                      this.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher is not available and Teacher program is not matching. Do you wish to continue?");
+                    } else {
+                      this.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher is not available. Do you wish to continue?");
+                    }
                   }
                 }
               }
@@ -5417,5 +5446,19 @@ function SylvanCalendar() {
         }
       }
       return is1to1
+    }
+
+    this.checkForStaffAvailability = function(teacherId, startHour){
+      var teacherIsAvialble = false;
+      startHour = startHour.getHours();
+      if(this.taList.length){
+        for(var i=0; i< this.taList.length; i++){
+          if(this.taList[i]['startHour'] == startHour && this.taList[i]['id'] == teacherId){
+            teacherIsAvialble = true;
+            break;
+          }
+        }
+      }
+      return teacherIsAvialble;
     }
 }
