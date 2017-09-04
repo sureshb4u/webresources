@@ -1027,19 +1027,19 @@ function SylvanCalendar() {
                               } else if (newResourceObj.deliveryType == "Group Facilitation") {
                                   // Check Services for same DI
                                   var studentIndex = prevEvent[0]['students'].map(function (x) {
-                                      return x.id;
+                                    return x.id;
                                   }).indexOf(stuId);
                                   prevServiceId = prevEvent[0]['students'][studentIndex]['serviceId'];
                                   var showPromt = true;
                                   wjQuery.each(newEvent[0]['students'], function (k, v) {
-                                      if (v.serviceId == prevServiceId) {
-                                          showPromt = false;
-                                      }
+                                    if (v.serviceId == prevServiceId) {
+                                      showPromt = false;
+                                    }
                                   });
                                   if (showPromt) {
-                                      t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Servieces are not matching. Do you wish to continue?");
+                                    t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Servieces are not matching. Do you wish to continue?");
                                   } else {
-                                      t.studentSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
+                                    t.studentSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
                                   }
                               }
                             } else {
@@ -1414,17 +1414,36 @@ function SylvanCalendar() {
                 var resourceObj = t.getResourceObj(prevEvent[0]["resourceId"]);
 
                 // oneToOne conflict removal prevevent student Darg
-                if (prevEvent[0]['is1to1']) {
-                    if (prevEvent[0]['students'].length == 1) {
-                        var msgIndex = prevEvent[0].conflictMsg.map(function (x) {
-                            return x;
-                        }).indexOf(2);
-                        if (msgIndex > -1) {
-                            prevEvent[0].conflictMsg.splice(msgIndex, 1);
-                        }
-                        t.updateConflictMsg(prevEvent[0]);
-                    }
+                if(prevEvent[0]['students'] != undefined &&  prevEvent[0]['students'].length != 0){
+                  var eventIs1to1 = t.checkEventIsOneToOne(prevEvent[0]['students']);
+                  if(eventIs1to1){
+                    prevEvent[0]['is1to1'] = true;
+                  }else{
+                    prevEvent[0]['is1to1'] = false;
+                  }
+                }else{
+                  prevEvent[0]['is1to1'] = false;
                 }
+
+                if (!prevEvent[0]['is1to1']) {
+                  if (prevEvent[0].title.indexOf('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">') != -1) {
+                      prevEvent[0].title = prevEvent[0].title.replace('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">', "");
+                      prevEvent[0].is1to1 = false;
+                  }
+                }
+
+                // Conflict removal
+                // OneToOne conflict removal prevevent student Darg
+                if (prevEvent[0]['students'].length == 1) {
+                    var msgIndex = prevEvent[0].conflictMsg.map(function (x) {
+                        return x;
+                    }).indexOf(2);
+                    if (msgIndex > -1) {
+                      prevEvent[0].conflictMsg.splice(msgIndex, 1);
+                    }
+                    t.updateConflictMsg(prevEvent[0]);
+                }
+
                 // Conflict removal
                 // Capacity conflict removal prevevent student Darg
                 if (resourceObj['capacity'] >= prevEvent[0]['students'].length) {
@@ -1444,12 +1463,12 @@ function SylvanCalendar() {
                     }
                 }
 
-                if(prevEvent[0]['students'] == undefined || prevEvent[0].hasOwnProperty('students') && prevEvent[0]['students'].length == 0){
-                  if (prevEvent[0].title.indexOf('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">') != -1) {
-                      prevEvent[0].title = prevEvent[0].title.replace('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">', "");
-                      prevEvent[0].is1to1 = false;
-                  }
-                }
+                // if(prevEvent[0]['students'] == undefined || prevEvent[0].hasOwnProperty('students') && prevEvent[0]['students'].length == 0){
+                //   if (prevEvent[0].title.indexOf('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">') != -1) {
+                //       prevEvent[0].title = prevEvent[0].title.replace('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">', "");
+                //       prevEvent[0].is1to1 = false;
+                //   }
+                // }
             }
             if (t.convertedStudentObj[index]) {
                 var newStudentObj = wjQuery.extend(true, {}, t.convertedStudentObj[index]);
@@ -2757,11 +2776,32 @@ function SylvanCalendar() {
                                 self.addContext("", 'studentPlaceholder', true, event[k].deliveryType);
                             }
                         }
-                    if(event[k].is1to1){
-                      if(event[k].title.indexOf('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">') == -1){
-                        event[k].title += '<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">';
+
+
+                      if(resourceObj['deliveryType'] == "Personal Instruction"){
+                        var eventIs1to1 = self.checkEventIsOneToOne(event[k]['students']); 
+                        if(eventIs1to1){
+                          event[k].is1to1 = true;
+                        }
+
+                        if(event[k].is1to1){
+                          if(event[k].title.indexOf('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">') == -1){
+                            event[k].title += '<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">';
+                          }
+                        }
+
+                        // Update one to one conflict check
+                        if(event[k].is1to1 && event[k].hasOwnProperty('students') && event[k]['students'].length > 1){
+                          var msgIndex = event[k].conflictMsg.map(function (x) {
+                              return x;
+                          }).indexOf(2);
+                          if (msgIndex == -1) {
+                              event[k].conflictMsg.push(2);
+                          }
+                          self.updateConflictMsg(event[k]);
+                        }
                       }
-                    }
+
                     });
                     self.calendar.fullCalendar('updateEvent', event);
                     if (value['pinId'] != undefined) {
@@ -3221,11 +3261,6 @@ function SylvanCalendar() {
                     var resourceObj = self.getResourceObj(value['resourceId']);
                     if (event.length) {
                         wjQuery.each(event, function (k, v) {
-                            if(is1to1){
-                              if(event[k].title.indexOf('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">') == -1){
-                                event[k].title += '<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">';
-                              }
-                            }
                             if (event[k].hasOwnProperty("students") && event[k]['students'].length != 0) {
                                 if (checkFor1to1 && ((is1to1 || event[k].students[0].is1to1) && event[k].students[0].id != id)) {
                                     self.pushStudentToSOF(value);
@@ -3312,17 +3347,36 @@ function SylvanCalendar() {
                                 }
                                 self.updateConflictMsg(event[k]);
                             }
+
+                            // One To one conflict check and icon show Logic for exist event 
                             if(value.is1to1){
                               event[k].is1to1 = value.is1to1;
-                            }
-                            if(event[k].is1to1){
-                              var msgIndex = event[k].conflictMsg.map(function (x) {
-                                  return x;
-                              }).indexOf(2);
-                              if (msgIndex == -1) {
-                                  event[k].conflictMsg.push(2);
+                            }else{
+                              var eventIs1to1 = self.checkEventIsOneToOne(event[k]['students']);
+                              if(eventIs1to1){
+                                event[k].is1to1 = true;
+                              }else{
+                                event[k].is1to1 = false;
                               }
-                              self.updateConflictMsg(event[k]);
+                            }
+                            
+                            // One to one type lock and conflict ico is only for PI DT
+                            if(resourceObj.deliveryType == "Personal Instruction"){
+                              if(event[k].is1to1 == true || value.is1to1 == true){
+                                if(event[k].title.indexOf('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">') == -1){
+                                  event[k].title += '<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">';
+                                }
+                              }
+                              
+                              if(event[k].is1to1 && event[k].hasOwnProperty('students') && event[k]['students'].length > 1){
+                                var msgIndex = event[k].conflictMsg.map(function (x) {
+                                    return x;
+                                }).indexOf(2);
+                                if (msgIndex == -1) {
+                                    event[k].conflictMsg.push(2);
+                                }
+                                self.updateConflictMsg(event[k]);
+                              }
                             }
                         });
                         if (value['deliveryType'] != "Group Instruction" ) {
@@ -3350,9 +3404,13 @@ function SylvanCalendar() {
                         }
                         obj.title = "";
 
-                        if (value['is1to1']) {
-                            obj.title += "<img class='onetoone' title='1:1 Session' src='/webresources/hub_/calendar/images/lock.png'>";
+                        // Display one to one icon only for PI DT
+                        if(resourceObj.deliveryType == "Personal Instruction"){
+                          if (value['is1to1']) {
+                              obj.title += "<img class='onetoone' title='1:1 Session' src='/webresources/hub_/calendar/images/lock.png'>";
+                          }
                         }
+
                         obj.title += "<span class='placeholder'>Teacher name</span>";
                         if (resourceObj.deliveryType == "Group Instruction") {
                             if (value['pinId'] != undefined) {
@@ -5346,5 +5404,18 @@ function SylvanCalendar() {
     this.nonPreferredTeacherValidate = function(eventObj, studentObj){
       var self = this;
       // yet to do
+    }
+
+    this.checkEventIsOneToOne = function(studentList){
+      var is1to1 = false;
+      if(studentList.length){
+        for(var i=0; i<studentList.length; i++){
+          if(studentList[i].is1to1){
+            is1to1 = true;
+            break;
+          }
+        }
+      }
+      return is1to1
     }
 }
