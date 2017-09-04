@@ -2031,7 +2031,9 @@ function SylvanCalendar() {
                     wjQuery('table.fc-agenda-slots td div').css('backgroundColor', '#ddd');
                 }
             }
-            else {
+            else if (this.calendar.fullCalendar('getView').name == 'agendaWeek'){
+                wjQuery('.loading').show();
+                self.calendar.fullCalendar('removeEvents');
                 startDate = moment(currentView.start).format("YYYY-MM-DD");
                 endDate = moment(moment(currentView.start).add(6, 'd')).format("YYYY-MM-DD");
                 self.businessClosure = data.getBusinessClosure(locationId, startDate, endDate) == null ? [] : data.getBusinessClosure(locationId, startDate, endDate);
@@ -2042,10 +2044,12 @@ function SylvanCalendar() {
                 if (self.teacherSchedule == null) {
                     self.teacherSchedule = [];
                 }
+                self.generateEventObject(self.teacherSchedule, "teacherSchedule");
                 self.teacherAvailability = isFetch || (self.teacherAvailability.length == 0) ? data.getTeacherAvailability(locationId, startDate, endDate) : self.teacherAvailability;
                 if (self.teacherAvailability == null) {
                     self.teacherAvailability = [];
                 }
+                self.generateEventObject(self.teacherAvailability, "teacherAvailability");
                 if (studentDataSource) {
                     self.students = isFetch || (self.students.length == 0) ? data.getStudentMasterScheduleSession(locationId, startDate, endDate) : self.students;
                     if (self.students == null) {
@@ -2127,6 +2131,7 @@ function SylvanCalendar() {
             }
             self.filterSlide(wjQuery, isFilterOpen == '0px');
         }
+        this.refreshCalendarEvent(this.locationId,true);
     }
 
     this.addAppointment = function () {
@@ -2380,9 +2385,14 @@ function SylvanCalendar() {
                         teacher.pinId = isPinned[0].id;
                     }
                 }
-                var index = self.staffExceptions.map(function (x) {
-                    return x['astaff_x002e_hub_staffid'];
-                }).indexOf(teacher.id);
+                var index = -1;
+                for (var i = 0; i < self.staffExceptions.length; ++i) {
+                    if (self.staffExceptions[i]['astaff_x002e_hub_staffid'] == teacher.id && 
+                        moment(self.staffExceptions[i]['hub_startdate']).format('YYYY-MM-DD') == moment(teacher.startHour).format('YYYY-MM-DD')) {
+                        index = i;
+                        break;
+                    }
+                }
                 if (index == -1) {
                     eventObjList.push(teacher);
                 }
