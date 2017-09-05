@@ -2809,7 +2809,7 @@ var staffExceptions = [
   }
 ];
 var teacherSchedule = [
-    {
+    /*{
       "@odata.etag": "W/\"1429007\"",
       "_hub_staff_value@OData.Community.Display.V1.FormattedValue": "Teacher1",
       "_hub_staff_value@Microsoft.Dynamics.CRM.associatednavigationproperty": "hub_staff",
@@ -2825,7 +2825,7 @@ var teacherSchedule = [
       "astaff_x002e_hub_center": "b97bc0df-a334-e711-80ed-c4346bacfbbc",
       "aproductservice_x002e_hub_deliverytype": "d6c706eb-a534-e711-80ed-c4346bad526c",
       "aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue": "Personal Instruction"
-    },
+    },*/
     {
       "@odata.etag": "W/\"1429025\"",
       "_hub_staff_value@OData.Community.Display.V1.FormattedValue": "Teacher2",

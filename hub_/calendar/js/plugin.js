@@ -117,7 +117,9 @@ setTimeout(function () {
                     }
                 }
             }
-            sylvanCalendar.populateResource(resourceList, fetchData);
+            if(sylvanCalendar.calendar == undefined || sylvanCalendar.calendar.fullCalendar('getView').name == 'resourceDay'){
+                sylvanCalendar.populateResource(resourceList, fetchData);
+            }
             if (resourceList.length) {
                 sylvanCalendar.refreshCalendarEvent(locationId, true);
                 
@@ -1765,7 +1767,7 @@ function SylvanCalendar() {
             height: window.innerHeight - 60,
             slotMinutes: 60,
             selectable: false,
-            slotEventOverlap: false,
+            slotEventOverlap: true,
             selectHelper: true,
             select: function (start, end, allDay, event, resourceId) {
                 if (title) {
@@ -2033,7 +2035,7 @@ function SylvanCalendar() {
             }
             else if (self.calendar.fullCalendar('getView').name == 'agendaWeek'){
                 wjQuery('.loading').show();
-                self.calendar.fullCalendar('removeEvents');
+                self.eventList = [];
                 startDate = moment(currentView.start).format("YYYY-MM-DD");
                 endDate = moment(moment(currentView.start).add(6, 'd')).format("YYYY-MM-DD");
                 self.businessClosure = data.getBusinessClosure(locationId, startDate, endDate) == null ? [] : data.getBusinessClosure(locationId, startDate, endDate);
@@ -2069,6 +2071,7 @@ function SylvanCalendar() {
                     }
                     self.generateWeekEventObject(self.generateEventObject(self.students, "studentSession"));
                 }
+                self.populateWeekEvents();
             }
         }, 300);
     }
@@ -2095,12 +2098,15 @@ function SylvanCalendar() {
             this.filterSlide(wjQuery, isFilterOpen == '0px');
         }
         this.weekEventObject = {};
+        this.calendar.fullCalendar('removeEvents');
         this.refreshCalendarEvent(this.locationId,true);
     }
 
     this.dayView = function () {
         var filterElement = undefined;
         var self = this;
+        self.eventList = [];
+        self.calendar.fullCalendar('removeEvents');
         if (self.calendar.fullCalendar('getView').name != 'resourceDay') {
             var isFilterOpen = false;
             if (wjQuery('.filter-section').length) {
@@ -2132,7 +2138,20 @@ function SylvanCalendar() {
             }
             self.filterSlide(wjQuery, isFilterOpen == '0px');
         }
-        this.refreshCalendarEvent(this.locationId,true);
+        if (self.selectedDeliveryType.length == deliveryType.length) {
+            this.resourceList = resources;
+        }
+        else {
+            for (var i = 0; i < this.selectedDeliveryType.length; i++) {
+                for (var j = 0; j < resources.length; j++) {
+                    if (resources[j]['_hub_deliverytype_value'] == this.selectedDeliveryType[i]) {
+                        this.resourceList.push(resources[j]);
+                    }
+                }
+            }
+        }
+        this.populateResource(this.resourceList,true);
+        this.refreshCalendarEvent(this.locationId, true);
     }
 
     this.addAppointment = function () {
@@ -6008,38 +6027,101 @@ function SylvanCalendar() {
                     }
                 }
             }
-            this.populateWeekEvents();
         }
     }
 
     this.populateWeekEvents = function(){
         var self = this;
-        if(this.weekEventObject.length){
+        var piSelected = false;
+        var giSelected = false;
+        var gfSelected = false;
+        if(self.selectedDeliveryType.length == 1){
+            piSelected = true;
+            giSelected = false;
+            gfSelected = false;
+        }
+        if(self.selectedDeliveryType.length == 2){
+            piSelected = false;
+            giSelected = true;
+            gfSelected = true;
+        }
+        if(self.selectedDeliveryType.length == 3){
+            piSelected = true;
+            giSelected = true;
+            gfSelected = true;
+        }
+
+        var piSpace = 0,giSpace=0,gfSpace=0;
+        for (var i = 0; i < self.resourceList.length; i++) {
+            if(self.resourceList[i].deliveryType == 'Personal Instruction'){
+                piSpace += self.resourceList[i].capacity;
+            }
+            else if(self.resourceList[i].deliveryType == 'Group Instruction'){
+                giSpace += self.resourceList[i].capacity;
+            }
+            else if(self.resourceList[i].deliveryType == 'Group Facilitation'){
+                gfSpace += self.resourceList[i].capacity;
+            }
+        }
+        if(Object.keys(this.weekEventObject).length){
             for (var i = 0; i < Object.keys(this.weekEventObject).length; i++) {
-                var obj = {
-                        id: Object.keys(this.weekEventObject[i]),
-                        start: Object.keys(this.weekEventObject[i]),
+                var piObj = {
+                        id: Object.keys(this.weekEventObject)[i],
+                        start: new Date(Object.keys(this.weekEventObject)[i]),
                         allDay: false,
                         textColor: "#333333",
                     }
-                    var stRatio = this.weekEventObject[i];
-                    var studentSpaceRatio = ;
-                    var teacherRatio = 
-                    obj.title = "";
-                    if (resourceObj.deliveryType == "Group Facilitation") {
-                        obj.backgroundColor = "#dff0d5";
-                        obj.borderColor = "#7bc143";
-                        obj.deliveryType = "Group-Facilitation";
-                    } else if (resourceObj.deliveryType == "Group Instruction") {
-                        obj.backgroundColor = "#fedeb7";
-                        obj.borderColor = "#f88e50";
-                        obj.deliveryType = "Group-Instruction";
-                    } else if (resourceObj.deliveryType == "Personal Instruction") {
-                        obj.backgroundColor = "#ebf5fb";
-                        obj.borderColor = "#9acaea";
-                        obj.deliveryType = "Personal-Instruction";
+                var giObj = {
+                        id: Object.keys(this.weekEventObject)[i],
+                        start: new Date(Object.keys(this.weekEventObject)[i]),
+                        allDay: false,
+                        textColor: "#333333",
                     }
+
+                var gfObj = {
+                        id: Object.keys(this.weekEventObject)[i],
+                        start: new Date(Object.keys(this.weekEventObject)[i]),
+                        allDay: false,
+                        textColor: "#333333",
+                    }
+
+                if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
+                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('pi')){
+                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length != 0){
+                            piObj.title = "S/S = "+ this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length +"/"+ piSpace;
+                            piObj.backgroundColor = "#ebf5fb";
+                            piObj.borderColor = "#9acaea";
+                            piObj.deliveryType = "Personal-Instruction";
+                            if(piSelected)
+                                self.eventList.push(piObj);
+                        }
+                    }
+                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('gi')){
+                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length != 0){
+                            giObj.title = "S/S = "+ this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length +"/"+ giSpace;
+                            giObj.backgroundColor = "#fedeb7";
+                            giObj.borderColor = "#f88e50";
+                            giObj.deliveryType = "Group-Instruction";
+                            if(giSelected)
+                                self.eventList.push(giObj);
+                        }
+                    }
+                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('gf')){
+                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length != 0){
+                            gfObj.title = "S/S = "+ this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length +"/"+ gfSpace;
+                            gfObj.backgroundColor = "#dff0d5";
+                            gfObj.borderColor = "#7bc143";
+                            gfObj.deliveryType = "Group-Facilitation";
+                            if(gfSelected)
+                                self.eventList.push(gfObj);
+                        }
+                    }
+                }
             }
+            self.calendar.fullCalendar('removeEvents');
+            self.calendar.fullCalendar('addEventSource', { events: self.eventList });
+            self.calendar.fullCalendar('refetchEvents');
+            wjQuery('.loading').hide();
         }
     }
 
