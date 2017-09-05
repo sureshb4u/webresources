@@ -1491,13 +1491,6 @@ function SylvanCalendar() {
                         self.addContext("", 'studentPlaceholder', true, prevEvent[0].deliveryType);
                     }
                 }
-
-                // if(prevEvent[0]['students'] == undefined || prevEvent[0].hasOwnProperty('students') && prevEvent[0]['students'].length == 0){
-                //   if (prevEvent[0].title.indexOf('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">') != -1) {
-                //       prevEvent[0].title = prevEvent[0].title.replace('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">', "");
-                //       prevEvent[0].is1to1 = false;
-                //   }
-                // }
             }
             if (t.convertedStudentObj[index]) {
                 var newStudentObj = wjQuery.extend(true, {}, t.convertedStudentObj[index]);
@@ -3436,7 +3429,7 @@ function SylvanCalendar() {
                         // Display one to one icon only for PI DT
                         if(resourceObj.deliveryType == "Personal Instruction"){
                           if (value['is1to1']) {
-                              obj.title += "<img class='onetoone' title='1:1 Session' src='/webresources/hub_/calendar/images/lock.png'>";
+                              obj.title += '<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">';
                           }
                         }
 
@@ -4522,106 +4515,153 @@ function SylvanCalendar() {
         var startTime = uniqueId.split('_')[2];
 
         if (h > 12) {
-            h -= 12;
+          h -= 12;
         }
         var objStudent = self.convertedStudentObj.filter(function (x) {
-            return x.id == uniqueIds[0] &&
-                   x.resourceId == uniqueIds[1] &&
-                   x.startHour.getTime() == new Date(uniqueIds[2]).getTime();
+          return x.id == uniqueIds[0] &&
+                 x.resourceId == uniqueIds[1] &&
+                 x.startHour.getTime() == new Date(uniqueIds[2]).getTime();
         });
         if (objStudent[0] != undefined) {
             var objMovetoSOF = {};
             if (objStudent[0]['isFromMasterSchedule']) {
-                objMovetoSOF['hub_enrollment@odata.bind'] = objStudent[0]['enrollmentId'];
-                objMovetoSOF['hub_service@odata.bind'] = objStudent[0]['serviceId'];
-                objMovetoSOF['hub_center@odata.bind'] = objStudent[0]["locationId"];
-                objMovetoSOF['hub_student@odata.bind'] = objStudent[0]['id'];
-                objMovetoSOF.hub_session_date = moment(objStudent[0].start).format("YYYY-MM-DD");
-                objMovetoSOF.hub_start_time = this.convertToMinutes(moment(objStudent[0].start).format("h:mm A"));
-                objMovetoSOF.hub_end_time = this.convertToMinutes(moment(objStudent[0].end).format("h:mm A"));
-                objMovetoSOF.hub_is_1to1 = objStudent[0]['is1to1'];
+              objMovetoSOF['hub_enrollment@odata.bind'] = objStudent[0]['enrollmentId'];
+              objMovetoSOF['hub_service@odata.bind'] = objStudent[0]['serviceId'];
+              objMovetoSOF['hub_center@odata.bind'] = objStudent[0]["locationId"];
+              objMovetoSOF['hub_student@odata.bind'] = objStudent[0]['id'];
+              objMovetoSOF.hub_session_date = moment(objStudent[0].start).format("YYYY-MM-DD");
+              objMovetoSOF.hub_start_time = this.convertToMinutes(moment(objStudent[0].start).format("h:mm A"));
+              objMovetoSOF.hub_end_time = this.convertToMinutes(moment(objStudent[0].end).format("h:mm A"));
+              objMovetoSOF.hub_is_1to1 = objStudent[0]['is1to1'];
             } else {
                 objMovetoSOF['hub_studentsessionid'] = objStudent[0]['sessionId'];
             }
             objMovetoSOF['hub_resourceid@odata.bind'] = null;
             if (objStudent[0].hasOwnProperty('resourceId')) {
-                delete objStudent[0]['resourceId'];
+              delete objStudent[0]['resourceId'];
             }
             wjQuery('.loading').show();
             var responseObj = data.moveStudentToSOF(objMovetoSOF);
             if (typeof(responseObj) == 'boolean' || typeof(responseObj) == 'object') {
-                if (responseObj.hasOwnProperty('hub_studentsessionid')) {
-                    objStudent[0]['sessionId'] = responseObj['hub_studentsessionid'];
-                    objStudent[0]['resourceId'] = responseObj['hub_resourceid@odata.bind'];
-                    objStudent[0]['sessiontype'] = responseObj['hub_sessiontype'];
-                    objStudent[0]['sessionStatus'] = responseObj['hub_session_status'];
-                    delete objStudent[0]['isFromMasterSchedule'];
+              if (responseObj.hasOwnProperty('hub_studentsessionid')) {
+                objStudent[0]['sessionId'] = responseObj['hub_studentsessionid'];
+                objStudent[0]['resourceId'] = responseObj['hub_resourceid@odata.bind'];
+                objStudent[0]['sessiontype'] = responseObj['hub_sessiontype'];
+                objStudent[0]['sessionStatus'] = responseObj['hub_session_status'];
+                delete objStudent[0]['isFromMasterSchedule'];
+              }
+              var index = self.convertedStudentObj.findIndex(function (x) {
+                return x.id == uniqueIds[0] &&
+                       x.resourceId == uniqueIds[1] &&
+                       x.startHour.getTime() == new Date(uniqueIds[2]).getTime();
+              });
+              if(index != -1){
+                self.convertedStudentObj.splice(index, 1);
+              }
+              wjQuery('.loading').hide();
+              setTimeout(function () {
+                self.pushStudentToSOF(objStudent[0]);
+                if (self.sofList['Personal Instruction'].length > 0 || self.sofList['Group Instruction'].length > 0 || self.sofList['Group Facilitation'].length > 0) {
+                    self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
+                    self.openSofPane();
                 }
-                var index = self.convertedStudentObj.findIndex(function (x) {
-                    return x.id == uniqueIds[0] &&
-                           x.resourceId == uniqueIds[1] &&
-                           x.startHour.getTime() == new Date(uniqueIds[2]).getTime();
-                });
-                if(index != -1){
-                    self.convertedStudentObj.splice(index, 1);
-                }
-                wjQuery('.loading').hide();
-                setTimeout(function () {
-                    self.pushStudentToSOF(objStudent[0]);
-                    if (self.sofList['Personal Instruction'].length > 0 || self.sofList['Group Instruction'].length > 0 || self.sofList['Group Facilitation'].length > 0) {
-                        self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
-                        self.openSofPane();
-                    }
-                }, 500);
-                var prevEventId = wjQuery(element).attr("eventid");
-                var prevEvent = self.calendar.fullCalendar('clientEvents', prevEventId);
-                if (prevEvent) {
-                    var eventTitleHTML = wjQuery(prevEvent[0].title);
-                    for (var i = 0; i < eventTitleHTML.length; i++) {
-                        if (wjQuery(eventTitleHTML[i]).attr('value') == wjQuery(element).attr('value')) {
-                            eventTitleHTML.splice(i, 1);
-                        }
-                    }
-                    if (eventTitleHTML.prop('outerHTML') != undefined) {
-                        if (eventTitleHTML.length == 1) {
-                            prevEvent[0].title = eventTitleHTML.prop('outerHTML');
-                        } else {
-                            prevEvent[0].title = "";
-                            for (var i = 0; i < eventTitleHTML.length; i++) {
-                                prevEvent[0].title += eventTitleHTML[i].outerHTML;
-                            }
-                        }
-                        var removeStudentIndex = prevEvent[0].students.map(function (x) {
-                            return x.id;
-                        }).indexOf(wjQuery(element).attr('value'));
-                        prevEvent[0].students.splice(removeStudentIndex, 1);
-                        if (self.getResourceObj(uniqueIds[1])['capacity'] > prevEvent[0].students.length) {
-                            if (prevEvent[0].title.indexOf('<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>') == -1) {
-                                prevEvent[0].title += '<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>';
-                                self.addContext("", 'studentPlaceholder', true, prevEvent[0].deliveryType);
-                            }
-                        }
-                        if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "student-placeholder-"+prevEvent[0].deliveryType)) ||
-                          (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder" && eventTitleHTML[1].className == "student-placeholder-"+prevEvent[0].deliveryType) ||
-                          (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder" && eventTitleHTML[2].className == "student-placeholder-"+prevEvent[0].deliveryType)) {
-                            for (var i = 0; i < self.eventList.length; i++) {
-                                if (self.eventList[i].id == prevEventId)
-                                    self.eventList.splice(i, 1);
-                            }
-                            self.calendar.fullCalendar('removeEvents', prevEventId);
-                        }
-                        self.calendar.fullCalendar('updateEvent', prevEvent);
-                    }
-                    else {
-                        for (var i = 0; i < self.eventList.length; i++) {
-                            if (self.eventList[i].id == prevEventId)
-                                self.eventList.splice(i, 1);
-                        }
-                        self.calendar.fullCalendar('removeEvents', prevEventId);
+              }, 500);
+              var prevEventId = wjQuery(element).attr("eventid");
+              var prevEvent = self.calendar.fullCalendar('clientEvents', prevEventId);
+              if (prevEvent) {
+                var eventTitleHTML = wjQuery(prevEvent[0].title);
+                for (var i = 0; i < eventTitleHTML.length; i++) {
+                    if (wjQuery(eventTitleHTML[i]).attr('value') == wjQuery(element).attr('value')) {
+                        eventTitleHTML.splice(i, 1);
                     }
                 }
+                if (eventTitleHTML.prop('outerHTML') != undefined) {
+                  if (eventTitleHTML.length == 1) {
+                      prevEvent[0].title = eventTitleHTML.prop('outerHTML');
+                  } else {
+                      prevEvent[0].title = "";
+                      for (var i = 0; i < eventTitleHTML.length; i++) {
+                          prevEvent[0].title += eventTitleHTML[i].outerHTML;
+                      }
+                  }
+                  var removeStudentIndex = prevEvent[0].students.map(function (x) {
+                      return x.id;
+                  }).indexOf(wjQuery(element).attr('value'));
+                  prevEvent[0].students.splice(removeStudentIndex, 1);
+                  if (self.getResourceObj(uniqueIds[1])['capacity'] > prevEvent[0].students.length) {
+                      if (prevEvent[0].title.indexOf('<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>') == -1) {
+                          prevEvent[0].title += '<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>';
+                          self.addContext("", 'studentPlaceholder', true, prevEvent[0].deliveryType);
+                      }
+                  }
+
+
+                  // oneToOne conflict removal prevevent student Darg
+                  if(prevEvent[0]['students'] != undefined &&  prevEvent[0]['students'].length != 0){
+                    var eventIs1to1 = self.checkEventIsOneToOne(prevEvent[0]['students']);
+                    if(eventIs1to1){
+                      prevEvent[0]['is1to1'] = true;
+                    }else{
+                      prevEvent[0]['is1to1'] = false;
+                    }
+                  }else{
+                    prevEvent[0]['is1to1'] = false;
+                  }
+
+                  if (!prevEvent[0]['is1to1']) {
+                    if (prevEvent[0].title.indexOf('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">') != -1) {
+                        prevEvent[0].title = prevEvent[0].title.replace('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">','');
+                        prevEvent[0].is1to1 = false;
+                    }
+                  }
+                  // Conflict removal
+                  // OneToOne conflict removal prevevent student Darg
+                  if (prevEvent[0]['students'].length == 1) {
+                      var msgIndex = prevEvent[0].conflictMsg.map(function (x) {
+                          return x;
+                      }).indexOf(2);
+                      if (msgIndex > -1) {
+                        prevEvent[0].conflictMsg.splice(msgIndex, 1);
+                      }
+                      self.updateConflictMsg(prevEvent[0]);
+                  }
+
+                  // Conflict removal
+                  // Capacity conflict removal prevevent student Darg
+                  // if (resourceObj['capacity'] >= prevEvent[0]['students'].length) {
+                  //     var msgIndex = prevEvent[0].conflictMsg.map(function (x) {
+                  //         return x;
+                  //     }).indexOf(1);
+                  //     if (msgIndex > -1) {
+                  //         prevEvent[0].conflictMsg.splice(msgIndex, 1);
+                  //     }
+                  //     self.updateConflictMsg(prevEvent[0]);
+                  // }
+                  if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "student-placeholder-"+prevEvent[0].deliveryType)) ||
+                    (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder" && eventTitleHTML[1].className == "student-placeholder-"+prevEvent[0].deliveryType) ||
+                    (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder" && eventTitleHTML[2].className == "student-placeholder-"+prevEvent[0].deliveryType)) {
+                      for (var i = 0; i < self.eventList.length; i++) {
+                        if (self.eventList[i].id == prevEventId)
+                          self.eventList.splice(i, 1);
+                      }
+                      self.calendar.fullCalendar('removeEvents', prevEventId);
+                  }
+
+                  
+                  self.calendar.fullCalendar('updateEvent', prevEvent[0]);
+                }else {
+                  for (var i = 0; i < self.eventList.length; i++) {
+                      if (self.eventList[i].id == prevEventId)
+                          self.eventList.splice(i, 1);
+                  }
+                  self.calendar.fullCalendar('removeEvents', prevEventId);
+                }
+              }
             }
         }
+        self.openSofPane();
+        self.showConflictMsg();
+        self.draggable('draggable');
     };
 
     this.draggable = function (selector) {
