@@ -4628,15 +4628,16 @@ function SylvanCalendar() {
 
                   // Conflict removal
                   // Capacity conflict removal prevevent student Darg
-                  // if (resourceObj['capacity'] >= prevEvent[0]['students'].length) {
-                  //     var msgIndex = prevEvent[0].conflictMsg.map(function (x) {
-                  //         return x;
-                  //     }).indexOf(1);
-                  //     if (msgIndex > -1) {
-                  //         prevEvent[0].conflictMsg.splice(msgIndex, 1);
-                  //     }
-                  //     self.updateConflictMsg(prevEvent[0]);
-                  // }
+                  if (self.getResourceObj(uniqueIds[1])['capacity'] >= prevEvent[0]['students'].length) {
+                      var msgIndex = prevEvent[0].conflictMsg.map(function (x) {
+                          return x;
+                      }).indexOf(1);
+                      if (msgIndex > -1) {
+                          prevEvent[0].conflictMsg.splice(msgIndex, 1);
+                      }
+                      self.updateConflictMsg(prevEvent[0]);
+                  }
+
                   if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "student-placeholder-"+prevEvent[0].deliveryType)) ||
                     (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder" && eventTitleHTML[1].className == "student-placeholder-"+prevEvent[0].deliveryType) ||
                     (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder" && eventTitleHTML[2].className == "student-placeholder-"+prevEvent[0].deliveryType)) {
@@ -4646,7 +4647,6 @@ function SylvanCalendar() {
                       }
                       self.calendar.fullCalendar('removeEvents', prevEventId);
                   }
-
                   
                   self.calendar.fullCalendar('updateEvent', prevEvent[0]);
                 }else {
