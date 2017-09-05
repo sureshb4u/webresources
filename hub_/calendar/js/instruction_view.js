@@ -293,7 +293,7 @@ var student =  [
       "_hub_resourceid_value": "12cd76bb-1b50-e711-80f1-c4346bacfbbc",
       "hub_session_date@OData.Community.Display.V1.FormattedValue": "8/30/2017",
       "hub_session_date": "2017-08-30","hub_session_status@OData.Community.Display.V1.FormattedValue": "Reschedule",
-"hub_session_status": 2,
+      "hub_session_status": 2,
       "_hub_center_value@OData.Community.Display.V1.FormattedValue": "Better Education, Inc.",
       "_hub_center_value@Microsoft.Dynamics.CRM.associatednavigationproperty": "hub_center",
       "_hub_center_value@Microsoft.Dynamics.CRM.lookuplogicalname": "hub_center",
@@ -794,7 +794,9 @@ var student =  [
     "astudent_x002e_hub_grade@OData.Community.Display.V1.FormattedValue": "5",
     "astudent_x002e_hub_grade": 7,
     "aproductservice_x002e_hub_duration@OData.Community.Display.V1.FormattedValue": "1 Hour",
-    "aproductservice_x002e_hub_duration": 60
+    "aproductservice_x002e_hub_duration": 60,
+    "aenrollment_x002e_hub_nonpreferredteacher@OData.Community.Display.V1.FormattedValue": "Teacher1",
+    "aenrollment_x002e_hub_nonpreferredteacher": "60339fb2-d940-e711-80f0-c4346bad526c"
   },
   {
     "@odata.etag": "W/\"1723111\"",
@@ -843,7 +845,9 @@ var student =  [
     "astudent_x002e_hub_grade@OData.Community.Display.V1.FormattedValue": "5",
     "astudent_x002e_hub_grade": 7,
     "aproductservice_x002e_hub_duration@OData.Community.Display.V1.FormattedValue": "1 Hour",
-    "aproductservice_x002e_hub_duration": 60
+    "aproductservice_x002e_hub_duration": 60,
+    "aenrollment_x002e_hub_nonpreferredteacher@OData.Community.Display.V1.FormattedValue": "Teacher1",
+    "aenrollment_x002e_hub_nonpreferredteacher": "60339fb2-d940-e711-80f0-c4346bad526c"
   },
   {
     "@odata.etag": "W/\"1723127\"",
@@ -894,7 +898,9 @@ var student =  [
     "astudent_x002e_hub_grade@OData.Community.Display.V1.FormattedValue": "5",
     "astudent_x002e_hub_grade": 7,
     "aproductservice_x002e_hub_duration@OData.Community.Display.V1.FormattedValue": "1 Hour",
-    "aproductservice_x002e_hub_duration": 60
+    "aproductservice_x002e_hub_duration": 60,
+    "aenrollment_x002e_hub_nonpreferredteacher@OData.Community.Display.V1.FormattedValue": "Teacher1",
+    "aenrollment_x002e_hub_nonpreferredteacher": "60339fb2-d940-e711-80f0-c4346bad526c"
   },
   {
     "@odata.etag": "W/\"1723137\"",
@@ -944,7 +950,9 @@ var student =  [
     "astudent_x002e_hub_grade@OData.Community.Display.V1.FormattedValue": "5",
     "astudent_x002e_hub_grade": 7,
     "aproductservice_x002e_hub_duration@OData.Community.Display.V1.FormattedValue": "1 Hour",
-    "aproductservice_x002e_hub_duration": 60
+    "aproductservice_x002e_hub_duration": 60,
+    "aenrollment_x002e_hub_nonpreferredteacher@OData.Community.Display.V1.FormattedValue": "Teacher1",
+    "aenrollment_x002e_hub_nonpreferredteacher": "60339fb2-d940-e711-80f0-c4346bad526c"
   },
   {
     "@odata.etag": "W/\"1723112\"",
@@ -2344,7 +2352,9 @@ var student =  [
     "hub_sessiontype@OData.Community.Display.V1.FormattedValue":"Regular",
     "hub_start_time":780,
     "hub_start_time@OData.Community.Display.V1.FormattedValue":"1:00 PM",
-    "hub_studentsessionid":"63e7c850-d16a-e711-80f2-c4346bad526c"
+    "hub_studentsessionid":"63e7c850-d16a-e711-80f2-c4346bad526c",
+    "aenrollment_x002e_hub_nonpreferredteacher@OData.Community.Display.V1.FormattedValue": "Teacher1",
+    "aenrollment_x002e_hub_nonpreferredteacher": "60339fb2-d940-e711-80f0-c4346bad526c"
   },
   {
     "_hub_center_value":"b97bc0df-a334-e711-80ed-c4346bacfbbc",
@@ -3418,7 +3428,9 @@ var masterSchedule = [
     "amasterschedule_x002e_hub_status@OData.Community.Display.V1.FormattedValue": "Active",
     "amasterschedule_x002e_hub_status": 2,
     "aprogram_x002e_hub_areaofinterest@OData.Community.Display.V1.FormattedValue": "Math Tutoring",
-    "aprogram_x002e_hub_areaofinterest": 2
+    "aprogram_x002e_hub_areaofinterest": 2,
+    "aenrollment_x002e_hub_nonpreferredteacher@OData.Community.Display.V1.FormattedValue": "Teacher1",
+    "aenrollment_x002e_hub_nonpreferredteacher": "60339fb2-d940-e711-80f0-c4346bad526c"
   },
   {
     "@odata.etag": "W/\"1647573\"",
@@ -3583,7 +3595,9 @@ var masterSchedule = [
     "amasterschedule_x002e_hub_status@OData.Community.Display.V1.FormattedValue": "Active",
     "amasterschedule_x002e_hub_status": 2,
     "aprogram_x002e_hub_areaofinterest@OData.Community.Display.V1.FormattedValue": "Math Tutoring",
-    "aprogram_x002e_hub_areaofinterest": 2
+    "aprogram_x002e_hub_areaofinterest": 2,
+    "aenrollment_x002e_hub_nonpreferredteacher@OData.Community.Display.V1.FormattedValue": "Teacher1",
+    "aenrollment_x002e_hub_nonpreferredteacher": "60339fb2-d940-e711-80f0-c4346bad526c"
   },
   {
     "@odata.etag": "W/\"1647928\"",
@@ -3851,7 +3865,9 @@ var masterSchedule = [
     "amasterschedule_x002e_hub_status@OData.Community.Display.V1.FormattedValue": "Active",
     "amasterschedule_x002e_hub_status": 2,
     "aprogram_x002e_hub_areaofinterest@OData.Community.Display.V1.FormattedValue": "Math Tutoring",
-    "aprogram_x002e_hub_areaofinterest": 2
+    "aprogram_x002e_hub_areaofinterest": 2,
+    "aenrollment_x002e_hub_nonpreferredteacher@OData.Community.Display.V1.FormattedValue": "Teacher1",
+    "aenrollment_x002e_hub_nonpreferredteacher": "60339fb2-d940-e711-80f0-c4346bad526c"
   },
   {
     "@odata.etag": "W/\"1710940\"",
