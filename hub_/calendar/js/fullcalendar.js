@@ -5451,7 +5451,38 @@ function AgendaEventRenderer() {
 			dis = 1;
 			dit = 0;
 		}
-			
+
+		for (i=0; i<segCnt; i++) {
+			seg = segs[i];
+			event = seg.event;
+			var newWidthIdentification = [];
+			var level = 0,a = 0;
+			for (a = 0; a < segCnt; a++) {
+				if(segs[a].event.start.getTime() == event.start.getTime() && 
+					segs[a].event.deliveryType != event.deliveryType && 
+					!segs[a].hasOwnProperty('newLevel')){
+					newWidthIdentification.push(a);
+				}
+			}
+			if(newWidthIdentification.length){
+				if(newWidthIdentification.length == 1){
+					level = 1;
+					seg.level = 1;
+				}
+				else if(newWidthIdentification.length == 2){
+					level = 2;
+					seg.level = 2;
+				}
+				seg.forward = 0;
+				seg.newLevel = 0;
+				for (var b = 0; b < newWidthIdentification.length; b++) {
+					segs[newWidthIdentification[b]].level = level;
+					segs[newWidthIdentification[b]].forward = 0;
+					segs[newWidthIdentification[b]].newLevel = b+1;
+				}
+			}
+		}
+
 		// calculate position/dimensions, create html
 		for (i=0; i<segCnt; i++) {
 			seg = segs[i];
@@ -5463,7 +5494,7 @@ function AgendaEventRenderer() {
 			forward = seg.forward || 0;
 			leftmost = colContentLeft(colI*dis + dit);
 			availWidth = colContentRight(colI*dis + dit) - leftmost;
-			availWidth = Math.min(availWidth-6, availWidth*.95); // TODO: move this to CSS
+			availWidth = Math.min(availWidth-6, availWidth*.96); // TODO: move this to CSS
 			if (levelI) {
 				// indented and thin
 				outerWidth = availWidth / (levelI + forward + 1);
@@ -5479,6 +5510,11 @@ function AgendaEventRenderer() {
 			left = leftmost +                                  // leftmost possible
 				(availWidth / (levelI + forward + 1) * levelI) // indentation
 				* dis + (rtl ? availWidth - outerWidth : 0);   // rtl
+			if(seg.hasOwnProperty('newLevel')){
+				left = leftmost +                                  // leftmost possible
+					(availWidth / (seg.newLevel + forward + 1) * seg.newLevel) // indentation
+					* dis + (rtl ? availWidth - outerWidth : 0);   // rtl
+			}
 			seg.top = top;
 			seg.left = left;
 			seg.outerWidth = outerWidth;
