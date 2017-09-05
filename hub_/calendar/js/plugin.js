@@ -2138,6 +2138,27 @@ function SylvanCalendar() {
             }
             self.filterSlide(wjQuery, isFilterOpen == '0px');
         }
+        this.resourceList = [];
+        if (resources.length) {
+            var pi = [];
+            var gi = [];
+            var gf = [];
+            for (var i = 0; i < resources.length; i++) {
+                switch (resources[i]['_hub_deliverytype_value@OData.Community.Display.V1.FormattedValue']) {
+                    case 'Personal Instruction':
+                        pi.push(resources[i]);
+                        break;
+                    case 'Group Facilitation':
+                        gf.push(resources[i]);
+                        break;
+                    case 'Group Instruction':
+                        gi.push(resources[i]);
+                        break;
+                }
+            }
+            resources = pi.concat(gf);
+            resources = resources.concat(gi);
+        }
         if (self.selectedDeliveryType.length == deliveryType.length) {
             this.resourceList = resources;
         }
@@ -6086,34 +6107,52 @@ function SylvanCalendar() {
                     }
 
                 if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
-                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('pi')){
-                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length != 0){
-                            piObj.title = "S/S = "+ this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length +"/"+ piSpace;
-                            piObj.backgroundColor = "#ebf5fb";
-                            piObj.borderColor = "#9acaea";
-                            piObj.deliveryType = "Personal-Instruction";
-                            if(piSelected)
+                    if(piSelected){
+                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('pi')){
+                            if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length != 0){
+                                piObj.title = "";
+                                if(giSelected && (this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length == 0 &&
+                                   this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length == 0)){
+                                    piObj.title += "S/S = ";    
+                                }
+                                piObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length +"/"+ piSpace;
+                                piObj.backgroundColor = "#ebf5fb";
+                                piObj.borderColor = "#9acaea";
+                                piObj.deliveryType = "Personal-Instruction";
                                 self.eventList.push(piObj);
+                            }
                         }
                     }
-                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('gi')){
-                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length != 0){
-                            giObj.title = "S/S = "+ this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length +"/"+ giSpace;
-                            giObj.backgroundColor = "#fedeb7";
-                            giObj.borderColor = "#f88e50";
-                            giObj.deliveryType = "Group-Instruction";
-                            if(giSelected)
+                    if(giSelected){
+                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('gi')){
+                            if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length != 0){
+                                giObj.title = "";
+                                if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length == 0 &&
+                                   this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length == 0){
+                                    giObj.title += "S/S = ";    
+                                }
+                                giObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length +"/"+ giSpace;
+                                giObj.backgroundColor = "#fedeb7";
+                                giObj.borderColor = "#f88e50";
+                                giObj.deliveryType = "Group-Instruction";
                                 self.eventList.push(giObj);
+                            }
                         }
                     }
-                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('gf')){
-                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length != 0){
-                            gfObj.title = "S/S = "+ this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length +"/"+ gfSpace;
-                            gfObj.backgroundColor = "#dff0d5";
-                            gfObj.borderColor = "#7bc143";
-                            gfObj.deliveryType = "Group-Facilitation";
-                            if(gfSelected)
+                    if(gfSelected){
+                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('gf')){
+                            if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length != 0){
+                                gfObj.title = "";
+                                if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length == 0 &&
+                                   this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length == 0){
+                                    gfObj.title += "S/S = ";    
+                                }
+                                gfObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length +"/"+ gfSpace;
+                                gfObj.backgroundColor = "#dff0d5";
+                                gfObj.borderColor = "#7bc143";
+                                gfObj.deliveryType = "Group-Facilitation";
                                 self.eventList.push(gfObj);
+                            }
                         }
                     }
                 }
