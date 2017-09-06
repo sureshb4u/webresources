@@ -242,6 +242,9 @@ i.material-icons.cursor.float-right {
 .filter-header-container{
     padding: 5px 10px;
 }
+.ssplace,.stplace{
+    padding-bottom: 10px;
+}
 .filter-nav-icon{
     display: inline-block;
     height: 15px;
