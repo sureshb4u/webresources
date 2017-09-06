@@ -1785,6 +1785,9 @@ function SylvanCalendar() {
                 }
                 this.calendar.fullCalendar('unselect');
             },
+            eventClick: function(calEvent, jsEvent, view) {
+                self.renderWeekModal(calEvent, jsEvent, view);
+            },
             editable: false,
             resources: this.resourceList,
             events: this.eventList,
@@ -6051,6 +6054,12 @@ function SylvanCalendar() {
         }
     }
 
+    this.renderWeekModal = function(calEvent, jsEvent, view){
+        if(view.name == 'agendaWeek'){
+            alert(calEvent.title);
+        }
+    };
+
     this.populateWeekEvents = function(){
         var self = this;
         var piSelected = false;
@@ -6111,7 +6120,7 @@ function SylvanCalendar() {
                         if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('pi')){
                             if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length != 0){
                                 piObj.title = "";
-                                if(giSelected && (this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length == 0 &&
+                                if((piSelected && !giSelected)|| (this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length == 0 &&
                                    this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length == 0)){
                                     piObj.title += "S/S = ";    
                                 }
@@ -6158,6 +6167,7 @@ function SylvanCalendar() {
                 }
             }
             self.calendar.fullCalendar('removeEvents');
+            self.calendar.fullCalendar('removeEventSource');
             self.calendar.fullCalendar('addEventSource', { events: self.eventList });
             self.calendar.fullCalendar('refetchEvents');
             wjQuery('.loading').hide();
