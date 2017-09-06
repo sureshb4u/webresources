@@ -891,14 +891,6 @@ function SylvanCalendar() {
               }
             }else{
               // Non preferred teacher case
-              // Non preferred Conflict
-              var msgIndex = newEvent[0].conflictMsg.map(function (x) {
-                  return x;
-              }).indexOf(3);
-              if (msgIndex == -1) {
-                  newEvent[0].conflictMsg.push(3);
-                  self.updateConflictMsg(newEvent[0]);
-              }
               if (prevStudObj['deliveryType'] == resource.deliveryType) {
                 if (newEvent.length == 0) {
                   t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher. Do you wish to continue?");
@@ -944,55 +936,113 @@ function SylvanCalendar() {
 
           allowToDropTeacher = self.validateTeacherOnSameRow(teacherId, startHour);
           if(allowToDropTeacher){
-            // Check available teacher for droapable time
-            if(self.checkForStaffAvailability(teacherId, startHour)){
-              if (newEvent.length == 0) {
-                this.tapaneConflictCheck(t, date, allDay, ev, ui, resource, elm);
-              } else if (newEvent.length == 1) {
-                if (!(newEvent[0].hasOwnProperty('teachers')) || (newEvent[0].hasOwnProperty('teachers') && newEvent[0]['teachers'].length == 0)) {
-                  if (!newEvent[0].hasOwnProperty('students')) {
-                    this.tapaneConflictCheck(t, date, allDay, ev, ui, resource, elm);
-                  } else {
-                    var showPopup = false;
-                    wjQuery.each(newEvent[0]['students'], function (k, v) {
-                        var index = techerPrograms.map(function (x) {
-                            return x.id;
-                        }).indexOf(v.programId);
-                        if (index == -1) {
-                            showPopup = true;
-                            return false;
-                        }
-                    });
-                    if (showPopup) {
-                        this.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher program is not matching. Do you wish to continue?");
+            var isNonPreferred = self.checkNonPreferredStudentForTeacher(teacherId, newEvent[0]);
+            if(!isNonPreferred){
+              // Check available teacher for droapable time
+              if(self.checkForStaffAvailability(teacherId, startHour)){
+                if (newEvent.length == 0) {
+                  this.tapaneConflictCheck(t, date, allDay, ev, ui, resource, elm);
+                } else if (newEvent.length == 1) {
+                  if (!(newEvent[0].hasOwnProperty('teachers')) || (newEvent[0].hasOwnProperty('teachers') && newEvent[0]['teachers'].length == 0)) {
+                    if (!newEvent[0].hasOwnProperty('students')) {
+                      this.tapaneConflictCheck(t, date, allDay, ev, ui, resource, elm);
                     } else {
-                        this.tapaneConflictCheck(t, date, allDay, ev, ui, resource, elm);
+                      var showPopup = false;
+                      wjQuery.each(newEvent[0]['students'], function (k, v) {
+                          var index = techerPrograms.map(function (x) {
+                              return x.id;
+                          }).indexOf(v.programId);
+                          if (index == -1) {
+                              showPopup = true;
+                              return false;
+                          }
+                      });
+                      if (showPopup) {
+                          this.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher program is not matching. Do you wish to continue?");
+                      } else {
+                          this.tapaneConflictCheck(t, date, allDay, ev, ui, resource, elm);
+                      }
+                    }
+                  }
+                }
+              }else{
+                if (newEvent.length == 0) {
+                  this.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher is not available. Do you wish to continue?");
+                } else if (newEvent.length == 1) {
+                  if (!(newEvent[0].hasOwnProperty('teachers')) || (newEvent[0].hasOwnProperty('teachers') && newEvent[0]['teachers'].length == 0)) {
+                    if (!newEvent[0].hasOwnProperty('students')) {
+                      this.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher is not available. Do you wish to continue?");
+                    } else {
+                      var showPopup = false;
+                      wjQuery.each(newEvent[0]['students'], function (k, v) {
+                          var index = techerPrograms.map(function (x) {
+                              return x.id;
+                          }).indexOf(v.programId);
+                          if (index == -1) {
+                              showPopup = true;
+                              return false;
+                          }
+                      });
+                      if (showPopup) {
+                        this.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher is not available and Teacher program is not matching. Do you wish to continue?");
+                      } else {
+                        this.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher is not available. Do you wish to continue?");
+                      }
                     }
                   }
                 }
               }
             }else{
-              if (newEvent.length == 0) {
-                this.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher is not available. Do you wish to continue?");
-              } else if (newEvent.length == 1) {
-                if (!(newEvent[0].hasOwnProperty('teachers')) || (newEvent[0].hasOwnProperty('teachers') && newEvent[0]['teachers'].length == 0)) {
-                  if (!newEvent[0].hasOwnProperty('students')) {
-                    this.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher is not available. Do you wish to continue?");
-                  } else {
-                    var showPopup = false;
-                    wjQuery.each(newEvent[0]['students'], function (k, v) {
-                        var index = techerPrograms.map(function (x) {
-                            return x.id;
-                        }).indexOf(v.programId);
-                        if (index == -1) {
-                            showPopup = true;
-                            return false;
-                        }
-                    });
-                    if (showPopup) {
-                      this.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher is not available and Teacher program is not matching. Do you wish to continue?");
+              // Check available teacher for droapable time
+              if(self.checkForStaffAvailability(teacherId, startHour)){
+                if (newEvent.length == 0) {
+                      self.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher. Do you wish to continue?");
+                } else if (newEvent.length == 1) {
+                  if (!(newEvent[0].hasOwnProperty('teachers')) || (newEvent[0].hasOwnProperty('teachers') && newEvent[0]['teachers'].length == 0)) {
+                    if (!newEvent[0].hasOwnProperty('students')) {
+                      self.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher. Do you wish to continue?");
                     } else {
-                      this.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher is not available. Do you wish to continue?");
+                      var showPopup = false;
+                      wjQuery.each(newEvent[0]['students'], function (k, v) {
+                          var index = techerPrograms.map(function (x) {
+                              return x.id;
+                          }).indexOf(v.programId);
+                          if (index == -1) {
+                              showPopup = true;
+                              return false;
+                          }
+                      });
+                      if (showPopup) {
+                          this.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and Teacher program is not matching. Do you wish to continue?");
+                      } else {
+                        this.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher. Do you wish to continue?");
+                      }
+                    }
+                  }
+                }
+              }else{
+                if (newEvent.length == 0) {
+                  this.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and Teacher is not available. Do you wish to continue?");
+                } else if (newEvent.length == 1) {
+                  if (!(newEvent[0].hasOwnProperty('teachers')) || (newEvent[0].hasOwnProperty('teachers') && newEvent[0]['teachers'].length == 0)) {
+                    if (!newEvent[0].hasOwnProperty('students')) {
+                      this.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and Teacher is not available. Do you wish to continue?");
+                    } else {
+                      var showPopup = false;
+                      wjQuery.each(newEvent[0]['students'], function (k, v) {
+                          var index = techerPrograms.map(function (x) {
+                              return x.id;
+                          }).indexOf(v.programId);
+                          if (index == -1) {
+                              showPopup = true;
+                              return false;
+                          }
+                      });
+                      if (showPopup) {
+                        this.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and Teacher is not available and Teacher program is not matching. Do you wish to continue?");
+                      } else {
+                        this.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and Teacher is not available. Do you wish to continue?");
+                      }
                     }
                   }
                 }
@@ -1165,14 +1215,7 @@ function SylvanCalendar() {
                           }
                         }
                       }else{
-                        // Non preferred Conflict
-                        var msgIndex = newEvent[0].conflictMsg.map(function (x) {
-                            return x;
-                        }).indexOf(3);
-                        if (msgIndex == -1) {
-                            newEvent[0].conflictMsg.push(3);
-                            self.updateConflictMsg(newEvent[0]);
-                        }
+                        // No prefered teacher case
                         if (newEvent[0]['students'] == undefined) {
                             if (wjQuery(elm).attr("pinnedId")) {
                               if (newEvent[0]['is1to1']) {
@@ -1325,9 +1368,34 @@ function SylvanCalendar() {
                   if (newEvent.length == 0) {
                       this.teacherSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
                   } else if (newEvent.length == 1) {
-                      if (!(newEvent[0].hasOwnProperty('teachers')) || (newEvent[0].hasOwnProperty('teachers') && newEvent[0]['teachers'].length == 0)) {
+                      var isNonPreferred = self.checkNonPreferredStudentForTeacher(teacherId, newEvent[0]);
+                      if(!isNonPreferred){
+                        if (!(newEvent[0].hasOwnProperty('teachers')) || (newEvent[0].hasOwnProperty('teachers') && newEvent[0]['teachers'].length == 0)) {
+                            if (!newEvent[0].hasOwnProperty('students')) {
+                                this.teacherSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
+                            } else {
+                                var showPopup = false;
+                                wjQuery.each(newEvent[0]['students'], function (k, v) {
+                                    var index = techerPrograms.map(function (x) {
+                                        return x.id;
+                                    }).indexOf(v.programId);
+                                    if (index == -1) {
+                                        showPopup = true;
+                                        return false;
+                                    }
+                                });
+                                if (showPopup) {
+                                    this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher program is not matching. Do you wish to continue?");
+                                } else {
+                                    this.teacherSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
+                                }
+                            }
+                        }
+                      }else{
+                        // Non preffred teacher case
+                        if (!(newEvent[0].hasOwnProperty('teachers')) || (newEvent[0].hasOwnProperty('teachers') && newEvent[0]['teachers'].length == 0)) {
                           if (!newEvent[0].hasOwnProperty('students')) {
-                              this.teacherSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
+                              this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher. Do you wish to continue?");
                           } else {
                               var showPopup = false;
                               wjQuery.each(newEvent[0]['students'], function (k, v) {
@@ -1340,11 +1408,12 @@ function SylvanCalendar() {
                                   }
                               });
                               if (showPopup) {
-                                  this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher program is not matching. Do you wish to continue?");
+                                  this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and Teacher program is not matching. Do you wish to continue?");
                               } else {
-                                  this.teacherSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
+                                  this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher. Do you wish to continue?");
                               }
                           }
+                        }
                       }
                   }
                 }else{
@@ -1438,7 +1507,7 @@ function SylvanCalendar() {
                         if (msgIndex > -1) {
                             prevEvent[0].conflictMsg.splice(msgIndex, 1);
                         }
-                        self.updateConflictMsg(prevEvent[0]);
+                        // self.updateConflictMsg(prevEvent[0]);
                         if (prevEvent[0].title.indexOf('<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>') == -1) {
                             prevEvent[0].title += '<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>';
                             self.addContext("", 'studentPlaceholder', true, prevEvent[0].deliveryType);
@@ -1457,6 +1526,10 @@ function SylvanCalendar() {
                     return x.id;
                 }).indexOf(teacherId);
                 prevEvent[0].teachers.splice(removeTeacherIndex, 1);
+
+                // remove all conflicts By passing prevEvent Object 
+                t.removeAllConflictsFromPrevEvent(prevEvent[0]);
+
                 if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "student-placeholder-"+prevEvent[0].deliveryType)) ||
                    (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder" && eventTitleHTML[1].className == "student-placeholder-"+prevEvent[0].deliveryType) ||
                    (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder" && eventTitleHTML[2].className == "student-placeholder-"+prevEvent[0].deliveryType)) {
@@ -1466,6 +1539,7 @@ function SylvanCalendar() {
                     }
                     this.calendar.fullCalendar('removeEvents', prevEventId);
                 }
+                 this.calendar.fullCalendar('updateEvent', prevEvent);
             } else {
                 for (var i = 0; i < this.eventList.length; i++) {
                     if (this.eventList[i].id == prevEventId)
@@ -1474,6 +1548,8 @@ function SylvanCalendar() {
                 this.calendar.fullCalendar('removeEvents', prevEventId);
             }
         }
+        
+        
         if (t.convertedTeacherObj[index]) {
             var newTeacherSession = wjQuery.extend(true, {}, t.convertedTeacherObj[index]);
             elm.remove();
@@ -1485,6 +1561,10 @@ function SylvanCalendar() {
             newTeacherSession.deliveryType = t.getResourceObj(resource.id).deliveryType;
             t.saveTeacherToSession(newTeacherSession, t.convertedTeacherObj[index]);
         }
+        self.openSofPane();
+        self.showConflictMsg();
+        self.draggable('draggable');
+
     }
 
     this.studentSofConflictCheck = function (t, date, allDay, ev, ui, resource, elm) {
@@ -1605,6 +1685,9 @@ function SylvanCalendar() {
                           prevEvent[0].is1to1 = false;
                       }
                     }
+
+                    // remove all conflicts By passing prevEvent Object 
+                    t.removeAllConflictsFromPrevEvent(prevEvent[0]);
                     if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "student-placeholder-"+prevEvent[0].deliveryType)) ||
                       (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder" && eventTitleHTML[1].className == "student-placeholder-"+prevEvent[0].deliveryType) ||
                       (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder" && eventTitleHTML[2].className == "student-placeholder-"+prevEvent[0].deliveryType)) {
@@ -1624,8 +1707,6 @@ function SylvanCalendar() {
                   this.calendar.fullCalendar('removeEvents', prevEventId);
                 }
 
-                // remove all conflicts By passing prevEvent Object 
-                t.removeAllConflictsFromPrevEvent(prevEvent[0]);
             }
             if (t.convertedStudentObj[index]) {
                 var newStudentObj = wjQuery.extend(true, {}, t.convertedStudentObj[index]);
@@ -1643,6 +1724,9 @@ function SylvanCalendar() {
                 t.saveStudentToSession(t.convertedStudentObj[index], newStudentObj);
             }
         }
+        self.openSofPane();
+        self.showConflictMsg();
+        self.draggable('draggable');
     }
 
     this.clearEvents = function () {
@@ -2963,6 +3047,19 @@ function SylvanCalendar() {
                           self.updateConflictMsg(event[k]);
                         }
                       }
+                      
+                      var isNonPreferred = self.checkNonPreferredTeacherConflict(event[k]);
+                      if(isNonPreferred){
+                        // non preferred teacher conflict check
+                        var msgIndex = event[k].conflictMsg.map(function (x) {
+                          return x;
+                        }).indexOf(3);
+                        if (msgIndex == -1) {
+                          event[k].conflictMsg.push(3);
+                          self.updateConflictMsg(event[k]);
+                        }                      
+                      }
+
 
                     });
                     self.calendar.fullCalendar('updateEvent', event);
@@ -3560,6 +3657,19 @@ function SylvanCalendar() {
                                 self.updateConflictMsg(event[k]);
                               }
                             }
+
+                            var isNonPreferred = self.checkNonPreferredTeacherConflict(event[k]);
+                            if(isNonPreferred){
+                              // non preferred teacher conflict check
+                              var msgIndex = event[k].conflictMsg.map(function (x) {
+                                return x;
+                              }).indexOf(3);
+                              if (msgIndex == -1) {
+                                event[k].conflictMsg.push(3);
+                                self.updateConflictMsg(event[k]);
+                              }                      
+                            }
+
                         });
                         if (value['deliveryType'] != "Group Instruction" ) {
                             if (value['pinId'] != undefined) {
@@ -5176,14 +5286,14 @@ function SylvanCalendar() {
             }
         }
         if (event.conflictMsg.length) {
-            wjQuery.each(event.conflictMsg, function (k, v) {
-                msg += (k + 1) + ". " + self.conflictMsg[v] + "|";
-            });
-            var lastIndex = msg.lastIndexOf("|");
-            msg = msg.substring(0, lastIndex);
-            if (event.title.indexOf('<img class="conflict" title="' + msg + '" src="/webresources/hub_/calendar/images/warning.png">') == -1) {
-                event.title += '<img class="conflict" title="' + msg + '" src="/webresources/hub_/calendar/images/warning.png">';
-            }
+          wjQuery.each(event.conflictMsg, function (k, v) {
+              msg += (k + 1) + ". " + self.conflictMsg[v] + "|";
+          });
+          var lastIndex = msg.lastIndexOf("|");
+          msg = msg.substring(0, lastIndex);
+          if (event.title.indexOf('<img class="conflict" title="' + msg + '" src="/webresources/hub_/calendar/images/warning.png">') == -1) {
+              event.title += '<img class="conflict" title="' + msg + '" src="/webresources/hub_/calendar/images/warning.png">';
+          }
         }
     }
 
@@ -5617,6 +5727,7 @@ function SylvanCalendar() {
       return teacherIsAvialble;
     }
 
+    // Student drag and drop case
     this.checkNonPreferredTeacher = function(studentObj, newEvent){
       var nonPreferedTeacher = false;
       if(studentObj['nonPreferredTeacher'] != undefined){
@@ -5632,7 +5743,25 @@ function SylvanCalendar() {
       return nonPreferedTeacher;
     }
 
-    // remove Non preferred teacher coflict check 
+    // Teacher drag and drop case
+    this.checkNonPreferredStudentForTeacher = function(teacherId, newEvent){
+      var nonPreferedTeacher = false;
+      if(teacherId != undefined){
+        if(newEvent.hasOwnProperty('students') && newEvent['students'].length > 0){
+          for(var i=0; i<newEvent['students'].length; i++ ){
+            if(newEvent['students'][i]['nonPreferredTeacher'] != undefined &&
+                  newEvent['students'][i]['nonPreferredTeacher'] ==  teacherId){
+              nonPreferedTeacher = true;
+              break;
+            }
+          }
+        }
+      }
+      return nonPreferedTeacher;
+    }
+
+
+    // remove Non preferred teacher coflict check for prev event
     this.checkNonPreferredTeacherConflict = function(prevEvent){
       var isNonPreferred = false;
       if(prevEvent.hasOwnProperty('students') && prevEvent.hasOwnProperty('teachers') && prevEvent['students'].length > 0 && prevEvent['teachers'].length > 0){
@@ -5693,7 +5822,7 @@ function SylvanCalendar() {
 
       // Conflict removal
       // Capacity conflict removal prevevent student Darg
-      if (resourceObj['capacity'] >= prevEvent['students'].length) {
+      if (prevEvent.hasOwnProperty('students') && resourceObj['capacity'] >= prevEvent['students'].length) {
           var msgIndex = prevEvent.conflictMsg.map(function (x) {
               return x;
           }).indexOf(1);
@@ -5701,6 +5830,13 @@ function SylvanCalendar() {
               prevEvent.conflictMsg.splice(msgIndex, 1);
           }
           self.updateConflictMsg(prevEvent);
+      }
+      
+      if (prevEvent.hasOwnProperty('students') && resourceObj['capacity'] > prevEvent['students'].length) {
+        if (prevEvent.title.indexOf('<span class="student-placeholder-'+prevEvent.deliveryType+'">Student name</span>') == -1) {
+          prevEvent.title += '<span class="student-placeholder-'+prevEvent.deliveryType+'">Student name</span>';
+          self.addContext("", 'studentPlaceholder', true, prevEvent.deliveryType);
+        }
       }
 
       // remove Non Preferred Teacher Conflict
@@ -5715,11 +5851,5 @@ function SylvanCalendar() {
         self.updateConflictMsg(prevEvent);
       }
 
-      if (resourceObj['capacity'] > prevEvent['students'].length) {
-        if (prevEvent.title.indexOf('<span class="student-placeholder-'+prevEvent.deliveryType+'">Student name</span>') == -1) {
-          prevEvent.title += '<span class="student-placeholder-'+prevEvent.deliveryType+'">Student name</span>';
-          self.addContext("", 'studentPlaceholder', true, prevEvent.deliveryType);
-        }
-      }
     }
 }
