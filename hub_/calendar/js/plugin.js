@@ -852,10 +852,10 @@ function SylvanCalendar() {
                 prevStudObj = t.sofList['Group Instruction'][index];
             }
           }
-          var allowToDropStudent = true;
-          if(startHour.getTime() != prevStudObj.start.getTime()){
-            allowToDropStudent = self.validateStudentOnSameRow(stuId, startHour);
-          }
+          // var allowToDropStudent = true;
+          // if(startHour.getTime() != prevStudObj.start.getTime()){
+          var allowToDropStudent = self.validateStudentOnSameRow(stuId, startHour);
+          // }
           if(allowToDropStudent){
             if (prevStudObj['deliveryType'] == resource.deliveryType) {
               if (newEvent.length == 0) {
@@ -1062,10 +1062,10 @@ function SylvanCalendar() {
             var prevStudObj = t.convertedStudentObj[index];
             if (index != -1) {
               if (newResourceObj.deliveryType != "Group Instruction") {
-                var allowToDropStudent = true;
-                if(startHour.getTime() != prevEvent[0].start.getTime()){
-                  allowToDropStudent = self.validateStudentOnSameRow(stuId, startHour);
-                }
+                // var allowToDropStudent = true;
+                // if(startHour.getTime() != prevEvent[0].start.getTime()){
+                var allowToDropStudent = self.validateStudentOnSameRow(stuId, startHour);
+                // }
                 if(allowToDropStudent){
                   if (newEvent.length == 0) {
                       if (wjQuery(elm).attr("pinnedId")) {
@@ -3115,6 +3115,7 @@ function SylvanCalendar() {
                     self.calendar.fullCalendar('refetchEvents');
                     if (isFromFilter) {
                         self.calendar.fullCalendar('removeEvents');
+                        self.calendar.fullCalendar('removeEventSource');
                         self.calendar.fullCalendar('addEventSource', { events: self.eventList });
                     }
                 }
@@ -3757,6 +3758,7 @@ function SylvanCalendar() {
                         self.eventList.push(obj);
                         if (isFromFilter) {
                             self.calendar.fullCalendar('removeEvents');
+                            self.calendar.fullCalendar('removeEventSource');
                             self.calendar.fullCalendar('addEventSource', { events: self.eventList });
                         }
                         self.calendar.fullCalendar('refetchEvents');
@@ -5363,7 +5365,7 @@ function SylvanCalendar() {
                     var eventId = idArry[1] + idArry[2];
                     var eventObj = self.calendar.fullCalendar('clientEvents', eventId);
                     var callSave = false;
-                    allowToDropStudent = self.validateStudentOnSameRow(studentObj[0].id, idArry[2]);
+                    var allowToDropStudent = self.validateStudentOnSameRow(studentObj[0].id, idArry[2]);
                     if(allowToDropStudent){
                       if (eventObj[0].hasOwnProperty("students") && eventObj[0].students.length > 0) {
                           var stdIndex = eventObj[0].students.findIndex(function (x) {
@@ -5658,8 +5660,8 @@ function SylvanCalendar() {
     this.validateStudentOnSameRow = function(stuId, startHour){
       var self = this;
       var allowToDropStudent = true;
-      wjQuery.each(this.resourceList, function(resourceKey, resourceObj){
-        var newEventId = resourceObj.id+startHour;
+      for(var k=0; k< self.resourceList.length; k++){
+        var newEventId = self.resourceList[k].id + startHour;
         var eventObj = self.calendar.fullCalendar('clientEvents', newEventId);
         if(eventObj.length && eventObj[0].hasOwnProperty("students")){
           for(var i=0; i< eventObj[0]['students'].length; i++){
@@ -5668,8 +5670,12 @@ function SylvanCalendar() {
               break;
             }
           }
+          if(!allowToDropStudent){
+            allowToDropStudent = false;
+            break;
+          }
         }
-      })
+      }
       return allowToDropStudent;
     }
 
