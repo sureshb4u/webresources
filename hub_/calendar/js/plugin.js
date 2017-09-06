@@ -2549,17 +2549,17 @@ function SylvanCalendar() {
                                 self.convertedStudentObj.push(obj);
                             }
                             else{
-                                if( self.convertedStudentObj[index].sessionStatus == INVALID_STATUS ||
-                                    self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
-                                    self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
-                                    self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
+                                // if( self.convertedStudentObj[index].sessionStatus == INVALID_STATUS ||
+                                //     self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
+                                //     self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
+                                //     self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
                                 
-                                }
-                                else
-                                {
-                                    self.convertedStudentObj.push(obj);
-                                    self.populateStudentEvent([obj], true, true);
-                                }
+                                // }
+                                // else
+                                // {
+                                //     self.convertedStudentObj.push(obj);
+                                //     self.populateStudentEvent([obj], true, true);
+                                // }
                             }
 
                         }
@@ -2608,16 +2608,16 @@ function SylvanCalendar() {
                         self.convertedStudentObj.push(pinnedList[i]);
                     }
                     else{
-                        if( self.convertedStudentObj[index].sessionStatus == INVALID_STATUS ||
-                            self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
-                            self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
-                            self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
-                            pinnedList.splice(i,1);
-                        }
-                        else
-                        {
-                            self.convertedStudentObj.push(pinnedList[i]);
-                        }
+                        // if( self.convertedStudentObj[index].sessionStatus == INVALID_STATUS ||
+                        //     self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
+                        //     self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
+                        //     self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
+                        // }
+                        // else
+                        // {
+                        //     self.convertedStudentObj.push(pinnedList[i]);
+                        // }
+                        pinnedList.splice(i,1);
                     }
                 }
                 self.populateStudentEvent(pinnedList, true, true);
@@ -3142,16 +3142,16 @@ function SylvanCalendar() {
                                     self.populateStudentEvent(obj, true, true);
                                 }
                                 else{
-                                    if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS ||
-                                    self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
-                                    self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
-                                    self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
-                                        affinityList.splice(i,1);
-                                    }
-                                    else{
-                                        self.convertedStudentObj.push(affinityList[i]);
-                                        self.populateStudentEvent(obj, true, true);
-                                    }
+                                    // if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS ||
+                                    // self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
+                                    // self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
+                                    // self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
+                                    // }
+                                    // else{
+                                    //     self.convertedStudentObj.push(affinityList[i]);
+                                    //     self.populateStudentEvent(obj, true, true);
+                                    // }
+                                    affinityList.splice(i,1);
                                 }
                             }
                             else {
@@ -3174,16 +3174,16 @@ function SylvanCalendar() {
                             self.populateStudentEvent(obj, true, true);
                         }
                         else{
-                           if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS ||
-                                self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
-                                self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
-                                self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
-                                affinityList.splice(i,1);
-                            }
-                            else{
-                                self.convertedStudentObj.push(affinityList[i]);
-                                self.populateStudentEvent(obj, true, true);
-                            }
+                          // if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS ||
+                          //      self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
+                          //      self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
+                          //      self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
+                          // }
+                          // else{
+                          //     self.convertedStudentObj.push(affinityList[i]);
+                          //     self.populateStudentEvent(obj, true, true);
+                          // }
+                          affinityList.splice(i,1);
                         }
                     }
                 });
@@ -3200,16 +3200,16 @@ function SylvanCalendar() {
                     self.populateStudentEvent(obj, true, true);
                 }
                 else{
-                    if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS||
-                        self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
-                        self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
-                        self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
-                        affinityList.splice(i,1);
-                    }
-                    else{
-                        self.convertedStudentObj.push(affinityList[i]);
-                        self.populateStudentEvent(obj, true, true);
-                    }
+                    // if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS||
+                    //     self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
+                    //     self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
+                    //     self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
+                    // }
+                    // else{
+                    //     self.convertedStudentObj.push(affinityList[i]);
+                    //     self.populateStudentEvent(obj, true, true);
+                    // }
+                    affinityList.splice(i,1);
                 }
             }
         }
@@ -3244,18 +3244,17 @@ function SylvanCalendar() {
                                        if (index == -1) {
                                             self.convertedStudentObj.push(studentList[i]);
                                             self.populateStudentEvent(obj, true, true);
-                                        }
-                                        else{
-                                            if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS||
-                                                self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
-                                                self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
-                                                self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
-                                                studentList.splice(i,1);
-                                            }
-                                            else{
-                                                self.convertedStudentObj.push(studentList[i]);
-                                                self.populateStudentEvent(obj, true, true);
-                                            }
+                                        }else{
+                                          // if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS||
+                                          //     self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
+                                          //     self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
+                                          //     self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
+                                          // }
+                                          // else{
+                                          //     self.convertedStudentObj.push(studentList[i]);
+                                          //     self.populateStudentEvent(obj, true, true);
+                                          // }
+                                          studentList.splice(i,1);
                                         }
                                     }
                                 }
@@ -3274,16 +3273,16 @@ function SylvanCalendar() {
                                     self.populateStudentEvent(obj, true, true);
                                 }
                                 else{
-                                    if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS||
-                                        self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
-                                        self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
-                                        self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
-                                        studentList.splice(i,1);
-                                    }
-                                    else{
-                                        self.convertedStudentObj.push(studentList[i]);
-                                        self.populateStudentEvent(obj, true, true);
-                                    }
+                                    // if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS||
+                                    //     self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
+                                    //     self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
+                                    //     self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
+                                    // }
+                                    // else{
+                                    //     self.convertedStudentObj.push(studentList[i]);
+                                    //     self.populateStudentEvent(obj, true, true);
+                                    // }
+                                    studentList.splice(i,1);
                                 }
                             }
                         });
@@ -3302,16 +3301,16 @@ function SylvanCalendar() {
                             self.populateStudentEvent(obj, true, true);
                         }
                         else{
-                            if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS ||
-                                self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
-                                self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
-                                self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
-                                studentList.splice(i,1);
-                            }
-                            else{
-                                self.convertedStudentObj.push(studentList[i]);
-                                self.populateStudentEvent(obj, true, true);
-                            }
+                            // if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS ||
+                            //     self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
+                            //     self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
+                            //     self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
+                            // }
+                            // else{
+                            //     self.convertedStudentObj.push(studentList[i]);
+                            //     self.populateStudentEvent(obj, true, true);
+                            // }
+                            studentList.splice(i,1);
                         }
                     }
                 }
@@ -3328,15 +3327,15 @@ function SylvanCalendar() {
                     studentsForSOF.push(studentList[i]);
                 }
                 else{
-                    if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS||
-                        self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
-                        self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
-                        self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
-                        studentList.splice(i,1);
-                    }
-                    else{
-                        studentsForSOF.push(studentList[i]);
-                    }
+                    // if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS||
+                    //     self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
+                    //     self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
+                    //     self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
+                    // }
+                    // else{
+                    //     studentsForSOF.push(studentList[i]);
+                    // }
+                    studentList.splice(i,1);
                 }
             }
         }
@@ -3375,15 +3374,15 @@ function SylvanCalendar() {
                                 self.convertedStudentObj.push(e);
                             }
                             else{
-                                if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS||
-                                self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
-                                self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
-                                self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
-                                    serviceStudentList[Object.keys(serviceStudentList)[i]].splice(i,1);
-                                }
-                                else{
-                                    self.convertedStudentObj.push(e);
-                                }
+                                // if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS||
+                                // self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
+                                // self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
+                                // self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
+                                // }
+                                // else{
+                                //     self.convertedStudentObj.push(e);
+                                // }
+                                serviceStudentList[Object.keys(serviceStudentList)[i]].splice(i,1);
                             }
                         });
                         studentNotPlacedFlag = false;
@@ -3402,14 +3401,15 @@ function SylvanCalendar() {
                         studentsForSOF.push(student);
                     }
                     else{
-                        if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS||
-                            self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
-                            self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
-                            self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
-                        }
-                        else{
-                            studentsForSOF.push(student);
-                        }
+                        // if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS||
+                        //     self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
+                        //     self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
+                        //     self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
+
+                        // }
+                        // else{
+                        //     studentsForSOF.push(student);
+                        // }
                     }
                 });
             }
@@ -4579,12 +4579,12 @@ function SylvanCalendar() {
                     obj.pin.visible = false;
                     self.pinStudent(options.$trigger[0]);
                 }
-                // obj.omit = {
-                //     name: "Omit",
-                //     callback: function (key, options) {
-                //         self.omitStudentFromSession(options.$trigger[0]);
-                //     }
-                // }
+                obj.omit = {
+                  name: "Omit",
+                  callback: function (key, options) {
+                      self.omitStudentFromSession(options.$trigger[0]);
+                  }
+                }
                 obj.excuse = {
                     name: "Excuse",
                     disabled:MAKEUP_STATUS == sessionStatus,
@@ -4655,9 +4655,9 @@ function SylvanCalendar() {
             }*/
             if(deliveryType == "Group Instruction"){
               obj.omit = {
-                name: "Remove",
+                name: "Omit",
                 callback: function (key, options) {
-                    self.omitStudentFromSession(options.$trigger[0]);
+                  self.omitStudentFromSession(options.$trigger[0]);
                 }
               }
               wjQuery(function () {
