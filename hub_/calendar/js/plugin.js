@@ -857,12 +857,12 @@ function SylvanCalendar() {
             allowToDropStudent = self.validateStudentOnSameRow(stuId, startHour);
           }
           if(allowToDropStudent){
-            var teacherIsPrefered = t.checkNonPreferredTeacher(prevStudObj, newEvent[0]);
-            if(!teacherIsPrefered){
-              if (prevStudObj['deliveryType'] == resource.deliveryType) {
-                if (newEvent.length == 0) {
-                  t.studentSofConflictCheck(t, date, allDay, ev, ui, resource, elm);
-                } else if (newEvent.length == 1) {
+            if (prevStudObj['deliveryType'] == resource.deliveryType) {
+              if (newEvent.length == 0) {
+                t.studentSofConflictCheck(t, date, allDay, ev, ui, resource, elm);
+              } else if (newEvent.length == 1) {
+                var teacherIsPrefered = t.checkNonPreferredTeacher(prevStudObj, newEvent[0]);
+                if(!teacherIsPrefered){
                   if (newEvent[0]['students'] == undefined) {
                       t.studentSofConflictCheck(t, date, allDay, ev, ui, resource, elm);
                   } else {
@@ -885,44 +885,35 @@ function SylvanCalendar() {
                         }
                     }
                   }
-                }
-              } else {
-                t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "DeliveryType is different. Do you wish to continue?");
-              }
-            }else{
-              // Non preferred teacher case
-              if (prevStudObj['deliveryType'] == resource.deliveryType) {
-                if (newEvent.length == 0) {
-                  t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher. Do you wish to continue?");
-                } else if (newEvent.length == 1) {
+                }else{
+                  // Non preferred teacher case
                   if (newEvent[0]['students'] == undefined) {
                       t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher. Do you wish to continue?");
                   } else {
                     //  Validation for oneToOne check
                     if (newEvent[0]['is1to1']) {
-                      // OneToOne Conflict
-                      var msgIndex = newEvent[0].conflictMsg.map(function (x) {
-                          return x;
-                      }).indexOf(2);
-                      if (msgIndex == -1) {
-                        newEvent[0].conflictMsg.push(2);
-                        self.updateConflictMsg(newEvent[0]);
-                      }
-                      t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and Session is 'OneToOne' Type. Do you wish to continue?");
+                        // OneToOne Conflict
+                        var msgIndex = newEvent[0].conflictMsg.map(function (x) {
+                            return x;
+                        }).indexOf(2);
+                        if (msgIndex == -1) {
+                            newEvent[0].conflictMsg.push(2);
+                            self.updateConflictMsg(newEvent[0]);
+                        }
+                        t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and Session is 'OneToOne' Type. Do you wish to continue?");
                     } else {
-                      if (!(newEvent[0].hasOwnProperty('students')) || newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length < resource.capacity || resource.capacity == undefined)) {
-                        t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher. Do you wish to continue?");
-                      } else if (newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length >= resource.capacity || resource.capacity == undefined)) {
-                        t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and Capacity has reached the maximum. Do you wish to continue?");
-                      }
+                        if (!(newEvent[0].hasOwnProperty('students')) || newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length < resource.capacity || resource.capacity == undefined)) {
+                            t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher. Do you wish to continue?");
+                        } else if (newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length >= resource.capacity || resource.capacity == undefined)) {
+                            t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and Capacity has reached the maximum. Do you wish to continue?");
+                        }
                     }
                   }
                 }
-              } else {
-                t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and DeliveryType is different. Do you wish to continue?");
               }
+            } else {
+              t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "DeliveryType is different. Do you wish to continue?");
             }
-
           }else{
             t.prompt("Can not be placed to a session.");
           }
