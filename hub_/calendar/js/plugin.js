@@ -5243,6 +5243,7 @@ function SylvanCalendar() {
             resizable: false,
             height: "auto",
             width: 400,
+            draggable : false,
             modal: true,
             buttons: {
                 Yes: function () {
@@ -5739,27 +5740,76 @@ function SylvanCalendar() {
         if(arrayList.length){
             if(label == 'teacherSchedule'){
                 for (var i = 0; i < arrayList.length; i++) {
-                    if(arrayList[i].hasOwnProperty('startHour')){
+                    if(arrayList[i].hasOwnProperty('startHour') && arrayList[i].hasOwnProperty('resourceId')){
+                        var resourceObj = this.getResourceObj(arrayList[i].resourceId);
+                        arrayList[i].deliveryType = resourceObj.deliveryType;
+                        arrayList[i].deliveryTypeId = resourceObj.deliveryTypeId;
                         if(this.weekEventObject.hasOwnProperty(arrayList[i].startHour)){
                             if(this.weekEventObject[arrayList[i].startHour].hasOwnProperty('teacherSchedule')){
-                                var index = -1;
-                                for (var k = 0; k < this.weekEventObject[arrayList[i].startHour].teacherSchedule.length; k++) {
-                                    if(this.weekEventObject[arrayList[i].startHour].teacherSchedule[k].id == arrayList[i].id){
-                                        index = k;
-                                        break;
+                                if(arrayList[i].deliveryType == 'Personal Instruction'){
+                                    var index = -1;
+                                    for (var k = 0; k < this.weekEventObject[arrayList[i].startHour].teacherSchedule.pi.length; k++) {
+                                        if(this.weekEventObject[arrayList[i].startHour].teacherSchedule.pi[k].id == arrayList[i].id){
+                                            index = k;
+                                            break;
+                                        }
                                     }
+                                    if(index == -1)
+                                        this.weekEventObject[arrayList[i].startHour].teacherSchedule.pi.push(arrayList[i]);
                                 }
-                                if(index == -1)
-                                    this.weekEventObject[arrayList[i].startHour].teacherSchedule.push(arrayList[i]);
+                                else if(arrayList[i].deliveryType == 'Group Instruction'){
+                                    var index = -1;
+                                    for (var k = 0; k < this.weekEventObject[arrayList[i].startHour].teacherSchedule.gi.length; k++) {
+                                        if(this.weekEventObject[arrayList[i].startHour].teacherSchedule.gi[k].id == arrayList[i].id){
+                                            index = k;
+                                            break;
+                                        }
+                                    }
+                                    if(index == -1)
+                                        this.weekEventObject[arrayList[i].startHour].teacherSchedule.gi.push(arrayList[i]);
+                                }
+                                else if(arrayList[i].deliveryType == 'Group Facilitation'){
+                                    var index = -1;
+                                    for (var k = 0; k < this.weekEventObject[arrayList[i].startHour].teacherSchedule.gf.length; k++) {
+                                        if(this.weekEventObject[arrayList[i].startHour].teacherSchedule.gf[k].id == arrayList[i].id){
+                                            index = k;
+                                            break;
+                                        }
+                                    }
+                                    if(index == -1)
+                                        this.weekEventObject[arrayList[i].startHour].teacherSchedule.gf.push(arrayList[i]);
+                                }
                             }else{
-                                this.weekEventObject[arrayList[i].startHour].teacherSchedule = [];
-                                this.weekEventObject[arrayList[i].startHour].teacherSchedule.push(arrayList[i]);
+                                this.weekEventObject[arrayList[i].startHour].teacherSchedule = {};
+                                this.weekEventObject[arrayList[i].startHour].teacherSchedule.pi = [];
+                                this.weekEventObject[arrayList[i].startHour].teacherSchedule.gi = [];
+                                this.weekEventObject[arrayList[i].startHour].teacherSchedule.gf = [];
+                                if(arrayList[i].deliveryType == 'Personal Instruction'){
+                                    this.weekEventObject[arrayList[i].startHour].teacherSchedule.pi.push(arrayList[i]);
+                                }
+                                else if(arrayList[i].deliveryType == 'Group Instruction'){
+                                    this.weekEventObject[arrayList[i].startHour].teacherSchedule.gi.push(arrayList[i]);
+                                }
+                                else if(arrayList[i].deliveryType == 'Group Facilitation'){
+                                    this.weekEventObject[arrayList[i].startHour].teacherSchedule.gf.push(arrayList[i]);
+                                }
                             }
                         }
                         else{
                             this.weekEventObject[arrayList[i].startHour] = {};
-                            this.weekEventObject[arrayList[i].startHour].teacherSchedule = [];
-                            this.weekEventObject[arrayList[i].startHour].teacherSchedule.push(arrayList[i]);
+                            this.weekEventObject[arrayList[i].startHour].teacherSchedule = {};
+                            this.weekEventObject[arrayList[i].startHour].teacherSchedule.pi = [];
+                            this.weekEventObject[arrayList[i].startHour].teacherSchedule.gi = [];
+                            this.weekEventObject[arrayList[i].startHour].teacherSchedule.gf = [];
+                            if(arrayList[i].deliveryType == 'Personal Instruction'){
+                                this.weekEventObject[arrayList[i].startHour].teacherSchedule.pi.push(arrayList[i]);
+                            }
+                            else if(arrayList[i].deliveryType == 'Group Instruction'){
+                                this.weekEventObject[arrayList[i].startHour].teacherSchedule.gi.push(arrayList[i]);
+                            }
+                            else if(arrayList[i].deliveryType == 'Group Facilitation'){
+                                this.weekEventObject[arrayList[i].startHour].teacherSchedule.gf.push(arrayList[i]);
+                            }
                         }
                     }
                 }
@@ -6056,7 +6106,15 @@ function SylvanCalendar() {
 
     this.renderWeekModal = function(calEvent, jsEvent, view){
         if(view.name == 'agendaWeek'){
-            alert(calEvent.title);
+            console.log(calEvent,jsEvent, view);
+            wjQuery("#weekmodal").dialog({
+                modal: true,
+                draggable: false,
+                resizable: false,
+                height: "auto",
+                width: 800
+            });
+            wjQuery("#weekmodal").dialog('option', 'title', moment(calEvent.start).format('dddd')+" "+moment(calEvent.start).format('hh:mm A'));
         }
     };
 
@@ -6115,56 +6173,207 @@ function SylvanCalendar() {
                         textColor: "#333333",
                     }
 
-                if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
-                    if(piSelected){
+                if(piSelected){
+                    piObj.title = "";
+                    piObj.backgroundColor = "#ebf5fb";
+                    piObj.borderColor = "#9acaea";
+                    piObj.deliveryType = "Personal-Instruction";
+                    if((piSelected && !giSelected)|| Object.keys(this.weekEventObject[Object.keys(this.weekEventObject)[i]]).length > 0){
+                        piObj.title += "S/T = ";    
+                    }
+                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
                         if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('pi')){
-                            if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length != 0){
-                                piObj.title = "";
-                                if((piSelected && !giSelected)|| (this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length == 0 &&
-                                   this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length == 0)){
-                                    piObj.title += "S/S = ";    
-                                }
-                                piObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length +"/"+ piSpace;
-                                piObj.backgroundColor = "#ebf5fb";
-                                piObj.borderColor = "#9acaea";
-                                piObj.deliveryType = "Personal-Instruction";
-                                self.eventList.push(piObj);
-                            }
+                            
+                            piObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length +"/";
+                        }
+                        else{
+                            piObj.title += "0/"
                         }
                     }
-                    if(giSelected){
-                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('gi')){
-                            if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length != 0){
-                                giObj.title = "";
-                                if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length == 0 &&
-                                   this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length == 0){
-                                    giObj.title += "S/S = ";    
-                                }
-                                giObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length +"/"+ giSpace;
-                                giObj.backgroundColor = "#fedeb7";
-                                giObj.borderColor = "#f88e50";
-                                giObj.deliveryType = "Group-Instruction";
-                                self.eventList.push(giObj);
-                            }
+                    else{
+                            piObj.title += "0/"
+                    }
+                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherSchedule')){
+                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.hasOwnProperty('pi')){
+                            piObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.pi.length +"<br>";
+                        }
+                        else{
+                            piObj.title += "0 <br>"
                         }
                     }
-                    if(gfSelected){
-                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('gf')){
-                            if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length != 0){
-                                gfObj.title = "";
-                                if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length == 0 &&
-                                   this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length == 0){
-                                    gfObj.title += "S/S = ";    
-                                }
-                                gfObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length +"/"+ gfSpace;
-                                gfObj.backgroundColor = "#dff0d5";
-                                gfObj.borderColor = "#7bc143";
-                                gfObj.deliveryType = "Group-Facilitation";
-                                self.eventList.push(gfObj);
-                            }
+                    else{
+                            piObj.title += "0 <br>"
+                    }
+                    if((piSelected && !giSelected)|| Object.keys(this.weekEventObject[Object.keys(this.weekEventObject)[i]]).length > 0){
+                        piObj.title += "S/S = ";    
+                    }                   
+                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
+                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('pi')){
+                            piObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length +"/"+ piSpace +"<br>";
+                        }
+                        else{
+                            piObj.title += "0/"+piSpace +"<br>";
                         }
                     }
+                    else{
+                        piObj.title += "0/"+piSpace +"<br>";
+                    }
+                    if((piSelected && !giSelected)|| Object.keys(this.weekEventObject[Object.keys(this.weekEventObject)[i]]).length > 0){
+                        piObj.title += "TS = ";    
+                    }
+                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherSchedule')){
+                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.hasOwnProperty('pi')){
+                            piObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.pi.length +"/";
+                        }
+                        else{
+                            piObj.title += "0/";
+                        }
+                    }
+                    else{
+                        piObj.title += "0/";
+                    }
+                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherAvailability')){
+                        piObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherAvailability.length +"<br>";
+                    }
+                    else{
+                        piObj.title += "0"
+                    }
+                    self.eventList.push(piObj);
                 }
+                if(giSelected){
+                    giObj.title = "";
+                    giObj.backgroundColor = "#fedeb7";
+                    giObj.borderColor = "#f88e50";
+                    giObj.deliveryType = "Group-Instruction";
+                    if(Object.keys(this.weekEventObject[Object.keys(this.weekEventObject)[i]]).length > 0){
+                        giObj.title += "S/T = ";    
+                    }
+                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
+                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('gi')){
+                            
+                            giObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length +"/";
+                        }
+                        else{
+                            giObj.title += "0/"
+                        }
+                    }
+                    else{
+                        giObj.title += "0/"
+                    }
+                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherSchedule')){
+                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.hasOwnProperty('gi')){
+                            giObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gi.length +"<br>";
+                        }
+                        else{
+                            giObj.title += "0 <br>"
+                        }
+                    }
+                    else{
+                        giObj.title += "0 <br>"
+                    }
+                    if(Object.keys(this.weekEventObject[Object.keys(this.weekEventObject)[i]]).length > 0){
+                        giObj.title += "S/S = ";    
+                    }                   
+                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
+                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('gi')){
+                            giObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length +"/"+ giSpace +"<br>";
+                        }
+                        else{
+                            giObj.title += "0/"+giSpace +"<br>";
+                        }
+                    }
+                    else{
+                        giObj.title += "0/"+giSpace +"<br>";
+                    }
+                    if(Object.keys(this.weekEventObject[Object.keys(this.weekEventObject)[i]]).length > 0){
+                        giObj.title += "TS = ";    
+                    }
+                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherSchedule')){
+                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.hasOwnProperty('gi')){
+                            giObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gi.length +"/";
+                        }
+                        else{
+                            giObj.title += "0/";
+                        }
+                    }
+                    else{
+                        giObj.title += "0/";
+                    }
+                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherAvailability')){
+                        giObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherAvailability.length +"<br>";
+                    }
+                    else{
+                        giObj.title += "0"
+                    }
+                    self.eventList.push(giObj);
+                }
+                if(gfSelected){
+                    gfObj.title = "";
+                    gfObj.backgroundColor = "#dff0d5";
+                    gfObj.borderColor = "#7bc143";
+                    gfObj.deliveryType = "Group-Facilitation";
+                    if(Object.keys(this.weekEventObject[Object.keys(this.weekEventObject)[i]]).length > 0){
+                        gfObj.title += "S/T = ";    
+                    }
+                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
+                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('gf')){
+                            gfObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length +"/";
+                        }
+                        else{
+                            gfObj.title += "0/"
+                        }
+                    }
+                    else{
+                        gfObj.title += "0/"
+                    }
+                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherSchedule')){
+                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.hasOwnProperty('gf')){
+                            gfObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gf.length +"<br>";
+                        }
+                        else{
+                            gfObj.title += "0 <br>"
+                        }
+                    }
+                    else{
+                        gfObj.title += "0 <br>"
+                    }
+                    if(Object.keys(this.weekEventObject[Object.keys(this.weekEventObject)[i]]).length > 0){
+                        gfObj.title += "S/S = ";    
+                    }                   
+                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
+                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('gf')){
+                            gfObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length +"/"+ gfSpace +"<br>";
+                        }
+                        else{
+                            gfObj.title += "0/"+gfSpace +"<br>";
+                        }
+                    }
+                    else{
+                        gfObj.title += "0/"+gfSpace +"<br>";
+                    }
+                    if(Object.keys(this.weekEventObject[Object.keys(this.weekEventObject)[i]]).length > 0){
+                        gfObj.title += "TS = ";    
+                    }
+                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherSchedule')){
+                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.hasOwnProperty('gf')){
+                            gfObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gf.length +"/";
+                        }
+                        else{
+                            gfObj.title += "0/";
+                        }
+                    }
+                    else{
+                        gfObj.title += "0/";
+                    }
+                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherAvailability')){
+                        gfObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherAvailability.length +"<br>";
+                    }
+                    else{
+                        gfObj.title += "0"
+                    }
+                    self.eventList.push(gfObj);
+                }
+                
             }
             self.calendar.fullCalendar('removeEvents');
             self.calendar.fullCalendar('removeEventSource');
