@@ -927,13 +927,12 @@ function SylvanCalendar() {
 
           allowToDropTeacher = self.validateTeacherOnSameRow(teacherId, startHour);
           if(allowToDropTeacher){
-            var isNonPreferred = self.checkNonPreferredStudentForTeacher(teacherId, newEvent[0]);
-            if(!isNonPreferred){
-              // Check available teacher for droapable time
-              if(self.checkForStaffAvailability(teacherId, startHour)){
-                if (newEvent.length == 0) {
-                  this.tapaneConflictCheck(t, date, allDay, ev, ui, resource, elm);
-                } else if (newEvent.length == 1) {
+            if(self.checkForStaffAvailability(teacherId, startHour)){
+              if (newEvent.length == 0) {
+                this.tapaneConflictCheck(t, date, allDay, ev, ui, resource, elm);
+              } else if (newEvent.length == 1) {
+                var isNonPreferred = self.checkNonPreferredStudentForTeacher(teacherId, newEvent[0]);
+                if(!isNonPreferred){
                   if (!(newEvent[0].hasOwnProperty('teachers')) || (newEvent[0].hasOwnProperty('teachers') && newEvent[0]['teachers'].length == 0)) {
                     if (!newEvent[0].hasOwnProperty('students')) {
                       this.tapaneConflictCheck(t, date, allDay, ev, ui, resource, elm);
@@ -955,11 +954,37 @@ function SylvanCalendar() {
                       }
                     }
                   }
+                }else{
+                  // Non prefered case
+                  if (!(newEvent[0].hasOwnProperty('teachers')) || (newEvent[0].hasOwnProperty('teachers') && newEvent[0]['teachers'].length == 0)) {
+                    if (!newEvent[0].hasOwnProperty('students')) {
+                      self.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher. Do you wish to continue?");
+                    } else {
+                      var showPopup = false;
+                      wjQuery.each(newEvent[0]['students'], function (k, v) {
+                          var index = techerPrograms.map(function (x) {
+                              return x.id;
+                          }).indexOf(v.programId);
+                          if (index == -1) {
+                              showPopup = true;
+                              return false;
+                          }
+                      });
+                      if (showPopup) {
+                        self.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and Teacher program is not matching. Do you wish to continue?");
+                      } else {
+                        self.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher. Do you wish to continue?");
+                      }
+                    }
+                  }
                 }
-              }else{
-                if (newEvent.length == 0) {
-                  this.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher is not available. Do you wish to continue?");
-                } else if (newEvent.length == 1) {
+              }
+            }else{
+              if (newEvent.length == 0) {
+                this.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher is not available. Do you wish to continue?");
+              } else if (newEvent.length == 1) {
+                var isNonPreferred = self.checkNonPreferredStudentForTeacher(teacherId, newEvent[0]);
+                if(!isNonPreferred){
                   if (!(newEvent[0].hasOwnProperty('teachers')) || (newEvent[0].hasOwnProperty('teachers') && newEvent[0]['teachers'].length == 0)) {
                     if (!newEvent[0].hasOwnProperty('students')) {
                       this.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher is not available. Do you wish to continue?");
@@ -981,40 +1006,8 @@ function SylvanCalendar() {
                       }
                     }
                   }
-                }
-              }
-            }else{
-              // Check available teacher for droapable time
-              if(self.checkForStaffAvailability(teacherId, startHour)){
-                if (newEvent.length == 0) {
-                      self.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher. Do you wish to continue?");
-                } else if (newEvent.length == 1) {
-                  if (!(newEvent[0].hasOwnProperty('teachers')) || (newEvent[0].hasOwnProperty('teachers') && newEvent[0]['teachers'].length == 0)) {
-                    if (!newEvent[0].hasOwnProperty('students')) {
-                      self.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher. Do you wish to continue?");
-                    } else {
-                      var showPopup = false;
-                      wjQuery.each(newEvent[0]['students'], function (k, v) {
-                          var index = techerPrograms.map(function (x) {
-                              return x.id;
-                          }).indexOf(v.programId);
-                          if (index == -1) {
-                              showPopup = true;
-                              return false;
-                          }
-                      });
-                      if (showPopup) {
-                          this.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and Teacher program is not matching. Do you wish to continue?");
-                      } else {
-                        this.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher. Do you wish to continue?");
-                      }
-                    }
-                  }
-                }
-              }else{
-                if (newEvent.length == 0) {
-                  this.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and Teacher is not available. Do you wish to continue?");
-                } else if (newEvent.length == 1) {
+                }else{
+                  // non prefered case
                   if (!(newEvent[0].hasOwnProperty('teachers')) || (newEvent[0].hasOwnProperty('teachers') && newEvent[0]['teachers'].length == 0)) {
                     if (!newEvent[0].hasOwnProperty('students')) {
                       this.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and Teacher is not available. Do you wish to continue?");
@@ -1062,10 +1055,10 @@ function SylvanCalendar() {
             var prevStudObj = t.convertedStudentObj[index];
             if (index != -1) {
               if (newResourceObj.deliveryType != "Group Instruction") {
-                // var allowToDropStudent = true;
-                // if(startHour.getTime() != prevEvent[0].start.getTime()){
-                var allowToDropStudent = self.validateStudentOnSameRow(stuId, startHour);
-                // }
+                var allowToDropStudent = true;
+                if(startHour.getTime() != prevEvent[0].start.getTime()){
+                  allowToDropStudent = self.validateStudentOnSameRow(stuId, startHour);
+                }
                 if(allowToDropStudent){
                   if (newEvent.length == 0) {
                       if (wjQuery(elm).attr("pinnedId")) {
@@ -1427,7 +1420,7 @@ function SylvanCalendar() {
         }).indexOf(teacherId);
         if (teacher) {
             elm.remove();
-            t.taList.splice(index, 1);
+            // t.taList.splice(index, 1);
             var teacherObj = {
                 id: teacher[0].id,
                 name: teacher[0].name,
@@ -3663,14 +3656,14 @@ function SylvanCalendar() {
                             }
 
                         });
-                        if (value['deliveryType'] != "Group Instruction" ) {
+                        // if (value['deliveryType'] != "Group Instruction" ) {
                             if (value['pinId'] != undefined) {
                                 self.addContext(uniqueId, 'student', true, value['deliveryType'], value['sessionStatus']);
                             }
                             else {
                                 self.addContext(uniqueId, 'student', false, value['deliveryType'], value['sessionStatus']);
                             }
-                        }
+                        // }
                         self.calendar.fullCalendar('updateEvent', event);
                     } else {
                         var obj = {
@@ -3747,14 +3740,14 @@ function SylvanCalendar() {
                             obj.title += '<span class="student-placeholder-'+obj.deliveryType+'">Student name</span>';
                             self.addContext("", 'studentPlaceholder', true, obj.deliveryType);
                         }
-                        if (value['deliveryType'] != "Group Instruction") {
+                        // if (value['deliveryType'] != "Group Instruction") {
                             if (value['pinId'] != undefined) {
                                 self.addContext(uniqueId, 'student', true, value['deliveryType'], value['sessionStatus']);
                             }
                             else {
                                 self.addContext(uniqueId, 'student', false, value['deliveryType'], value['sessionStatus']);
                             }
-                        }
+                        // }
                         self.eventList.push(obj);
                         if (isFromFilter) {
                             self.calendar.fullCalendar('removeEvents');
@@ -4586,12 +4579,12 @@ function SylvanCalendar() {
                     obj.pin.visible = false;
                     self.pinStudent(options.$trigger[0]);
                 }
-                obj.omit = {
-                    name: "Omit",
-                    callback: function (key, options) {
-                        self.omitStudentFromSession(options.$trigger[0]);
-                    }
-                }
+                // obj.omit = {
+                //     name: "Omit",
+                //     callback: function (key, options) {
+                //         self.omitStudentFromSession(options.$trigger[0]);
+                //     }
+                // }
                 obj.excuse = {
                     name: "Excuse",
                     disabled:MAKEUP_STATUS == sessionStatus,
@@ -4660,6 +4653,26 @@ function SylvanCalendar() {
                 self.removeStudentFromSession(options.$trigger[0]);
               }
             }*/
+            if(deliveryType == "Group Instruction"){
+              obj.omit = {
+                name: "Remove",
+                callback: function (key, options) {
+                    self.omitStudentFromSession(options.$trigger[0]);
+                }
+              }
+              wjQuery(function () {
+                wjQuery.contextMenu({
+                    selector: 'span[uniqueId="' + uniqueId + '"]',
+                    build: function ($trigger, e) {
+                      return {
+                          items: obj
+                      };
+                    }
+                });
+              });
+            }
+
+
             if (deliveryType == "Personal Instruction") {
                 if (isPinned) {
                     obj.unpin.visible = true;
@@ -5559,7 +5572,7 @@ function SylvanCalendar() {
                 this.convertedTeacherObj[index] = teacherObj;
             }
             var prevEventId = wjQuery(event).attr("eventid");
-                var prevEvent = self.calendar.fullCalendar('clientEvents', prevEventId);
+            var prevEvent = self.calendar.fullCalendar('clientEvents', prevEventId);
             if (prevEvent) {
                 var eventTitleHTML = wjQuery(prevEvent[0].title);
                 for (var i = 0; i < eventTitleHTML.length; i++) {
@@ -5604,6 +5617,10 @@ function SylvanCalendar() {
                         return x.id;
                     }).indexOf(teacherId);
                     prevEvent[0].teachers.splice(removeTeacherIndex, 1);
+
+                    // remove all conflicts By passing prevEvent Object 
+                    self.removeAllConflictsFromPrevEvent(prevEvent[0]);
+
                     if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "student-placeholder-"+prevEvent[0].deliveryType)) ||
                        (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder" && eventTitleHTML[1].className == "student-placeholder-"+prevEvent[0].deliveryType) ||
                        (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder" && eventTitleHTML[2].className == "student-placeholder-"+prevEvent[0].deliveryType)) {
@@ -5613,6 +5630,7 @@ function SylvanCalendar() {
                         }
                         this.calendar.fullCalendar('removeEvents', prevEventId);
                     }
+                    this.calendar.fullCalendar('updateEvent', prevEvent);
                 } else {
                     for (var i = 0; i < this.eventList.length; i++) {
                         if (this.eventList[i].id == prevEventId)
@@ -5623,8 +5641,11 @@ function SylvanCalendar() {
                 self.populateTAPane(self.taList);
             }
         }else{
-            // Dont remove taecher from event in which he is assigned
+            // Dont remove taecher from event on which he is placed
         }
+        self.openSofPane();
+        self.showConflictMsg();
+        self.draggable('draggable');
     }
 
     this.getStudentTimings = function(locationId, selectedDate, timeSlotType, studentDuration, istimeSlotType){
@@ -5682,8 +5703,8 @@ function SylvanCalendar() {
     this.validateTeacherOnSameRow = function(teacherId, startHour){
       var self = this;
       var allowToDropTeacher = true;
-      wjQuery.each(this.resourceList, function(resourceKey, resourceObj){
-        var newEventId = resourceObj.id+startHour;
+      for(var k=0; k< self.resourceList.length; k++){
+        var newEventId = self.resourceList[k].id+startHour;
         var eventObj = self.calendar.fullCalendar('clientEvents', newEventId);
         if(eventObj.length && eventObj[0].hasOwnProperty("teachers")){
           for(var i=0; i< eventObj[0]['teachers'].length; i++){
@@ -5692,8 +5713,12 @@ function SylvanCalendar() {
               break;
             }
           }
+          if(!allowToDropTeacher){
+            allowToDropTeacher = false;
+            break;
+          }
         }
-      })
+      }
       return allowToDropTeacher;
     }
 
