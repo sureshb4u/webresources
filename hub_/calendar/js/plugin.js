@@ -1904,7 +1904,7 @@ function SylvanCalendar() {
         wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').html(dayOfWeek + " <br/> " + dayofMonth);
         this.clearEvents();
         currentCalendarDate = moment(currentCalendarDate).format("YYYY-MM-DD");
-        this.refreshCalendarEvent(locationId, true);
+        this.refreshCalendarEvent(this.locationId, true);
     }
 
     this.dateFromCalendar = function (date, locationId) {
@@ -1923,7 +1923,7 @@ function SylvanCalendar() {
         wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').html(dayOfWeek + " <br/> " + dayofMonth);
         self.clearEvents();
         var currentCalendarDate = moment(date).format("YYYY-MM-DD");
-        self.refreshCalendarEvent(locationId, true);
+        self.refreshCalendarEvent(this.locationId, true);
     }
 
     this.next = function (locationId) {
@@ -1941,7 +1941,7 @@ function SylvanCalendar() {
         wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').html(dayOfWeek + " <br/> " + dayofMonth);
         this.clearEvents();
         currentCalendarDate = moment(currentCalendarDate).format("YYYY-MM-DD");
-        this.refreshCalendarEvent(locationId, true);
+        this.refreshCalendarEvent(this.locationId, true);
     }
 
     this.refreshCalendarEvent = function (locationId, isFetch) {
@@ -2059,6 +2059,7 @@ function SylvanCalendar() {
                 if (self.teacherSchedule == null) {
                     self.teacherSchedule = [];
                 }
+                self.generateFilterObject(self.filterObject);
                 self.generateWeekEventObject(self.generateEventObject(self.teacherSchedule, "teacherSchedule"),'teacherSchedule');
                 self.teacherAvailability = isFetch || (self.teacherAvailability.length == 0) ? data.getTeacherAvailability(locationId, startDate, endDate) : self.teacherAvailability;
                 if (self.teacherAvailability == null) {
@@ -2070,6 +2071,8 @@ function SylvanCalendar() {
                     if (self.students == null) {
                         self.students = [];
                     }
+                    self.filterObject.student = self.students == null ? [] : self.students;
+                    self.generateFilterObject(self.filterObject);
                     self.generateWeekEventObject(self.generateEventObject(self.students, "studentSession"));
                     self.masterScheduleStudents = data.getStudentMasterSchedule(locationId, startDate, endDate)
                     if (self.masterScheduleStudents == null) {
@@ -2082,6 +2085,8 @@ function SylvanCalendar() {
                     if (self.students == null) {
                         self.students = [];
                     }
+                    self.filterObject.student = self.students == null ? [] : self.students;
+                    self.generateFilterObject(self.filterObject);
                     self.generateWeekEventObject(self.generateEventObject(self.students, "studentSession"));
                 }
                 self.populateWeekEvents();
@@ -6017,14 +6022,14 @@ function SylvanCalendar() {
                         if(this.weekEventObject.hasOwnProperty(this.taList[i].startHour)){
                             if(this.weekEventObject[this.taList[i].startHour].hasOwnProperty('teacherAvailability')){
                                 var index = -1;
-                                for (var k = 0; k < this.weekEventObject[arrayList[i].startHour].teacherAvailability.length; k++) {
-                                    if(this.weekEventObject[arrayList[i].startHour].teacherAvailability[k].id == arrayList[i].id){
+                                for (var k = 0; k < this.weekEventObject[this.taList[i].startHour].teacherAvailability.length; k++) {
+                                    if(this.weekEventObject[this.taList[i].startHour].teacherAvailability[k].id == this.taList[i].id){
                                         index = k;
                                         break;
                                     }
                                 }
                                 if(index == -1)
-                                    this.weekEventObject[arrayList[i].startHour].teacherAvailability.push(arrayList[i]);
+                                    this.weekEventObject[this.taList[i].startHour].teacherAvailability.push(this.taList[i]);
                             }else{
                                 this.weekEventObject[this.taList[i].startHour].teacherAvailability = [];
                                 this.weekEventObject[this.taList[i].startHour].teacherAvailability.push(this.taList[i]);    
