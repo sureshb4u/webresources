@@ -3529,7 +3529,7 @@ function SylvanCalendar() {
                         studentNotPlacedFlag = true;
                     }
                     else {
-                        serviceStudentList[Object.keys(serviceStudentList)[i]].forEach(function (ind,e) {
+                        serviceStudentList[Object.keys(serviceStudentList)[i]].forEach(function (e, ind) {
                             e.resourceId = self.resourceList[j].id;
                             var index = self.convertedStudentObj.findIndex(function (x) {
                             return x.id == e.id &&
@@ -5929,7 +5929,7 @@ function SylvanCalendar() {
                     for(var j = currentView.start.getTime();j<currentView.end.getTime();j=currentView.start.setDate(currentView.start.getDate() + 1)){
                         if (arrayList[i]['hub_' + moment(j).format('dddd').toLowerCase()]) {    
                         var taObject = wjQuery.extend(true, {}, obj);
-                            if(j >= taObject.startDate.getTime() && j <= taObject.endDate.getTime()){
+                            if(j > taObject.startDate.getTime() && j < taObject.endDate.getTime()){
                                 switch (moment(j).format('dddd').toLowerCase()) {
                                 case 'monday':
                                     taObject.startTime = new Date(moment(j).format('YYYY-MM-DD')+" "+arrayList[i]['hub_monstarttime@OData.Community.Display.V1.FormattedValue']);
