@@ -2790,9 +2790,19 @@ function SylvanCalendar() {
             for (var i = 0; i < args.length; i++) {
                 if(self.staffExceptions.length){
                   for(var k=0; k< self.staffExceptions.length ; k++){
-                    var exceptionStartDate = new Date(self.staffExceptions[k]['hub_startdate@OData.Community.Display.V1.FormattedValue']);
-                    exceptionEndDate = exceptionEndDate == undefined ? exceptionStartDate : exceptionEndDate ;
-                    var exceptionEndDate = new Date(self.staffExceptions[k]['hub_enddate@OData.Community.Display.V1.FormattedValue']);
+                    var exceptionStartDate = new Date(self.staffExceptions[k]['hub_startdate']);
+                    // Set time for start date
+                    exceptionStartDate = new Date(exceptionStartDate).setHours(0);
+                    exceptionStartDate = new Date(new Date(exceptionStartDate).setMinutes(0));
+                    exceptionStartDate = new Date(new Date(exceptionStartDate).setSeconds(0));
+
+                    var exceptionEndDate = self.staffExceptions[k]['hub_enddate'];
+                    exceptionEndDate = exceptionEndDate == undefined ? exceptionStartDate : new Date(exceptionEndDate);
+                    // Set time for end date
+                    exceptionEndDate = new Date(exceptionEndDate).setHours(0);
+                    exceptionEndDate = new Date(new Date(exceptionEndDate).setMinutes(0));
+                    exceptionEndDate = new Date(new Date(exceptionEndDate).setSeconds(0));
+
                     if(args[i]['_hub_staffid_value'] == self.staffExceptions[k]['astaff_x002e_hub_staffid'] && 
                         currentView.getTime() >= exceptionStartDate.getTime() && currentView.getTime() <= exceptionEndDate.getTime()){
                       index = 1;
