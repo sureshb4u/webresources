@@ -915,7 +915,7 @@ function SylvanCalendar() {
               t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "DeliveryType is different. Do you wish to continue?");
             }
           }else{
-            t.prompt("Can not be placed to a session.");
+            t.prompt("The selected student is already scheduled for the respective timeslot.");
           }
         }
         else if (wjQuery(elm).attr("type") == 'teacher') {
@@ -1033,7 +1033,7 @@ function SylvanCalendar() {
               }
             }
           }else{
-            t.prompt("Can not be placed to a session.");
+            t.prompt("The selected staff is already scheduled for the respective timeslot.");
           }
         }
         else if (wjQuery(elm).attr("type") == 'studentSession') {
@@ -1327,7 +1327,7 @@ function SylvanCalendar() {
                       }
                   }
                 }else{
-                  t.prompt("Can not be placed to a session.");
+                  t.prompt("The selected student is already scheduled for the respective timeslot.");
                 }
             } else {
                 t.prompt("Can not be placed to a GI session.");
@@ -1401,7 +1401,7 @@ function SylvanCalendar() {
                       }
                   }
                 }else{
-                  t.prompt("Can not be placed to a session.");
+                  t.prompt("The selected staff is already scheduled for the respective timeslot.");
                 }
             }
         }
@@ -4246,7 +4246,7 @@ function SylvanCalendar() {
                     });
                   }else{
                     wjQuery("#start-space, #end-space, .excuseSave").css("visibility", "hidden");
-                    wjQuery("#error_block").text("No timings are there for this date, Please select a different date");
+                    wjQuery("#error_block").text("No Instructional hours found for the given date.");
                   }
                 }
             });
@@ -4440,7 +4440,7 @@ function SylvanCalendar() {
                     });
                   }else{
                     wjQuery("#start-space, #end-space, .excuseSave").css("visibility", "hidden");
-                    wjQuery("#error_block").text("No timings are there for this date, Please select a different date");
+                    wjQuery("#error_block").text("No Instructional hours found for the given date.");
                   }
                 }
             });
@@ -5424,7 +5424,7 @@ function SylvanCalendar() {
                     }else{
                       wjQuery(".loading").hide();
                       wjQuery("#makeup").dialog("close");
-                      self.prompt("Can not be placed to a session.");
+                      self.prompt("The selected student is already scheduled for the respective timeslot.");
                     }
                 }
             });
