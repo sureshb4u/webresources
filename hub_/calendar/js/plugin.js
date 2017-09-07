@@ -6333,15 +6333,15 @@ function SylvanCalendar() {
                     }                   
                     if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
                         if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('pi')){
-                            var find1to1 = false;
+                            var find1to1 = false,count = 0;
                             for(var x=0;x<this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length;x++){
                                 if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi[x].is1to1){
                                     find1to1 = true;
-                                    break;
+                                    count += this.getResourceObj(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi[x].resourceId).capacity;
                                 }
                             }
                             if(find1to1){
-                                piObj.title += piSpace +"/"+piSpace +"</div>";
+                                piObj.title += count +"/"+piSpace +"</div>";
                             }
                             else{
                                 piObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length +"/"+piSpace +"</div>";
@@ -6422,15 +6422,15 @@ function SylvanCalendar() {
                     }                   
                     if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
                         if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('gi')){
-                            var find1to1 = false;
+                            var find1to1 = false,count = 0;
                             for(var x=0;x<this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length;x++){
                                 if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi[x].is1to1){
                                     find1to1 = true;
-                                    break;
+                                    count+= this.getResourceObj(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi[x].resourceId).capacity;
                                 }
                             }
                             if(find1to1){
-                                giObj.title += giSpace +"/"+ giSpace +"</div>";
+                                giObj.title += count +"/"+ giSpace +"</div>";
                             }
                             else{
                                 giObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length +"/"+ giSpace +"</div>";
@@ -6511,15 +6511,15 @@ function SylvanCalendar() {
                     }                   
                     if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
                         if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('gf')){
-                            var find1to1 = false;
+                            var find1to1 = false,var count = 0;
                             for(var x=0;x<this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length;x++){
                                 if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf[x].is1to1){
                                     find1to1 = true;
-                                    break;
+                                    count+=this.getResourceObj(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf[x].resourceId).capacity;
                                 }
                             }
                             if(find1to1){
-                                gfObj.title += gfSpace +"/"+ gfSpace +"</div>";
+                                gfObj.title += count +"/"+ gfSpace +"</div>";
                             }
                             else{
                                 gfObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length +"/"+ gfSpace +"</div>";
