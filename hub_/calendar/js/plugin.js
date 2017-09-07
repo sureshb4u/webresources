@@ -2081,7 +2081,6 @@ function SylvanCalendar() {
                 }
             }
             else if (self.calendar.fullCalendar('getView').name == 'agendaWeek'){
-                wjQuery('.loading').show();
                 self.eventList = [];
                 startDate = moment(currentView.start).format("YYYY-MM-DD");
                 endDate = moment(moment(currentView.start).add(6, 'd')).format("YYYY-MM-DD");
@@ -2130,6 +2129,7 @@ function SylvanCalendar() {
 
     this.weekView = function () {
         var filterElement = undefined;
+        wjQuery('.loading').show();
         wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').css('text-align', 'center');
         if (this.calendar.fullCalendar('getView').name != 'agendaWeek') {
             var isFilterOpen = false;
@@ -2158,6 +2158,7 @@ function SylvanCalendar() {
         var filterElement = undefined;
         var self = this;
         self.eventList = [];
+        wjQuery('.loading').show();
         self.calendar.fullCalendar('removeEvents');
         if (self.calendar.fullCalendar('getView').name != 'resourceDay') {
             var isFilterOpen = false;
