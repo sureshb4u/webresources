@@ -958,6 +958,7 @@ function SylvanCalendar() {
                 }
               }
             } else {
+              // Pending DT 
               t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "DeliveryType is different. Do you wish to continue?");
             }
           }else{
@@ -2722,19 +2723,19 @@ function SylvanCalendar() {
                             }
                         }
                         else if (obj.deliveryType == 'Group Facilitation') {
-                            if (serviceGF.hasOwnProperty(obj.serviceId+obj.startHour)) {
-                                var index = serviceGF[obj.serviceId+obj.startHour].findIndex(function (x) {
-                                    return x.id == obj.id &&
-                                           x.startHour.getTime() == obj.startHour.getTime();
-                                });
-                                if (index == -1) {
-                                    serviceGF[obj.serviceId+obj.startHour].push(obj);
-                                }
-                            }
-                            else {
-                                serviceGF[obj.serviceId+obj.startHour] = [];
-                                serviceGF[obj.serviceId+obj.startHour].push(obj);
-                            }
+                          if (serviceGF.hasOwnProperty(obj.serviceId+obj.startHour)) {
+                              var index = serviceGF[obj.serviceId+obj.startHour].findIndex(function (x) {
+                                  return x.id == obj.id &&
+                                         x.startHour.getTime() == obj.startHour.getTime();
+                              });
+                              if (index == -1) {
+                                  serviceGF[obj.serviceId+obj.startHour].push(obj);
+                              }
+                          }
+                          else {
+                              serviceGF[obj.serviceId+obj.startHour] = [];
+                              serviceGF[obj.serviceId+obj.startHour].push(obj);
+                          }
                         }
                     }
                 }
@@ -2782,10 +2783,23 @@ function SylvanCalendar() {
             }, 800);
         } else if (label == "teacherAvailability") {
             var currentCalendarDate = this.calendar.fullCalendar('getDate');
+            var currentView = new Date(currentCalendarDate).setHours(0);
+            currentView = new Date(new Date(currentCalendarDate).setMinutes(0));
+            currentView = new Date(new Date(currentCalendarDate).setSeconds(0));
+            var index = -1;
             for (var i = 0; i < args.length; i++) {
-                var index = self.staffExceptions.map(function (x) {
-                    return x['astaff_x002e_hub_staffid'];
-                }).indexOf(args[i]['_hub_staffid_value']);
+                if(self.staffExceptions.length){
+                  for(var k=0; k< self.staffExceptions.length ; k++){
+                    var exceptionStartDate = new Date(self.staffExceptions[k]['hub_startdate@OData.Community.Display.V1.FormattedValue']);
+                    var exceptionEndDate = new Date(self.staffExceptions[k]['hub_enddate@OData.Community.Display.V1.FormattedValue']);
+                    exceptionEndDate = exceptionEndDate == undefined ? exceptionStartDate : exceptionEndDate ;
+                    if(args[i]['_hub_staffid_value'] == self.staffExceptions[k]['astaff_x002e_hub_staffid'] && 
+                        currentView.getTime() >= exceptionStartDate.getTime() && currentView.getTime() <= exceptionEndDate.getTime()){
+                      index = 1;
+                      break;
+                    }
+                  }
+                }
                 if (index == -1) {
                     if (args[i]['hub_' + moment(currentCalendarDate).format('dddd').toLowerCase()]) {
                         var obj = {
