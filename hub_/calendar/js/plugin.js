@@ -5897,6 +5897,11 @@ function SylvanCalendar() {
                         obj.endDate = new Date(obj.endDate).setHours(0);
                         obj.endDate = new Date(new Date(obj.endDate).setMinutes(0));
                         obj.endDate = new Date(new Date(obj.endDate).setSeconds(0));
+                    }else{
+                        obj.endDate = new Date(currentView.end.getTime());
+                        obj.endDate = new Date(obj.endDate).setHours(0);
+                        obj.endDate = new Date(new Date(obj.endDate).setMinutes(0));
+                        obj.endDate = new Date(new Date(obj.endDate).setSeconds(0));
                     }
                     for(var j = currentView.start.getTime();j<currentView.end.getTime();j=currentView.start.setDate(currentView.start.getDate() + 1)){
                         if (arrayList[i]['hub_' + moment(j).format('dddd').toLowerCase()]) {    
