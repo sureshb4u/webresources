@@ -2804,7 +2804,7 @@ function SylvanCalendar() {
                     exceptionEndDate = new Date(new Date(exceptionEndDate).setSeconds(0));
 
                     if(args[i]['_hub_staffid_value'] == self.staffExceptions[k]['astaff_x002e_hub_staffid'] && 
-                        currentView.getTime() >= exceptionStartDate.getTime() && currentView.getTime() <= exceptionEndDate.getTime()){
+                        currentView.getTime() >= exceptionStartDate.getTime() && currentView.getTime() < exceptionEndDate.getTime()){
                       index = 1;
                       break;
                     }
@@ -3529,7 +3529,7 @@ function SylvanCalendar() {
                         studentNotPlacedFlag = true;
                     }
                     else {
-                        serviceStudentList[Object.keys(serviceStudentList)[i]].forEach(function (e) {
+                        serviceStudentList[Object.keys(serviceStudentList)[i]].forEach(function (ind,e) {
                             e.resourceId = self.resourceList[j].id;
                             var index = self.convertedStudentObj.findIndex(function (x) {
                             return x.id == e.id &&
@@ -3547,7 +3547,7 @@ function SylvanCalendar() {
                                 // else{
                                 //     self.convertedStudentObj.push(e);
                                 // }
-                                serviceStudentList[Object.keys(serviceStudentList)[i]].splice(i,1);
+                                serviceStudentList[Object.keys(serviceStudentList)[i]].splice(ind,1);
                             }
                         });
                         studentNotPlacedFlag = false;
