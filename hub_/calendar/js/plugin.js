@@ -2791,8 +2791,8 @@ function SylvanCalendar() {
                 if(self.staffExceptions.length){
                   for(var k=0; k< self.staffExceptions.length ; k++){
                     var exceptionStartDate = new Date(self.staffExceptions[k]['hub_startdate@OData.Community.Display.V1.FormattedValue']);
-                    var exceptionEndDate = new Date(self.staffExceptions[k]['hub_enddate@OData.Community.Display.V1.FormattedValue']);
                     exceptionEndDate = exceptionEndDate == undefined ? exceptionStartDate : exceptionEndDate ;
+                    var exceptionEndDate = new Date(self.staffExceptions[k]['hub_enddate@OData.Community.Display.V1.FormattedValue']);
                     if(args[i]['_hub_staffid_value'] == self.staffExceptions[k]['astaff_x002e_hub_staffid'] && 
                         currentView.getTime() >= exceptionStartDate.getTime() && currentView.getTime() <= exceptionEndDate.getTime()){
                       index = 1;
