@@ -878,24 +878,61 @@ function SylvanCalendar() {
                   if (newEvent[0]['students'] == undefined) {
                       t.studentSofConflictCheck(t, date, allDay, ev, ui, resource, elm);
                   } else {
-                    //  Validation for oneToOne check
-                    if (newEvent[0]['is1to1']) {
-                        // OneToOne Conflict
-                        var msgIndex = newEvent[0].conflictMsg.map(function (x) {
-                            return x;
-                        }).indexOf(2);
-                        if (msgIndex == -1) {
-                            newEvent[0].conflictMsg.push(2);
-                            self.updateConflictMsg(newEvent[0]);
-                        }
-                        t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Session is 'OneToOne' Type. Do you wish to continue?");
-                    } else {
-                        if (!(newEvent[0].hasOwnProperty('students')) || newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length < resource.capacity || resource.capacity == undefined)) {
-                            t.studentSofConflictCheck(t, date, allDay, ev, ui, resource, elm);
-                        } else if (newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length >= resource.capacity || resource.capacity == undefined)) {
-                            t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Capacity has reached the maximum. Do you wish to continue?");
-                        }
+                    // Check Services for same DT
+                    var studentIndex = prevEvent[0]['students'].map(function (x) {
+                      return x.id;
+                    }).indexOf(stuId);
+                    prevServiceId = prevEvent[0]['students'][studentIndex]['serviceId'];
+                    var showPromt = true;
+                    wjQuery.each(newEvent[0]['students'], function (k, v) {
+                      if (v.serviceId == prevServiceId) {
+                        showPromt = false;
+                      }
+                    });
+                    if(showPromt){
+                       // Services are not matching case
+                       //  Validation for oneToOne check
+                      if (newEvent[0]['is1to1']) {
+                          // OneToOne Conflict
+                          var msgIndex = newEvent[0].conflictMsg.map(function (x) {
+                              return x;
+                          }).indexOf(2);
+                          if (msgIndex == -1) {
+                              newEvent[0].conflictMsg.push(2);
+                              self.updateConflictMsg(newEvent[0]);
+                          }
+                          t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Services are not matching and Session is 'OneToOne' Type. Do you wish to continue?");
+                      } else {
+                          if (!(newEvent[0].hasOwnProperty('students')) || newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length < resource.capacity || resource.capacity == undefined)) {
+                            t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Services are not matching. Do you wish to continue?");
+                          } else if (newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length >= resource.capacity || resource.capacity == undefined)) {
+                            t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Services are not matching and Capacity has reached the maximum. Do you wish to continue?");
+                          }
+                      }
+                    }else{
+                      //  Validation for oneToOne check
+                      if (newEvent[0]['is1to1']) {
+                          // OneToOne Conflict
+                          var msgIndex = newEvent[0].conflictMsg.map(function (x) {
+                              return x;
+                          }).indexOf(2);
+                          if (msgIndex == -1) {
+                              newEvent[0].conflictMsg.push(2);
+                              self.updateConflictMsg(newEvent[0]);
+                          }
+                          t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Session is 'OneToOne' Type. Do you wish to continue?");
+                      } else {
+                          if (!(newEvent[0].hasOwnProperty('students')) || newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length < resource.capacity || resource.capacity == undefined)) {
+                              t.studentSofConflictCheck(t, date, allDay, ev, ui, resource, elm);
+                          } else if (newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length >= resource.capacity || resource.capacity == undefined)) {
+                              t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Capacity has reached the maximum. Do you wish to continue?");
+                          }
+                      }
                     }
+
+
+
+
                   }
                 }else{
                   // Non preferred teacher case
@@ -1162,7 +1199,7 @@ function SylvanCalendar() {
                                     }
                                   });
                                   if (showPromt) {
-                                    t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Servieces are not matching. Do you wish to continue?");
+                                    t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Services are not matching. Do you wish to continue?");
                                   } else {
                                     t.studentSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
                                   }
@@ -1201,7 +1238,7 @@ function SylvanCalendar() {
                                       }
                                   });
                                   if (showPromt) {
-                                      t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "DeliveryType is different and Servieces are not matching. Do you wish to continue?");
+                                      t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "DeliveryType is different and Services are not matching. Do you wish to continue?");
                                   } else {
                                       t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "DeliveryType is different. Do you wish to continue?");
                                   }
@@ -1276,7 +1313,7 @@ function SylvanCalendar() {
                                     }
                                   }
                                 } else if (newResourceObj.deliveryType == "Group Facilitation") {
-                                  // Check Services for same DI
+                                  // Check Services for same DT
                                   var studentIndex = prevEvent[0]['students'].map(function (x) {
                                     return x.id;
                                   }).indexOf(stuId);
@@ -1288,7 +1325,7 @@ function SylvanCalendar() {
                                     }
                                   });
                                   if (showPromt) {
-                                    t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and Servieces are not matching. Do you wish to continue?");
+                                    t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and Services are not matching. Do you wish to continue?");
                                   } else {
                                     t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher. Do you wish to continue?");
                                   }
@@ -1327,7 +1364,7 @@ function SylvanCalendar() {
                                       }
                                   });
                                   if (showPromt) {
-                                      t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and DeliveryType is different and Servieces are not matching. Do you wish to continue?");
+                                      t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and DeliveryType is different and Services are not matching. Do you wish to continue?");
                                   } else {
                                       t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and DeliveryType is different. Do you wish to continue?");
                                   }
@@ -2411,7 +2448,8 @@ function SylvanCalendar() {
                     eDate = new Date(val['hub_date@OData.Community.Display.V1.FormattedValue'] + " " + val['hub_end_time@OData.Community.Display.V1.FormattedValue']);
                     startHour = new Date(val['hub_date@OData.Community.Display.V1.FormattedValue'] + " " + val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
                     startHour = startHour.setMinutes(0);
-                    startHour = new Date(new Date(startHour).setSeconds(0));
+                    startHour = new Date(new Date(startHour).setSeconds(0)); 
+                    currentCalendarDate = startHour;
                 }
                 else{
                     currentCalendarDate = self.calendar.fullCalendar('getDate');
