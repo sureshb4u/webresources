@@ -2191,6 +2191,7 @@ function SylvanCalendar() {
             self.filterSlide(wjQuery, isFilterOpen == '0px');
         }
         this.resourceList = [];
+        var resources  = data.getResources(this.locationId);
         if (resources.length) {
             var pi = [];
             var gi = [];
