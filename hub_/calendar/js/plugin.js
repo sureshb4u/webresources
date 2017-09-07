@@ -6192,29 +6192,51 @@ function SylvanCalendar() {
                         }
                     }
                     else if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
-                        if((this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length > 0 && 
-                           this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length > 0) ||
-                           (this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length > 0 && 
-                           this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length > 0) ||
-                           (this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length > 0 && 
-                           this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length > 0)){
-                            addLabel = true;
+                        if (piSelected) {
+                            if((this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length > 0 && 
+                               this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length > 0) ||
+                               (this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length > 0 && 
+                               this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length > 0) ||
+                               (this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length > 0 && 
+                               this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length > 0)){
+                                addLabel = true;
+                            }
+                            else{
+                                oneDtStudent = true;
+                            }
                         }
                         else{
-                            oneDtStudent = true;
+                            if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length > 0 && 
+                               this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length > 0){
+                                addLabel = true;
+                            }
+                            else{
+                                oneDtStudent = true;
+                            }
                         }
                     }
                     else if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherSchedule')){
-                        if((this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.pi.length > 0 && 
-                           this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gi.length > 0) ||
-                           (this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.pi.length > 0 && 
-                           this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gf.length > 0) ||
-                           (this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gf.length > 0 && 
-                           this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gi.length > 0)){
-                            addLabel = true;
+                        if (piSelected) {
+                            if((this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.pi.length > 0 && 
+                               this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gi.length > 0) ||
+                               (this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.pi.length > 0 && 
+                               this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gf.length > 0) ||
+                               (this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gf.length > 0 && 
+                               this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gi.length > 0)){
+                                addLabel = true;
+                            }
+                            else{
+                                oneDtTeacher = true;
+                            }
                         }
                         else{
-                            oneDtTeacher = true;
+                            if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gf.length > 0 && 
+                               this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gi.length > 0){
+                                addLabel = true;
+                            }
+                            else{
+                                oneDtStudent = true;
+                            }
                         }
                     }
                     if(!addLabel && oneDtStudent && oneDtTeacher){
@@ -6229,7 +6251,7 @@ function SylvanCalendar() {
                     piObj.borderColor = "#9acaea";
                     piObj.deliveryType = "Personal-Instruction";
                     piObj.title += "<div class='stplace'>";
-                    if(!addLabel){
+                    if(!giSelected || !addLabel){
                         piObj.title += "S/T = ";    
                     }
                     if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
@@ -6259,7 +6281,7 @@ function SylvanCalendar() {
                             piObj.title += "0 </div>"
                     }
                     piObj.title += "<div class='ssplace'>"
-                    if(!addLabel){
+                    if(!giSelected || !addLabel){
                         piObj.title += "S/S = ";    
                     }                   
                     if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
@@ -6274,7 +6296,7 @@ function SylvanCalendar() {
                         piObj.title += "0/"+piSpace +"</div>";
                     }
                     piObj.title += "<div class='tsplace'>";
-                    if(!addLabel){
+                    if(!giSelected || !addLabel){
                         piObj.title += "TS = ";    
                     }
                     if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherSchedule')){
