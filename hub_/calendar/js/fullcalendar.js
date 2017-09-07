@@ -5468,18 +5468,24 @@ function AgendaEventRenderer() {
 				if(newWidthIdentification.length == 1){
 					level = 1;
 					seg.level = 1;
+					for (var b = 0; b < newWidthIdentification.length; b++) {
+						segs[newWidthIdentification[b]].level = level;
+						segs[newWidthIdentification[b]].newLevel = b+1;
+						segs[newWidthIdentification[b]].forward =0;
+					}
+				seg.forward = 0;
 				}
 				else if(newWidthIdentification.length == 2){
 					level = 2;
 					seg.level = 2;
+					for (var b = 0; b < newWidthIdentification.length; b++) {
+						segs[newWidthIdentification[b]].level = level;
+						segs[newWidthIdentification[b]].newLevel = b+1;
+						segs[newWidthIdentification[b]].forward = b==0 ? 1.1 : 0;
+					}
+				seg.forward = 0.3;
 				}
-				seg.forward = 0;
 				seg.newLevel = 0;
-				for (var b = 0; b < newWidthIdentification.length; b++) {
-					segs[newWidthIdentification[b]].level = level;
-					segs[newWidthIdentification[b]].forward = 0;
-					segs[newWidthIdentification[b]].newLevel = b+1;
-				}
 			}
 		}
 
@@ -5514,6 +5520,12 @@ function AgendaEventRenderer() {
 				left = leftmost +                                  // leftmost possible
 					(availWidth / (seg.newLevel + forward + 1) * seg.newLevel) // indentation
 					* dis + (rtl ? availWidth - outerWidth : 0);   // rtl
+					if(seg.newLevel > 0){
+						left += 3;
+					}
+					if(seg.newLevel == 1 && seg.level == 2){
+						outerWidth += 10;
+					}
 			}
 			seg.top = top;
 			seg.left = left;
