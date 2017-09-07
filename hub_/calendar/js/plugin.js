@@ -6333,7 +6333,19 @@ function SylvanCalendar() {
                     }                   
                     if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
                         if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('pi')){
-                            piObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length +"/"+ piSpace +"</div>";
+                            var find1to1 = false;
+                            for(var x=0;x<this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length;x++){
+                                if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi[x].is1to1){
+                                    find1to1 = true;
+                                    break;
+                                }
+                            }
+                            if(find1to1){
+                                piObj.title += piSpace +"/"+piSpace +"</div>";
+                            }
+                            else{
+                                piObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length +"/"+piSpace +"</div>";
+                            }
                         }
                         else{
                             piObj.title += "0/"+piSpace +"</div>";
@@ -6410,7 +6422,19 @@ function SylvanCalendar() {
                     }                   
                     if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
                         if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('gi')){
-                            giObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length +"/"+ giSpace +"</div>";
+                            var find1to1 = false;
+                            for(var x=0;x<this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length;x++){
+                                if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi[x].is1to1){
+                                    find1to1 = true;
+                                    break;
+                                }
+                            }
+                            if(find1to1){
+                                giObj.title += giSpace +"/"+ giSpace +"</div>";
+                            }
+                            else{
+                                giObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length +"/"+ giSpace +"</div>";
+                            }
                         }
                         else{
                             giObj.title += "0/"+giSpace +"</div>";
@@ -6487,7 +6511,19 @@ function SylvanCalendar() {
                     }                   
                     if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
                         if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('gf')){
-                            gfObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length +"/"+ gfSpace +"</div>";
+                            var find1to1 = false;
+                            for(var x=0;x<this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length;x++){
+                                if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf[x].is1to1){
+                                    find1to1 = true;
+                                    break;
+                                }
+                            }
+                            if(find1to1){
+                                gfObj.title += gfSpace +"/"+ gfSpace +"</div>";
+                            }
+                            else{
+                                gfObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length +"/"+ gfSpace +"</div>";
+                            }
                         }
                         else{
                             gfObj.title += "0/"+gfSpace +"</div>";
