@@ -879,10 +879,10 @@ function SylvanCalendar() {
                       t.studentSofConflictCheck(t, date, allDay, ev, ui, resource, elm);
                   } else {
                     // Check Services for same DT
-                    var studentIndex = prevEvent[0]['students'].map(function (x) {
+                    var studentIndex = prevStudObj['students'].map(function (x) {
                       return x.id;
                     }).indexOf(stuId);
-                    prevServiceId = prevEvent[0]['students'][studentIndex]['serviceId'];
+                    prevServiceId = prevStudObj['students'][studentIndex]['serviceId'];
                     var showPromt = true;
                     wjQuery.each(newEvent[0]['students'], function (k, v) {
                       if (v.serviceId == prevServiceId) {
