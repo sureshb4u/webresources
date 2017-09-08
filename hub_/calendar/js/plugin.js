@@ -3536,8 +3536,9 @@ function SylvanCalendar() {
                         studentNotPlacedFlag = true;
                     }
                     else {
-                        wjQuery.each(serviceStudentList[Object.keys(serviceStudentList)[i]], function(ind, e){
-                            e.resourceId = self.resourceList[j].id;
+                        for(var k=0; k<serviceStudentList[Object.keys(serviceStudentList)[i]].length; k++ ){
+                            var e = serviceStudentList[Object.keys(serviceStudentList)[i]][k];
+                            e['resourceId'] = self.resourceList[j].id;
                             var index = self.convertedStudentObj.findIndex(function (x) {
                             return x.id == e.id &&
                                    x.startHour.getTime() == e.startHour.getTime();
@@ -3554,10 +3555,10 @@ function SylvanCalendar() {
                                 // else{
                                 //     self.convertedStudentObj.push(e);
                                 // }
-                                serviceStudentList[Object.keys(serviceStudentList)[i]].splice(ind,1);
-                                ind -= 1;
+                                serviceStudentList[Object.keys(serviceStudentList)[i]].splice(k,1);
+                                k -= 1;
                             }
-                        })
+                        }
                         studentNotPlacedFlag = false;
                         self.populateStudentEvent(serviceStudentList[Object.keys(serviceStudentList)[i]], true, true);
                         break;
@@ -3565,26 +3566,27 @@ function SylvanCalendar() {
                 }
             }
             if (studentNotPlacedFlag) {
-                wjQuery.each(serviceStudentList[Object.keys(serviceStudentList)[i]], function(ind, student){
-                  var index = self.convertedStudentObj.findIndex(function (x) {
-                      return x.id == student.id &&
-                             x.startHour.getTime() == student.startHour.getTime();
-                  });
-                  if (index == -1) {
-                      studentsForSOF.push(student);
-                  }
-                  else{
-                      // if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS||
-                      //     self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
-                      //     self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
-                      //     self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
-
-                      // }
-                      // else{
-                      //     studentsForSOF.push(student);
-                      // }
-                  }
+              for(var l=0; l<serviceStudentList[Object.keys(serviceStudentList)[i]].length; l++ ){
+                var student = serviceStudentList[Object.keys(serviceStudentList)[i]][l];
+                var index = self.convertedStudentObj.findIndex(function (x) {
+                    return x.id == student.id &&
+                           x.startHour.getTime() == student.startHour.getTime();
                 });
+                if (index == -1) {
+                    studentsForSOF.push(student);
+                }
+                else{
+                    // if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS||
+                    //     self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
+                    //     self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
+                    //     self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
+
+                    // }
+                    // else{
+                    //     studentsForSOF.push(student);
+                    // }
+                }
+              }
             }
         }
         if (studentsForSOF.length) {
