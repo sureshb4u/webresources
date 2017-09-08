@@ -6367,12 +6367,21 @@ function SylvanCalendar() {
                     }                   
                     if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
                         if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('pi')){
-                            var find1to1 = false,count = 0;
+                            var find1to1 = false,count = 0,resourceList = [];
                             for(var x=0;x<this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length;x++){
                                 if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi[x].is1to1 &&
                                    this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi[x].resourceId != undefined){
                                     find1to1 = true;
-                                    count += this.getResourceObj(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi[x].resourceId).capacity;
+                                    var id = resourceList.filter(function(y){
+                                        return y == this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi[x].resourceId;
+                                    });
+                                    if(id == -1){
+                                        resourceList.push(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi[x].resourceId);
+                                        count += this.getResourceObj(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi[x].resourceId).capacity;
+                                    }
+                                }
+                                else{
+                                    count += 1;
                                 }
                             }
                             if(find1to1){
@@ -6462,7 +6471,16 @@ function SylvanCalendar() {
                                 if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi[x].is1to1&&
                                    this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi[x].resourceId != undefined){
                                     find1to1 = true;
-                                    count+= this.getResourceObj(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi[x].resourceId).capacity;
+                                    var id = resourceList.filter(function(y){
+                                        return y == this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi[x].resourceId;
+                                    });
+                                    if(id == -1){
+                                        resourceList.push(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi[x].resourceId);
+                                        count += this.getResourceObj(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi[x].resourceId).capacity;
+                                    }
+                                }
+                                else{
+                                    count += 1;
                                 }
                             }
                             if(find1to1){
@@ -6550,9 +6568,18 @@ function SylvanCalendar() {
                             var find1to1 = false,count = 0;
                             for(var x=0;x<this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length;x++){
                                 if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf[x].is1to1 &&
-                                   this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi[x].resourceId != undefined){
+                                   this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf[x].resourceId != undefined){
                                     find1to1 = true;
-                                    count+=this.getResourceObj(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf[x].resourceId).capacity;
+                                    var id = resourceList.filter(function(y){
+                                        return y == this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf[x].resourceId;
+                                    });
+                                    if(id == -1){
+                                        resourceList.push(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf[x].resourceId);
+                                        count += this.getResourceObj(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf[x].resourceId).capacity;
+                                    }
+                                }
+                                else{
+                                    count += 1;
                                 }
                             }
                             if(find1to1){
