@@ -445,6 +445,8 @@ function SylvanCalendar() {
 
     
     this.clearAll = function () {
+        this.calendar != undefined ? this.calendar.fullCalendar('removeEvents') : undefined;
+        this.calendar != undefined ? this.calendar.fullCalendar('removeEventSource') : undefined;
         this.calendar != undefined ? this.calendar.fullCalendar('destroy') : undefined;
         this.calendar = undefined;
         this.resourceList = [];
@@ -472,8 +474,6 @@ function SylvanCalendar() {
         this.enrollmentPriceList = [];
         this.masterScheduleStudents = [];
         this.students = [];
-        self.calendar.fullCalendar('removeEvents');
-        self.calendar.fullCalendar('removeEventSource');
     }
 
     this.convertToMinutes = function (timeString) {
