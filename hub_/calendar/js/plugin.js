@@ -474,6 +474,7 @@ function SylvanCalendar() {
         this.enrollmentPriceList = [];
         this.masterScheduleStudents = [];
         this.students = [];
+        this.teacherSchedule = [];
     }
 
     this.convertToMinutes = function (timeString) {
@@ -1785,6 +1786,7 @@ function SylvanCalendar() {
         self.businessClosure = [];
         self.enrollmentPriceList = [];
         self.masterScheduleStudents = [];
+        self.teacherSchedule = [];
         self.calendar.fullCalendar('removeEvents');
         self.calendar.fullCalendar('removeEventSource');
     }
@@ -5745,6 +5747,9 @@ function SylvanCalendar() {
             var prevEventId = wjQuery(event).attr("eventid");
             var prevEvent = self.calendar.fullCalendar('clientEvents', prevEventId);
             if (prevEvent) {
+                // remove teacher from staff sechedule
+                this.convertedTeacherObj.splice(index, 1);
+                
                 var eventTitleHTML = wjQuery(prevEvent[0].title);
                 for (var i = 0; i < eventTitleHTML.length; i++) {
                     if (wjQuery(eventTitleHTML[i]).attr('value') == teacherId) {
@@ -5796,19 +5801,19 @@ function SylvanCalendar() {
                        (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder" && eventTitleHTML[1].className == "student-placeholder-"+prevEvent[0].deliveryType) ||
                        (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder" && eventTitleHTML[2].className == "student-placeholder-"+prevEvent[0].deliveryType)) {
                         for (var i = 0; i < this.eventList.length; i++) {
-                            if (this.eventList[i].id == prevEventId)
-                                this.eventList.splice(i, 1);
+                          if (this.eventList[i].id == prevEventId)
+                            this.eventList.splice(i, 1);
+                            this.calendar.fullCalendar('removeEvents', prevEventId);
                         }
-                        this.calendar.fullCalendar('removeEvents', prevEventId);
                     }
-                    this.calendar.fullCalendar('updateEvent', prevEvent);
                 } else {
                     for (var i = 0; i < this.eventList.length; i++) {
-                        if (this.eventList[i].id == prevEventId)
-                            this.eventList.splice(i, 1);
+                      if (this.eventList[i].id == prevEventId)
+                          this.eventList.splice(i, 1);
+                          this.calendar.fullCalendar('removeEvents', prevEventId);
                     }
-                    this.calendar.fullCalendar('removeEvents', prevEventId);
                 }
+                self.calendar.fullCalendar('updateEvent', prevEvent);
                 self.populateTAPane(self.taList);
             }
         }else{
