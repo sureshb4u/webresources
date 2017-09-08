@@ -3536,7 +3536,7 @@ function SylvanCalendar() {
                         studentNotPlacedFlag = true;
                     }
                     else {
-                        serviceStudentList[Object.keys(serviceStudentList)[i]].forEach(function (e, ind) {
+                        wjQuery.each(serviceStudentList[Object.keys(serviceStudentList)[i]], function(ind, e){
                             e.resourceId = self.resourceList[j].id;
                             var index = self.convertedStudentObj.findIndex(function (x) {
                             return x.id == e.id &&
@@ -3557,7 +3557,7 @@ function SylvanCalendar() {
                                 serviceStudentList[Object.keys(serviceStudentList)[i]].splice(ind,1);
                                 ind -= 1;
                             }
-                        });
+                        })
                         studentNotPlacedFlag = false;
                         self.populateStudentEvent(serviceStudentList[Object.keys(serviceStudentList)[i]], true, true);
                         break;
@@ -3565,25 +3565,25 @@ function SylvanCalendar() {
                 }
             }
             if (studentNotPlacedFlag) {
-                serviceStudentList[Object.keys(serviceStudentList)[i]].forEach(function (student) {
-                    var index = self.convertedStudentObj.findIndex(function (x) {
-                        return x.id == student.id &&
-                               x.startHour.getTime() == student.startHour.getTime();
-                    });
-                    if (index == -1) {
-                        studentsForSOF.push(student);
-                    }
-                    else{
-                        // if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS||
-                        //     self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
-                        //     self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
-                        //     self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
+                wjQuery.each(serviceStudentList[Object.keys(serviceStudentList)[i]], function(ind, student){
+                  var index = self.convertedStudentObj.findIndex(function (x) {
+                      return x.id == student.id &&
+                             x.startHour.getTime() == student.startHour.getTime();
+                  });
+                  if (index == -1) {
+                      studentsForSOF.push(student);
+                  }
+                  else{
+                      // if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS||
+                      //     self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
+                      //     self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
+                      //     self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
 
-                        // }
-                        // else{
-                        //     studentsForSOF.push(student);
-                        // }
-                    }
+                      // }
+                      // else{
+                      //     studentsForSOF.push(student);
+                      // }
+                  }
                 });
             }
         }
