@@ -3555,6 +3555,7 @@ function SylvanCalendar() {
                                 //     self.convertedStudentObj.push(e);
                                 // }
                                 serviceStudentList[Object.keys(serviceStudentList)[i]].splice(ind,1);
+                                ind -= 1;
                             }
                         });
                         studentNotPlacedFlag = false;
@@ -5749,7 +5750,7 @@ function SylvanCalendar() {
             if (prevEvent) {
                 // remove teacher from staff sechedule
                 this.convertedTeacherObj.splice(index, 1);
-                
+
                 var eventTitleHTML = wjQuery(prevEvent[0].title);
                 for (var i = 0; i < eventTitleHTML.length; i++) {
                     if (wjQuery(eventTitleHTML[i]).attr('value') == teacherId) {
