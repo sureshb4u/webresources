@@ -323,6 +323,7 @@ function SylvanCalendar() {
                     if (wjQuery(this).is(':checked')) {
                         self.eventList = [];
                         self.calendar.fullCalendar('removeEvents');
+                        self.calendar.fullCalendar('removeEventSource');
                         var index = checkedList.map(function (y) {
                             return y;
                         }).indexOf(wjQuery(this).val());
@@ -333,6 +334,7 @@ function SylvanCalendar() {
                     } else {
                         self.eventList = [];
                         self.calendar.fullCalendar('removeEvents');
+                        self.calendar.fullCalendar('removeEventSource');
                         var index = checkedList.map(function (y) {
                             return y;
                         }).indexOf(wjQuery(this).val());
@@ -470,6 +472,8 @@ function SylvanCalendar() {
         this.enrollmentPriceList = [];
         this.masterScheduleStudents = [];
         this.students = [];
+        self.calendar.fullCalendar('removeEvents');
+        self.calendar.fullCalendar('removeEventSource');
     }
 
     this.convertToMinutes = function (timeString) {
@@ -1782,6 +1786,7 @@ function SylvanCalendar() {
         self.enrollmentPriceList = [];
         self.masterScheduleStudents = [];
         self.calendar.fullCalendar('removeEvents');
+        self.calendar.fullCalendar('removeEventSource');
     }
 
     this.loadCalendar = function (args) {
@@ -2743,23 +2748,23 @@ function SylvanCalendar() {
             if (pinnedList.length) {
                 for(var i=0; i<pinnedList.length; i++){
                     var index = self.convertedStudentObj.findIndex(function (x) {
-                        return x.id == pinnedList[i].id &&
+                      return x.id == pinnedList[i].id &&
                                x.startHour.getTime() == pinnedList[i].startHour.getTime();
                     });
                     if (index == -1) {
-                        self.convertedStudentObj.push(pinnedList[i]);
+                      self.convertedStudentObj.push(pinnedList[i]);
                     }
                     else{
-                        // if( self.convertedStudentObj[index].sessionStatus == INVALID_STATUS ||
-                        //     self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
-                        //     self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
-                        //     self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
-                        // }
-                        // else
-                        // {
-                        //     self.convertedStudentObj.push(pinnedList[i]);
-                        // }
-                        pinnedList.splice(i,1);
+                      // if( self.convertedStudentObj[index].sessionStatus == INVALID_STATUS ||
+                      //     self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
+                      //     self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
+                      //     self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
+                      // }
+                      // else
+                      // {
+                      //     self.convertedStudentObj.push(pinnedList[i]);
+                      // }
+                      pinnedList.splice(i,1);
                     }
                 }
                 self.populateStudentEvent(pinnedList, true, true);
