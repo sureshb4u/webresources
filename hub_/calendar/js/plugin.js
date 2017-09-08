@@ -2657,6 +2657,21 @@ function SylvanCalendar() {
                                     affinityList.push(newObj);
                                 }
                             }
+                            else{
+                                obj.start = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+                                obj.end = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
+                                var startHour = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+                                startHour = startHour.setMinutes(0);
+                                startHour = new Date(new Date(startHour).setSeconds(0));
+                                obj.startHour = startHour;
+                                var index = noResourceList.findIndex(function (x) {
+                                    return x.id == obj.id &&
+                                           x.startHour.getTime() == startHour.getTime();
+                                });
+                                if (index == -1) {
+                                    noResourceList.push(obj);
+                                }
+                            }
                         }
                     }
                     if(pinnedStudent.length == 0){
