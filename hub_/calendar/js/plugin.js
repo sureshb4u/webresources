@@ -5842,8 +5842,9 @@ function SylvanCalendar() {
                                             break;
                                         }
                                     }
-                                    if(index == -1)
+                                    if(index == -1){
                                         this.weekEventObject[arrayList[i].startHour].teacherSchedule.pi.push(arrayList[i]);
+                                    }
                                 }
                                 else if(arrayList[i].deliveryType == 'Group Instruction'){
                                     var index = -1;
@@ -6132,8 +6133,13 @@ function SylvanCalendar() {
                                             break;
                                         }
                                     }
-                                    if(index == -1)
+                                    if(index == -1){
+                                        if(arrayList[i].sessionStatus == SCHEDULE_STATUS ||
+                                            arrayList[i].sessionStatus == RESCHEDULE_STATUS || 
+                                            arrayList[i].sessionStatus == MAKEUP_STATUS)
                                         this.weekEventObject[arrayList[i].startHour].student.pi.push(arrayList[i]);
+                                    }
+
                                 }
                                 else if(arrayList[i].deliveryType == 'Group Instruction'){
                                     var index = -1;
@@ -6143,8 +6149,12 @@ function SylvanCalendar() {
                                             break;
                                         }
                                     }
-                                    if(index == -1)
+                                    if(index == -1){
+                                        if(arrayList[i].sessionStatus == SCHEDULE_STATUS ||
+                                            arrayList[i].sessionStatus == RESCHEDULE_STATUS || 
+                                            arrayList[i].sessionStatus == MAKEUP_STATUS)
                                         this.weekEventObject[arrayList[i].startHour].student.gi.push(arrayList[i]);
+                                    }
                                 }
                                 else if(arrayList[i].deliveryType == 'Group Facilitation'){
                                     var index = -1;
@@ -6154,8 +6164,12 @@ function SylvanCalendar() {
                                             break;
                                         }
                                     }
-                                    if(index == -1)
+                                    if(index == -1){
+                                        if(arrayList[i].sessionStatus == SCHEDULE_STATUS ||
+                                            arrayList[i].sessionStatus == RESCHEDULE_STATUS || 
+                                            arrayList[i].sessionStatus == MAKEUP_STATUS)
                                         this.weekEventObject[arrayList[i].startHour].student.gf.push(arrayList[i]);
+                                    }
                                 }
                                 
                             }
@@ -6165,12 +6179,21 @@ function SylvanCalendar() {
                                 this.weekEventObject[arrayList[i].startHour].student.gf = [];
                                 this.weekEventObject[arrayList[i].startHour].student.gi = [];
                                 if(arrayList[i].deliveryType == 'Personal Instruction'){
+                                    if(arrayList[i].sessionStatus == SCHEDULE_STATUS ||
+                                            arrayList[i].sessionStatus == RESCHEDULE_STATUS || 
+                                            arrayList[i].sessionStatus == MAKEUP_STATUS)
                                     this.weekEventObject[arrayList[i].startHour].student.pi.push(arrayList[i]);
                                 }
                                 else if(arrayList[i].deliveryType == 'Group Instruction'){
+                                    if(arrayList[i].sessionStatus == SCHEDULE_STATUS ||
+                                            arrayList[i].sessionStatus == RESCHEDULE_STATUS || 
+                                            arrayList[i].sessionStatus == MAKEUP_STATUS)
                                     this.weekEventObject[arrayList[i].startHour].student.gi.push(arrayList[i]);
                                 }
                                 else if(arrayList[i].deliveryType == 'Group Facilitation'){
+                                    if(arrayList[i].sessionStatus == SCHEDULE_STATUS ||
+                                            arrayList[i].sessionStatus == RESCHEDULE_STATUS || 
+                                            arrayList[i].sessionStatus == MAKEUP_STATUS)
                                     this.weekEventObject[arrayList[i].startHour].student.gf.push(arrayList[i]);
                                 }
                             }
@@ -6182,12 +6205,21 @@ function SylvanCalendar() {
                             this.weekEventObject[arrayList[i].startHour].student.gf = [];
                             this.weekEventObject[arrayList[i].startHour].student.gi = [];
                             if(arrayList[i].deliveryType == 'Personal Instruction'){
+                                if(arrayList[i].sessionStatus == SCHEDULE_STATUS ||
+                                            arrayList[i].sessionStatus == RESCHEDULE_STATUS || 
+                                            arrayList[i].sessionStatus == MAKEUP_STATUS)
                                 this.weekEventObject[arrayList[i].startHour].student.pi.push(arrayList[i]);
                             }
                             else if(arrayList[i].deliveryType == 'Group Instruction'){
+                                if(arrayList[i].sessionStatus == SCHEDULE_STATUS ||
+                                            arrayList[i].sessionStatus == RESCHEDULE_STATUS || 
+                                            arrayList[i].sessionStatus == MAKEUP_STATUS)
                                 this.weekEventObject[arrayList[i].startHour].student.gi.push(arrayList[i]);
                             }
                             else if(arrayList[i].deliveryType == 'Group Facilitation'){
+                                if(arrayList[i].sessionStatus == SCHEDULE_STATUS ||
+                                            arrayList[i].sessionStatus == RESCHEDULE_STATUS || 
+                                            arrayList[i].sessionStatus == MAKEUP_STATUS)
                                 this.weekEventObject[arrayList[i].startHour].student.gf.push(arrayList[i]);
                             }
                         }
