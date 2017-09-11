@@ -2743,33 +2743,33 @@ function SylvanCalendar() {
                     }
                     else {
                         if (obj.deliveryType == 'Group Instruction') {
-                            if (serviceGI.hasOwnProperty(obj.serviceId+obj.startHour)) {
-                              var index = serviceGI[obj.serviceId+obj.startHour].findIndex(function (x) {
-                                return x.id == obj.id &&
-                                         x.startHour.getTime() == obj.startHour.getTime();
-                              });
-                              if (index == -1) {
-                                serviceGI[obj.serviceId+obj.startHour].push(obj);
-                              }
-                            }
-                            else {
-                              serviceGI[obj.serviceId+obj.startHour] = [];
+                          if (serviceGI.hasOwnProperty(obj.serviceId+obj.startHour)) {
+                            var index = serviceGI[obj.serviceId+obj.startHour].findIndex(function (x) {
+                              return x.id == obj.id &&
+                                       x.startHour.getTime() == obj.startHour.getTime();
+                            });
+                            if (index == -1) {
                               serviceGI[obj.serviceId+obj.startHour].push(obj);
                             }
+                          }
+                          else {
+                            serviceGI[obj.serviceId+obj.startHour] = [];
+                            serviceGI[obj.serviceId+obj.startHour].push(obj);
+                          }
                         }
                         else if (obj.deliveryType == 'Group Facilitation') {
                           if (serviceGF.hasOwnProperty(obj.serviceId+obj.startHour)) {
-                              var index = serviceGF[obj.serviceId+obj.startHour].findIndex(function (x) {
-                                  return x.id == obj.id &&
-                                         x.startHour.getTime() == obj.startHour.getTime();
-                              });
-                              if (index == -1) {
-                                  serviceGF[obj.serviceId+obj.startHour].push(obj);
-                              }
+                            var index = serviceGF[obj.serviceId+obj.startHour].findIndex(function (x) {
+                                return x.id == obj.id &&
+                                       x.startHour.getTime() == obj.startHour.getTime();
+                            });
+                            if (index == -1) {
+                                serviceGF[obj.serviceId+obj.startHour].push(obj);
+                            }
                           }
                           else {
-                              serviceGF[obj.serviceId+obj.startHour] = [];
-                              serviceGF[obj.serviceId+obj.startHour].push(obj);
+                            serviceGF[obj.serviceId+obj.startHour] = [];
+                            serviceGF[obj.serviceId+obj.startHour].push(obj);
                           }
                         }
                     }
@@ -3616,7 +3616,7 @@ function SylvanCalendar() {
               for(var l=0; l<serviceStudentList[Object.keys(serviceStudentList)[i]].length; l++ ){
                 var student = serviceStudentList[Object.keys(serviceStudentList)[i]][l];
                 var index = self.convertedStudentObj.findIndex(function (x) {
-                    return x.id == student.id &&
+                    return x.id == student.id && x.enrollmentId  == student.enrollmentId &&
                            x.startHour.getTime() == student.startHour.getTime();
                 });
                 if (index == -1) {
