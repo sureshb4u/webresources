@@ -6455,7 +6455,7 @@ function SylvanCalendar() {
                                 }
                                 else{
                                     groupStudentsByResource[this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi[x].resourceId] = [];
-                                    groupStudentsByResource.push(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi[x]);
+                                    groupStudentsByResource[this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi[x].resourceId].push(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi[x]);
                                 }
                             }
                             for (var x = 0; x < Object.keys(groupStudentsByResource).length; x++) {
@@ -6557,7 +6557,7 @@ function SylvanCalendar() {
                                 }
                                 else{
                                     groupStudentsByResource[this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi[x].resourceId] = [];
-                                    groupStudentsByResource.push(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi[x]);
+                                    groupStudentsByResource[this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi[x].resourceId].push(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi[x]);
                                 }
                             }
                             for (var x = 0; x < Object.keys(groupStudentsByResource).length; x++) {
@@ -6659,7 +6659,7 @@ function SylvanCalendar() {
                                 }
                                 else{
                                     groupStudentsByResource[this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf[x].resourceId] = [];
-                                    groupStudentsByResource.push(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf[x]);
+                                    groupStudentsByResource[this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf[x].resourceId].push(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf[x]);
                                 }
                             }
                             for (var x = 0; x < Object.keys(groupStudentsByResource).length; x++) {
