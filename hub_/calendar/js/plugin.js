@@ -6451,7 +6451,7 @@ function SylvanCalendar() {
                             var find1to1 = false,count = 0,groupStudentsByResource = {};
                             for(var x=0;x<this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length;x++){
                                 if(groupStudentsByResource.hasOwnProperty(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi[x].resourceId)){
-                                    groupStudentsByResource.push(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi[x]);
+                                    groupStudentsByResource[this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi[x].resourceId].push(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi[x]);
                                 }
                                 else{
                                     groupStudentsByResource[this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi[x].resourceId] = [];
@@ -6553,7 +6553,7 @@ function SylvanCalendar() {
                             var find1to1 = false,count = 0,groupStudentsByResource = {};
                             for(var x=0;x<this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length;x++){
                                 if(groupStudentsByResource.hasOwnProperty(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi[x].resourceId)){
-                                    groupStudentsByResource.push(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi[x]);
+                                    groupStudentsByResource[this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi[x].resourceId].push(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi[x]);
                                 }
                                 else{
                                     groupStudentsByResource[this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi[x].resourceId] = [];
@@ -6655,7 +6655,7 @@ function SylvanCalendar() {
                             var find1to1 = false,count = 0,groupStudentsByResource = {};
                             for(var x=0;x<this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length;x++){
                                 if(groupStudentsByResource.hasOwnProperty(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf[x].resourceId)){
-                                    groupStudentsByResource.push(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf[x]);
+                                    groupStudentsByResource[this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf[x].resourceId].push(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf[x]);
                                 }
                                 else{
                                     groupStudentsByResource[this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf[x].resourceId] = [];
