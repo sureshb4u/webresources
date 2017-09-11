@@ -2668,6 +2668,7 @@ function SylvanCalendar() {
                                       affinityList.push(newObj);
                                   }
                               }
+
                           }
                           else{
                               newObj.start = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
@@ -3337,7 +3338,7 @@ function SylvanCalendar() {
                                 var obj = [];
                                 obj.push(affinityList[i]);
                                 var index = self.convertedStudentObj.findIndex(function (x) {
-                                    return x.id == affinityList[i].id &&
+                                    return x.id == affinityList[i].id && x.enrollmentId == affinityList[i].enrollmentId &&
                                            x.startHour.getTime() == affinityList[i].startHour.getTime();
                                 });
                                 if (index == -1) {
@@ -3357,6 +3358,7 @@ function SylvanCalendar() {
                                     //     self.populateStudentEvent(obj, true, true);
                                     // }
                                     affinityList.splice(i,1);
+                                    i-=1;
                                 }
                             }
                             else {
@@ -3371,7 +3373,7 @@ function SylvanCalendar() {
                         var obj = [];
                         obj.push(affinityList[i]);
                         var index = self.convertedStudentObj.findIndex(function (x) {
-                            return x.id == affinityList[i].id &&
+                            return x.id == affinityList[i].id && x.enrollmentId == affinityList[i].enrollmentId &&
                                    x.startHour.getTime() == affinityList[i].startHour.getTime();
                         });
                         if (index == -1) {
@@ -3391,6 +3393,7 @@ function SylvanCalendar() {
                           //     self.populateStudentEvent(obj, true, true);
                           // }
                           affinityList.splice(i,1);
+                          i-=1;
                         }
                     }
                 });
@@ -3419,6 +3422,7 @@ function SylvanCalendar() {
                     //     self.populateStudentEvent(obj, true, true);
                     // }
                     affinityList.splice(i,1);
+                    i-=1;
                 }
             }
         }
@@ -3644,6 +3648,7 @@ function SylvanCalendar() {
         setTimeout(function () {
             if (self.sofList['Personal Instruction'].length > 0 || self.sofList['Group Instruction'].length > 0 || self.sofList['Group Facilitation'].length > 0) {
                 self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
+                self.openSofPane();
             }
         }, 300);
     }
