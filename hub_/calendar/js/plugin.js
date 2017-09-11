@@ -2628,70 +2628,69 @@ function SylvanCalendar() {
                     }
                     for (var i = 0; i < pinnedStudent.length; i++) {
                         if (pinnedStudent[i] != undefined) {
-                            var newObj = wjQuery.extend(true, {}, obj);
-                            newObj.pinId = undefined;
-                            newObj.enrollmentId = pinnedStudent[i].enrollmentId,
-                            newObj.start = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + pinnedStudent[i].startTime);
-                            newObj.end = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + pinnedStudent[i].endTime);
-                            var startHour = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + pinnedStudent[i].startTime);
-                            startHour = startHour.setMinutes(0);
-                            startHour = new Date(new Date(startHour).setSeconds(0));
-                            newObj.startHour = startHour;
-                            var studentStart = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
-                            if(studentStart.getTime() == newObj.start.getTime()){
-                                if (pinnedStudent[i].hasOwnProperty('resourceId')) {
-                                    newObj.resourceId = pinnedStudent[i].resourceId;
-                                    newObj.pinId = pinnedStudent[i].id;
-                                    var index = pinnedList.findIndex(function (x) {
-                                        return x.id == newObj.id &&
-                                               x.startHour.getTime() == startHour.getTime();
-                                    });
-                                    if (index == -1) {
-                                        pinnedList.push(newObj);
-                                    }
-                                }
-                                else if (pinnedStudent[i].hasOwnProperty('affinityResourceId')) {
-                                    newObj.resourceId = pinnedStudent[i].affinityResourceId;
-                                    var index = affinityList.findIndex(function (x) {
-                                        return x.id == newObj.id &&
-                                               x.startHour.getTime() == startHour.getTime();
-                                    });
-                                    if (index == -1) {
-                                        affinityList.push(newObj);
-                                    }
-                                }
-                            }
-                            else{
-                                newObj.start = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
-                                newObj.end = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
-                                var startHour = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
-                                startHour = startHour.setMinutes(0);
-                                startHour = new Date(new Date(startHour).setSeconds(0));
-                                newObj.startHour = startHour;
-                                var index = noResourceList.findIndex(function (x) {
-                                    return x.id == newObj.id &&
-                                           x.startHour.getTime() == startHour.getTime();
-                                });
-                                if (index == -1) {
-                                    noResourceList.push(newObj);
-                                }
-                            }
+                          var newObj = wjQuery.extend(true, {}, obj);
+                          newObj.pinId = undefined;
+                          newObj.enrollmentId = pinnedStudent[i].enrollmentId,
+                          newObj.start = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + pinnedStudent[i].startTime);
+                          newObj.end = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + pinnedStudent[i].endTime);
+                          var startHour = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + pinnedStudent[i].startTime);
+                          startHour = startHour.setMinutes(0);
+                          startHour = new Date(new Date(startHour).setSeconds(0));
+                          newObj.startHour = startHour;
+                          var studentStart = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+                          if(studentStart.getTime() == newObj.start.getTime()){
+                              if (pinnedStudent[i].hasOwnProperty('resourceId')) {
+                                  newObj.resourceId = pinnedStudent[i].resourceId;
+                                  var index = pinnedList.findIndex(function (x) {
+                                      return x.id == newObj.id &&
+                                             x.startHour.getTime() == startHour.getTime();
+                                  });
+                                  if (index == -1) {
+                                      pinnedList.push(newObj);
+                                  }
+                              }
+                              else if (pinnedStudent[i].hasOwnProperty('affinityResourceId')) {
+                                  newObj.resourceId = pinnedStudent[i].affinityResourceId;
+                                  var index = affinityList.findIndex(function (x) {
+                                      return x.id == newObj.id &&
+                                             x.startHour.getTime() == startHour.getTime();
+                                  });
+                                  if (index == -1) {
+                                      affinityList.push(newObj);
+                                  }
+                              }
+                          }
+                          else{
+                              newObj.start = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+                              newObj.end = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
+                              var startHour = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+                              startHour = startHour.setMinutes(0);
+                              startHour = new Date(new Date(startHour).setSeconds(0));
+                              newObj.startHour = startHour;
+                              var index = noResourceList.findIndex(function (x) {
+                                  return x.id == newObj.id &&
+                                         x.startHour.getTime() == startHour.getTime();
+                              });
+                              if (index == -1) {
+                                  noResourceList.push(newObj);
+                              }
+                          }
                         }
                     }
                     if(pinnedStudent.length == 0){
-                        obj.start = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
-                        obj.end = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
-                        var startHour = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
-                        startHour = startHour.setMinutes(0);
-                        startHour = new Date(new Date(startHour).setSeconds(0));
-                        obj.startHour = startHour;
-                        var index = noResourceList.findIndex(function (x) {
-                            return x.id == obj.id &&
-                                   x.startHour.getTime() == startHour.getTime();
-                        });
-                        if (index == -1) {
-                            noResourceList.push(obj);
-                        }
+                      obj.start = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+                      obj.end = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
+                      var startHour = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+                      startHour = startHour.setMinutes(0);
+                      startHour = new Date(new Date(startHour).setSeconds(0));
+                      obj.startHour = startHour;
+                      var index = noResourceList.findIndex(function (x) {
+                          return x.id == obj.id &&
+                                 x.startHour.getTime() == startHour.getTime();
+                      });
+                      if (index == -1) {
+                          noResourceList.push(obj);
+                      }
                     }
                 }
                 else {
@@ -2708,44 +2707,43 @@ function SylvanCalendar() {
                                    x.startHour.getTime() == startHour.getTime();
                         });
                         if (index == -1) {
-                            self.populateStudentEvent([obj], true, true);
-                            var index = self.convertedStudentObj.findIndex(function (x) {
-                            return x.id == obj.id &&
-                                   x.startHour.getTime() == obj.startHour.getTime();
-                            });
-                            if (index == -1) {
-                                self.convertedStudentObj.push(obj);
-                            }
-                            else{
-                                // if( self.convertedStudentObj[index].sessionStatus == INVALID_STATUS ||
-                                //     self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
-                                //     self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
-                                //     self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
-                                
-                                // }
-                                // else
-                                // {
-                                //     self.convertedStudentObj.push(obj);
-                                //     self.populateStudentEvent([obj], true, true);
-                                // }
-                            }
+                          self.populateStudentEvent([obj], true, true);
+                          var index = self.convertedStudentObj.findIndex(function (x) {
+                          return x.id == obj.id &&
+                                 x.startHour.getTime() == obj.startHour.getTime();
+                          });
+                          if (index == -1) {
+                              self.convertedStudentObj.push(obj);
+                          }
+                          else{
+                            // if( self.convertedStudentObj[index].sessionStatus == INVALID_STATUS ||
+                            //     self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
+                            //     self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
+                            //     self.convertedStudentObj[index].sessionStatus == EXCUSED_STATUS){
+                            // }
+                            // else
+                            // {
+                            //     self.convertedStudentObj.push(obj);
+                            //     self.populateStudentEvent([obj], true, true);
+                            // }
+                          }
 
                         }
                     }
                     else {
                         if (obj.deliveryType == 'Group Instruction') {
                             if (serviceGI.hasOwnProperty(obj.serviceId+obj.startHour)) {
-                                var index = serviceGI[obj.serviceId+obj.startHour].findIndex(function (x) {
-                                    return x.id == obj.id &&
-                                           x.startHour.getTime() == obj.startHour.getTime();
-                                });
-                                if (index == -1) {
-                                    serviceGI[obj.serviceId+obj.startHour].push(obj);
-                                }
+                              var index = serviceGI[obj.serviceId+obj.startHour].findIndex(function (x) {
+                                return x.id == obj.id &&
+                                         x.startHour.getTime() == obj.startHour.getTime();
+                              });
+                              if (index == -1) {
+                                serviceGI[obj.serviceId+obj.startHour].push(obj);
+                              }
                             }
                             else {
-                                serviceGI[obj.serviceId+obj.startHour] = [];
-                                serviceGI[obj.serviceId+obj.startHour].push(obj);
+                              serviceGI[obj.serviceId+obj.startHour] = [];
+                              serviceGI[obj.serviceId+obj.startHour].push(obj);
                             }
                         }
                         else if (obj.deliveryType == 'Group Facilitation') {
