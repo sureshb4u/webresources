@@ -1923,9 +1923,9 @@ function SylvanCalendar() {
 
     this.findDataSource = function (currentCalendarDate,view) {
         var now = new Date();
+        //constant from instruction view js
         now.setDate(now.getDate() + MASTER_SCHEDULE_CONST);
         if(view.name == 'resourceDay'){
-            //constant from instruction view js
             if (currentCalendarDate > now.getTime()) {
                 return true;
             }
