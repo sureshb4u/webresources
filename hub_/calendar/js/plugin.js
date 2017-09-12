@@ -5957,7 +5957,7 @@ function SylvanCalendar() {
                     }
                 }
             }
-            if(label == 'teacherAvailability'){
+            else if(label == 'teacherAvailability'){
                 this.taList = [];
                 var currentView = this.calendar.fullCalendar('getView');
                 currentView.start = new Date(currentView.start).setHours(0);
@@ -5991,7 +5991,7 @@ function SylvanCalendar() {
                         obj.endDate = new Date(new Date(obj.endDate).setMinutes(0));
                         obj.endDate = new Date(new Date(obj.endDate).setSeconds(0));
                     }
-                    for(var j = currentView.start.getTime();j<currentView.end.getTime();j=currentView.start.setDate(currentView.start.getDate() + 1)){
+                    for(var j = currentView.start.getTime();j<currentView.end.getTime();j=j+(24*60*60*1000)){
                         if (arrayList[i]['hub_' + moment(j).format('dddd').toLowerCase()]) {    
                         var taObject = wjQuery.extend(true, {}, obj);
                             if(j > taObject.startDate.getTime() && j < taObject.endDate.getTime()){
@@ -6010,7 +6010,7 @@ function SylvanCalendar() {
                                         staffStartHour = new Date(staffStartHour.setMinutes(0));
                                         do {
                                             var newObject = wjQuery.extend(true, {}, taObject);
-                                            var start = wjQuery.extend(true, {}, staffStartHour);
+                                            var start = new Date(staffStartHour.getTime());
                                             newObject.startHour = start;
                                             this.taList.push(newObject);
                                             staffStartHour = new Date(staffStartHour.setHours(staffStartHour.getHours() + 1));
@@ -6032,7 +6032,7 @@ function SylvanCalendar() {
                                         staffStartHour = new Date(staffStartHour.setMinutes(0));
                                         do {
                                             var newObject = wjQuery.extend(true, {}, taObject);
-                                            var start = wjQuery.extend(true, {}, staffStartHour);
+                                            var start = new Date(staffStartHour.getTime());
                                             newObject.startHour = start;
                                             this.taList.push(newObject);
                                             staffStartHour = new Date(staffStartHour.setHours(staffStartHour.getHours() + 1));
@@ -6054,7 +6054,7 @@ function SylvanCalendar() {
                                             staffStartHour = new Date(staffStartHour.setMinutes(0));
                                             do {
                                                 var newObject = wjQuery.extend(true, {}, taObject);
-                                                var start = wjQuery.extend(true, {}, staffStartHour);
+                                                var start = new Date(staffStartHour.getTime());
                                                 newObject.startHour = start;
                                                 this.taList.push(newObject);
                                                 staffStartHour = new Date(staffStartHour.setHours(staffStartHour.getHours() + 1));
@@ -6076,7 +6076,7 @@ function SylvanCalendar() {
                                             staffStartHour = new Date(staffStartHour.setMinutes(0));
                                             do {
                                                 var newObject = wjQuery.extend(true, {}, taObject);
-                                                nvar start = wjQuery.extend(true, {}, staffStartHour);
+                                                var start = new Date(staffStartHour.getTime());
                                                 newObject.startHour = start;
                                                 this.taList.push(newObject);
                                                 staffStartHour = new Date(staffStartHour.setHours(staffStartHour.getHours() + 1));
@@ -6098,7 +6098,7 @@ function SylvanCalendar() {
                                             staffStartHour = new Date(staffStartHour.setMinutes(0));
                                             do {
                                                 var newObject = wjQuery.extend(true, {}, taObject);
-                                                var start = wjQuery.extend(true, {}, staffStartHour);
+                                                var start = new Date(staffStartHour.getTime());
                                                 newObject.startHour = start;
                                                 this.taList.push(newObject);
                                                 staffStartHour = new Date(staffStartHour.setHours(staffStartHour.getHours() + 1));
@@ -6120,7 +6120,7 @@ function SylvanCalendar() {
                                             staffStartHour = new Date(staffStartHour.setMinutes(0));
                                             do {
                                                 var newObject = wjQuery.extend(true, {}, taObject);
-                                                var start = wjQuery.extend(true, {}, staffStartHour);
+                                                var start = new Date(staffStartHour.getTime());
                                                 newObject.startHour = start;
                                                 this.taList.push(newObject);
                                                 staffStartHour = new Date(staffStartHour.setHours(staffStartHour.getHours() + 1));
@@ -6142,7 +6142,7 @@ function SylvanCalendar() {
                                             staffStartHour = new Date(staffStartHour.setMinutes(0));
                                             do {
                                                 var newObject = wjQuery.extend(true, {}, taObject);
-                                                var start = wjQuery.extend(true, {}, staffStartHour);
+                                                var start = new Date(staffStartHour.getTime());
                                                 newObject.startHour = start;
                                                 this.taList.push(newObject);
                                                 staffStartHour = new Date(staffStartHour.setHours(staffStartHour.getHours() + 1));
