@@ -6742,7 +6742,7 @@ function SylvanCalendar() {
         var selectedDate = moment(selectedDate).format("YYYY-MM-DD");
         var availableTime = [];
         if(!isNaN(timeSlotType)){
-          availableTime = data.getgiStudentAvailableTime(locationId, selectedDate, timeSlotType);
+          availableTime = data.getPiStudentAvailableTime(locationId, selectedDate, timeSlotType);
         }else{
           availableTime = data.getGfStudentAvailableTime(locationId, selectedDate, timeSlotType);
         }
