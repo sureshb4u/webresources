@@ -281,6 +281,7 @@ i.material-icons.cursor.float-right {
 }
 .resourceHolder{
     display: inline-block;
+    width: 150px;
 }
 
 .ui-timepicker.ui-widget.ui-widget-content.ui-menu.ui-corner-all,.ui-timepicker .ui-timepicker-viewport{
