@@ -4843,6 +4843,14 @@ function SylvanCalendar() {
                         self.moveStudentToSOF(options.$trigger[0]);
                     }
                 }
+                if (isPinned) {
+                    obj.unpin.visible = true;
+                    obj.pin.visible = false;
+                }
+                else {
+                    obj.unpin.visible = false;
+                    obj.pin.visible = true;
+                }
                 wjQuery(function () {
                     wjQuery.contextMenu({
                         selector: 'span[uniqueId="' + uniqueId + '"]',
@@ -4854,7 +4862,7 @@ function SylvanCalendar() {
                     });
                 });
             }
-            if (deliveryType == "Group Facilitation") {
+            else if (deliveryType == "Group Facilitation") {
                 obj.reschedule = {
                     name: "Reschedule",
                     callback: function (key, options) {
@@ -4885,13 +4893,7 @@ function SylvanCalendar() {
                     });
                 });
             }
-            /*obj.cancel = {
-              name: "Cancel",
-              callback : function(key, options) {
-                self.removeStudentFromSession(options.$trigger[0]);
-              }
-            }*/
-            if(deliveryType == "Group Instruction"){
+            else if(deliveryType == "Group Instruction"){
               obj.omit = {
                 name: "Omit",
                 callback: function (key, options) {
@@ -4909,19 +4911,9 @@ function SylvanCalendar() {
                 });
               });
             }
-
-
-            if (deliveryType == "Personal Instruction") {
-                if (isPinned) {
-                    obj.unpin.visible = true;
-                    obj.pin.visible = false;
-                }
-                else {
-                    obj.unpin.visible = false;
-                    obj.pin.visible = true;
-                }
-            }
-        } else if (labelFor == 'teacher') {
+           
+        } 
+        else if (labelFor == 'teacher') {
             obj.pin = {
                 "name": "Pin",
                 "visible": true,
