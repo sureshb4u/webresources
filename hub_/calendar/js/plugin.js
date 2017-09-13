@@ -6422,8 +6422,9 @@ function SylvanCalendar() {
     };
 
     this.generateModalHtml = function(groupByResource,sof,taList){
-        var html= "<div class='holder'>";
+        var width = 0,html= "<div class='holder'>";
         if(Object.keys(groupByResource).length){
+            width = Object.keys(groupByResource).length * 150;
             for(var i in groupByResource){
                 var oneResource = "<div class='resourceHolder'>";
                 var teacherPlaceFlag = true,studentPlaceFlag = true,teacherHtml= '',studentHtml = '';
@@ -6464,6 +6465,7 @@ function SylvanCalendar() {
             }
         }
         if(sof.length){
+            width += 150;
             var oneResource = "<div class='resourceHolder'>";
             var SOFPlaceFlag=true,sofHtml = '';
             for(var j=0;j<sof.length;j++){
@@ -6481,6 +6483,7 @@ function SylvanCalendar() {
             html += oneResource;
         }
         if(taList.length){
+            width += 150;
             var oneResource = "<div class='resourceHolder'>";
             var TAPlaceFlag=true,taHtml = '';
             for(var j=0;j<sof.length;j++){
@@ -6498,7 +6501,7 @@ function SylvanCalendar() {
             html += oneResource;
         }
         html+="</div>";
-        wjQuery('#weekStudentsPlaceHolder').css('width', (Object.keys(groupByResource).length * 150) +'px');
+        wjQuery('#weekStudentsPlaceHolder').css('width', width +'px');
         wjQuery('#weekStudentsPlaceHolder').html(html);
     };
 
