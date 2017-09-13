@@ -1949,9 +1949,12 @@ function SylvanCalendar() {
         else {
             wjQuery('.headerDate').removeClass('today');
         }
-        var dayOfWeek = moment(currentCalendarDate).format('dddd');
-        var dayofMonth = moment(currentCalendarDate).format('M/D');
-        wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').html(dayOfWeek + " <br/> " + dayofMonth);
+        var currentView = self.calendar.fullCalendar('getView');
+        if (currentView.name == 'resourceDay') {
+            var dayOfWeek = moment(currentCalendarDate).format('dddd');
+            var dayofMonth = moment(currentCalendarDate).format('M/D');
+            wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').html(dayOfWeek + " <br/> " + dayofMonth);
+        }
         this.clearEvents();
         currentCalendarDate = moment(currentCalendarDate).format("YYYY-MM-DD");
         this.refreshCalendarEvent(this.locationId, true);
@@ -1968,9 +1971,12 @@ function SylvanCalendar() {
         else {
             wjQuery('.headerDate').removeClass('today');
         }
-        var dayOfWeek = moment(date).format('dddd');
-        var dayofMonth = moment(date).format('M/D');
-        wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').html(dayOfWeek + " <br/> " + dayofMonth);
+        var currentView = self.calendar.fullCalendar('getView');
+        if (currentView.name == 'resourceDay') {
+            var dayOfWeek = moment(date).format('dddd');
+            var dayofMonth = moment(date).format('M/D');
+            wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').html(dayOfWeek + " <br/> " + dayofMonth);
+        }
         self.clearEvents();
         var currentCalendarDate = moment(date).format("YYYY-MM-DD");
         self.refreshCalendarEvent(this.locationId, true);
@@ -1986,9 +1992,12 @@ function SylvanCalendar() {
         else {
             wjQuery('.headerDate').removeClass('today');
         }
-        var dayOfWeek = moment(currentCalendarDate).format('dddd');
-        var dayofMonth = moment(currentCalendarDate).format('M/D');
-        wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').html(dayOfWeek + " <br/> " + dayofMonth);
+        var currentView = self.calendar.fullCalendar('getView');
+        if (currentView.name == 'resourceDay') {
+            var dayOfWeek = moment(currentCalendarDate).format('dddd');
+            var dayofMonth = moment(currentCalendarDate).format('M/D');
+            wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').html(dayOfWeek + " <br/> " + dayofMonth);
+        }
         this.clearEvents();
         currentCalendarDate = moment(currentCalendarDate).format("YYYY-MM-DD");
         this.refreshCalendarEvent(this.locationId, true);
@@ -4484,7 +4493,8 @@ function SylvanCalendar() {
             wjQuery("#excuseModal").dialog({
                 modal: true,
                 draggable: false,
-                resizable: false
+                resizable: false,
+                width:350
             });
             wjQuery(".excuseSave").removeClass('reschedule').addClass('makeup');
             wjQuery("#excuseModal").dialog('option', 'title', 'Add MakeUp');
@@ -4677,7 +4687,8 @@ function SylvanCalendar() {
             wjQuery("#excuseModal").dialog({
                 modal: true,
                 draggable: false,
-                resizable: false
+                resizable: false,
+                width:350
             });
             wjQuery(".excuseSave").removeClass('makeup').addClass('reschedule');
             wjQuery("#excuseModal").dialog('option', 'title', 'Re-Schedule');
@@ -5382,7 +5393,7 @@ function SylvanCalendar() {
         wjQuery("#dialog").dialog({
             resizable: false,
             height: "auto",
-            width: 400,
+            width: 350,
             draggable : false,
             modal: true,
             buttons: {
@@ -5404,7 +5415,7 @@ function SylvanCalendar() {
         wjQuery("#dialog").dialog({
             resizable: false,
             height: "auto",
-            width: 400,
+            width: 350,
             modal: true,
             buttons: {
                 Yes: function () {
@@ -5423,7 +5434,7 @@ function SylvanCalendar() {
         wjQuery("#dialog").dialog({
             resizable: false,
             height: "auto",
-            width: 400,
+            width: 350,
             modal: true,
             buttons: {
                 Yes: function () {
@@ -5442,7 +5453,7 @@ function SylvanCalendar() {
         wjQuery("#dialog").dialog({
             resizable: false,
             height: "auto",
-            width: 400,
+            width: 350,
             modal: true,
             buttons: {
                 Yes: function () {
@@ -5461,7 +5472,7 @@ function SylvanCalendar() {
         wjQuery("#dialog").dialog({
             resizable: false,
             height: "auto",
-            width: 400,
+            width: 350,
             modal: true,
             buttons: {
                 // "Confirm": function() {
@@ -5551,7 +5562,7 @@ function SylvanCalendar() {
             wjQuery("#makeup").dialog({
                 resizable: false,
                 height: 300,
-                width: 400,
+                width: 350,
                 modal: true,
                 buttons: {
                     Cancel: function () {
@@ -5662,7 +5673,7 @@ function SylvanCalendar() {
             wjQuery("#makeup").dialog({
                 resizable: false,
                 height: 300,
-                width: 400,
+                width: 350,
                 modal: true,
                 buttons: {
                     Cancel: function () {
@@ -5884,6 +5895,7 @@ function SylvanCalendar() {
                 for (var i = 0; i < arrayList.length; i++) {
                     if(arrayList[i].hasOwnProperty('startHour') && arrayList[i].hasOwnProperty('resourceId')){
                         var resourceObj = this.getResourceObj(arrayList[i].resourceId);
+                        arrayList[i].isTeacher = true;
                         arrayList[i].deliveryType = resourceObj.deliveryType;
                         arrayList[i].deliveryTypeId = resourceObj.deliveryTypeId;
                         if(this.weekEventObject.hasOwnProperty(arrayList[i].startHour)){
@@ -5972,7 +5984,8 @@ function SylvanCalendar() {
                             id: arrayList[i]['_hub_staffid_value'],
                             locationId: arrayList[i]['astaff_x002e_hub_center'],
                             deliveryTypeId: arrayList[i]['_hub_deliverytype_value'],
-                            subjects: this.getTeacherSubjects(arrayList[i])
+                            subjects: this.getTeacherSubjects(arrayList[i]),
+                            isTeacher: true
                         };
                     if(arrayList[i]['hub_startdate'] != undefined){
                         obj.startDate = new Date(arrayList[i]['hub_startdate']);
@@ -6292,7 +6305,119 @@ function SylvanCalendar() {
 
     this.renderWeekModal = function(calEvent, jsEvent, view){
         if(view.name == 'agendaWeek'){
-            console.log(calEvent,jsEvent, view);
+            if(calEvent.deliveryType == 'Personal-Instruction'){
+                for(var i in this.weekEventObject){
+                    if(i == calEvent.start){
+                        var groupByResource = {},sof = [],taList = [];
+                        if(this.weekEventObject[i].hasOwnProperty('student')){
+                            if(this.weekEventObject[i].student.hasOwnProperty('pi')){
+                                for(var x=0;x<this.weekEventObject[i].student.pi.length;x++){
+                                    if(this.weekEventObject[i].student.pi[x].hasOwnProperty('resourceId')){
+                                        if(groupByResource.hasOwnProperty(this.weekEventObject[i].student.pi[x].resourceId)){
+                                            groupByResource[this.weekEventObject[i].student.pi[x].resourceId].push(this.weekEventObject[i].student.pi[x]);
+                                        }
+                                        else{
+                                            groupByResource[this.weekEventObject[i].student.pi[x].resourceId] = [];
+                                            groupByResource[this.weekEventObject[i].student.pi[x].resourceId].push(this.weekEventObject[i].student.pi[x]);
+                                        }
+                                    }
+                                    else{
+                                        sof.push(this.weekEventObject[i].student.pi[x]);
+                                    }
+                                }
+                            }
+                        }
+                        if(this.weekEventObject[i].hasOwnProperty('teacherSchedule')){
+                            if(this.weekEventObject[i].teacherSchedule.hasOwnProperty('pi')){
+                                for(var x=0;x<this.weekEventObject[i].teacherSchedule.pi.length;x++){
+                                    if(groupByResource.hasOwnProperty(this.weekEventObject[i].teacherSchedule.pi[x].resourceId)){
+                                        groupByResource[this.weekEventObject[i].teacherSchedule.pi[x].resourceId].push(this.weekEventObject[i].teacherSchedule.pi[x]);
+                                    }
+                                    else{
+                                        groupByResource[this.weekEventObject[i].teacherSchedule.pi[x].resourceId] = [];
+                                        groupByResource[this.weekEventObject[i].teacherSchedule.pi[x].resourceId].push(this.weekEventObject[i].teacherSchedule.pi[x]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                this.generateModalHtml(groupByResource,sof,taList);
+            }
+            else if(calEvent.deliveryType == 'Group-Instruction'){
+                for(var i in this.weekEventObject){
+                    if(i == calEvent.start){
+                        var groupByResource = {},sof = [],taList = [];
+                        if(this.weekEventObject[i].student.hasOwnProperty('gi')){
+                            for(var x=0;x<this.weekEventObject[i].student.gi.length;x++){
+                                if(this.weekEventObject[i].student.gi[x].hasOwnProperty('resourceId')){
+                                    if(groupByResource.hasOwnProperty(this.weekEventObject[i].student.gi[x].resourceId)){
+                                        groupByResource[this.weekEventObject[i].student.gi[x].resourceId].push(this.weekEventObject[i].student.gi[x]);
+                                    }
+                                    else{
+                                        groupByResource[this.weekEventObject[i].student.gi[x].resourceId] = [];
+                                        groupByResource[this.weekEventObject[i].student.gi[x].resourceId].push(this.weekEventObject[i].student.gi[x]);
+                                    }
+                                }
+                                else{
+                                    sof.push(this.weekEventObject[i].student.gi[x]);
+                                }
+                            }
+                        }
+                        if(this.weekEventObject[i].hasOwnProperty('teacherSchedule')){
+                            if(this.weekEventObject[i].teacherSchedule.hasOwnProperty('gi')){
+                                for(var x=0;x<this.weekEventObject[i].teacherSchedule.gi.length;x++){
+                                    if(groupByResource.hasOwnProperty(this.weekEventObject[i].teacherSchedule.gi[x].resourceId)){
+                                        groupByResource[this.weekEventObject[i].teacherSchedule.gi[x].resourceId].push(this.weekEventObject[i].teacherSchedule.gi[x]);
+                                    }
+                                    else{
+                                        groupByResource[this.weekEventObject[i].teacherSchedule.gi[x].resourceId] = [];
+                                        groupByResource[this.weekEventObject[i].teacherSchedule.gi[x].resourceId].push(this.weekEventObject[i].teacherSchedule.gi[x]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                this.generateModalHtml(groupByResource,sof,taList);
+            }
+            else if(calEvent.deliveryType == 'Group-Facilitation'){
+                for(var i in this.weekEventObject){
+                    if(i == calEvent.start){
+                        var groupByResource = {},sof=[],taList = [];
+                        if(this.weekEventObject[i].student.hasOwnProperty('gf')){
+                            for(var x=0;x<this.weekEventObject[i].student.gf.length;x++){
+                                if(this.weekEventObject[i].student.gf[x].hasOwnProperty('resourceId')){
+                                    if(groupByResource.hasOwnProperty(this.weekEventObject[i].student.gf[x].resourceId)){
+                                        groupByResource[this.weekEventObject[i].student.gf[x].resourceId].push(this.weekEventObject[i].student.gf[x]);
+                                    }
+                                    else{
+                                        groupByResource[this.weekEventObject[i].student.gf[x].resourceId] = [];
+                                        groupByResource[this.weekEventObject[i].student.gf[x].resourceId].push(this.weekEventObject[i].student.gf[x]);
+                                    }
+                                }
+                                else{
+                                    sof.push(this.weekEventObject[i].student.gf[x]);
+                                }
+                            }
+                        }
+                        if(this.weekEventObject[i].hasOwnProperty('teacherSchedule')){
+                            if(this.weekEventObject[i].teacherSchedule.hasOwnProperty('gf')){
+                                for(var x=0;x<this.weekEventObject[i].teacherSchedule.gf.length;x++){
+                                    if(groupByResource.hasOwnProperty(this.weekEventObject[i].teacherSchedule.gf[x].resourceId)){
+                                        groupByResource[this.weekEventObject[i].teacherSchedule.gf[x].resourceId].push(this.weekEventObject[i].teacherSchedule.gf[x]);
+                                    }
+                                    else{
+                                        groupByResource[this.weekEventObject[i].teacherSchedule.gf[x].resourceId] = [];
+                                        groupByResource[this.weekEventObject[i].teacherSchedule.gf[x].resourceId].push(this.weekEventObject[i].teacherSchedule.gf[x]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                this.generateModalHtml(groupByResource,sof,taList);
+            }
             wjQuery("#weekmodal").dialog({
                 modal: true,
                 draggable: false,
@@ -6303,6 +6428,60 @@ function SylvanCalendar() {
             wjQuery("#weekmodal").dialog('option', 'title', moment(calEvent.start).format('dddd')+" "+moment(calEvent.start).format('hh:mm A'));
         }
     };
+
+    this.generateModalHtml = function(groupByResource,sof,taList){
+        var html= "<div class='holder'>";
+        if(Object.keys(groupByResource).length){
+            for(var i in groupByResource){
+                var oneResource = "<div class='resourceHolder'>";
+                var teacherPlaceFlag = true,studentPlaceFlag = true,teacherHtml= '',studentHtml = '';
+                for(var j=0;j<groupByResource[i].length;j++){
+                    if(groupByResource[i][j].isTeacher){
+                        if(teacherPlaceFlag){
+                            teacherPlaceFlag = false;
+                            teacherHtml+="<div class='teacherHolder'>";
+                        }
+                        teacherHtml+="<div>"+groupByResource[i][j].name+"</div>";
+                    }
+                    else{
+                        if(studentPlaceFlag){
+                            studentPlaceFlag = false;
+                            studentHtml+="<div class='studentHolder'>";
+                        }
+                        studentHtml+="<div class='wk-student'>"+groupByResource[i][j].name+", " + groupByResource[i][j].grade + "<i class='material-icons' style='color:" + groupByResource[i][j]['subjectColorCode'] + "'>location_on</i></div>";
+                    }
+                }
+                if(!teacherPlaceFlag){
+                    teacherHtml += "</div>";
+                    oneResource += teacherHtml;
+                }
+                else{
+                    teacherHtml += "<div class='teacherHolder'><div class='placeholder'>Teacher Name</div></div>";
+                    oneResource += teacherHtml;
+                }
+                if(!studentPlaceFlag){
+                    studentHtml += "</div>";
+                    oneResource += studentHtml;
+                }
+                else{
+                    studentHtml += "<div class='studentHolder'><div class='placeholder'>Student Name</div></div>";
+                    oneResource += studentHtml;
+                }
+                oneResource += "</div>";
+                html += oneResource;
+            }
+        }
+        if(sof.length){
+
+        }
+        if(taList.length){
+
+        }
+        html+="</div>";
+        wjQuery('#weekStudentsPlaceHolder').css('width', (Object.keys(groupByResource).length * 150) +'px');
+        wjQuery('#weekStudentsPlaceHolder').html(html);
+    };
+
 
     this.populateWeekEvents = function(){
         var self = this;
