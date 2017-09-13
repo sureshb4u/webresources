@@ -6464,10 +6464,38 @@ function SylvanCalendar() {
             }
         }
         if(sof.length){
-
+            var oneResource = "<div class='resourceHolder'>";
+            var SOFPlaceFlag=true,sofHtml = '';
+            for(var j=0;j<sof.length;j++){
+                if(SOFPlaceFlag){
+                    SOFPlaceFlag = false;
+                    sofHtml+="<div class='teacherHolder'>Student Overflow";
+                }
+                sofHtml+="<div>"+sof[j].name+"</div>";
+            }
+            if(!SOFPlaceFlag){
+                sofHtml += "</div>";
+                oneResource += sofHtml;
+            }
+            oneResource += "</div>";
+            html += oneResource;
         }
         if(taList.length){
-
+            var oneResource = "<div class='resourceHolder'>";
+            var TAPlaceFlag=true,taHtml = '';
+            for(var j=0;j<sof.length;j++){
+                if(TAPlaceFlag){
+                    TAPlaceFlag = false;
+                    taHtml+="<div class='teacherHolder'>Teacher Availability";
+                }
+                taHtml+="<div>"+sof[j].name+"</div>";
+            }
+            if(!TAPlaceFlag){
+                taHtml += "</div>";
+                oneResource += taHtml;
+            }
+            oneResource += "</div>";
+            html += oneResource;
         }
         html+="</div>";
         wjQuery('#weekStudentsPlaceHolder').css('width', (Object.keys(groupByResource).length * 150) +'px');
