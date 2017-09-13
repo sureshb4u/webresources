@@ -4948,6 +4948,7 @@ function SylvanCalendar() {
                         };
                     }
                 });
+
             }
             else if (deliveryType == "Group Facilitation") {
                 obj.reschedule = {
