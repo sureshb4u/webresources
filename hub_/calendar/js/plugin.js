@@ -495,7 +495,7 @@ function SylvanCalendar() {
     this.takeHourValue = function (timeString) {
         if (timeString != undefined) {
             if (timeString.split(' ')[1] == 'AM') {
-                return parseInt(moment(obj.startTime, 'h:mm A').format('h')); 
+                return parseInt(moment(timeString, 'h:mm A').format('h')); 
             }
             else {
                 var hours = parseInt(moment(timeString, 'h:mm A').format('h'));
