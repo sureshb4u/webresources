@@ -2528,11 +2528,19 @@ function SylvanCalendar() {
                     }
                 }
                 if (index == -1) {
-                    eventObjList.push(teacher);
+                     var objExists = eventObjList.findIndex(function (x) {
+                            return (x.id == teacher.id &&
+                                    x.resourceId == teacher.resourceId &&
+                                    x.start.getTime() == teacher.start.getTime())
+                        });
+                    if(objExists == -1){
+                        eventObjList.push(teacher);
+                    }
                 }
             });
             self.convertedTeacherObj = eventObjList;
-        } else if (label == "studentSession") {
+        } 
+        else if (label == "studentSession") {
             wjQuery.each(args, function (ke, val) {
                 var sDate = new Date(val['hub_session_date'] + " " + val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
                 var eDate = new Date(val['hub_session_date'] + " " + val['hub_end_time@OData.Community.Display.V1.FormattedValue']);
@@ -2584,7 +2592,14 @@ function SylvanCalendar() {
                             obj.pinId = isPinned[0].id;
                         }
                     }
-                    eventObjList.push(obj);
+                    var index = eventObjList.findIndex(function (x) {
+                            return (x.id == obj.id &&
+                                    x.resourceId == obj.resourceId &&
+                                    x.start.getTime() == obj.start.getTime())
+                        });
+                    if(index == -1){
+                        eventObjList.push(obj);
+                    }
                 }
                 else if(obj.sessionStatus != INVALID_STATUS &&
                     obj.sessionStatus != UNEXCUSED_STATUS &&
@@ -2592,11 +2607,19 @@ function SylvanCalendar() {
                     obj.sessionStatus != EXCUSED_STATUS) {
                     self.pushStudentToSOF(obj);
                 }
+
                 if(obj.sessionStatus == INVALID_STATUS ||
                     obj.sessionStatus == UNEXCUSED_STATUS ||
                     obj.sessionStatus == OMIT_STATUS || 
                     obj.sessionStatus == EXCUSED_STATUS){
-                    eventObjList.push(obj);
+                     var index = eventObjList.findIndex(function (x) {
+                            return (x.id == obj.id &&
+                                    x.resourceId == obj.resourceId &&
+                                    x.start.getTime() == obj.start.getTime())
+                        });
+                    if(index == -1){
+                        eventObjList.push(obj);
+                    }
                 }
             });
             setTimeout(function () {
@@ -2840,7 +2863,8 @@ function SylvanCalendar() {
                     self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
                 }
             }, 800);
-        } else if (label == "teacherAvailability") {
+        } 
+        else if (label == "teacherAvailability") {
             var currentCalendarDate = this.calendar.fullCalendar('getDate');
             var currentView = new Date(currentCalendarDate).setHours(0);
             currentView = new Date(new Date(currentCalendarDate).setMinutes(0));
