@@ -2528,19 +2528,11 @@ function SylvanCalendar() {
                     }
                 }
                 if (index == -1) {
-                     var objExists = eventObjList.findIndex(function (x) {
-                            return (x.id == teacher.id &&
-                                    x.resourceId == teacher.resourceId &&
-                                    x.start.getTime() == teacher.start.getTime())
-                        });
-                    if(objExists == -1){
-                        eventObjList.push(teacher);
-                    }
+                    eventObjList.push(teacher);
                 }
             });
             self.convertedTeacherObj = eventObjList;
-        } 
-        else if (label == "studentSession") {
+        } else if (label == "studentSession") {
             wjQuery.each(args, function (ke, val) {
                 var sDate = new Date(val['hub_session_date'] + " " + val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
                 var eDate = new Date(val['hub_session_date'] + " " + val['hub_end_time@OData.Community.Display.V1.FormattedValue']);
@@ -2863,8 +2855,7 @@ function SylvanCalendar() {
                     self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
                 }
             }, 800);
-        } 
-        else if (label == "teacherAvailability") {
+        } else if (label == "teacherAvailability") {
             var currentCalendarDate = this.calendar.fullCalendar('getDate');
             var currentView = new Date(currentCalendarDate).setHours(0);
             currentView = new Date(new Date(currentCalendarDate).setMinutes(0));
@@ -4116,8 +4107,8 @@ function SylvanCalendar() {
     }
 
     this.pinStudent = function (element) {
+        wjQuery('.loading').show();
         var self = this;
-
         var id = wjQuery(element).attr('value');
         var uniqueId = wjQuery(element).attr('uniqueId');
         var startTime = uniqueId.split('_')[2];
@@ -4155,6 +4146,7 @@ function SylvanCalendar() {
         objPinnedStudent.hub_day = self.getDayValue(today);
         objPinnedStudent.hub_session_date = moment(today).format("YYYY-MM-DD");
         var responseObj = data.savePinStudent(objPinnedStudent);
+        wjQuery('.loading').hide();
         if (typeof (responseObj) == 'boolean') {
             if (responseObj) {
                 var txt = wjQuery(element)[0].innerHTML;
@@ -4217,6 +4209,7 @@ function SylvanCalendar() {
                    x.resourceId == uniqueIds[1] &&
                    x.startHour.getTime() == new Date(uniqueIds[2]).getTime();
         });
+        wjQuery('.loading').show();
         var objPinnedStaff = {};
         if (teacher != undefined) {
             objPinnedStaff['hub_center@odata.bind'] = teacher[0].locationId;
@@ -4234,6 +4227,7 @@ function SylvanCalendar() {
                 objPinnedStaff.hub_end_time = null;
             }
             var responseObj = data.savePinTeacher(objPinnedStaff);
+            wjQuery('.loading').hide();
             if (responseObj != undefined) {
                 var txt = wjQuery(element).text();
                 wjQuery(element).html("<img src='/webresources/hub_/calendar/images/pin.png'/>" + txt);
@@ -4253,6 +4247,7 @@ function SylvanCalendar() {
                    x.resourceId == uniqueIds[1] &&
                    x.startHour.getTime() == new Date(uniqueIds[2]).getTime();
         });
+        wjQuery('.loading').show();
         var objUnPinnedStaff = {};
         if (teacher != undefined) {
             objUnPinnedStaff['hub_center@odata.bind'] = teacher[0].locationId;
@@ -4266,6 +4261,7 @@ function SylvanCalendar() {
             if (data.saveUnPinTeacher(objUnPinnedStaff)) {
                 wjQuery(element).removeAttr('pinnedId');
                 wjQuery(element).find("img").remove();
+                wjQuery('.loading').hide();
             }
         }
     };
@@ -4887,15 +4883,14 @@ function SylvanCalendar() {
                     obj.unpin.visible = false;
                     obj.pin.visible = true;
                 }
-                wjQuery(function () {
-                    wjQuery.contextMenu({
-                        selector: 'span[uniqueId="' + uniqueId + '"]',
-                        build: function ($trigger, e) {
-                            return {
-                                items: obj
-                            };
-                        }
-                    });
+                wjQuery.contextMenu( 'destroy', 'span[uniqueId="' + uniqueId + '"]');
+                wjQuery.contextMenu({
+                    selector: 'span[uniqueId="' + uniqueId + '"]',
+                    build: function ($trigger, e) {
+                        return {
+                            items: obj
+                        };
+                    }
                 });
             }
             else if (deliveryType == "Group Facilitation") {
@@ -4917,26 +4912,24 @@ function SylvanCalendar() {
                         self.moveStudentToSOF(options.$trigger[0]);
                     }
                 }
-
-                wjQuery(function () {
-                    wjQuery.contextMenu({
-                        selector: 'span[uniqueId="' + uniqueId + '"]',
-                        build: function ($trigger, e) {
-                            return {
-                                items: obj
-                            };
-                        }
-                    });
+                wjQuery.contextMenu( 'destroy', 'span[uniqueId="' + uniqueId + '"]');
+                wjQuery.contextMenu({
+                    selector: 'span[uniqueId="' + uniqueId + '"]',
+                    build: function ($trigger, e) {
+                        return {
+                            items: obj
+                        };
+                    }
                 });
             }
             else if(deliveryType == "Group Instruction"){
-              obj.omit = {
-                name: "Omit",
-                callback: function (key, options) {
-                  self.omitStudentFromSession(options.$trigger[0]);
+                obj.omit = {
+                    name: "Omit",
+                    callback: function (key, options) {
+                      self.omitStudentFromSession(options.$trigger[0]);
+                    }
                 }
-              }
-              wjQuery(function () {
+                wjQuery.contextMenu( 'destroy', 'span[uniqueId="' + uniqueId + '"]');
                 wjQuery.contextMenu({
                     selector: 'span[uniqueId="' + uniqueId + '"]',
                     build: function ($trigger, e) {
@@ -4945,7 +4938,6 @@ function SylvanCalendar() {
                       };
                     }
                 });
-              });
             }
            
         } 
@@ -4996,15 +4988,14 @@ function SylvanCalendar() {
                 obj.unpin.visible = false;
                 obj.pin.visible = true;
             }
-            wjQuery(function () {
-                wjQuery.contextMenu({
-                    selector: 'span[uniqueId="' + uniqueId + '"]',
-                    build: function ($trigger, e) {
-                        return {
-                            items: obj
-                        };
-                    }
-                });
+            wjQuery.contextMenu( 'destroy', 'span[uniqueId="' + uniqueId + '"]');
+            wjQuery.contextMenu({
+                selector: 'span[uniqueId="' + uniqueId + '"]',
+                build: function ($trigger, e) {
+                    return {
+                        items: obj
+                    };
+                }
             });
         } else if (labelFor == "studentPlaceholder") {
           if(deliveryType != "Group-Instruction"){
@@ -5022,7 +5013,7 @@ function SylvanCalendar() {
                     self.makeupPopup(data.getMakeupNFloat({"hub_center@odata.bind":self.locationId, "isForMakeup":false}), options.$trigger[0], false);
                 }
               }
-              wjQuery(function() {
+              wjQuery.contextMenu( 'destroy', 'span[uniqueId="' + uniqueId + '"]');
                 wjQuery.contextMenu({
                     selector: '.student-placeholder-Personal-Instruction', 
                     build: function($trigger, e) {
@@ -5031,16 +5022,15 @@ function SylvanCalendar() {
                       };
                     }
                 }); 
-              }); 
             }else{
               // float menu Only For GF
-              obj.float = {
-                name: "Float",
-                callback : function(key, options) {
-                    self.makeupPopup(data.getMakeupNFloat({"hub_center@odata.bind":self.locationId, "isForMakeup":false}), options.$trigger[0], false);
+                obj.float = {
+                    name: "Float",
+                    callback : function(key, options) {
+                        self.makeupPopup(data.getMakeupNFloat({"hub_center@odata.bind":self.locationId, "isForMakeup":false}), options.$trigger[0], false);
+                    }
                 }
-              }
-              wjQuery(function() {
+                wjQuery.contextMenu( 'destroy', 'span[uniqueId="' + uniqueId + '"]');
                 wjQuery.contextMenu({
                     selector: '.student-placeholder-Group-Facilitation', 
                     build: function($trigger, e) {
@@ -5049,7 +5039,6 @@ function SylvanCalendar() {
                       };
                     }
                 }); 
-              });
             }
           }
         }
