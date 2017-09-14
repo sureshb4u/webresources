@@ -2532,7 +2532,8 @@ function SylvanCalendar() {
                 }
             });
             self.convertedTeacherObj = eventObjList;
-        } else if (label == "studentSession") {
+        } 
+        else if (label == "studentSession") {
             wjQuery.each(args, function (ke, val) {
                 var sDate = new Date(val['hub_session_date'] + " " + val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
                 var eDate = new Date(val['hub_session_date'] + " " + val['hub_end_time@OData.Community.Display.V1.FormattedValue']);
@@ -2855,34 +2856,34 @@ function SylvanCalendar() {
                     self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
                 }
             }, 800);
-        } else if (label == "teacherAvailability") {
+        } 
+        else if (label == "teacherAvailability") {
             var currentCalendarDate = this.calendar.fullCalendar('getDate');
             var currentView = new Date(currentCalendarDate).setHours(0);
             currentView = new Date(new Date(currentCalendarDate).setMinutes(0));
             currentView = new Date(new Date(currentCalendarDate).setSeconds(0));
-            var index = -1;
             for (var i = 0; i < args.length; i++) {
+                var index = -1;
                 if(self.staffExceptions.length){
-                  for(var k=0; k< self.staffExceptions.length ; k++){
-                    var exceptionStartDate = new Date(self.staffExceptions[k]['hub_startdate']);
-                    // Set time for start date
-                    exceptionStartDate = new Date(exceptionStartDate).setHours(0);
-                    exceptionStartDate = new Date(new Date(exceptionStartDate).setMinutes(0));
-                    exceptionStartDate = new Date(new Date(exceptionStartDate).setSeconds(0));
+                    for(var k=0; k< self.staffExceptions.length ; k++){
+                        if(args[i]['_hub_staffid_value'] == self.staffExceptions[k]['astaff_x002e_hub_staffid']){
+                            var exceptionStartDate = new Date(self.staffExceptions[k]['hub_startdate']);
+                            // Set time for start date
+                            exceptionStartDate = new Date(exceptionStartDate).setHours(0);
+                            exceptionStartDate = new Date(new Date(exceptionStartDate).setMinutes(0));
 
-                    var exceptionEndDate = self.staffExceptions[k]['hub_enddate'];
-                    exceptionEndDate = exceptionEndDate == undefined ? exceptionStartDate : new Date(exceptionEndDate);
-                    // Set time for end date
-                    exceptionEndDate = new Date(exceptionEndDate).setHours(0);
-                    exceptionEndDate = new Date(new Date(exceptionEndDate).setMinutes(0));
-                    exceptionEndDate = new Date(new Date(exceptionEndDate).setSeconds(0));
+                            var exceptionEndDate = self.staffExceptions[k]['hub_enddate'];
+                            exceptionEndDate = exceptionEndDate == undefined ? exceptionStartDate : new Date(exceptionEndDate);
+                            // Set time for end date
+                            exceptionEndDate = new Date(exceptionEndDate).setHours(0);
+                            exceptionEndDate = new Date(new Date(exceptionEndDate).setMinutes(0));
 
-                    if(args[i]['_hub_staffid_value'] == self.staffExceptions[k]['astaff_x002e_hub_staffid'] && 
-                        currentView.getTime() >= exceptionStartDate.getTime() && currentView.getTime() < exceptionEndDate.getTime()){
-                      index = 1;
-                      break;
+                            if(currentView.getTime() >= exceptionStartDate.getTime() && currentView.getTime() <= exceptionEndDate.getTime()){
+                                index = 1;
+                                break;
+                            }
+                        }
                     }
-                  }
                 }
                 if (index == -1) {
                     if (args[i]['hub_' + moment(currentCalendarDate).format('dddd').toLowerCase()]) {
@@ -3042,7 +3043,6 @@ function SylvanCalendar() {
             }
             this.taList = eventObjList;
         }
-
         return eventObjList;
     }
 
