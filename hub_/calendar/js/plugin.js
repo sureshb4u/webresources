@@ -492,6 +492,18 @@ function SylvanCalendar() {
             }
         }
     }
+    this.takeHourValue = function (timeString) {
+        if (timeString != undefined) {
+            if (timeString.split(' ')[1] == 'AM') {
+                return parseInt(moment(obj.startTime, 'h:mm A').format('h')); 
+            }
+            else {
+                var hours = parseInt(moment(timeString, 'h:mm A').format('h'));
+                hours = hours != 12 ? hours + 12 : hours;
+                return hours;
+            }
+        }
+    }
 
     this.convertMinsNumToTime = function(minsNum){
       if(minsNum){
@@ -2866,20 +2878,20 @@ function SylvanCalendar() {
                             endDate: args[i]['hub_enddate@OData.Community.Display.V1.FormattedValue'],
                             locationId: args[i]['astaff_x002e_hub_center'],
                             deliveryTypeId: args[i]['_hub_deliverytype_value'],
-                            subjects: this.getTeacherSubjects(args[i])
+                            subjects: self.getTeacherSubjects(args[i])
                         }
                         switch (moment(currentCalendarDate).format('dddd').toLowerCase()) {
                             case 'monday':
                                 obj.startTime = args[i]['hub_monstarttime@OData.Community.Display.V1.FormattedValue'];
                                 if (args[i]['hub_monendtime@OData.Community.Display.V1.FormattedValue'] == undefined) {
                                     obj.endTime = moment(obj.startTime, 'h:mm A').add(1, 'h').format('h:mm A');
-                                    obj.startHour = obj.startTime.split(' ')[1] == 'AM' ? parseInt(moment(obj.startTime, 'h:mm A').format('h')) : parseInt(moment(obj.startTime, 'h:mm A').format('h')) + 12;
+                                    obj.startHour = self.takeHourValue(obj.startTime);
                                     eventObjList.push(obj);
                                 }
                                 else {
                                     var staffEndTime = args[i]['hub_monendtime@OData.Community.Display.V1.FormattedValue'];
                                     var staffEndHour = staffEndTime.split(' ')[1] == 'AM' ? parseInt(moment(staffEndTime, 'h:mm A').format('h')) : parseInt(moment(staffEndTime, 'h:mm A').format('h')) + 12;
-                                    var staffStartHour = obj.startTime.split(' ')[1] == 'AM' ? parseInt(moment(obj.startTime, 'h:mm A').format('h')) : parseInt(moment(obj.startTime, 'h:mm A').format('h')) + 12;
+                                    var staffStartHour = self.takeHourValue(obj.startTime);
                                     do {
                                         var newObject = wjQuery.extend(true, {}, obj);
                                         newObject.startHour = staffStartHour;
@@ -2893,13 +2905,13 @@ function SylvanCalendar() {
                                 obj.startTime = args[i]['hub_tuestarttime@OData.Community.Display.V1.FormattedValue'];
                                 if (args[i]['hub_tueendtime@OData.Community.Display.V1.FormattedValue'] == undefined) {
                                     obj.endTime = moment(obj.startTime, 'h:mm A').add(1, 'h').format('h:mm A');
-                                    obj.startHour = obj.startTime.split(' ')[1] == 'AM' ? parseInt(moment(obj.startTime, 'h:mm A').format('h')) : parseInt(moment(obj.startTime, 'h:mm A').format('h')) + 12;
+                                    obj.startHour = self.takeHourValue(obj.startTime);
                                     eventObjList.push(obj);
                                 }
                                 else {
                                     var staffEndTime = args[i]['hub_tueendtime@OData.Community.Display.V1.FormattedValue'];
                                     var staffEndHour = staffEndTime.split(' ')[1] == 'AM' ? parseInt(moment(staffEndTime, 'h:mm A').format('h')) : parseInt(moment(staffEndTime, 'h:mm A').format('h')) + 12;
-                                    var staffStartHour = obj.startTime.split(' ')[1] == 'AM' ? parseInt(moment(obj.startTime, 'h:mm A').format('h')) : parseInt(moment(obj.startTime, 'h:mm A').format('h')) + 12;
+                                    var staffStartHour = self.takeHourValue(obj.startTime);
                                     do {
                                         var newObject = wjQuery.extend(true, {}, obj);
                                         newObject.startHour = staffStartHour;
@@ -2913,13 +2925,13 @@ function SylvanCalendar() {
                                 obj.startTime = args[i]['hub_wedstarttime@OData.Community.Display.V1.FormattedValue'];
                                 if (args[i]['hub_wedendtime@OData.Community.Display.V1.FormattedValue'] == undefined) {
                                     obj.endTime = moment(obj.startTime, 'h:mm A').add(1, 'h').format('h:mm A');
-                                    obj.startHour = obj.startTime.split(' ')[1] == 'AM' ? parseInt(moment(obj.startTime, 'h:mm A').format('h')) : parseInt(moment(obj.startTime, 'h:mm A').format('h')) + 12;
+                                    obj.startHour = self.takeHourValue(obj.startTime);
                                     eventObjList.push(obj);
                                 }
                                 else {
                                     var staffEndTime = args[i]['hub_wedendtime@OData.Community.Display.V1.FormattedValue'];
                                     var staffEndHour = staffEndTime.split(' ')[1] == 'AM' ? parseInt(moment(staffEndTime, 'h:mm A').format('h')) : parseInt(moment(staffEndTime, 'h:mm A').format('h')) + 12;
-                                    var staffStartHour = obj.startTime.split(' ')[1] == 'AM' ? parseInt(moment(obj.startTime, 'h:mm A').format('h')) : parseInt(moment(obj.startTime, 'h:mm A').format('h')) + 12;
+                                    var staffStartHour = self.takeHourValue(obj.startTime);
                                     do {
                                         var newObject = wjQuery.extend(true, {}, obj);
                                         newObject.startHour = staffStartHour;
@@ -2933,13 +2945,13 @@ function SylvanCalendar() {
                                 obj.startTime = args[i]['hub_thurstarttime@OData.Community.Display.V1.FormattedValue'];
                                 if (args[i]['hub_thurendtime@OData.Community.Display.V1.FormattedValue'] == undefined) {
                                     obj.endTime = moment(obj.startTime, 'h:mm A').add(1, 'h').format('h:mm A');
-                                    obj.startHour = obj.startTime.split(' ')[1] == 'AM' ? parseInt(moment(obj.startTime, 'h:mm A').format('h')) : parseInt(moment(obj.startTime, 'h:mm A').format('h')) + 12;
+                                    obj.startHour = self.takeHourValue(obj.startTime);
                                     eventObjList.push(obj);
                                 }
                                 else {
                                     var staffEndTime = args[i]['hub_thurendtime@OData.Community.Display.V1.FormattedValue'];
                                     var staffEndHour = staffEndTime.split(' ')[1] == 'AM' ? parseInt(moment(staffEndTime, 'h:mm A').format('h')) : parseInt(moment(staffEndTime, 'h:mm A').format('h')) + 12;
-                                    var staffStartHour = obj.startTime.split(' ')[1] == 'AM' ? parseInt(moment(obj.startTime, 'h:mm A').format('h')) : parseInt(moment(obj.startTime, 'h:mm A').format('h')) + 12;
+                                    var staffStartHour = self.takeHourValue(obj.startTime);
                                     do {
                                         var newObject = wjQuery.extend(true, {}, obj);
                                         newObject.startHour = staffStartHour;
@@ -2953,13 +2965,13 @@ function SylvanCalendar() {
                                 obj.startTime = args[i]['hub_fristarttime@OData.Community.Display.V1.FormattedValue'];
                                 if (args[i]['hub_friendtime@OData.Community.Display.V1.FormattedValue'] == undefined) {
                                     obj.endTime = moment(obj.startTime, 'h:mm A').add(1, 'h').format('h:mm A');
-                                    obj.startHour = obj.startTime.split(' ')[1] == 'AM' ? parseInt(moment(obj.startTime, 'h:mm A').format('h')) : parseInt(moment(obj.startTime, 'h:mm A').format('h')) + 12;
+                                    obj.startHour = self.takeHourValue(obj.startTime);
                                     eventObjList.push(obj);
                                 }
                                 else {
                                     var staffEndTime = args[i]['hub_friendtime@OData.Community.Display.V1.FormattedValue'];
                                     var staffEndHour = staffEndTime.split(' ')[1] == 'AM' ? parseInt(moment(staffEndTime, 'h:mm A').format('h')) : parseInt(moment(staffEndTime, 'h:mm A').format('h')) + 12;
-                                    var staffStartHour = obj.startTime.split(' ')[1] == 'AM' ? parseInt(moment(obj.startTime, 'h:mm A').format('h')) : parseInt(moment(obj.startTime, 'h:mm A').format('h')) + 12;
+                                    var staffStartHour = self.takeHourValue(obj.startTime);
                                     do {
                                         var newObject = wjQuery.extend(true, {}, obj);
                                         newObject.startHour = staffStartHour;
@@ -2973,13 +2985,13 @@ function SylvanCalendar() {
                                 obj.startTime = args[i]['hub_satstarttime@OData.Community.Display.V1.FormattedValue'];
                                 if (args[i]['hub_satendtime@OData.Community.Display.V1.FormattedValue'] == undefined) {
                                     obj.endTime = moment(obj.startTime, 'h:mm A').add(1, 'h').format('h:mm A');
-                                    obj.startHour = obj.startTime.split(' ')[1] == 'AM' ? parseInt(moment(obj.startTime, 'h:mm A').format('h')) : parseInt(moment(obj.startTime, 'h:mm A').format('h')) + 12;
+                                    obj.startHour = self.takeHourValue(obj.startTime);
                                     eventObjList.push(obj);
                                 }
                                 else {
                                     var staffEndTime = args[i]['hub_satendtime@OData.Community.Display.V1.FormattedValue'];
                                     var staffEndHour = staffEndTime.split(' ')[1] == 'AM' ? parseInt(moment(staffEndTime, 'h:mm A').format('h')) : parseInt(moment(staffEndTime, 'h:mm A').format('h')) + 12;
-                                    var staffStartHour = obj.startTime.split(' ')[1] == 'AM' ? parseInt(moment(obj.startTime, 'h:mm A').format('h')) : parseInt(moment(obj.startTime, 'h:mm A').format('h')) + 12;
+                                    var staffStartHour = self.takeHourValue(obj.startTime);
                                     do {
                                         var newObject = wjQuery.extend(true, {}, obj);
                                         newObject.startHour = staffStartHour;
@@ -2993,13 +3005,13 @@ function SylvanCalendar() {
                                 obj.startTime = args[i]['hub_sunstarttime@OData.Community.Display.V1.FormattedValue'];
                                 if (args[i]['hub_sunendtime@OData.Community.Display.V1.FormattedValue'] == undefined) {
                                     obj.endTime = moment(obj.startTime, 'h:mm A').add(1, 'h').format('h:mm A');
-                                    obj.startHour = obj.startTime.split(' ')[1] == 'AM' ? parseInt(moment(obj.startTime, 'h:mm A').format('h')) : parseInt(moment(obj.startTime, 'h:mm A').format('h')) + 12;
+                                    obj.startHour = self.takeHourValue(obj.startTime);
                                     eventObjList.push(obj);
                                 }
                                 else {
                                     var staffEndTime = args[i]['hub_sunendtime@OData.Community.Display.V1.FormattedValue'];
                                     var staffEndHour = staffEndTime.split(' ')[1] == 'AM' ? parseInt(moment(staffEndTime, 'h:mm A').format('h')) : parseInt(moment(staffEndTime, 'h:mm A').format('h')) + 12;
-                                    var staffStartHour = obj.startTime.split(' ')[1] == 'AM' ? parseInt(moment(obj.startTime, 'h:mm A').format('h')) : parseInt(moment(obj.startTime, 'h:mm A').format('h')) + 12;
+                                    var staffStartHour = self.takeHourValue(obj.startTime);
                                     do {
                                         var newObject = wjQuery.extend(true, {}, obj);
                                         newObject.startHour = staffStartHour;
