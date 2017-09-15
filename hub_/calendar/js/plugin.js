@@ -2863,6 +2863,7 @@ function SylvanCalendar() {
             currentView = new Date(new Date(currentCalendarDate).setMinutes(0));
             currentView = new Date(new Date(currentCalendarDate).setSeconds(0));
             for (var i = 0; i < args.length; i++) {
+                var exceptionStartHour = -1,exceptionEndHour = -1;
                 var index = -1;
                 if(self.staffExceptions.length){
                     for(var k=0; k< self.staffExceptions.length ; k++){
@@ -2877,10 +2878,17 @@ function SylvanCalendar() {
                             // Set time for end date
                             exceptionEndDate = new Date(exceptionEndDate).setHours(0);
                             exceptionEndDate = new Date(new Date(exceptionEndDate).setMinutes(0));
-
                             if(currentView.getTime() >= exceptionStartDate.getTime() && currentView.getTime() <= exceptionEndDate.getTime()){
-                                index = 1;
-                                break;
+                                if(self.staffExceptions[k]['hub_entireday']){
+                                    index = 1;
+                                    break;
+                                }
+                                else{
+                                    exceptionStartHour = self.staffExceptions[k]['hub_starttime'] / 60;
+                                    exceptionEndHour = self.staffExceptions[k]['hub_endtime']/60;
+                                    break;
+                                }
+
                             }
                         }
                     }
@@ -2902,7 +2910,8 @@ function SylvanCalendar() {
                                 if (args[i]['hub_monendtime@OData.Community.Display.V1.FormattedValue'] == undefined) {
                                     obj.endTime = moment(obj.startTime, 'h:mm A').add(1, 'h').format('h:mm A');
                                     obj.startHour = self.takeHourValue(obj.startTime);
-                                    eventObjList.push(obj);
+                                    if(!(obj.startHour >= exceptionStartHour && obj.startHour <= exceptionEndHour-1))
+                                        eventObjList.push(obj);
                                 }
                                 else {
                                     var staffEndTime = args[i]['hub_monendtime@OData.Community.Display.V1.FormattedValue'];
@@ -2911,7 +2920,9 @@ function SylvanCalendar() {
                                     do {
                                         var newObject = wjQuery.extend(true, {}, obj);
                                         newObject.startHour = staffStartHour;
-                                        eventObjList.push(newObject);
+                                        if(!(newObject.startHour >= exceptionStartHour && newObject.startHour <= exceptionEndHour-1)){
+                                            eventObjList.push(newObject);
+                                        }
                                         staffStartHour++;
                                     }
                                     while (staffStartHour < staffEndHour);
@@ -2922,7 +2933,8 @@ function SylvanCalendar() {
                                 if (args[i]['hub_tueendtime@OData.Community.Display.V1.FormattedValue'] == undefined) {
                                     obj.endTime = moment(obj.startTime, 'h:mm A').add(1, 'h').format('h:mm A');
                                     obj.startHour = self.takeHourValue(obj.startTime);
-                                    eventObjList.push(obj);
+                                    if(!(obj.startHour >= exceptionStartHour && obj.startHour <= exceptionEndHour-1))
+                                        eventObjList.push(obj);
                                 }
                                 else {
                                     var staffEndTime = args[i]['hub_tueendtime@OData.Community.Display.V1.FormattedValue'];
@@ -2931,7 +2943,9 @@ function SylvanCalendar() {
                                     do {
                                         var newObject = wjQuery.extend(true, {}, obj);
                                         newObject.startHour = staffStartHour;
-                                        eventObjList.push(newObject);
+                                        if(!(newObject.startHour >= exceptionStartHour && newObject.startHour <= exceptionEndHour-1)){
+                                            eventObjList.push(newObject);
+                                        }
                                         staffStartHour++;
                                     }
                                     while (staffStartHour < staffEndHour);
@@ -2942,7 +2956,8 @@ function SylvanCalendar() {
                                 if (args[i]['hub_wedendtime@OData.Community.Display.V1.FormattedValue'] == undefined) {
                                     obj.endTime = moment(obj.startTime, 'h:mm A').add(1, 'h').format('h:mm A');
                                     obj.startHour = self.takeHourValue(obj.startTime);
-                                    eventObjList.push(obj);
+                                    if(!(obj.startHour >= exceptionStartHour && obj.startHour <= exceptionEndHour-1))
+                                        eventObjList.push(obj);
                                 }
                                 else {
                                     var staffEndTime = args[i]['hub_wedendtime@OData.Community.Display.V1.FormattedValue'];
@@ -2951,7 +2966,9 @@ function SylvanCalendar() {
                                     do {
                                         var newObject = wjQuery.extend(true, {}, obj);
                                         newObject.startHour = staffStartHour;
-                                        eventObjList.push(newObject);
+                                        if(!(newObject.startHour >= exceptionStartHour && newObject.startHour <= exceptionEndHour-1)){
+                                            eventObjList.push(newObject);
+                                        }
                                         staffStartHour++;
                                     }
                                     while (staffStartHour < staffEndHour);
@@ -2962,7 +2979,8 @@ function SylvanCalendar() {
                                 if (args[i]['hub_thurendtime@OData.Community.Display.V1.FormattedValue'] == undefined) {
                                     obj.endTime = moment(obj.startTime, 'h:mm A').add(1, 'h').format('h:mm A');
                                     obj.startHour = self.takeHourValue(obj.startTime);
-                                    eventObjList.push(obj);
+                                    if(!(obj.startHour >= exceptionStartHour && obj.startHour <= exceptionEndHour-1))
+                                        eventObjList.push(obj);
                                 }
                                 else {
                                     var staffEndTime = args[i]['hub_thurendtime@OData.Community.Display.V1.FormattedValue'];
@@ -2971,7 +2989,9 @@ function SylvanCalendar() {
                                     do {
                                         var newObject = wjQuery.extend(true, {}, obj);
                                         newObject.startHour = staffStartHour;
-                                        eventObjList.push(newObject);
+                                        if(!(newObject.startHour >= exceptionStartHour && newObject.startHour <= exceptionEndHour-1)){
+                                            eventObjList.push(newObject);
+                                        }
                                         staffStartHour++;
                                     }
                                     while (staffStartHour < staffEndHour);
@@ -2982,7 +3002,8 @@ function SylvanCalendar() {
                                 if (args[i]['hub_friendtime@OData.Community.Display.V1.FormattedValue'] == undefined) {
                                     obj.endTime = moment(obj.startTime, 'h:mm A').add(1, 'h').format('h:mm A');
                                     obj.startHour = self.takeHourValue(obj.startTime);
-                                    eventObjList.push(obj);
+                                    if(!(obj.startHour >= exceptionStartHour && obj.startHour <= exceptionEndHour-1))
+                                        eventObjList.push(obj);
                                 }
                                 else {
                                     var staffEndTime = args[i]['hub_friendtime@OData.Community.Display.V1.FormattedValue'];
@@ -2991,7 +3012,9 @@ function SylvanCalendar() {
                                     do {
                                         var newObject = wjQuery.extend(true, {}, obj);
                                         newObject.startHour = staffStartHour;
-                                        eventObjList.push(newObject);
+                                        if(!(newObject.startHour >= exceptionStartHour && newObject.startHour <= exceptionEndHour-1)){
+                                            eventObjList.push(newObject);
+                                        }
                                         staffStartHour++;
                                     }
                                     while (staffStartHour < staffEndHour);
@@ -3002,7 +3025,8 @@ function SylvanCalendar() {
                                 if (args[i]['hub_satendtime@OData.Community.Display.V1.FormattedValue'] == undefined) {
                                     obj.endTime = moment(obj.startTime, 'h:mm A').add(1, 'h').format('h:mm A');
                                     obj.startHour = self.takeHourValue(obj.startTime);
-                                    eventObjList.push(obj);
+                                    if(!(obj.startHour >= exceptionStartHour && obj.startHour <= exceptionEndHour-1))
+                                        eventObjList.push(obj);
                                 }
                                 else {
                                     var staffEndTime = args[i]['hub_satendtime@OData.Community.Display.V1.FormattedValue'];
@@ -3011,7 +3035,9 @@ function SylvanCalendar() {
                                     do {
                                         var newObject = wjQuery.extend(true, {}, obj);
                                         newObject.startHour = staffStartHour;
-                                        eventObjList.push(newObject);
+                                        if(!(newObject.startHour >= exceptionStartHour && newObject.startHour <= exceptionEndHour-1)){
+                                            eventObjList.push(newObject);
+                                        }
                                         staffStartHour++;
                                     }
                                     while (staffStartHour < staffEndHour);
@@ -3022,7 +3048,8 @@ function SylvanCalendar() {
                                 if (args[i]['hub_sunendtime@OData.Community.Display.V1.FormattedValue'] == undefined) {
                                     obj.endTime = moment(obj.startTime, 'h:mm A').add(1, 'h').format('h:mm A');
                                     obj.startHour = self.takeHourValue(obj.startTime);
-                                    eventObjList.push(obj);
+                                    if(!(obj.startHour >= exceptionStartHour && obj.startHour <= exceptionEndHour-1))
+                                        eventObjList.push(obj);
                                 }
                                 else {
                                     var staffEndTime = args[i]['hub_sunendtime@OData.Community.Display.V1.FormattedValue'];
@@ -3031,7 +3058,9 @@ function SylvanCalendar() {
                                     do {
                                         var newObject = wjQuery.extend(true, {}, obj);
                                         newObject.startHour = staffStartHour;
-                                        eventObjList.push(newObject);
+                                        if(!(newObject.startHour >= exceptionStartHour && newObject.startHour <= exceptionEndHour-1)){
+                                            eventObjList.push(newObject);
+                                        }
                                         staffStartHour++;
                                     }
                                     while (staffStartHour < staffEndHour);
