@@ -2148,7 +2148,7 @@ function SylvanCalendar() {
                     if (self.masterScheduleStudents == null) {
                         self.masterScheduleStudents = [];
                     }
-                    self.generateWeekEventObject(self.generateEventObject(self.masterScheduleStudents, "masterStudentSession"));
+                    self.generateEventObject(self.masterScheduleStudents, "masterStudentSession");
                 }
                 else{
                     self.students = isFetch || (self.students.length == 0) ? data.getStudentSession(locationId, startDate, endDate) : self.students;
@@ -2757,6 +2757,9 @@ function SylvanCalendar() {
                             if(currentView.name == 'resourceDay'){
                                 self.populateStudentEvent([obj], true, true);
                             }
+                            else{
+                               self.generateWeekEventObject([obj],'studentSession'); 
+                            }
                           var index = self.convertedStudentObj.findIndex(function (x) {
                           return x.id == obj.id &&
                                  x.startHour.getTime() == obj.startHour.getTime();
@@ -2837,6 +2840,9 @@ function SylvanCalendar() {
                 }
                 if(currentView.name == 'resourceDay'){
                     self.populateStudentEvent(pinnedList, true, true);
+                }
+                else{
+                   self.generateWeekEventObject(pinnedList,'studentSession'); 
                 }
             }
             if (affinityList.length) {
@@ -3411,6 +3417,9 @@ function SylvanCalendar() {
                                     if(currentView.name == 'resourceDay'){
                                         self.populateStudentEvent(obj, true, true);
                                     }
+                                    else{
+                                       self.generateWeekEventObject(obj,'studentSession'); 
+                                    }
                                 }
                                 else{
                                     // if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS ||
@@ -3446,6 +3455,9 @@ function SylvanCalendar() {
                             if(currentView.name == 'resourceDay'){
                                 self.populateStudentEvent(obj, true, true);
                             }
+                            else{
+                               self.generateWeekEventObject(obj,'studentSession'); 
+                            }
                         }
                         else{
                           // if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS ||
@@ -3474,6 +3486,9 @@ function SylvanCalendar() {
                     self.convertedStudentObj.push(affinityList[i]);
                     if(currentView.name == 'resourceDay'){
                         self.populateStudentEvent(obj, true, true);
+                    }
+                    else{
+                       self.generateWeekEventObject(obj,'studentSession'); 
                     }
                 }
                 else{
@@ -3525,6 +3540,9 @@ function SylvanCalendar() {
                                             if(currentView.name == 'resourceDay'){
                                                 self.populateStudentEvent(obj, true, true);
                                             }
+                                            else{
+                                               self.generateWeekEventObject(obj,'studentSession'); 
+                                            }
                                         }else{
                                           // if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS||
                                           //     self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
@@ -3553,6 +3571,9 @@ function SylvanCalendar() {
                                     self.convertedStudentObj.push(studentList[i]);
                                     if(currentView.name == 'resourceDay'){
                                         self.populateStudentEvent(obj, true, true);
+                                    }
+                                    else{
+                                       self.generateWeekEventObject(obj,'studentSession'); 
                                     }
                                 }
                                 else{
@@ -3583,6 +3604,9 @@ function SylvanCalendar() {
                             self.convertedStudentObj.push(studentList[i]);
                             if(currentView.name == 'resourceDay'){
                                 self.populateStudentEvent(obj, true, true);
+                            }
+                            else{
+                               self.generateWeekEventObject(obj,'studentSession'); 
                             }
                         }
                         else{
@@ -3676,6 +3700,9 @@ function SylvanCalendar() {
                         studentNotPlacedFlag = false;
                         if(currentView.name == 'resourceDay'){
                             self.populateStudentEvent(serviceStudentList[Object.keys(serviceStudentList)[i]], true, true);
+                        }
+                        else{
+                           self.generateWeekEventObject(serviceStudentList[Object.keys(serviceStudentList)[i]],'studentSession'); 
                         }
                         break;
                     }
