@@ -6386,6 +6386,9 @@ function SylvanCalendar() {
                                 }
                             }
                         }
+                        if(this.weekEventObject[i].hasOwnProperty('teacherAvailability')){
+                            taList = this.weekEventObject[i].teacherAvailability;
+                        }
                     }
                 }
                 this.generateModalHtml(groupByResource,sof,taList);
@@ -6423,6 +6426,9 @@ function SylvanCalendar() {
                                 }
                             }
                         }
+                        if(this.weekEventObject[i].hasOwnProperty('teacherAvailability')){
+                            taList = this.weekEventObject[i].teacherAvailability;
+                        }
                     }
                 }
                 this.generateModalHtml(groupByResource,sof,taList);
@@ -6459,6 +6465,9 @@ function SylvanCalendar() {
                                     }
                                 }
                             }
+                        }
+                        if(this.weekEventObject[i].hasOwnProperty('teacherAvailability')){
+                            taList = this.weekEventObject[i].teacherAvailability;
                         }
                     }
                 }
@@ -6525,7 +6534,7 @@ function SylvanCalendar() {
             for(var j=0;j<sof.length;j++){
                 if(SOFPlaceFlag){
                     SOFPlaceFlag = false;
-                    sofHtml+="<div class='teacherHolder'>Student Overflow";
+                    sofHtml+="<div class='teacherHolder'><div class='placeholder'>Student Overflow</div>";
                 }
                 sofHtml+="<div>"+sof[j].name+"</div>";
             }
@@ -6536,16 +6545,16 @@ function SylvanCalendar() {
             oneResource += "</div>";
             html += oneResource;
         }
-        if(taList.length){
+        if(taList != undefined && taList.length){
             width += 150;
             var oneResource = "<div class='resourceHolder'>";
             var TAPlaceFlag=true,taHtml = '';
-            for(var j=0;j<sof.length;j++){
+            for(var j=0;j<taList.length;j++){
                 if(TAPlaceFlag){
                     TAPlaceFlag = false;
-                    taHtml+="<div class='teacherHolder'>Teacher Availability";
+                    taHtml+="<div class='teacherHolder'><div class='placeholder'>Teacher Availability</div>";
                 }
-                taHtml+="<div>"+sof[j].name+"</div>";
+                taHtml+="<div>"+taList[j].name+"</div>";
             }
             if(!TAPlaceFlag){
                 taHtml += "</div>";
