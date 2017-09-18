@@ -1857,6 +1857,18 @@ function SylvanCalendar() {
             eventClick: function(calEvent, jsEvent, view) {
                 self.renderWeekModal(calEvent, jsEvent, view);
             },
+            eventRender: function(event, element, view) {
+                if (view.name == 'agendaWeek' && event.allDay) {
+                    wjQuery('.fc-col' + event.start.getDay()).not('.fc-widget-header').css('background-color', '#ddd');
+                    wjQuery('.fc-event-skin').css('background-color', '#ddd');
+                    wjQuery('.fc-event-skin').css('border-color', '#ddd');
+                    wjQuery('.fc-event.fc-event-hori').css('overflow-y', 'visible');
+                }
+                else{
+                    wjQuery('.fc-col' + event.start.getDay()).not('.fc-widget-header').css('background-color', '#fff');
+                    wjQuery('.fc-event.fc-event-hori').css('overflow-y', 'visible'); 
+                }
+            },
             editable: false,
             resources: this.resourceList,
             events: this.eventList,
@@ -2038,10 +2050,10 @@ function SylvanCalendar() {
                     for (var i = 0; i < self.businessClosure.length; i++) {
                         var businessStartDate = moment(self.businessClosure[i]['hub_startdatetime']).format("YYYY-MM-DD");
                         var businessEndDate = moment(self.businessClosure[i]['hub_enddatetime']).format("YYYY-MM-DD");
-                        businessStartDate = new Date(businessStartDate + ' ' + '0:00').getTime();
-                        businessEndDate = new Date(businessEndDate + ' ' + '0:00').getTime();
-                        var calendarStartDate = new Date(startDate + ' ' + '0:00').getTime();
-                        var calendarEndDate = new Date(endDate + ' ' + '0:00').getTime();
+                        businessStartDate = new Date(businessStartDate + ' ' + '00:00').getTime();
+                        businessEndDate = new Date(businessEndDate + ' ' + '00:00').getTime();
+                        var calendarStartDate = new Date(startDate + ' ' + '00:00').getTime();
+                        var calendarEndDate = new Date(endDate + ' ' + '00:00').getTime();
                         if (calendarStartDate >= businessStartDate && calendarEndDate <= businessEndDate) {
                             findingLeaveFlag = false;
                         }
@@ -2129,6 +2141,7 @@ function SylvanCalendar() {
                 if (self.businessClosure == null) {
                     self.businessClosure = [];
                 }
+                self.findLeaveDays();
                 self.teacherSchedule = isFetch || (self.teacherSchedule.length == 0) ? data.getTeacherSchedule(locationId, startDate, endDate) : self.teacherSchedule;
                 if (self.teacherSchedule == null) {
                     self.teacherSchedule = [];
@@ -2167,6 +2180,23 @@ function SylvanCalendar() {
             }
         }, 300);
     }
+
+    this.findLeaveDays = function(){
+        var self = this;
+        self.leaveDays = [];
+        var currentView = self.calendar.fullCalendar('getView');
+        for(var j = currentView.start.getTime();j<currentView.end.getTime();j=j+(24*60*60*1000)){
+            for (var i = 0; i < self.businessClosure.length; i++) {
+                var businessStartDate = moment(self.businessClosure[i]['hub_startdatetime']).format("YYYY-MM-DD");
+                var businessEndDate = moment(self.businessClosure[i]['hub_enddatetime']).format("YYYY-MM-DD");
+                businessStartDate = new Date(businessStartDate + ' ' + '00:00').getTime();
+                businessEndDate = new Date(businessEndDate + ' ' + '00:00').getTime();
+                if (j >= businessStartDate && j <= businessEndDate) {
+                    self.leaveDays.push(self.getDayValue(j));
+                }
+            }
+        }
+    };
 
     this.weekView = function () {
         var filterElement = undefined;
@@ -6661,393 +6691,423 @@ function SylvanCalendar() {
             }
         }
         if(Object.keys(this.weekEventObject).length){
+            var leaveList= [];
             for (var i = 0; i < Object.keys(this.weekEventObject).length; i++) {
-                var piObj = {
-                        id: Object.keys(this.weekEventObject)[i],
-                        start: new Date(Object.keys(this.weekEventObject)[i]),
-                        allDay: false,
-                        textColor: "#333333",
+                dayValue = self.getDayValue(Object.keys(this.weekEventObject)[i]);                
+                var index = -1;
+                for (var a = 0; a < self.leaveDays.length; a++) {
+                    if(self.leaveDays[a] == dayValue){
+                        index = a;
+                        break;
                     }
-                var giObj = {
-                        id: Object.keys(this.weekEventObject)[i],
-                        start: new Date(Object.keys(this.weekEventObject)[i]),
-                        allDay: false,
-                        textColor: "#333333",
-                    }
+                }
+                if(index == -1){
+                    var piObj = {
+                            id: Object.keys(this.weekEventObject)[i],
+                            start: new Date(Object.keys(this.weekEventObject)[i]),
+                            allDay: false,
+                            textColor: "#333333",
+                        }
+                    var giObj = {
+                            id: Object.keys(this.weekEventObject)[i],
+                            start: new Date(Object.keys(this.weekEventObject)[i]),
+                            allDay: false,
+                            textColor: "#333333",
+                        }
 
-                var gfObj = {
-                        id: Object.keys(this.weekEventObject)[i],
-                        start: new Date(Object.keys(this.weekEventObject)[i]),
-                        allDay: false,
-                        textColor: "#333333",
-                    }
-                var addLabel = false,oneDtStudent =false,oneDtTeacher = false;
-                if(giSelected){
-                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherAvailability')){
-                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherAvailability.length){
+                    var gfObj = {
+                            id: Object.keys(this.weekEventObject)[i],
+                            start: new Date(Object.keys(this.weekEventObject)[i]),
+                            allDay: false,
+                            textColor: "#333333",
+                        }
+                    var addLabel = false,oneDtStudent =false,oneDtTeacher = false;
+                    if(giSelected){
+                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherAvailability')){
+                            if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherAvailability.length){
+                                addLabel = true;
+                            }
+                        }
+                        else if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
+                            if (piSelected) {
+                                if((this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length > 0 && 
+                                   this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length > 0) ||
+                                   (this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length > 0 && 
+                                   this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length > 0) ||
+                                   (this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length > 0 && 
+                                   this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length > 0)){
+                                    addLabel = true;
+                                }
+                                else{
+                                    oneDtStudent = true;
+                                }
+                            }
+                            else{
+                                if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length > 0 && 
+                                   this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length > 0){
+                                    addLabel = true;
+                                }
+                                else{
+                                    oneDtStudent = true;
+                                }
+                            }
+                        }
+                        else if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherSchedule')){
+                            if (piSelected) {
+                                if((this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.pi.length > 0 && 
+                                   this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gi.length > 0) ||
+                                   (this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.pi.length > 0 && 
+                                   this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gf.length > 0) ||
+                                   (this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gf.length > 0 && 
+                                   this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gi.length > 0)){
+                                    addLabel = true;
+                                }
+                                else{
+                                    oneDtTeacher = true;
+                                }
+                            }
+                            else{
+                                if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gf.length > 0 && 
+                                   this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gi.length > 0){
+                                    addLabel = true;
+                                }
+                                else{
+                                    oneDtStudent = true;
+                                }
+                            }
+                        }
+                        if(!addLabel && oneDtStudent && oneDtTeacher){
                             addLabel = true;
                         }
                     }
-                    else if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
-                        if (piSelected) {
-                            if((this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length > 0 && 
-                               this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length > 0) ||
-                               (this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length > 0 && 
-                               this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length > 0) ||
-                               (this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length > 0 && 
-                               this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length > 0)){
-                                addLabel = true;
+                    
+                    if(piSelected){
+                        var piFlag = false;
+                        piObj.title = "";
+                        piObj.backgroundColor = "#ebf5fb";
+                        piObj.borderColor = "#9acaea";
+                        piObj.deliveryType = "Personal-Instruction";
+                        piObj.title += "<div class='stplace'>";
+                        if(!giSelected || !addLabel){
+                            piObj.title += "S/T = ";    
+                        }
+                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
+                            if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('pi')){
+                                piObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length +"/";
+                                if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length)
+                                    piFlag = true;
                             }
                             else{
-                                oneDtStudent = true;
+                                piObj.title += "0/"
                             }
                         }
                         else{
-                            if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length > 0 && 
-                               this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length > 0){
-                                addLabel = true;
-                            }
-                            else{
-                                oneDtStudent = true;
-                            }
+                                piObj.title += "0/"
                         }
-                    }
-                    else if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherSchedule')){
-                        if (piSelected) {
-                            if((this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.pi.length > 0 && 
-                               this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gi.length > 0) ||
-                               (this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.pi.length > 0 && 
-                               this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gf.length > 0) ||
-                               (this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gf.length > 0 && 
-                               this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gi.length > 0)){
-                                addLabel = true;
+                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherSchedule')){
+                            if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.hasOwnProperty('pi')){
+                                piObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.pi.length +"</div>";
+                                if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.pi.length)
+                                    piFlag = true;
                             }
                             else{
-                                oneDtTeacher = true;
+                                piObj.title += "0 </div>"
                             }
                         }
                         else{
-                            if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gf.length > 0 && 
-                               this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gi.length > 0){
-                                addLabel = true;
-                            }
-                            else{
-                                oneDtStudent = true;
-                            }
+                                piObj.title += "0 </div>"
                         }
-                    }
-                    if(!addLabel && oneDtStudent && oneDtTeacher){
-                        addLabel = true;
-                    }
-                }
-                
-                if(piSelected){
-                    var piFlag = false;
-                    piObj.title = "";
-                    piObj.backgroundColor = "#ebf5fb";
-                    piObj.borderColor = "#9acaea";
-                    piObj.deliveryType = "Personal-Instruction";
-                    piObj.title += "<div class='stplace'>";
-                    if(!giSelected || !addLabel){
-                        piObj.title += "S/T = ";    
-                    }
-                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
-                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('pi')){
-                            piObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length +"/";
-                            if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length)
-                                piFlag = true;
-                        }
-                        else{
-                            piObj.title += "0/"
-                        }
-                    }
-                    else{
-                            piObj.title += "0/"
-                    }
-                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherSchedule')){
-                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.hasOwnProperty('pi')){
-                            piObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.pi.length +"</div>";
-                            if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.pi.length)
-                                piFlag = true;
-                        }
-                        else{
-                            piObj.title += "0 </div>"
-                        }
-                    }
-                    else{
-                            piObj.title += "0 </div>"
-                    }
-                    piObj.title += "<div class='ssplace'>"
-                    if(!giSelected || !addLabel){
-                        piObj.title += "S/S = ";    
-                    }                   
-                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
-                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('pi')){
-                            var find1to1 = false,count = 0,groupStudentsByResource = {};
-                            for(var x=0;x<this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length;x++){
-                                if(groupStudentsByResource.hasOwnProperty(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi[x].resourceId)){
-                                    groupStudentsByResource[this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi[x].resourceId].push(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi[x]);
-                                }
-                                else{
-                                    groupStudentsByResource[this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi[x].resourceId] = [];
-                                    groupStudentsByResource[this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi[x].resourceId].push(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi[x]);
-                                }
-                            }
-                            for (var x = 0; x < Object.keys(groupStudentsByResource).length; x++) {
-                                find1to1 = false;
-                                for (var y = 0; y < groupStudentsByResource[Object.keys(groupStudentsByResource)[x]].length; y++) {
-                                    if(groupStudentsByResource[Object.keys(groupStudentsByResource)[x]][y].is1to1){
-                                        find1to1 = true;
-                                        break;
+                        piObj.title += "<div class='ssplace'>"
+                        if(!giSelected || !addLabel){
+                            piObj.title += "S/S = ";    
+                        }                   
+                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
+                            if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('pi')){
+                                var find1to1 = false,count = 0,groupStudentsByResource = {};
+                                for(var x=0;x<this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length;x++){
+                                    if(groupStudentsByResource.hasOwnProperty(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi[x].resourceId)){
+                                        groupStudentsByResource[this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi[x].resourceId].push(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi[x]);
+                                    }
+                                    else{
+                                        groupStudentsByResource[this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi[x].resourceId] = [];
+                                        groupStudentsByResource[this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi[x].resourceId].push(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi[x]);
                                     }
                                 }
-                                if(find1to1){
-                                    count += this.getResourceObj(Object.keys(groupStudentsByResource)[x]).capacity;
+                                for (var x = 0; x < Object.keys(groupStudentsByResource).length; x++) {
+                                    find1to1 = false;
+                                    for (var y = 0; y < groupStudentsByResource[Object.keys(groupStudentsByResource)[x]].length; y++) {
+                                        if(groupStudentsByResource[Object.keys(groupStudentsByResource)[x]][y].is1to1){
+                                            find1to1 = true;
+                                            break;
+                                        }
+                                    }
+                                    if(find1to1){
+                                        count += this.getResourceObj(Object.keys(groupStudentsByResource)[x]).capacity;
+                                    }
+                                    else{
+                                        count += groupStudentsByResource[Object.keys(groupStudentsByResource)[x]].length
+                                    }
                                 }
-                                else{
-                                    count += groupStudentsByResource[Object.keys(groupStudentsByResource)[x]].length
-                                }
+                                piObj.title += count +"/"+piSpace +"</div>";
                             }
-                            piObj.title += count +"/"+piSpace +"</div>";
+                            else{
+                                piObj.title += "0/"+piSpace +"</div>";
+                            }
                         }
                         else{
                             piObj.title += "0/"+piSpace +"</div>";
                         }
-                    }
-                    else{
-                        piObj.title += "0/"+piSpace +"</div>";
-                    }
-                    piObj.title += "<div class='tsplace'>";
-                    if(!giSelected || !addLabel){
-                        piObj.title += "TS = ";    
-                    }
-                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherSchedule')){
-                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.hasOwnProperty('pi')){
-                            piObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.pi.length +"/";
+                        piObj.title += "<div class='tsplace'>";
+                        if(!giSelected || !addLabel){
+                            piObj.title += "TS = ";    
+                        }
+                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherSchedule')){
+                            if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.hasOwnProperty('pi')){
+                                piObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.pi.length +"/";
+                            }
+                            else{
+                                piObj.title += "0/";
+                            }
                         }
                         else{
                             piObj.title += "0/";
                         }
+                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherAvailability')){
+                            piObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherAvailability.length +"</div>";
+                            if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherAvailability.length)
+                                piFlag = true;
+                        }
+                        else{
+                            piObj.title += "0 </div>"
+                        }
+                        if(piFlag)
+                            self.eventList.push(piObj);
                     }
-                    else{
-                        piObj.title += "0/";
-                    }
-                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherAvailability')){
-                        piObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherAvailability.length +"</div>";
-                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherAvailability.length)
-                            piFlag = true;
-                    }
-                    else{
-                        piObj.title += "0 </div>"
-                    }
-                    if(piFlag)
-                        self.eventList.push(piObj);
-                }
-                if(giSelected){
-                    var giFlag = false;
-                    giObj.title = "";
-                    giObj.backgroundColor = "#fedeb7";
-                    giObj.borderColor = "#f88e50";
-                    giObj.deliveryType = "Group-Instruction";
-                    giObj.title += "<div class='stplace'>";
-                    if(!addLabel){
-                        giObj.title += "S/T = ";    
-                    }
-                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
-                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('gi')){
-                            giObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length +"/";
-                            if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length)
-                                giFlag = true;
+                    if(giSelected){
+                        var giFlag = false;
+                        giObj.title = "";
+                        giObj.backgroundColor = "#fedeb7";
+                        giObj.borderColor = "#f88e50";
+                        giObj.deliveryType = "Group-Instruction";
+                        giObj.title += "<div class='stplace'>";
+                        if(!addLabel){
+                            giObj.title += "S/T = ";    
+                        }
+                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
+                            if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('gi')){
+                                giObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length +"/";
+                                if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length)
+                                    giFlag = true;
+                            }
+                            else{
+                                giObj.title += "0/"
+                            }
                         }
                         else{
                             giObj.title += "0/"
                         }
-                    }
-                    else{
-                        giObj.title += "0/"
-                    }
-                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherSchedule')){
-                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.hasOwnProperty('gi')){
-                            giObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gi.length +"</div>";
-                            if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gi.length)
-                                giFlag = true;
+                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherSchedule')){
+                            if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.hasOwnProperty('gi')){
+                                giObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gi.length +"</div>";
+                                if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gi.length)
+                                    giFlag = true;
+                            }
+                            else{
+                                giObj.title += "0 </div>"
+                            }
                         }
                         else{
                             giObj.title += "0 </div>"
                         }
-                    }
-                    else{
-                        giObj.title += "0 </div>"
-                    }
-                    giObj.title += "<div class='ssplace'>";
-                    if(!addLabel){
-                        giObj.title += "S/S = ";    
-                    }                   
-                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
-                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('gi')){
-                            var find1to1 = false,count = 0,groupStudentsByResource = {};
-                            for(var x=0;x<this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length;x++){
-                                if(groupStudentsByResource.hasOwnProperty(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi[x].resourceId)){
-                                    groupStudentsByResource[this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi[x].resourceId].push(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi[x]);
-                                }
-                                else{
-                                    groupStudentsByResource[this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi[x].resourceId] = [];
-                                    groupStudentsByResource[this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi[x].resourceId].push(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi[x]);
-                                }
-                            }
-                            for (var x = 0; x < Object.keys(groupStudentsByResource).length; x++) {
-                                find1to1 = false;
-                                for (var y = 0; y < groupStudentsByResource[Object.keys(groupStudentsByResource)[x]].length; y++) {
-                                    if(groupStudentsByResource[Object.keys(groupStudentsByResource)[x]][y].is1to1){
-                                        find1to1 = true;
-                                        break;
+                        giObj.title += "<div class='ssplace'>";
+                        if(!addLabel){
+                            giObj.title += "S/S = ";    
+                        }                   
+                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
+                            if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('gi')){
+                                var find1to1 = false,count = 0,groupStudentsByResource = {};
+                                for(var x=0;x<this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi.length;x++){
+                                    if(groupStudentsByResource.hasOwnProperty(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi[x].resourceId)){
+                                        groupStudentsByResource[this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi[x].resourceId].push(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi[x]);
+                                    }
+                                    else{
+                                        groupStudentsByResource[this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi[x].resourceId] = [];
+                                        groupStudentsByResource[this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi[x].resourceId].push(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gi[x]);
                                     }
                                 }
-                                if(find1to1){
-                                    count += this.getResourceObj(Object.keys(groupStudentsByResource)[x]).capacity;
+                                for (var x = 0; x < Object.keys(groupStudentsByResource).length; x++) {
+                                    find1to1 = false;
+                                    for (var y = 0; y < groupStudentsByResource[Object.keys(groupStudentsByResource)[x]].length; y++) {
+                                        if(groupStudentsByResource[Object.keys(groupStudentsByResource)[x]][y].is1to1){
+                                            find1to1 = true;
+                                            break;
+                                        }
+                                    }
+                                    if(find1to1){
+                                        count += this.getResourceObj(Object.keys(groupStudentsByResource)[x]).capacity;
+                                    }
+                                    else{
+                                        count += groupStudentsByResource[Object.keys(groupStudentsByResource)[x]].length
+                                    }
                                 }
-                                else{
-                                    count += groupStudentsByResource[Object.keys(groupStudentsByResource)[x]].length
-                                }
+                                giObj.title += count +"/"+giSpace +"</div>";
                             }
-                            giObj.title += count +"/"+giSpace +"</div>";
+                            else{
+                                giObj.title += "0/"+giSpace +"</div>";
+                            }
                         }
                         else{
                             giObj.title += "0/"+giSpace +"</div>";
                         }
-                    }
-                    else{
-                        giObj.title += "0/"+giSpace +"</div>";
-                    }
-                    giObj.title += "<div class='tsplace'>";
-                    if(!addLabel){
-                        giObj.title += "TS = ";    
-                    }
-                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherSchedule')){
-                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.hasOwnProperty('gi')){
-                            giObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gi.length +"/";
+                        giObj.title += "<div class='tsplace'>";
+                        if(!addLabel){
+                            giObj.title += "TS = ";    
+                        }
+                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherSchedule')){
+                            if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.hasOwnProperty('gi')){
+                                giObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gi.length +"/";
+                            }
+                            else{
+                                giObj.title += "0/";
+                            }
                         }
                         else{
                             giObj.title += "0/";
                         }
+                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherAvailability')){
+                            giObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherAvailability.length +"</div>";
+                            if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherAvailability.length)
+                                giFlag = true;
+                        }
+                        else{
+                            giObj.title += "0</div>"
+                        }
+                        if(giFlag)
+                            self.eventList.push(giObj);
                     }
-                    else{
-                        giObj.title += "0/";
-                    }
-                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherAvailability')){
-                        giObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherAvailability.length +"</div>";
-                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherAvailability.length)
-                            giFlag = true;
-                    }
-                    else{
-                        giObj.title += "0</div>"
-                    }
-                    if(giFlag)
-                        self.eventList.push(giObj);
-                }
-                if(gfSelected){
-                    var gfFlag = false;
-                    gfObj.title = "";
-                    gfObj.backgroundColor = "#dff0d5";
-                    gfObj.borderColor = "#7bc143";
-                    gfObj.deliveryType = "Group-Facilitation";
-                    gfObj.title += "<div class='stplace'>";
-                    if(!addLabel){
-                        gfObj.title += "S/T = ";    
-                    }
-                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
-                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('gf')){
-                            gfObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length +"/";
-                            if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length)
-                                gfFlag = true;
+                    if(gfSelected){
+                        var gfFlag = false;
+                        gfObj.title = "";
+                        gfObj.backgroundColor = "#dff0d5";
+                        gfObj.borderColor = "#7bc143";
+                        gfObj.deliveryType = "Group-Facilitation";
+                        gfObj.title += "<div class='stplace'>";
+                        if(!addLabel){
+                            gfObj.title += "S/T = ";    
+                        }
+                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
+                            if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('gf')){
+                                gfObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length +"/";
+                                if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length)
+                                    gfFlag = true;
+                            }
+                            else{
+                                gfObj.title += "0/"
+                            }
                         }
                         else{
                             gfObj.title += "0/"
                         }
-                    }
-                    else{
-                        gfObj.title += "0/"
-                    }
-                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherSchedule')){
-                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.hasOwnProperty('gf')){
-                            gfObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gf.length +"</div>";
-                            if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gf.length)
-                                gfFlag = true;
+                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherSchedule')){
+                            if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.hasOwnProperty('gf')){
+                                gfObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gf.length +"</div>";
+                                if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gf.length)
+                                    gfFlag = true;
+                            }
+                            else{
+                                gfObj.title += "0 </div>"
+                            }
                         }
                         else{
                             gfObj.title += "0 </div>"
                         }
-                    }
-                    else{
-                        gfObj.title += "0 </div>"
-                    }
-                    gfObj.title += "<div class='ssplace'>";
-                    if(!addLabel){
-                        gfObj.title += "S/S = ";    
-                    }                   
-                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
-                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('gf')){
-                            var find1to1 = false,count = 0,groupStudentsByResource = {};
-                            for(var x=0;x<this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length;x++){
-                                if(groupStudentsByResource.hasOwnProperty(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf[x].resourceId)){
-                                    groupStudentsByResource[this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf[x].resourceId].push(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf[x]);
-                                }
-                                else{
-                                    groupStudentsByResource[this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf[x].resourceId] = [];
-                                    groupStudentsByResource[this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf[x].resourceId].push(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf[x]);
-                                }
-                            }
-                            for (var x = 0; x < Object.keys(groupStudentsByResource).length; x++) {
-                                find1to1 = false;
-                                for (var y = 0; y < groupStudentsByResource[Object.keys(groupStudentsByResource)[x]].length; y++) {
-                                    if(groupStudentsByResource[Object.keys(groupStudentsByResource)[x]][y].is1to1){
-                                        find1to1 = true;
-                                        break;
+                        gfObj.title += "<div class='ssplace'>";
+                        if(!addLabel){
+                            gfObj.title += "S/S = ";    
+                        }                   
+                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
+                            if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('gf')){
+                                var find1to1 = false,count = 0,groupStudentsByResource = {};
+                                for(var x=0;x<this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf.length;x++){
+                                    if(groupStudentsByResource.hasOwnProperty(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf[x].resourceId)){
+                                        groupStudentsByResource[this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf[x].resourceId].push(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf[x]);
+                                    }
+                                    else{
+                                        groupStudentsByResource[this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf[x].resourceId] = [];
+                                        groupStudentsByResource[this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf[x].resourceId].push(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.gf[x]);
                                     }
                                 }
-                                if(find1to1){
-                                    count += this.getResourceObj(Object.keys(groupStudentsByResource)[x]).capacity;
+                                for (var x = 0; x < Object.keys(groupStudentsByResource).length; x++) {
+                                    find1to1 = false;
+                                    for (var y = 0; y < groupStudentsByResource[Object.keys(groupStudentsByResource)[x]].length; y++) {
+                                        if(groupStudentsByResource[Object.keys(groupStudentsByResource)[x]][y].is1to1){
+                                            find1to1 = true;
+                                            break;
+                                        }
+                                    }
+                                    if(find1to1){
+                                        count += this.getResourceObj(Object.keys(groupStudentsByResource)[x]).capacity;
+                                    }
+                                    else{
+                                        count += groupStudentsByResource[Object.keys(groupStudentsByResource)[x]].length
+                                    }
                                 }
-                                else{
-                                    count += groupStudentsByResource[Object.keys(groupStudentsByResource)[x]].length
-                                }
+                                gfObj.title += count +"/"+gfSpace +"</div>";
                             }
-                            gfObj.title += count +"/"+gfSpace +"</div>";
+                            else{
+                                gfObj.title += "0/"+gfSpace +"</div>";
+                            }
                         }
                         else{
                             gfObj.title += "0/"+gfSpace +"</div>";
                         }
-                    }
-                    else{
-                        gfObj.title += "0/"+gfSpace +"</div>";
-                    }
-                    gfObj.title += "<div class='tsplace'>";
-                    if(!addLabel){
-                        gfObj.title += "TS = ";    
-                    }
-                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherSchedule')){
-                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.hasOwnProperty('gf')){
-                            gfObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gf.length +"/";
+                        gfObj.title += "<div class='tsplace'>";
+                        if(!addLabel){
+                            gfObj.title += "TS = ";    
+                        }
+                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherSchedule')){
+                            if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.hasOwnProperty('gf')){
+                                gfObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.gf.length +"/";
+                            }
+                            else{
+                                gfObj.title += "0/";
+                            }
                         }
                         else{
                             gfObj.title += "0/";
                         }
+                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherAvailability')){
+                            gfObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherAvailability.length +"</div>";
+                            if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherAvailability.length)
+                                gfFlag = true;
+                        }
+                        else{
+                            gfObj.title += "0</div>"
+                        }
+                        if(gfFlag)
+                        self.eventList.push(gfObj);
                     }
-                    else{
-                        gfObj.title += "0/";
-                    }
-                    if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherAvailability')){
-                        gfObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherAvailability.length +"</div>";
-                        if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherAvailability.length)
-                            gfFlag = true;
-                    }
-                    else{
-                        gfObj.title += "0</div>"
-                    }
-                    if(gfFlag)
-                    self.eventList.push(gfObj);
                 }
-                
+                else{
+                    var sample = -1;
+                    for (var b = 0; b < leaveList.length; b++) {
+                        if(leaveList[b].dayValue == dayValue){
+                            sample = b;
+                            break;
+                        }
+                    }
+                    if(sample == -1){
+                        leaveList.push({
+                            dayValue : dayValue
+                        });
+                        var obj = {
+                            start: new Date(Object.keys(this.weekEventObject)[i]),
+                            allDay: true,
+                            title:''
+                        };
+                        self.eventList.push(obj);
+                    }
+                }
             }
             self.calendar.fullCalendar('removeEvents');
             self.calendar.fullCalendar('removeEventSource');
