@@ -2091,7 +2091,6 @@ function SylvanCalendar() {
                         self.filterObject.student = self.students == null ? [] : self.students;
                         self.generateFilterObject(self.filterObject);
                         self.populateTeacherEvent(self.generateEventObject(self.teacherSchedule == null ? [] : self.teacherSchedule, "teacherSchedule"), true);
-
                         self.masterScheduleStudents = data.getStudentMasterSchedule(locationId, startDate, endDate)
                         if (self.masterScheduleStudents == null) {
                             self.masterScheduleStudents = [];
@@ -2442,30 +2441,47 @@ function SylvanCalendar() {
             var currentCalendarDate = self.calendar.fullCalendar('getDate');
             wjQuery.each(args, function (ke, val) {
                 if(val['teacherId'] != undefined && val['dayId'] == self.getDayValue(currentCalendarDate)){
-                    var sDate, eDate, startHour;
-                    if (val['startTime'] != undefined && val['endTime'] != undefined) {
-                        sDate = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['startTime']);
-                        eDate = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['endTime']);
-                        startHour = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['startTime']);
-                        startHour = startHour.setMinutes(0);
-                        startHour = new Date(new Date(startHour).setSeconds(0));
+                    var sDate, eDate, startHour,teacherAvailableFlag = false;
+                    for (var i = 0; i < self.teacherAvailability.length; i++) {
+                        if(self.teacherAvailability[i]['_hub_staffid_value'] == val['teacherId']){
+                            if(self.teacherAvailability[i]['hub_enddate'] != undefined){
+                                if(moment(moment(currentCalendarDate).format('YYYY-MM-DD')).isSameOrBefore(moment(self.teacherAvailability[i]['hub_enddate']).format('YYYY-MM-DD'))){
+                                    teacherAvailableFlag = true;
+                                }
+                                else{
+                                    teacherAvailableFlag = false;
+                                }
+                            }
+                            else{
+                                teacherAvailableFlag = true;
+                            }
+                        }
                     }
-                    var teacher = {
-                        id: val['teacherId'],
-                        name: val["teacherName"],
-                        start: sDate,
-                        end: eDate,
-                        startHour: startHour,
-                        resourceId: val['resourceId'],
-                        locationId: self.locationId,
-                        pinId:val['id'],
-                        isFromMasterSchedule : true
-                    };
-                    var index = self.staffExceptions.findIndex(function (x) {
-                        return x['astaff_x002e_hub_staffid'] == teacher.id;
-                    });
-                    if (index == -1) {
-                        eventObjList.push(teacher);
+                    if(teacherAvailableFlag){
+                        if (val['startTime'] != undefined && val['endTime'] != undefined) {
+                            sDate = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['startTime']);
+                            eDate = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['endTime']);
+                            startHour = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['startTime']);
+                            startHour = startHour.setMinutes(0);
+                            startHour = new Date(new Date(startHour).setSeconds(0));
+                        }
+                        var teacher = {
+                            id: val['teacherId'],
+                            name: val["teacherName"],
+                            start: sDate,
+                            end: eDate,
+                            startHour: startHour,
+                            resourceId: val['resourceId'],
+                            locationId: self.locationId,
+                            pinId:val['id'],
+                            isFromMasterSchedule : true
+                        };
+                        var index = self.staffExceptions.findIndex(function (x) {
+                            return x['astaff_x002e_hub_staffid'] == teacher.id;
+                        });
+                        if (index == -1) {
+                            eventObjList.push(teacher);
+                        }
                     }
                 }                
             });
