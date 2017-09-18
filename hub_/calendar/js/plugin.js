@@ -158,9 +158,14 @@ setTimeout(function () {
                 });
 
                 wjQuery('.wkView').off('click').on('click', function () {
+                    wjQuery(".sof-btn").prop("disabled", true);
+                    wjQuery(".sof-btn,.sof-close-icon").trigger('click');
+                    wjQuery(".sof-btn").removeClass('overflow-info');
                     sylvanCalendar.weekView();
                 });
                 wjQuery('.dayView').off('click').on('click', function () {
+                    wjQuery(".sof-btn").prop("disabled", false);
+                    sylvanCalendar.openSofPane();
                     sylvanCalendar.dayView();
                 });
                 wjQuery('#addAppointment').click(function () {
