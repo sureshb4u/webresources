@@ -6284,7 +6284,8 @@ function SylvanCalendar() {
                                     if(index == -1){
                                         if(arrayList[i].sessionStatus == SCHEDULE_STATUS ||
                                             arrayList[i].sessionStatus == RESCHEDULE_STATUS || 
-                                            arrayList[i].sessionStatus == MAKEUP_STATUS)
+                                            arrayList[i].sessionStatus == MAKEUP_STATUS || 
+                                            arrayList[i].isFromMasterSchedule)
                                         this.weekEventObject[arrayList[i].startHour].student.pi.push(arrayList[i]);
                                     }
 
@@ -6300,7 +6301,8 @@ function SylvanCalendar() {
                                     if(index == -1){
                                         if(arrayList[i].sessionStatus == SCHEDULE_STATUS ||
                                             arrayList[i].sessionStatus == RESCHEDULE_STATUS || 
-                                            arrayList[i].sessionStatus == MAKEUP_STATUS)
+                                            arrayList[i].sessionStatus == MAKEUP_STATUS|| 
+                                            arrayList[i].isFromMasterSchedule)
                                         this.weekEventObject[arrayList[i].startHour].student.gi.push(arrayList[i]);
                                     }
                                 }
@@ -6315,7 +6317,8 @@ function SylvanCalendar() {
                                     if(index == -1){
                                         if(arrayList[i].sessionStatus == SCHEDULE_STATUS ||
                                             arrayList[i].sessionStatus == RESCHEDULE_STATUS || 
-                                            arrayList[i].sessionStatus == MAKEUP_STATUS)
+                                            arrayList[i].sessionStatus == MAKEUP_STATUS|| 
+                                            arrayList[i].isFromMasterSchedule)
                                         this.weekEventObject[arrayList[i].startHour].student.gf.push(arrayList[i]);
                                     }
                                 }
@@ -6329,19 +6332,22 @@ function SylvanCalendar() {
                                 if(arrayList[i].deliveryType == 'Personal Instruction'){
                                     if(arrayList[i].sessionStatus == SCHEDULE_STATUS ||
                                             arrayList[i].sessionStatus == RESCHEDULE_STATUS || 
-                                            arrayList[i].sessionStatus == MAKEUP_STATUS)
+                                            arrayList[i].sessionStatus == MAKEUP_STATUS|| 
+                                            arrayList[i].isFromMasterSchedule)
                                     this.weekEventObject[arrayList[i].startHour].student.pi.push(arrayList[i]);
                                 }
                                 else if(arrayList[i].deliveryType == 'Group Instruction'){
                                     if(arrayList[i].sessionStatus == SCHEDULE_STATUS ||
                                             arrayList[i].sessionStatus == RESCHEDULE_STATUS || 
-                                            arrayList[i].sessionStatus == MAKEUP_STATUS)
+                                            arrayList[i].sessionStatus == MAKEUP_STATUS|| 
+                                            arrayList[i].isFromMasterSchedule)
                                     this.weekEventObject[arrayList[i].startHour].student.gi.push(arrayList[i]);
                                 }
                                 else if(arrayList[i].deliveryType == 'Group Facilitation'){
                                     if(arrayList[i].sessionStatus == SCHEDULE_STATUS ||
                                             arrayList[i].sessionStatus == RESCHEDULE_STATUS || 
-                                            arrayList[i].sessionStatus == MAKEUP_STATUS)
+                                            arrayList[i].sessionStatus == MAKEUP_STATUS|| 
+                                            arrayList[i].isFromMasterSchedule)
                                     this.weekEventObject[arrayList[i].startHour].student.gf.push(arrayList[i]);
                                 }
                             }
@@ -6355,19 +6361,22 @@ function SylvanCalendar() {
                             if(arrayList[i].deliveryType == 'Personal Instruction'){
                                 if(arrayList[i].sessionStatus == SCHEDULE_STATUS ||
                                             arrayList[i].sessionStatus == RESCHEDULE_STATUS || 
-                                            arrayList[i].sessionStatus == MAKEUP_STATUS)
+                                            arrayList[i].sessionStatus == MAKEUP_STATUS|| 
+                                            arrayList[i].isFromMasterSchedule)
                                 this.weekEventObject[arrayList[i].startHour].student.pi.push(arrayList[i]);
                             }
                             else if(arrayList[i].deliveryType == 'Group Instruction'){
                                 if(arrayList[i].sessionStatus == SCHEDULE_STATUS ||
                                             arrayList[i].sessionStatus == RESCHEDULE_STATUS || 
-                                            arrayList[i].sessionStatus == MAKEUP_STATUS)
+                                            arrayList[i].sessionStatus == MAKEUP_STATUS|| 
+                                            arrayList[i].isFromMasterSchedule)
                                 this.weekEventObject[arrayList[i].startHour].student.gi.push(arrayList[i]);
                             }
                             else if(arrayList[i].deliveryType == 'Group Facilitation'){
                                 if(arrayList[i].sessionStatus == SCHEDULE_STATUS ||
                                             arrayList[i].sessionStatus == RESCHEDULE_STATUS || 
-                                            arrayList[i].sessionStatus == MAKEUP_STATUS)
+                                            arrayList[i].sessionStatus == MAKEUP_STATUS|| 
+                                            arrayList[i].isFromMasterSchedule)
                                 this.weekEventObject[arrayList[i].startHour].student.gf.push(arrayList[i]);
                             }
                         }
