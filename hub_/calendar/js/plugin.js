@@ -3798,57 +3798,63 @@ function SylvanCalendar() {
 
 
     this.pushStudentToSOF = function (data) {
-        if (Object.keys(this.sofList).length == 0) {
-            this.sofList['Personal Instruction'] = [];
-            this.sofList['Group Instruction'] = [];
-            this.sofList['Group Facilitation'] = [];
-        }
-        var studentPushFlagDecision = true;
-        //Methos to find the student having a slot on the same time before Pushing
-        //the student to SOF pane
-        /*for (var j = 0; j < this.resourceList.length; j++) {
-            var eventId = this.resourceList[j].id + data.startHour;
-            var event = this.calendar.fullCalendar('clientEvents', eventId);
-            if(event.length){
-                wjQuery.each(event, function (k, v) {
-                    if (event[k].hasOwnProperty("students") && event[k]['students'].length != 0) {
-                        for (var i = 0; i < event[k]['students'].length; i++) {
-                            if(event[k]['students'][i].id == data.id){
-                                studentPushFlagDecision = false;
+        var currentView = this.calendar.fullCalendar('getView');
+        if(currentView.name == 'resourceDay'){
+            if (Object.keys(this.sofList).length == 0) {
+                this.sofList['Personal Instruction'] = [];
+                this.sofList['Group Instruction'] = [];
+                this.sofList['Group Facilitation'] = [];
+            }
+            var studentPushFlagDecision = true;
+            //Methos to find the student having a slot on the same time before Pushing
+            //the student to SOF pane
+            /*for (var j = 0; j < this.resourceList.length; j++) {
+                var eventId = this.resourceList[j].id + data.startHour;
+                var event = this.calendar.fullCalendar('clientEvents', eventId);
+                if(event.length){
+                    wjQuery.each(event, function (k, v) {
+                        if (event[k].hasOwnProperty("students") && event[k]['students'].length != 0) {
+                            for (var i = 0; i < event[k]['students'].length; i++) {
+                                if(event[k]['students'][i].id == data.id){
+                                    studentPushFlagDecision = false;
+                                }
                             }
                         }
+                    });
+                }
+            }*/
+            var currentCalendarDate = this.calendar.fullCalendar('getDate');
+            var dateFlag = moment(currentCalendarDate).format("YYYY-MM-DD") == moment(data.startHour).format("YYYY-MM-DD");
+            if(studentPushFlagDecision && dateFlag){
+                if (data.deliveryType == "Personal Instruction") {
+                    var index = this.sofList['Personal Instruction'].findIndex(function (x) {
+                        return x.id == data.id &&
+                               x.startHour.getTime() == data.startHour.getTime();
+                    });
+                    if (index == -1) {
+                        this.sofList['Personal Instruction'].push(data);
                     }
-                });
-            }
-        }*/
-        var currentCalendarDate = this.calendar.fullCalendar('getDate');
-        var dateFlag = moment(currentCalendarDate).format("YYYY-MM-DD") == moment(data.startHour).format("YYYY-MM-DD");
-        if(studentPushFlagDecision && dateFlag){
-            if (data.deliveryType == "Personal Instruction") {
-                var index = this.sofList['Personal Instruction'].findIndex(function (x) {
-                    return x.id == data.id &&
-                           x.startHour.getTime() == data.startHour.getTime();
-                });
-                if (index == -1) {
-                    this.sofList['Personal Instruction'].push(data);
-                }
-            } else if (data.deliveryType == "Group Instruction") {
-                var index = this.sofList['Group Instruction'].findIndex(function (x) {
-                    return x.id == data.id &&
-                           x.startHour.getTime() == data.startHour.getTime();
-                });
-                if (index == -1) {
-                    this.sofList['Group Instruction'].push(data);
-                }
-            } else if (data.deliveryType == "Group Facilitation") {
-                var index = this.sofList['Group Facilitation'].findIndex(function (x) {
-                    return x.id == data.id &&
-                           x.startHour.getTime() == data.startHour.getTime();
-                });
-                if (index == -1) {
-                    this.sofList['Group Facilitation'].push(data);
+                } else if (data.deliveryType == "Group Instruction") {
+                    var index = this.sofList['Group Instruction'].findIndex(function (x) {
+                        return x.id == data.id &&
+                               x.startHour.getTime() == data.startHour.getTime();
+                    });
+                    if (index == -1) {
+                        this.sofList['Group Instruction'].push(data);
+                    }
+                } else if (data.deliveryType == "Group Facilitation") {
+                    var index = this.sofList['Group Facilitation'].findIndex(function (x) {
+                        return x.id == data.id &&
+                               x.startHour.getTime() == data.startHour.getTime();
+                    });
+                    if (index == -1) {
+                        this.sofList['Group Facilitation'].push(data);
+                    }
                 }
             }
+        }
+        else if(currentView.name == 'agendaWeek'){
+            this.generateWeekEventObject([data],'studentSession');
         }
     };
 
@@ -6624,7 +6630,7 @@ function SylvanCalendar() {
                     SOFPlaceFlag = false;
                     sofHtml+="<div class='teacherHolder'><div class='placeholder'>Student Overflow</div>";
                 }
-                sofHtml+="<div>"+sof[j].name+"</div>";
+                sofHtml+="<div>"+sof[j].name+", " + sof[j].grade +"</div>";
             }
             if(!SOFPlaceFlag){
                 sofHtml += "</div>";

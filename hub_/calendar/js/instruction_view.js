@@ -2301,6 +2301,7 @@ var student =  [
     "hub_session_date":"2017-09-04",
     "hub_session_date@OData.Community.Display.V1.FormattedValue":"9/04/2017",
     "hub_sessiontype":1,
+    "hub_session_status":1,
     "hub_sessiontype@OData.Community.Display.V1.FormattedValue":"Regular",
     "hub_start_time":780,
     "hub_start_time@OData.Community.Display.V1.FormattedValue":"11:00 AM",
