@@ -2614,9 +2614,9 @@ function SylvanCalendar() {
         } 
         else if (label == "studentSession") {
             wjQuery.each(args, function (ke, val) {
-                var sDate = new Date(val['hub_session_date'] + " " + val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
-                var eDate = new Date(val['hub_session_date'] + " " + val['hub_end_time@OData.Community.Display.V1.FormattedValue']);
-                var startHour = new Date(val['hub_session_date'] + " " + val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
+                var sDate = new Date(val['hub_session_date@OData.Community.Display.V1.FormattedValue'] + " " + val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
+                var eDate = new Date(val['hub_session_date@OData.Community.Display.V1.FormattedValue'] + " " + val['hub_end_time@OData.Community.Display.V1.FormattedValue']);
+                var startHour = new Date(val['hub_session_date@OData.Community.Display.V1.FormattedValue'] + " " + val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
                 startHour = startHour.setMinutes(0);
                 startHour = new Date(new Date(startHour).setSeconds(0));
                 var obj = {
@@ -6006,9 +6006,9 @@ function SylvanCalendar() {
     this.convertMakeupNFloatObj = function (makeupList) {
         eventObjList = [];
         wjQuery.each(makeupList, function (ke, val) {
-            var sDate = new Date(val['hub_session_date'] + " " + val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
-            var eDate = new Date(val['hub_session_date'] + " " + val['hub_end_time@OData.Community.Display.V1.FormattedValue']);
-            var startHour = new Date(val['hub_session_date'] + " " + val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
+            var sDate = new Date(val['hub_session_date@OData.Community.Display.V1.FormattedValue'] + " " + val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
+            var eDate = new Date(val['hub_session_date@OData.Community.Display.V1.FormattedValue'] + " " + val['hub_end_time@OData.Community.Display.V1.FormattedValue']);
+            var startHour = new Date(val['hub_session_date@OData.Community.Display.V1.FormattedValue'] + " " + val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
             startHour = startHour.setMinutes(0);
             startHour = new Date(new Date(startHour).setSeconds(0));
             var obj = {
