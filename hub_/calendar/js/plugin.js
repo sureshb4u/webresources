@@ -1978,7 +1978,7 @@ function SylvanCalendar() {
         else {
             wjQuery('.headerDate').removeClass('today');
         }
-        var currentView = self.calendar.fullCalendar('getView');
+        var currentView = this.calendar.fullCalendar('getView');
         if (currentView.name == 'resourceDay') {
             var dayOfWeek = moment(currentCalendarDate).format('dddd');
             var dayofMonth = moment(currentCalendarDate).format('M/D');
@@ -2021,7 +2021,7 @@ function SylvanCalendar() {
         else {
             wjQuery('.headerDate').removeClass('today');
         }
-        var currentView = self.calendar.fullCalendar('getView');
+        var currentView = this.calendar.fullCalendar('getView');
         if (currentView.name == 'resourceDay') {
             var dayOfWeek = moment(currentCalendarDate).format('dddd');
             var dayofMonth = moment(currentCalendarDate).format('M/D');
