@@ -2834,7 +2834,7 @@ function SylvanCalendar() {
                       obj.startHour = startHour;
                       var index = -1;
                       for (var i = 0; i < noResourceList.length; i++) {
-                          if(noResourceList[i].id == newObj.id &&
+                          if(noResourceList[i].id == obj.id &&
                             noResourceList[i].startHour.getTime() == startHour.getTime()){
                             index = i;
                             break;
