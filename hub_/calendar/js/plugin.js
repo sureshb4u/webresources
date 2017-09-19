@@ -7025,7 +7025,9 @@ function SylvanCalendar() {
                                         }
                                     }
                                     if(find1to1){
-                                        count += this.getResourceObj(Object.keys(groupStudentsByResource)[x]).capacity;
+                                        if(this.getResourceObj(Object.keys(groupStudentsByResource)[x]).capacity != undefined){
+                                            count += this.getResourceObj(Object.keys(groupStudentsByResource)[x]).capacity;
+                                        }
                                     }
                                     else{
                                         count += groupStudentsByResource[Object.keys(groupStudentsByResource)[x]].length
@@ -7127,7 +7129,9 @@ function SylvanCalendar() {
                                         }
                                     }
                                     if(find1to1){
-                                        count += this.getResourceObj(Object.keys(groupStudentsByResource)[x]).capacity;
+                                        if(this.getResourceObj(Object.keys(groupStudentsByResource)[x]).capacity != undefined){
+                                            count += this.getResourceObj(Object.keys(groupStudentsByResource)[x]).capacity;
+                                        }
                                     }
                                     else{
                                         count += groupStudentsByResource[Object.keys(groupStudentsByResource)[x]].length
@@ -7229,7 +7233,9 @@ function SylvanCalendar() {
                                         }
                                     }
                                     if(find1to1){
-                                        count += this.getResourceObj(Object.keys(groupStudentsByResource)[x]).capacity;
+                                        if(this.getResourceObj(Object.keys(groupStudentsByResource)[x]).capacity != undefined){
+                                            count += this.getResourceObj(Object.keys(groupStudentsByResource)[x]).capacity;
+                                        }
                                     }
                                     else{
                                         count += groupStudentsByResource[Object.keys(groupStudentsByResource)[x]].length
