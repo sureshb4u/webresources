@@ -2192,7 +2192,7 @@ function SylvanCalendar() {
                 businessStartDate = new Date(businessStartDate + ' ' + '00:00').getTime();
                 businessEndDate = new Date(businessEndDate + ' ' + '00:00').getTime();
                 if (j >= businessStartDate && j <= businessEndDate) {
-                    self.leaveDays.push(self.getDayValue(j));
+                    self.leaveDays.push(new Date(j));
                 }
             }
         }
@@ -6665,6 +6665,15 @@ function SylvanCalendar() {
 
     this.populateWeekEvents = function(){
         var self = this;
+        self.eventList = [];
+        wjQuery('.fc-col' + 0).not('.fc-widget-header').css('background-color', '#fff');
+        wjQuery('.fc-col' + 1).not('.fc-widget-header').css('background-color', '#fff');
+        wjQuery('.fc-col' + 2).not('.fc-widget-header').css('background-color', '#fff');
+        wjQuery('.fc-col' + 3).not('.fc-widget-header').css('background-color', '#fff');
+        wjQuery('.fc-col' + 4).not('.fc-widget-header').css('background-color', '#fff');
+        wjQuery('.fc-col' + 5).not('.fc-widget-header').css('background-color', '#fff');
+        wjQuery('.fc-col' + 6).not('.fc-widget-header').css('background-color', '#fff');
+        var currentView = self.calendar.fullCalendar('getView');
         var piSelected = false;
         var giSelected = false;
         var gfSelected = false;
@@ -6699,10 +6708,9 @@ function SylvanCalendar() {
         if(Object.keys(this.weekEventObject).length){
             var leaveList= [];
             for (var i = 0; i < Object.keys(this.weekEventObject).length; i++) {
-                dayValue = self.getDayValue(Object.keys(this.weekEventObject)[i]);                
                 var index = -1;
                 for (var a = 0; a < self.leaveDays.length; a++) {
-                    if(self.leaveDays[a] == dayValue){
+                    if(moment(self.leaveDays[a]).format('YYYY-MM-DD') == moment(Object.keys(this.weekEventObject)[i]).format('YYYY-MM-DD')){
                         index = a;
                         break;
                     }
@@ -7094,26 +7102,21 @@ function SylvanCalendar() {
                         self.eventList.push(gfObj);
                     }
                 }
-                else{
-                    var sample = -1;
-                    for (var b = 0; b < leaveList.length; b++) {
-                        if(leaveList[b].dayValue == dayValue){
-                            sample = b;
-                            break;
-                        }
-                    }
-                    if(sample == -1){
-                        leaveList.push({
-                            dayValue : dayValue
-                        });
+            }
+            for(var j = currentView.start.getTime();j<currentView.end.getTime();j=j+(24*60*60*1000)){
+                var sample = -1;
+                for (var b = 0; b < self.leaveDays.length; b++) {
+                    if(moment(self.leaveDays[b]).format('YYYY-MM-DD') == moment(j).format('YYYY-MM-DD')){
+                        sample = b;
                         var obj = {
-                            start: new Date(Object.keys(this.weekEventObject)[i]),
+                            start: new Date(j),
                             allDay: true,
                             title:''
                         };
                         self.eventList.push(obj);
                     }
                 }
+               
             }
             self.calendar.fullCalendar('removeEvents');
             self.calendar.fullCalendar('removeEventSource');
