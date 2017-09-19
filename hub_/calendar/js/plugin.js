@@ -213,7 +213,8 @@ setTimeout(function () {
     var filterObject = {
         student: data.getStudentSession(locationId, currentCalendarDate, currentCalendarDate) == null ? [] : data.getStudentSession(locationId, currentCalendarDate, currentCalendarDate),
         grade: data.getGrade() == null ? [] : data.getGrade(),
-        subject: data.getSubject() == null ? [] : data.getSubject()
+        subject: data.getSubject() == null ? [] : data.getSubject(),
+        time: data.getTime() == null ? [] : data.getTime()
     }
     sylvanCalendar.generateFilterObject(filterObject);
 }, 500);
@@ -325,75 +326,85 @@ function SylvanCalendar() {
 
                 wjQuery(".filterCheckBox").click(function () {
                     wjQuery(".loading").show();
-                    if (wjQuery(this).is(':checked')) {
-                        self.eventList = [];
-                        self.calendar.fullCalendar('removeEvents');
-                        self.calendar.fullCalendar('removeEventSource');
-                        var index = checkedList.map(function (y) {
-                            return y;
-                        }).indexOf(wjQuery(this).val());
-                        if (index == -1) {
-                            checkedList.push(wjQuery(this).val());
-                        }
-                        self.calendar.fullCalendar('refetchEvents');
-                    } else {
-                        self.eventList = [];
-                        self.calendar.fullCalendar('removeEvents');
-                        self.calendar.fullCalendar('removeEventSource');
-                        var index = checkedList.map(function (y) {
-                            return y;
-                        }).indexOf(wjQuery(this).val());
-                        if (index != -1) {
-                            checkedList.splice(checkedList.indexOf(wjQuery(this).val()), 1);
-                        }
-                        self.calendar.fullCalendar('refetchEvents');
-                    }
-
-                    if (checkedList.length == 0) {
-                        self.populateStudentEvent(self.convertedStudentObj, true);
-                        self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
-                        self.populateTeacherEvent(self.convertedTeacherObj, true);
-                        self.populateTAPane(self.taList);
-                    } else {
-                        var newArray = [];
-                        var sofNewArray = [];
-                        sofNewArray['Personal Instruction'] = [];
-                        sofNewArray['Group Instruction'] = [];
-                        sofNewArray['Group Facilitation'] = [];
-                        var taNewArray = [];
-                        wjQuery.each(checkedList, function (k, v) {
-                            var vasdjfjsdfsjdf = self.filterItems(self.convertedStudentObj, v, "default");
-                            newArray = wjQuery.merge(self.filterItems(self.convertedStudentObj, v, "default"), newArray);
-                            taNewArray = wjQuery.merge(self.filterItems(self.taList, v, "tapane"), taNewArray);
-                            piResponse = self.filterItems(self.sofList['Personal Instruction'], v, "sofpane");
-                            giResponse = self.filterItems(self.sofList['Group Instruction'], v, "sofpane");
-                            gfResponse = self.filterItems(self.sofList['Group Facilitation'], v, "sofpane");
-
-                            var piIndex = sofNewArray['Personal Instruction'].map(function (x) {
-                                return x;
-                            }).indexOf(v);
-                            if (piIndex == -1) {
-                                sofNewArray['Personal Instruction'] = wjQuery.merge(piResponse, sofNewArray['Personal Instruction']);
-                            }
-
-                            var giIndex = sofNewArray['Group Instruction'].map(function (y) {
-                                return y;
-                            }).indexOf(v);
-                            if (giIndex == -1) {
-                                sofNewArray['Group Instruction'] = wjQuery.merge(giResponse, sofNewArray['Group Instruction']);
-                            }
-
-                            var gfIndex = sofNewArray['Group Facilitation'].map(function (z) {
-                                return z;
-                            }).indexOf(v);
-                            if (gfIndex == -1) {
-                                sofNewArray['Group Facilitation'] = wjQuery.merge(gfResponse, sofNewArray['Group Facilitation']);
-                            }
+                    var searchVal = wjQuery(this).val();
+                    if(searchVal.search("_time") != -1){
+                        searchVal = searchVal.split("_")[0];
+                        var d = new Date();
+                        var n = d.getHours();
+                        var scrollNum = (n - 8) * 161;
+                        $("#scrollarea").animate({ scrollTop: scrollNum }, 500, function(){
+                            wjQuery(".loading").hide();
                         });
-                        self.populateSOFPane(sofNewArray, self.calendarOptions.minTime, self.calendarOptions.maxTime);
-                        self.populateStudentEvent(newArray, true);
-                        self.populateTeacherEvent(self.convertedTeacherObj, true);
-                        self.populateTAPane(taNewArray);
+                    }else{
+                        if (wjQuery(this).is(':checked')) {
+                            self.eventList = [];
+                            self.calendar.fullCalendar('removeEvents');
+                            self.calendar.fullCalendar('removeEventSource');
+                            var index = checkedList.map(function (y) {
+                                return y;
+                            }).indexOf(searchVal);
+                            if (index == -1) {
+                                checkedList.push(searchVal);
+                            }
+                            self.calendar.fullCalendar('refetchEvents');
+                        } else {
+                            self.eventList = [];
+                            self.calendar.fullCalendar('removeEvents');
+                            self.calendar.fullCalendar('removeEventSource');
+                            var index = checkedList.map(function (y) {
+                                return y;
+                            }).indexOf(searchVal);
+                            if (index != -1) {
+                                checkedList.splice(checkedList.indexOf(searchVal), 1);
+                            }
+                            self.calendar.fullCalendar('refetchEvents');
+                        }
+                        if (checkedList.length == 0) {
+                            self.populateStudentEvent(self.convertedStudentObj, true);
+                            self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
+                            self.populateTeacherEvent(self.convertedTeacherObj, true);
+                            self.populateTAPane(self.taList);
+                        } else {
+                            var newArray = [];
+                            var sofNewArray = [];
+                            sofNewArray['Personal Instruction'] = [];
+                            sofNewArray['Group Instruction'] = [];
+                            sofNewArray['Group Facilitation'] = [];
+                            var taNewArray = [];
+                            wjQuery.each(checkedList, function (k, v) {
+                                var vasdjfjsdfsjdf = self.filterItems(self.convertedStudentObj, v, "default");
+                                newArray = wjQuery.merge(self.filterItems(self.convertedStudentObj, v, "default"), newArray);
+                                taNewArray = wjQuery.merge(self.filterItems(self.taList, v, "tapane"), taNewArray);
+                                piResponse = self.filterItems(self.sofList['Personal Instruction'], v, "sofpane");
+                                giResponse = self.filterItems(self.sofList['Group Instruction'], v, "sofpane");
+                                gfResponse = self.filterItems(self.sofList['Group Facilitation'], v, "sofpane");
+
+                                var piIndex = sofNewArray['Personal Instruction'].map(function (x) {
+                                    return x;
+                                }).indexOf(v);
+                                if (piIndex == -1) {
+                                    sofNewArray['Personal Instruction'] = wjQuery.merge(piResponse, sofNewArray['Personal Instruction']);
+                                }
+
+                                var giIndex = sofNewArray['Group Instruction'].map(function (y) {
+                                    return y;
+                                }).indexOf(v);
+                                if (giIndex == -1) {
+                                    sofNewArray['Group Instruction'] = wjQuery.merge(giResponse, sofNewArray['Group Instruction']);
+                                }
+
+                                var gfIndex = sofNewArray['Group Facilitation'].map(function (z) {
+                                    return z;
+                                }).indexOf(v);
+                                if (gfIndex == -1) {
+                                    sofNewArray['Group Facilitation'] = wjQuery.merge(gfResponse, sofNewArray['Group Facilitation']);
+                                }
+                            });
+                            self.populateSOFPane(sofNewArray, self.calendarOptions.minTime, self.calendarOptions.maxTime);
+                            self.populateStudentEvent(newArray, true);
+                            self.populateTeacherEvent(self.convertedTeacherObj, true);
+                            self.populateTAPane(taNewArray);
+                        }
                     }
                 });
             }
@@ -2439,7 +2450,7 @@ function SylvanCalendar() {
             self.filters[key] = [];
             wjQuery.each(value, function (ke, val) {
                 if (key == "time") {
-                    self.filters[key].push({ id: val.id, name: val.name, radio: false });
+                    self.filters[key].push({ id: val.id, name: val.name, radio: true });
                 } else if (key == "grade") {
                     wjQuery.each(val, function (name, id) {
                         self.filters[key].push({ id: id, name: name, radio: false });

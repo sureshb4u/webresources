@@ -175,6 +175,19 @@ var centerAvailable = [
     }
 ];
 
+
+var time = [
+  {
+    id:"2h_time",
+    name:"2 Hours"
+  },
+  {
+    id:"4h_time",
+    name:"4 Hours"
+  }
+];
+
+
 var grade = [{  "PK": 1,
         "K": 2,
         "1": 3,
@@ -5412,6 +5425,10 @@ function Data(){
 
   this.getGrade = function(){
     return grade;
+  }
+
+  this.getTime = function(){
+    return time;
   }
 
   this.getStudentSession = function(locationId,startDate,endDate){
