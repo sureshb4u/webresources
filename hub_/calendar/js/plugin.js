@@ -4693,6 +4693,7 @@ function SylvanCalendar() {
         self.showConflictMsg();
         self.draggable('draggable');
     };
+    
 
     this.excuseAndMakeUpStudent = function (element) {
         var self = this;
@@ -5419,6 +5420,7 @@ function SylvanCalendar() {
     };
 
     this.draggable = function (selector) {
+        var self = this;
         wjQuery('.' + selector).draggable({
             revert: true,
             revertDuration: 0,
@@ -5444,6 +5446,21 @@ function SylvanCalendar() {
                 }
             }
         });
+        wjQuery('.' + selector).off('dblclick').on('dblclick',function (e) {
+            self.findStudentEnrollment(this);    
+        });
+    };
+
+    this.findStudentEnrollment = function(element){
+        var uniqueIds = wjQuery(element).attr("uniqueId").split('_');
+        var objStudent = this.convertedStudentObj.filter(function (x) {
+            return x.id == uniqueIds[0] &&
+                   x.resourceId == uniqueIds[1] &&
+                   x.startHour.getTime() == new Date(uniqueIds[2]).getTime();
+        });
+        if (objStudent[0] != undefined) {
+            data.openEnrollment(objStudent[0].enrollmentId);
+        }
     };
 
     this.convertPinnedData = function (data, isFromSave) {

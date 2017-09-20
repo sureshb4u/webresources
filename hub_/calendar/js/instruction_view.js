@@ -5555,6 +5555,10 @@ function Data(){
     return student;
   }
 
+  this.openEnrollment = function(enrollmentID) {
+    return true;
+  }
+
 }
 
 
