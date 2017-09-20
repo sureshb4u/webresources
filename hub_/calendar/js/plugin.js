@@ -1727,9 +1727,9 @@ function SylvanCalendar() {
 
         var index = -1;
         for (var i = 0; i < t.convertedStudentObj.length; i++) {
-            if(t.convertedStudentObj.id == stuId &&
-                t.convertedStudentObj.resourceId == uniqueId.split('_')[1] &&
-                   t.convertedStudentObj.startHour.getTime() == new Date(startTime).getTime()){
+            if(t.convertedStudentObj[i].id == stuId &&
+                t.convertedStudentObj[i].resourceId == uniqueId.split('_')[1] &&
+                   t.convertedStudentObj[i].startHour.getTime() == new Date(startTime).getTime()){
                 index = i;
                 break;
             }
@@ -5349,9 +5349,9 @@ function SylvanCalendar() {
               }
               var index = -1;
               for (var i = 0; i < self.convertedStudentObj.length; i++) {
-                    if(self.convertedStudentObj.id == uniqueIds[0] &&
-                       self.convertedStudentObj.resourceId == uniqueIds[1] &&
-                       self.convertedStudentObj.startHour.getTime() == new Date(uniqueIds[2]).getTime()){
+                    if(self.convertedStudentObj[i].id == uniqueIds[0] &&
+                       self.convertedStudentObj[i].resourceId == uniqueIds[1] &&
+                       self.convertedStudentObj[i].startHour.getTime() == new Date(uniqueIds[2]).getTime()){
                         index = i;
                         break;
                     }
