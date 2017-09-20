@@ -6972,7 +6972,7 @@ function SylvanCalendar() {
                         piObj.deliveryType = "Personal-Instruction";
                         piObj.title += "<div class='stplace'>";
                         if(!giSelected || !addLabel){
-                            piObj.title += "S/T = ";    
+                            piObj.title += "S:T = ";    
                         }
                         if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
                             if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('pi')){
@@ -7002,7 +7002,7 @@ function SylvanCalendar() {
                         }
                         piObj.title += "<div class='ssplace'>"
                         if(!giSelected || !addLabel){
-                            piObj.title += "S/S = ";    
+                            piObj.title += "Seats = ";    
                         }                   
                         if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
                             if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('pi')){
@@ -7044,7 +7044,7 @@ function SylvanCalendar() {
                         }
                         piObj.title += "<div class='tsplace'>";
                         if(!giSelected || !addLabel){
-                            piObj.title += "TS = ";    
+                            piObj.title += "Teachers = ";    
                         }
                         if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherSchedule')){
                             if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.hasOwnProperty('pi')){
@@ -7076,7 +7076,7 @@ function SylvanCalendar() {
                         giObj.deliveryType = "Group-Instruction";
                         giObj.title += "<div class='stplace'>";
                         if(!addLabel){
-                            giObj.title += "S/T = ";    
+                            giObj.title += "S:T = ";    
                         }
                         if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
                             if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('gi')){
@@ -7106,7 +7106,7 @@ function SylvanCalendar() {
                         }
                         giObj.title += "<div class='ssplace'>";
                         if(!addLabel){
-                            giObj.title += "S/S = ";    
+                            giObj.title += "Seats = ";    
                         }                   
                         if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
                             if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('gi')){
@@ -7148,7 +7148,7 @@ function SylvanCalendar() {
                         }
                         giObj.title += "<div class='tsplace'>";
                         if(!addLabel){
-                            giObj.title += "TS = ";    
+                            giObj.title += "Teachers = ";    
                         }
                         if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherSchedule')){
                             if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.hasOwnProperty('gi')){
@@ -7180,7 +7180,7 @@ function SylvanCalendar() {
                         gfObj.deliveryType = "Group-Facilitation";
                         gfObj.title += "<div class='stplace'>";
                         if(!addLabel){
-                            gfObj.title += "S/T = ";    
+                            gfObj.title += "S:T = ";    
                         }
                         if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
                             if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('gf')){
@@ -7210,7 +7210,7 @@ function SylvanCalendar() {
                         }
                         gfObj.title += "<div class='ssplace'>";
                         if(!addLabel){
-                            gfObj.title += "S/S = ";    
+                            gfObj.title += "Seats = ";    
                         }                   
                         if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('student')){
                             if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.hasOwnProperty('gf')){
@@ -7252,7 +7252,7 @@ function SylvanCalendar() {
                         }
                         gfObj.title += "<div class='tsplace'>";
                         if(!addLabel){
-                            gfObj.title += "TS = ";    
+                            gfObj.title += "Teachers = ";    
                         }
                         if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherSchedule')){
                             if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.hasOwnProperty('gf')){
