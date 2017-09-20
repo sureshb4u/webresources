@@ -2622,7 +2622,7 @@ function SylvanCalendar() {
                                     else{
                                         exceptionStartHour = self.staffExceptions[k]['hub_starttime'] / 60;
                                         exceptionEndHour = self.staffExceptions[k]['hub_endtime'] / 60;
-                                        if(moment(startHour).format('h') >= exceptionEndHour && moment(startHour).format('h') <= exceptionStartHour){
+                                        if(moment(startHour).format('h') >= exceptionStartHour && moment(startHour).format('h') < exceptionEndHour){
                                             index = 1;
                                             break;
                                         }
