@@ -2611,7 +2611,7 @@ function SylvanCalendar() {
                             var exceptionEndDate = self.staffExceptions[k]['hub_enddate'];
                             exceptionEndDate = exceptionEndDate == undefined ? exceptionStartDate : new Date(exceptionEndDate);
                             // Set time for end date
-                            exceptionEndDate = new Date(exceptionEndDate).setHours(11);
+                            exceptionEndDate = new Date(exceptionEndDate).setHours(23);
                             exceptionEndDate = new Date(new Date(exceptionEndDate).setMinutes(59));
                             if(startHour != undefined){
                                 if(startHour.getTime() >= exceptionStartDate.getTime() && startHour.getTime() <= exceptionEndDate.getTime()){
@@ -2622,7 +2622,7 @@ function SylvanCalendar() {
                                     else{
                                         exceptionStartHour = self.staffExceptions[k]['hub_starttime'] / 60;
                                         exceptionEndHour = self.staffExceptions[k]['hub_endtime'] / 60;
-                                        if(moment(startHour).format(h) >= exceptionEndHour && moment(startHour).format(h) <= exceptionStartHour){
+                                        if(moment(startHour).format('h') >= exceptionEndHour && moment(startHour).format('h') <= exceptionStartHour){
                                             index = 1;
                                             break;
                                         }
@@ -3043,7 +3043,7 @@ function SylvanCalendar() {
                             var exceptionEndDate = self.staffExceptions[k]['hub_enddate'];
                             exceptionEndDate = exceptionEndDate == undefined ? exceptionStartDate : new Date(exceptionEndDate);
                             // Set time for end date
-                            exceptionEndDate = new Date(exceptionEndDate).setHours(11);
+                            exceptionEndDate = new Date(exceptionEndDate).setHours(23);
                             exceptionEndDate = new Date(new Date(exceptionEndDate).setMinutes(59));
                             if(currentView.getTime() >= exceptionStartDate.getTime() && currentView.getTime() <= exceptionEndDate.getTime()){
                                 if(self.staffExceptions[k]['hub_entireday']){
@@ -5481,7 +5481,7 @@ function SylvanCalendar() {
                 }
             }
         });
-        wjQuery('.' + selector).off('dblclick').on('dblclick',function (e) {
+        wjQuery('.drag-student').off('dblclick').on('dblclick',function (e) {
             self.findStudentEnrollment(this);    
         });
     };
