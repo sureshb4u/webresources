@@ -2558,6 +2558,7 @@ function SylvanCalendar() {
         else if (label == "teacherSchedule") {
             wjQuery.each(args, function (ke, val) {
                 var sDate, eDate, startHour,currentCalendarDate;
+                var currentView = self.calendar.fullCalendar('getView');
                 if (val['hub_date@OData.Community.Display.V1.FormattedValue'] != undefined &&
                   val['hub_start_time@OData.Community.Display.V1.FormattedValue'] != undefined) {
                     sDate = new Date(val['hub_date@OData.Community.Display.V1.FormattedValue'] + " " + val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
@@ -2599,13 +2600,46 @@ function SylvanCalendar() {
                     }
                 }
                 var index = -1;
+                if(self.staffExceptions.length){
+                    for(var k=0; k< self.staffExceptions.length ; k++){
+                        if(teacher.id == self.staffExceptions[k]['astaff_x002e_hub_staffid']){
+                            var exceptionStartDate = new Date(self.staffExceptions[k]['hub_startdate']);
+                            // Set time for start date
+                            exceptionStartDate = new Date(exceptionStartDate).setHours(0);
+                            exceptionStartDate = new Date(new Date(exceptionStartDate).setMinutes(0));
+
+                            var exceptionEndDate = self.staffExceptions[k]['hub_enddate'];
+                            exceptionEndDate = exceptionEndDate == undefined ? exceptionStartDate : new Date(exceptionEndDate);
+                            // Set time for end date
+                            exceptionEndDate = new Date(exceptionEndDate).setHours(0);
+                            exceptionEndDate = new Date(new Date(exceptionEndDate).setMinutes(0));
+                            if(currentView.getTime() >= exceptionStartDate.getTime() && currentView.getTime() <= exceptionEndDate.getTime()){
+                                if(self.staffExceptions[k]['hub_entireday']){
+                                    index = 1;
+                                    break;
+                                }
+                                else{
+                                    exceptionStartHour = self.staffExceptions[k]['hub_starttime'] / 60;
+                                    if(startHour != undefined){
+                                        if(moment(startHour).format(h) == exceptionStartHour){
+                                            index = 1;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                }
+                /*var index = -1;
                 for (var i = 0; i < self.staffExceptions.length; ++i) {
                     if (self.staffExceptions[i]['astaff_x002e_hub_staffid'] == teacher.id && 
                         moment(self.staffExceptions[i]['hub_startdate']).format('YYYY-MM-DD') == moment(teacher.startHour).format('YYYY-MM-DD')) {
                         index = i;
                         break;
                     }
-                }
+                }*/
                 if (index == -1) {
                     eventObjList.push(teacher);
                 }
