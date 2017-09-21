@@ -7339,6 +7339,7 @@ function SylvanCalendar() {
             self.calendar.fullCalendar('removeEventSource');
             self.calendar.fullCalendar('addEventSource', { events: self.eventList });
             self.calendar.fullCalendar('refetchEvents');
+            wjQuery('.fc-view-agendaWeek .fc-event-time').css('visibility','hidden');
             wjQuery('.loading').hide();
         }
     }
