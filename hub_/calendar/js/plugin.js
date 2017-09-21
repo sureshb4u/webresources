@@ -6717,19 +6717,21 @@ function SylvanCalendar() {
                 for(var i in this.weekEventObject){
                     if(i == calEvent.start){
                         var groupByResource = {},sof = [],taList = [];
-                        if(this.weekEventObject[i].student.hasOwnProperty('gi')){
-                            for(var x=0;x<this.weekEventObject[i].student.gi.length;x++){
-                                if(this.weekEventObject[i].student.gi[x].hasOwnProperty('resourceId')){
-                                    if(groupByResource.hasOwnProperty(this.weekEventObject[i].student.gi[x].resourceId)){
-                                        groupByResource[this.weekEventObject[i].student.gi[x].resourceId].push(this.weekEventObject[i].student.gi[x]);
+                        if(this.weekEventObject[i].hasOwnProperty('student')){
+                            if(this.weekEventObject[i].student.hasOwnProperty('gi')){
+                                for(var x=0;x<this.weekEventObject[i].student.gi.length;x++){
+                                    if(this.weekEventObject[i].student.gi[x].hasOwnProperty('resourceId')){
+                                        if(groupByResource.hasOwnProperty(this.weekEventObject[i].student.gi[x].resourceId)){
+                                            groupByResource[this.weekEventObject[i].student.gi[x].resourceId].push(this.weekEventObject[i].student.gi[x]);
+                                        }
+                                        else{
+                                            groupByResource[this.weekEventObject[i].student.gi[x].resourceId] = [];
+                                            groupByResource[this.weekEventObject[i].student.gi[x].resourceId].push(this.weekEventObject[i].student.gi[x]);
+                                        }
                                     }
                                     else{
-                                        groupByResource[this.weekEventObject[i].student.gi[x].resourceId] = [];
-                                        groupByResource[this.weekEventObject[i].student.gi[x].resourceId].push(this.weekEventObject[i].student.gi[x]);
+                                        sof.push(this.weekEventObject[i].student.gi[x]);
                                     }
-                                }
-                                else{
-                                    sof.push(this.weekEventObject[i].student.gi[x]);
                                 }
                             }
                         }
@@ -6757,19 +6759,21 @@ function SylvanCalendar() {
                 for(var i in this.weekEventObject){
                     if(i == calEvent.start){
                         var groupByResource = {},sof=[],taList = [];
-                        if(this.weekEventObject[i].student.hasOwnProperty('gf')){
-                            for(var x=0;x<this.weekEventObject[i].student.gf.length;x++){
-                                if(this.weekEventObject[i].student.gf[x].hasOwnProperty('resourceId')){
-                                    if(groupByResource.hasOwnProperty(this.weekEventObject[i].student.gf[x].resourceId)){
-                                        groupByResource[this.weekEventObject[i].student.gf[x].resourceId].push(this.weekEventObject[i].student.gf[x]);
+                        if(this.weekEventObject[i].hasOwnProperty('student')){
+                            if(this.weekEventObject[i].student.hasOwnProperty('gf')){
+                                for(var x=0;x<this.weekEventObject[i].student.gf.length;x++){
+                                    if(this.weekEventObject[i].student.gf[x].hasOwnProperty('resourceId')){
+                                        if(groupByResource.hasOwnProperty(this.weekEventObject[i].student.gf[x].resourceId)){
+                                            groupByResource[this.weekEventObject[i].student.gf[x].resourceId].push(this.weekEventObject[i].student.gf[x]);
+                                        }
+                                        else{
+                                            groupByResource[this.weekEventObject[i].student.gf[x].resourceId] = [];
+                                            groupByResource[this.weekEventObject[i].student.gf[x].resourceId].push(this.weekEventObject[i].student.gf[x]);
+                                        }
                                     }
                                     else{
-                                        groupByResource[this.weekEventObject[i].student.gf[x].resourceId] = [];
-                                        groupByResource[this.weekEventObject[i].student.gf[x].resourceId].push(this.weekEventObject[i].student.gf[x]);
+                                        sof.push(this.weekEventObject[i].student.gf[x]);
                                     }
-                                }
-                                else{
-                                    sof.push(this.weekEventObject[i].student.gf[x]);
                                 }
                             }
                         }
