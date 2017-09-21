@@ -6707,7 +6707,19 @@ function SylvanCalendar() {
                             }
                         }
                         if(this.weekEventObject[i].hasOwnProperty('teacherAvailability')){
-                            taList = this.weekEventObject[i].teacherAvailability;
+                            for(var a=0;a < this.weekEventObject[i].teacherAvailability.length;a++){
+                                var teacherAvailable  = true;
+                                for(var b in groupByResource){
+                                    for(var j=0;j<groupByResource[b].length;j++){
+                                        if(groupByResource[b][j].isTeacher && groupByResource[b][j].id == this.weekEventObject[i].teacherAvailability[a].id){
+                                            teacherAvailable = false;
+                                        }
+                                    }
+                                }
+                                if(teacherAvailable){
+                                    taList.push(this.weekEventObject[i].teacherAvailability[a]);
+                                }
+                            }
                         }
                     }
                 }
@@ -6749,7 +6761,19 @@ function SylvanCalendar() {
                             }
                         }
                         if(this.weekEventObject[i].hasOwnProperty('teacherAvailability')){
-                            taList = this.weekEventObject[i].teacherAvailability;
+                            for(var a=0;a < this.weekEventObject[i].teacherAvailability.length;a++){
+                                var teacherAvailable  = true;
+                                for(var b in groupByResource){
+                                    for(var j=0;j<groupByResource[b].length;j++){
+                                        if(groupByResource[b][j].isTeacher && groupByResource[b][j].id == this.weekEventObject[i].teacherAvailability[a].id){
+                                            teacherAvailable = false;
+                                        }
+                                    }
+                                }
+                                if(teacherAvailable){
+                                    taList.push(this.weekEventObject[i].teacherAvailability[a]);
+                                }
+                            }
                         }
                     }
                 }
@@ -6791,7 +6815,19 @@ function SylvanCalendar() {
                             }
                         }
                         if(this.weekEventObject[i].hasOwnProperty('teacherAvailability')){
-                            taList = this.weekEventObject[i].teacherAvailability;
+                            for(var a=0;a < this.weekEventObject[i].teacherAvailability.length;a++){
+                                var teacherAvailable  = true;
+                                for(var b in groupByResource){
+                                    for(var j=0;j<groupByResource[b].length;j++){
+                                        if(groupByResource[b][j].isTeacher && groupByResource[b][j].id == this.weekEventObject[i].teacherAvailability[a].id){
+                                            teacherAvailable = false;
+                                        }
+                                    }
+                                }
+                                if(teacherAvailable){
+                                    taList.push(this.weekEventObject[i].teacherAvailability[a]);
+                                }
+                            }
                         }
                     }
                 }
