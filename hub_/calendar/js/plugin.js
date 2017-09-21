@@ -159,6 +159,8 @@ setTimeout(function () {
 
                 wjQuery('.wkView').off('click').on('click', function () {
                     wjQuery(".sof-btn").prop("disabled", true);
+                    wjQuery(".ta-btn").prop("disabled", true);
+                    wjQuery(".filter-section").hide();
                     if(wjQuery(".sof-pane").hasClass("open")){
                         wjQuery(".sof-btn,.sof-close-icon").trigger('click');
                     }
@@ -167,6 +169,8 @@ setTimeout(function () {
                 });
                 wjQuery('.dayView').off('click').on('click', function () {
                     wjQuery(".sof-btn").prop("disabled", false);
+                    wjQuery(".ta-btn").prop("disabled", false);
+                    wjQuery(".filter-section").show();
                     sylvanCalendar.openSofPane();
                     sylvanCalendar.dayView();
                 });
