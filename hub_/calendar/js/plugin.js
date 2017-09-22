@@ -2769,12 +2769,12 @@ function SylvanCalendar() {
                     if(val['hub_effectiveenddate'] != undefined){
                         effEndDate = new Date(val['hub_effectiveenddate']);
                     }
-                    else{
+                    else if(val['aenrollment_x002e_hub_enrollmentenddate'] != undefined){
                         effEndDate = new Date(val['aenrollment_x002e_hub_enrollmentenddate']);
                     }
                     effEndDate = new Date(effEndDate).setHours(23);
                     effEndDate = new Date(new Date(effEndDate).setMinutes(59));
-                    if(effStartDate.getTime() >= currentCalendarDate.getTime() &&
+                    if(currentCalendarDate.getTime() >= effStartDate.getTime() &&
                        currentCalendarDate.getTime() <= effEndDate.getTime()){
                         allowStudentFlag = true;
                     }
@@ -2789,7 +2789,8 @@ function SylvanCalendar() {
                     }
                     effEndDate = new Date(effEndDate).setHours(23);
                     effEndDate = new Date(new Date(effEndDate).setMinutes(59));
-                    if(effStartDate.getTime() <= currentView.end.getTime()){
+                    if(effStartDate.getTime() <= currentView.end.getTime() &&
+                       effEndDate.getTime >= currentView.start.getTime()){
                         allowStudentFlag = true;
                     }
                 }
