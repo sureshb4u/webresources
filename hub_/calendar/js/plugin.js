@@ -78,9 +78,13 @@ setTimeout(function () {
         var resources = [];
         function fetchResources(locationId, selectedDeliveryType, fetchData) {
             wjQuery(".loading").show();
+            var locationChanged  = false;
             // asign deliverytpeList to  
             sylvanCalendar.selectedDeliveryType = selectedDeliveryType;
-            sylvanCalendar.locationId = locationId;
+            if(sylvanCalendar.locationId != locationId){
+                locationChanged = true;
+                sylvanCalendar.locationId = locationId;
+            }
             var resourceList = [];
             if (fetchData) {
                 var obj = data.getResources(locationId);
@@ -118,19 +122,24 @@ setTimeout(function () {
                     }
                 }
             }
-            if(sylvanCalendar.calendar == undefined || sylvanCalendar.calendar.fullCalendar('getView').name == 'resourceDay'){
+            if(locationChanged){
                 sylvanCalendar.populateResource(resourceList, fetchData);
             }
             else{
-                sylvanCalendar.resourceList = [];
-                for (var i = 0; i < resourceList.length; i++) {
-                    sylvanCalendar.resourceList.push({
-                        name: resourceList[i].hub_name,
-                        id: resourceList[i].hub_center_resourcesid,
-                        deliveryType: resourceList[i]["_hub_deliverytype_value@OData.Community.Display.V1.FormattedValue"],
-                        deliveryTypeId: resourceList[i]['_hub_deliverytype_value'],
-                        capacity: resourceList[i]["hub_capacity"]
-                    });
+                if(sylvanCalendar.calendar == undefined || sylvanCalendar.calendar.fullCalendar('getView').name == 'resourceDay'){
+                    sylvanCalendar.populateResource(resourceList, fetchData);
+                }
+                else{
+                    sylvanCalendar.resourceList = [];
+                    for (var i = 0; i < resourceList.length; i++) {
+                        sylvanCalendar.resourceList.push({
+                            name: resourceList[i].hub_name,
+                            id: resourceList[i].hub_center_resourcesid,
+                            deliveryType: resourceList[i]["_hub_deliverytype_value@OData.Community.Display.V1.FormattedValue"],
+                            deliveryTypeId: resourceList[i]['_hub_deliverytype_value'],
+                            capacity: resourceList[i]["hub_capacity"]
+                        });
+                    }
                 }
             }
             if (resourceList.length) {
@@ -2164,6 +2173,7 @@ function SylvanCalendar() {
             }
             else if (self.calendar.fullCalendar('getView').name == 'agendaWeek'){
                 self.eventList = [];
+                self.weekEventObject = {};
                 startDate = moment(currentView.start).format("YYYY-MM-DD");
                 endDate = moment(moment(currentView.start).add(6, 'd')).format("YYYY-MM-DD");
                 self.businessClosure = data.getBusinessClosure(locationId, startDate, endDate) == null ? [] : data.getBusinessClosure(locationId, startDate, endDate);
@@ -5958,12 +5968,12 @@ function SylvanCalendar() {
             });
 
             if (isForMakeup) {
-                wjQuery("#makeup").dialog('option', 'title', 'Add Makup');
+                wjQuery("#makeup").dialog('option', 'title', 'Add Makeup');
             } else {
                 wjQuery("#makeup").dialog('option', 'title', 'Add Float');
             }
 
-            // On click Makup student save makeup session will be called
+            // On click Makeup student save makeup session will be called
             wjQuery(".makeup-item").click(function (event) {
                 wjQuery(".loading").show();
                 var objSession = {};
@@ -6072,7 +6082,7 @@ function SylvanCalendar() {
                 }
             });
             if (isForMakeup) {
-                wjQuery("#makeup").dialog('option', 'title', 'Add Makup');
+                wjQuery("#makeup").dialog('option', 'title', 'Add Makeup');
             } else {
                 wjQuery("#makeup").dialog('option', 'title', 'Add Float');
             }
