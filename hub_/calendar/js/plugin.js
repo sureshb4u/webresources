@@ -197,7 +197,6 @@ setTimeout(function () {
                 wjQuery(".refresh-icon").off('click').on('click',function (){
                     fetchResources(locationId, deliveryTypeList, true);
                 });
-
             } else {
                 wjQuery(".loading").hide();
             }
@@ -2165,6 +2164,7 @@ function SylvanCalendar() {
                     }
                     self.populateTAPane(self.generateEventObject(self.teacherAvailability == null ? [] : self.teacherAvailability, "teacherAvailability"));
                     self.showConflictMsg();
+                    self.scrollToEvent();
                 }
                 else {
                     wjQuery('.loading').hide();
@@ -7660,5 +7660,24 @@ function SylvanCalendar() {
         self.updateConflictMsg(prevEvent);
       }
 
+    }
+
+    this.scrollToEvent = function(){
+        var currentCalendarDate = moment(this.calendar.fullCalendar('getDate')).format("YYYY-MM-DD");
+        var dateObj = "";
+        var first = true;
+        for(var i=0; i< this.eventList.length; i++){
+            var tempDate = moment(this.eventList[i]['start']).format("YYYY-MM-DD");
+            if(first){
+                dateObj = this.eventList[i]['start'];
+                first = false;
+            }
+            if(currentCalendarDate == tempDate && dateObj > this.eventList[i]['start']){
+                dateObj = this.eventList[i]['start'];
+            }
+        }
+        var n = dateObj.getHours();
+        var scrollNum = (n - 8) * 161;
+        $("#scrollarea").animate({scrollTop: scrollNum});
     }
 }
