@@ -5213,13 +5213,13 @@ function SylvanCalendar() {
                         self.excuseStudentFromSession(options.$trigger[0]);
                     }
                 }
-                obj.excuseAndMakeUp = {
-                    name: "Excuse with Makeup",
-                    disabled:MAKEUP_STATUS == sessionStatus,
-                    callback: function (key, options) {
-                        self.excuseAndMakeUpStudent(options.$trigger[0]);
-                    }
-                }
+                // obj.excuseAndMakeUp = {
+                //     name: "Excuse with Makeup",
+                //     disabled:MAKEUP_STATUS == sessionStatus,
+                //     callback: function (key, options) {
+                //         self.excuseAndMakeUpStudent(options.$trigger[0]);
+                //     }
+                // }
                 obj.moveToSof = {
                     name: "Move to SOF",
                     callback: function (key, options) {
