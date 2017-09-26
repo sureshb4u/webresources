@@ -2833,10 +2833,17 @@ function SylvanCalendar() {
                         enrollmentId: val['aenrollment_x002e_hub_enrollmentid'],
                         isFromMasterSchedule: true,
                         is1to1: false,
-                        sessionDate: moment(currentCalendarDate).format('YYYY-MM-DD'),
                         timeSlotType : val['aproductservice_x002e_hub_timeslottype'],
                         namedHoursId: val['aproductservice_x002e_hub_namedgfhoursid']
                     }
+                    var sDate= currentCalendarDate;
+                    if(currentView.name == 'agendaWeek'){
+                        val['hub_days'] = val['hub_days'] == 7 ? 0 : val['hub_days']; 
+                        sDate = currentView.start;
+                        sDate = new Date(new Date(sDate).setDate(sDate.getDate() + val['hub_days']))
+                    }
+                    
+                    obj['sessionDate'] = moment(sDate).format('YYYY-MM-DD');
 
                     if(val.hasOwnProperty('aenrollment_x002e_hub_nonpreferredteacher')){
                       obj['nonPreferredTeacher'] = val['aenrollment_x002e_hub_nonpreferredteacher'];
@@ -2860,14 +2867,14 @@ function SylvanCalendar() {
                             if (pinnedStudent[i] != undefined) {
                               var newObj = wjQuery.extend(true, {}, obj);
                               newObj.pinId = undefined;
-                              newObj.enrollmentId = pinnedStudent[i].enrollmentId,
-                              newObj.start = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + pinnedStudent[i].startTime);
-                              newObj.end = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + pinnedStudent[i].endTime);
-                              var startHour = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + pinnedStudent[i].startTime);
+                              newObj.enrollmentId = pinnedStudent[i].enrollmentId;
+                              newObj.start = new Date(moment(sDate).format('YYYY-MM-DD') + " " + pinnedStudent[i].startTime);
+                              newObj.end = new Date(moment(sDate).format('YYYY-MM-DD') + " " + pinnedStudent[i].endTime);
+                              var startHour = new Date(moment(sDate).format('YYYY-MM-DD') + " " + pinnedStudent[i].startTime);
+                              var studentStart = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
                               startHour = startHour.setMinutes(0);
                               startHour = new Date(new Date(startHour).setSeconds(0));
                               newObj.startHour = startHour;
-                              var studentStart = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
                               if(studentStart.getTime() == newObj.start.getTime()){
                                   if (pinnedStudent[i].hasOwnProperty('resourceId')) {
                                       newObj.resourceId = pinnedStudent[i].resourceId;
@@ -2900,9 +2907,9 @@ function SylvanCalendar() {
 
                               }
                               else{
-                                  newObj.start = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
-                                  newObj.end = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
-                                  var startHour = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+                                  newObj.start = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+                                  newObj.end = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
+                                  var startHour = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
                                   startHour = startHour.setMinutes(0);
                                   startHour = new Date(new Date(startHour).setSeconds(0));
                                   newObj.startHour = startHour;
@@ -2922,9 +2929,9 @@ function SylvanCalendar() {
                             }
                         }
                         if(pinnedStudent.length == 0){
-                          obj.start = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
-                          obj.end = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
-                          var startHour = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+                          obj.start = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+                          obj.end = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
+                          var startHour = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
                           startHour = startHour.setMinutes(0);
                           startHour = new Date(new Date(startHour).setSeconds(0));
                           obj.startHour = startHour;
@@ -2942,9 +2949,9 @@ function SylvanCalendar() {
                         }
                     }
                     else {
-                        obj.start = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
-                        obj.end = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
-                        var startHour = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+                        obj.start = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+                        obj.end = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
+                        var startHour = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
                         startHour = startHour.setMinutes(0);
                         startHour = new Date(new Date(startHour).setSeconds(0));
                         obj.startHour = startHour;
@@ -7171,6 +7178,7 @@ function SylvanCalendar() {
                                 }
                                 for (var x = 0; x < Object.keys(groupStudentsByResource).length; x++) {
                                     find1to1 = false;
+                                    piFlag = true;
                                     for (var y = 0; y < groupStudentsByResource[Object.keys(groupStudentsByResource)[x]].length; y++) {
                                         if(groupStudentsByResource[Object.keys(groupStudentsByResource)[x]][y].is1to1){
                                             find1to1 = true;
@@ -7270,6 +7278,7 @@ function SylvanCalendar() {
                                 }
                                 for (var x = 0; x < Object.keys(groupStudentsByResource).length; x++) {
                                     find1to1 = false;
+                                    giFlag = true;
                                     for (var y = 0; y < groupStudentsByResource[Object.keys(groupStudentsByResource)[x]].length; y++) {
                                         if(groupStudentsByResource[Object.keys(groupStudentsByResource)[x]][y].is1to1){
                                             find1to1 = true;
@@ -7369,6 +7378,7 @@ function SylvanCalendar() {
                                 }
                                 for (var x = 0; x < Object.keys(groupStudentsByResource).length; x++) {
                                     find1to1 = false;
+                                    gfFlag = true;
                                     for (var y = 0; y < groupStudentsByResource[Object.keys(groupStudentsByResource)[x]].length; y++) {
                                         if(groupStudentsByResource[Object.keys(groupStudentsByResource)[x]][y].is1to1){
                                             find1to1 = true;
