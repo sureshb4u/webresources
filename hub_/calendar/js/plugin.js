@@ -2401,6 +2401,8 @@ function SylvanCalendar() {
         }
         sofExpanded = !sofExpanded;
         if (sofExpanded) {
+            this.scrollTop = wjQuery("#scrollarea").scrollTop();
+            wjQuery('.sof-pane').prop("scrollTop", this.scrollTop);
             wjQuery('.ta-pane').hide();
             wjQuery('.sof-pane').css('opacity', '1');
         }
@@ -2420,12 +2422,14 @@ function SylvanCalendar() {
             wjQuery('.ta-pane').prop("scrollTop", this.scrollTop)
                 .prop("scrollLeft", this.scrollLeft);
         });
+
         wjQuery('.teacher-availability').on('mousewheel DOMMouseScroll', function (e) {
             var e0 = e.originalEvent;
             var delta = e0.wheelDelta || -e0.detail;
             this.scrollTop += (delta < 0 ? 1 : -1) * 30;
             e.preventDefault();
         });
+
         if (sofExpanded) {
             sofExpanded = !sofExpanded;
             sofExpanded ? wjQuery('.sof-pane').addClass('open') : wjQuery('.sof-pane').removeClass('open');
@@ -2434,6 +2438,8 @@ function SylvanCalendar() {
         }
         taExpanded = !taExpanded;
         if (taExpanded) {
+            this.scrollTop = wjQuery("#scrollarea").scrollTop();
+            wjQuery('.ta-pane').prop("scrollTop", this.scrollTop);
             wjQuery('.ta-pane').css('opacity', '1');
             wjQuery('.sof-pane').hide();
         }
