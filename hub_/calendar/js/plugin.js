@@ -791,9 +791,12 @@ function SylvanCalendar() {
                                   '<div class="display-inline-block padding-right-xs">' + teacherData[i].name + '</div>';
                     var staffPrograms = this.getProgramObj(teacherData[i].id);
                     if (staffPrograms.length != 0) {
+                        var serviceInfoBox = "";
                         for (var a = 0; a < staffPrograms.length; a++) {
-                            elm += '<div class="subject-identifier" style="background:' + staffPrograms[a].color + '"></div>';
+                            serviceInfoBox += "<div class='subject-detail'><span class='subject-identifier' style='background:" + staffPrograms[a].color + "'></span>"+
+                                              "<span class='subject-name'>"+staffPrograms[a].name+"</span></div>";
                         }
+                        elm += '<i class="material-icons info-icon cursor service-info" title="'+serviceInfoBox+'">info</>';
                     }
                     elm += '</div></div>';
                     wjQuery('#teacher_block_' + teacherPosition).append(elm);
@@ -5898,6 +5901,7 @@ function SylvanCalendar() {
                 if (PrograExist == -1) {
                     var obj = {
                         id: x['hub_programid'],
+                        name:x['hub_name'],
                         color: x['hub_color']
                     }
                     programObj.push(obj);

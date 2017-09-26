@@ -526,3 +526,11 @@ ul{
     background-image: linear-gradient(to bottom,#08c,#0077b3);
     background-repeat: repeat-x;*/
 }
+
+.service-info{
+    vertical-align: middle;
+}
+
+.subject-name{
+    margin-left: 5px;
+}
