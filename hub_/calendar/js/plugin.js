@@ -1910,17 +1910,19 @@ function SylvanCalendar() {
                 this.calendar.fullCalendar('unselect');
             },
             eventClick: function(calEvent, jsEvent, view) {
-                self.renderWeekModal(calEvent, jsEvent, view);
+                if(calEvent.className[0] != "leave-day-class"){
+                    self.renderWeekModal(calEvent, jsEvent, view);
+                }
             },
             eventRender: function(event, element, view) {
                 if (view.name == 'agendaWeek' && event.allDay) {
-                    wjQuery('.fc-col' + event.start.getUTCDay()).not('.fc-widget-header').css('background-color', '#ddd');
+                    wjQuery('.fc-col' + event.start.getDay()).not('.fc-widget-header').css('background-color', '#ddd');
                     wjQuery('.fc-event-skin').css('background-color', '#ddd');
                     wjQuery('.fc-event-skin').css('border-color', '#ddd');
                     wjQuery('.fc-event.fc-event-hori').css('overflow-y', 'visible');
                 }
                 else{
-                    wjQuery('.fc-col' + event.start.getUTCDay()).not('.fc-widget-header').css('background-color', '#fff');
+                    wjQuery('.fc-col' + event.start.getDay()).not('.fc-widget-header').css('background-color', '#fff');
                     wjQuery('.fc-event.fc-event-hori').css('overflow-y', 'visible'); 
                 }
             },
@@ -7454,7 +7456,8 @@ function SylvanCalendar() {
                         var obj = {
                             start: new Date(j),
                             allDay: true,
-                            title:''
+                            className: "leave-day-class",
+                            title:'',
                         };
                         self.eventList.push(obj);
                     }
