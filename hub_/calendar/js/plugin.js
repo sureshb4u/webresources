@@ -7684,16 +7684,26 @@ function SylvanCalendar() {
 
     this.scrollToEvent = function(){
         var currentCalendarDate = moment(this.calendar.fullCalendar('getDate')).format("YYYY-MM-DD");
-        var dateObj = "";
+        var dateObj = new Date(currentCalendarDate+" "+"08:00 AM");
         var first = true;
-        for(var i=0; i< this.eventList.length; i++){
-            var tempDate = moment(this.eventList[i]['start']).format("YYYY-MM-DD");
-            if(first){
-                dateObj = this.eventList[i]['start'];
-                first = false;
-            }
-            if(currentCalendarDate == tempDate && dateObj > this.eventList[i]['start']){
-                dateObj = this.eventList[i]['start'];
+        if(this.eventList.length){
+            for(var i=0; i< this.eventList.length; i++){
+                var tempDate = moment(this.eventList[i]['start']).format("YYYY-MM-DD");
+                if(currentCalendarDate == tempDate ){
+                    if(first){
+                        dateObj = this.eventList[i]['start'];
+                        first = false;
+                    }
+                    if(dateObj > this.eventList[i]['start']){
+                        var resourceObj = this.getResourceObj(this.eventList[i]['resourceId']);
+                        var index = this.selectedDeliveryType.map(function (y) {
+                            return y;
+                        }).indexOf(resourceObj['deliveryTypeId']);
+                        if (index != -1) {
+                            dateObj = this.eventList[i]['start'];
+                        }
+                    }
+                } 
             }
         }
         var n = dateObj.getHours();
