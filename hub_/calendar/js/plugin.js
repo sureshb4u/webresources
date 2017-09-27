@@ -7689,19 +7689,17 @@ function SylvanCalendar() {
         if(this.eventList.length){
             for(var i=0; i< this.eventList.length; i++){
                 var tempDate = moment(this.eventList[i]['start']).format("YYYY-MM-DD");
-                if(currentCalendarDate == tempDate ){
+                var resourceObj = this.getResourceObj(this.eventList[i]['resourceId']);
+                var index = this.selectedDeliveryType.map(function (y) {
+                    return y;
+                }).indexOf(resourceObj['deliveryTypeId']);
+                if(currentCalendarDate == tempDate && index != -1){
                     if(first){
                         dateObj = this.eventList[i]['start'];
                         first = false;
                     }
                     if(dateObj > this.eventList[i]['start']){
-                        var resourceObj = this.getResourceObj(this.eventList[i]['resourceId']);
-                        var index = this.selectedDeliveryType.map(function (y) {
-                            return y;
-                        }).indexOf(resourceObj['deliveryTypeId']);
-                        if (index != -1) {
-                            dateObj = this.eventList[i]['start'];
-                        }
+                        dateObj = this.eventList[i]['start'];
                     }
                 } 
             }
