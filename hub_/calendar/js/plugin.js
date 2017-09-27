@@ -40,20 +40,35 @@ setTimeout(function () {
                 wjQuery(".location-btn").val(wjQuery(this).attr('value-id'));
                 locationId = wjQuery(this).attr('value-id');
                 wjQuery('#datepicker').datepicker('destroy');
-                wjQuery('#dayBtn').trigger( "click");
-                wjQuery('#datepicker').datepicker({
-                    buttonImage: "/webresources/hub_/calendar/images/calendar.png",
-                    buttonImageOnly: true,
-                    changeMonth: true,
-                    changeYear: true,
-                    showOn: 'button',
-                    onSelect: function (date) {
-                        wjQuery(".loading").show();
-                        sylvanCalendar.dateFromCalendar(date, locationId);
-                        wjQuery('#datepicker').hide();
+                var view = "resourceDay";
+                if(sylvanCalendar.calendar != undefined){
+                    view = sylvanCalendar.calendar.fullCalendar('getView');
+                }
+                if(view.name == "resourceDay" || view.name == undefined){
+                    wjQuery('#dayBtn').trigger( "click");
+                    wjQuery('#datepicker').datepicker({
+                        buttonImage: "/webresources/hub_/calendar/images/calendar.png",
+                        buttonImageOnly: true,
+                        changeMonth: true,
+                        changeYear: true,
+                        showOn: 'button',
+                        onSelect: function (date) {
+                            wjQuery(".loading").show();
+                            sylvanCalendar.dateFromCalendar(date, locationId);
+                            wjQuery('#datepicker').hide();
+                        }
+                    });
+                    return fetchResources(locationId, deliveryTypeList, true);
+                }else{
+                    wjQuery(".sof-btn").prop("disabled", true);
+                    wjQuery(".ta-btn").prop("disabled", true);
+                    wjQuery(".filter-section").hide();
+                    if(wjQuery(".sof-pane").hasClass("open")){
+                        wjQuery(".sof-btn,.sof-close-icon").trigger('click');
                     }
-                });
-                return fetchResources(locationId, deliveryTypeList, true);
+                    wjQuery(".sof-btn").removeClass('overflow-info');
+                    sylvanCalendar.weekView();
+                }
             }
         });
         var rtime;
