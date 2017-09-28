@@ -2005,6 +2005,139 @@ function SylvanCalendar() {
             var location = wjQuery("#location").val();
             var notes = wjQuery("#notes").val();
         });
+
+        wjQuery("#scrollarea").scroll(function () {
+
+            var showHeight = $('.fc-agenda-allday').offset().top + $('.fc-agenda-allday').height();
+            //slot 0
+            wjQuery('tr.fc-slot0 th').css('top',(wjQuery('tr.fc-slot0').offset().top + (showHeight - wjQuery('tr.fc-slot0').offset().top + 4)) +'px');
+            wjQuery('tr.fc-slot0 th').css('height',160 - (showHeight - wjQuery('tr.fc-slot0').offset().top + 4));
+            wjQuery('tr.fc-slot0 th').css('opacity',160 - (showHeight - wjQuery('tr.fc-slot0').offset().top + 4) <= 0 ? 0 : 1);
+            //slot1
+            if((wjQuery('tr.fc-slot1').offset().top + 4) < showHeight){
+                wjQuery('tr.fc-slot1 th').css('top',(wjQuery('tr.fc-slot1').offset().top + (showHeight - wjQuery('tr.fc-slot1').offset().top + 4)) +'px');
+                var h1 = 160 - (160 +(showHeight - wjQuery('tr.fc-slot2').offset().top + 4));
+                wjQuery('tr.fc-slot1 th').css('height',h1 > 160 ? 160 : h1 );
+                wjQuery('tr.fc-slot1 th').css('opacity',h1 <= 0 ? 0 : 1);
+            }
+            else{
+                wjQuery('tr.fc-slot1 th').css('top',wjQuery('tr.fc-slot1').offset().top +'px');
+                wjQuery('tr.fc-slot1 th').css('height','160px');
+            }
+            //slot2
+            if((wjQuery('tr.fc-slot2').offset().top + 4) <= showHeight){
+                wjQuery('tr.fc-slot2 th').css('top',(wjQuery('tr.fc-slot2').offset().top + (showHeight - wjQuery('tr.fc-slot2').offset().top + 4)) +'px');
+                var h2 = 160 - (160 +(showHeight - wjQuery('tr.fc-slot3').offset().top + 4));
+                wjQuery('tr.fc-slot2 th').css('height',h2 > 160 ? 160 : h2 );
+                wjQuery('tr.fc-slot2 th').css('opacity',h2 <= 0 ? 0 : 1);
+            }
+            else{
+                wjQuery('tr.fc-slot2 th').css('top',wjQuery('tr.fc-slot2').offset().top +'px');
+                wjQuery('tr.fc-slot2 th').css('height','160px');
+            }
+            //slot3
+            if((wjQuery('tr.fc-slot3').offset().top + 4) <= showHeight){
+                wjQuery('tr.fc-slot3 th').css('top',(wjQuery('tr.fc-slot3').offset().top + (showHeight - wjQuery('tr.fc-slot3').offset().top + 4)) +'px');
+                var h2 = 160 - (160 +(showHeight - wjQuery('tr.fc-slot4').offset().top + 4));
+                wjQuery('tr.fc-slot3 th').css('height',h2 > 160 ? 160 : h2 );
+                wjQuery('tr.fc-slot3 th').css('opacity',h2 <= 0 ? 0 : 1);
+            }
+            else{
+                wjQuery('tr.fc-slot3 th').css('top',wjQuery('tr.fc-slot3').offset().top +'px');
+                wjQuery('tr.fc-slot3 th').css('height','160px');
+            }
+            //slot4
+            if((wjQuery('tr.fc-slot4').offset().top + 4) <= showHeight){
+                wjQuery('tr.fc-slot4 th').css('top',(wjQuery('tr.fc-slot4').offset().top + (showHeight - wjQuery('tr.fc-slot4').offset().top + 4)) +'px');
+                var h2 = 160 - (160 +(showHeight - wjQuery('tr.fc-slot5').offset().top + 4));
+                wjQuery('tr.fc-slot4 th').css('height',h2 > 160 ? 160 : h2 );
+                wjQuery('tr.fc-slot4 th').css('opacity',h2 <= 0 ? 0 : 1);
+            }
+            else{
+                wjQuery('tr.fc-slot4 th').css('top',wjQuery('tr.fc-slot4').offset().top +'px');
+                wjQuery('tr.fc-slot4 th').css('height','160px');
+            }
+            //slot5
+            if((wjQuery('tr.fc-slot5').offset().top + 4) <= showHeight){
+                wjQuery('tr.fc-slot5 th').css('top',(wjQuery('tr.fc-slot5').offset().top + (showHeight - wjQuery('tr.fc-slot5').offset().top + 4)) +'px');
+                var h2 = 160 - (160 +(showHeight - wjQuery('tr.fc-slot6').offset().top + 4));
+                wjQuery('tr.fc-slot5 th').css('height',h2 > 160 ? 160 : h2 );
+                wjQuery('tr.fc-slot5 th').css('opacity',h2 <= 0 ? 0 : 1);
+            }
+            else{
+                wjQuery('tr.fc-slot5 th').css('top',wjQuery('tr.fc-slot5').offset().top +'px');
+                wjQuery('tr.fc-slot5 th').css('height','160px');
+            }
+            //slot6
+            if((wjQuery('tr.fc-slot6').offset().top + 4) <= showHeight){
+                wjQuery('tr.fc-slot6 th').css('top',(wjQuery('tr.fc-slot6').offset().top + (showHeight - wjQuery('tr.fc-slot6').offset().top + 4)) +'px');
+                var h2 = 160 - (160 +(showHeight - wjQuery('tr.fc-slot7').offset().top + 4));
+                wjQuery('tr.fc-slot6 th').css('height',h2 > 160 ? 160 : h2 );
+                wjQuery('tr.fc-slot6 th').css('opacity',h2 <= 0 ? 0 : 1);
+            }
+            else{
+                wjQuery('tr.fc-slot6 th').css('top',wjQuery('tr.fc-slot6').offset().top +'px');
+                wjQuery('tr.fc-slot6 th').css('height','160px');
+            }
+            //slot7
+            if((wjQuery('tr.fc-slot7').offset().top + 4) <= showHeight){
+                wjQuery('tr.fc-slot7 th').css('top',(wjQuery('tr.fc-slot7').offset().top + (showHeight - wjQuery('tr.fc-slot7').offset().top + 4)) +'px');
+                var h2 = 160 - (160 +(showHeight - wjQuery('tr.fc-slot8').offset().top + 4));
+                wjQuery('tr.fc-slot7 th').css('height',h2 > 160 ? 160 : h2 );
+                wjQuery('tr.fc-slot7 th').css('opacity',h2 <= 0 ? 0 : 1);
+            }
+            else{
+                wjQuery('tr.fc-slot7 th').css('top',wjQuery('tr.fc-slot7').offset().top +'px');
+                wjQuery('tr.fc-slot7 th').css('height','160px');
+            }
+            //slot8
+            if((wjQuery('tr.fc-slot8').offset().top + 4) <= showHeight){
+                wjQuery('tr.fc-slot8 th').css('top',(wjQuery('tr.fc-slot8').offset().top + (showHeight - wjQuery('tr.fc-slot8').offset().top + 4)) +'px');
+                var h2 = 160 - (160 +(showHeight - wjQuery('tr.fc-slot9').offset().top + 4));
+                wjQuery('tr.fc-slot8 th').css('height',h2 > 160 ? 160 : h2 );
+                wjQuery('tr.fc-slot8 th').css('opacity',h2 <= 0 ? 0 : 1);
+            }
+            else{
+                wjQuery('tr.fc-slot8 th').css('top',wjQuery('tr.fc-slot8').offset().top +'px');
+                wjQuery('tr.fc-slot8 th').css('height','160px');
+            }
+            //slot9
+            if((wjQuery('tr.fc-slot9').offset().top + 4) <= showHeight){
+                wjQuery('tr.fc-slot9 th').css('top',(wjQuery('tr.fc-slot9').offset().top + (showHeight - wjQuery('tr.fc-slot9').offset().top + 4)) +'px');
+                var h2 = 160 - (160 +(showHeight - wjQuery('tr.fc-slot10').offset().top + 4));
+                wjQuery('tr.fc-slot9 th').css('height',h2 > 160 ? 160 : h2 );
+                wjQuery('tr.fc-slot9 th').css('opacity',h2 <= 0 ? 0 : 1);
+            }
+            else{
+                wjQuery('tr.fc-slot9 th').css('top',wjQuery('tr.fc-slot9').offset().top +'px');
+                wjQuery('tr.fc-slot9 th').css('height','160px');
+            }
+            //slot10
+            if((wjQuery('tr.fc-slot10').offset().top + 4) <= showHeight){
+                wjQuery('tr.fc-slot10 th').css('top',(wjQuery('tr.fc-slot10').offset().top + (showHeight - wjQuery('tr.fc-slot10').offset().top + 4)) +'px');
+                var h2 = 160 - (160 +(showHeight - wjQuery('tr.fc-slot11').offset().top + 4));
+                wjQuery('tr.fc-slot10 th').css('height',h2 > 160 ? 160 : h2 );
+                wjQuery('tr.fc-slot10 th').css('opacity',h2 <= 0 ? 0 : 1);
+            }
+            else{
+                wjQuery('tr.fc-slot10 th').css('top',wjQuery('tr.fc-slot10').offset().top +'px');
+                wjQuery('tr.fc-slot10 th').css('height','160px');
+            }
+            //slot11
+            if((wjQuery('tr.fc-slot11').offset().top + 4) <= showHeight){
+                wjQuery('tr.fc-slot11 th').css('top',(wjQuery('tr.fc-slot11').offset().top + (showHeight - wjQuery('tr.fc-slot11').offset().top + 4)) +'px');
+                var h2 = 160 - (160 +(showHeight - wjQuery('tr.fc-slot11').offset().top + 4));
+                wjQuery('tr.fc-slot11 th').css('height',h2 > 160 ? 160 : h2 );
+                wjQuery('tr.fc-slot11 th').css('opacity',h2 <= 0 ? 0 : 1);
+            }
+            else{
+                wjQuery('tr.fc-slot11 th').css('top',wjQuery('tr.fc-slot11').offset().top +'px');
+                wjQuery('tr.fc-slot11 th').css('height','160px');
+            }
+
+           
+        });
+        wjQuery('#scrollarea .fc-agenda-axis.fc-widget-header').css('width',wjQuery('tr.fc-slot0 th').width() +'px');
     }
 
     this.findDataSource = function (currentCalendarDate,view) {
@@ -2404,6 +2537,7 @@ function SylvanCalendar() {
     this.sofPane = function () {
         wjQuery('.sof-pane').show();
         wjQuery("#scrollarea").scroll(function () {
+            wjQuery('tr.fc-slot0 th').css('top',(wjQuery('tr.fc-slot0').offset().top) +'px');
             wjQuery('.sof-pane').prop("scrollTop", this.scrollTop)
                 .prop("scrollLeft", this.scrollLeft);
         });

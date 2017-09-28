@@ -90,6 +90,21 @@ var resources =  [
     "hub_capacity@OData.Community.Display.V1.FormattedValue": "10",
     "hub_capacity": 10,
     "hub_center_resourcesid": "0517a2c8-1b50-e711-80f1-c4346bacfbbc"
+  },
+  {
+    "@odata.etag": "W/\"1427681\"",
+    "hub_name": "Table GI 1",
+    "_hub_centerid_value@OData.Community.Display.V1.FormattedValue": "Bel Air Learning Center",
+    "_hub_centerid_value@Microsoft.Dynamics.CRM.associatednavigationproperty": "hub_centerid",
+    "_hub_centerid_value@Microsoft.Dynamics.CRM.lookuplogicalname": "hub_center",
+    "_hub_centerid_value": "b97bc0df-a334-e711-80ed-c4346bacfbbc",
+    "_hub_deliverytype_value@OData.Community.Display.V1.FormattedValue": "Group Instruction",
+    "_hub_deliverytype_value@Microsoft.Dynamics.CRM.associatednavigationproperty": "hub_deliverytype",
+    "_hub_deliverytype_value@Microsoft.Dynamics.CRM.lookuplogicalname": "hub_deliverytype",
+    "_hub_deliverytype_value": "f8b0e613-a534-e711-80ed-c4346bad526c",
+    "hub_capacity@OData.Community.Display.V1.FormattedValue": "10",
+    "hub_capacity": 10,
+    "hub_center_resourcesid": "0317a2c8-1b50-e711-80f1-c4346bacfbbc"
   }
 ];
 

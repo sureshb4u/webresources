@@ -2,8 +2,18 @@ body{
     overflow: hidden;
     position: relative;
 }
-#calendar
-{
+.calendar-holder{
+    width: 100%;
+    overflow-x: auto;
+    height: calc(100% - 59px);
+}
+#scrollarea .fc-agenda-axis.fc-widget-header {
+    height: 152px;
+    background: #FFF;
+    position: fixed;
+    z-index: 10;
+}
+#calendar{
     margin: auto;
     position: relative;
     width: 100%;
@@ -155,7 +165,7 @@ i.material-icons.cursor.float-right {
 .filter-section{
     width: 300px;
     background: #fff;
-    z-index: 10;
+    z-index: 11;
     border: 1px solid;
     position: absolute;
     margin-left: -275px;

@@ -3329,9 +3329,11 @@ function ResourceView(element, calendar, viewName) {
             .prev()
             .addClass('fc-last');
         }
-		
         colWidth = Math.floor((slotTableWidth - axisWidth) / colCnt);
-        setOuterWidth(dayHeadCells.slice(0, -1), colWidth);
+        colWidth = 200;
+        setOuterWidth(dayHeadCells, colWidth);
+	    wjQuery(element).css('width',((dayHeadCells.length * colWidth) + 15 + axisWidth) +"px");
+	    wjQuery(element).css('height',"calc(100% - 0px)");
     }
 	
 
