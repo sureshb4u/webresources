@@ -4096,9 +4096,9 @@ function ResourceEventRenderer() {
         ">" +
         "<div class='fc-event-inner fc-event-skin'" + skinCssAttr + ">" +
         "<div class='fc-event-head fc-event-skin'" + skinCssAttr + ">" +
-        "<div class='fc-event-time'>" +
-        htmlEscape(formatDates(event.start, event.end, opt('timeFormat'))) +
-        "</div>" +
+        // "<div class='fc-event-time'>" +
+        // htmlEscape(formatDates(event.start, event.end, opt('timeFormat'))) +
+        // "</div>" +
         "</div>" +
         "<div class='fc-event-content'>" +
         "<div class='fc-event-title'>" +
