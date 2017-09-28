@@ -2008,11 +2008,19 @@ function SylvanCalendar() {
 
         wjQuery("#scrollarea").scroll(function () {
 
-            var showHeight = $('.fc-agenda-allday').offset().top + $('.fc-agenda-allday').height();
+            var showHeight = wjQuery('table thead th.fc-agenda-axis.fc-widget-header.fc-first').offset().top + wjQuery('table thead th.fc-agenda-axis.fc-widget-header.fc-first').height() + 3;
             //slot 0
-            wjQuery('tr.fc-slot0 th').css('top',(wjQuery('tr.fc-slot0').offset().top + (showHeight - wjQuery('tr.fc-slot0').offset().top + 4)) +'px');
-            wjQuery('tr.fc-slot0 th').css('height',160 - (showHeight - wjQuery('tr.fc-slot0').offset().top + 4));
-            wjQuery('tr.fc-slot0 th').css('opacity',160 - (showHeight - wjQuery('tr.fc-slot0').offset().top + 4) <= 0 ? 0 : 1);
+            //slot1
+            if((wjQuery('tr.fc-slot0').offset().top + 4) < showHeight){
+                wjQuery('tr.fc-slot0 th').css('top',(wjQuery('tr.fc-slot0').offset().top + (showHeight - wjQuery('tr.fc-slot0').offset().top + 4)) +'px');
+                var h1 = 160 - (160 +(showHeight - wjQuery('tr.fc-slot1').offset().top + 4));
+                wjQuery('tr.fc-slot0 th').css('height',h1 > 160 ? 160 : h1 );
+                wjQuery('tr.fc-slot0 th').css('opacity',h1 <= 0 ? 0 : 1);
+            }
+            else{
+                wjQuery('tr.fc-slot0 th').css('top',wjQuery('tr.fc-slot0').offset().top +'px');
+                wjQuery('tr.fc-slot0 th').css('height','160px');
+            }
             //slot1
             if((wjQuery('tr.fc-slot1').offset().top + 4) < showHeight){
                 wjQuery('tr.fc-slot1 th').css('top',(wjQuery('tr.fc-slot1').offset().top + (showHeight - wjQuery('tr.fc-slot1').offset().top + 4)) +'px');

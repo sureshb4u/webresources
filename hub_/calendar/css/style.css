@@ -162,6 +162,9 @@ i.material-icons.cursor.float-right {
 .fc-sat.fc-widget-header {
     padding: 10px 0;
 }
+.fc-agenda-slots tr.fc-slot0 th, .fc-agenda-slots tr.fc-slot0 td {
+    border-top-width: 2px;
+}
 .filter-section{
     width: 300px;
     background: #fff;
