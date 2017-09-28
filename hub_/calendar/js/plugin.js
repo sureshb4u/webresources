@@ -2903,35 +2903,33 @@ function SylvanCalendar() {
                               if(studentStart.getTime() == newObj.start.getTime()){
                                   if (pinnedStudent[i].hasOwnProperty('resourceId')) {
                                       newObj.resourceId = pinnedStudent[i].resourceId;
-                                      var index = -1;
-                                      for (var i = 0; i < pinnedList.length; i++) {
-                                          if(pinnedList[i].id == newObj.id &&
-                                            pinnedList[i].startHour.getTime() == startHour.getTime()){
-                                            index = i;
+                                      var zindex = -1;
+                                      for (var z = 0; z < pinnedList.length; z++) {
+                                          if(pinnedList[z].id == newObj.id &&
+                                            pinnedList[z].startHour.getTime() == startHour.getTime()){
+                                            zindex = z;
                                             break;
                                           }
                                       }
-                                      if (index == -1) {
+                                      if (zindex == -1) {
                                           pinnedList.push(newObj);
                                       }
                                   }
                                   else if (pinnedStudent[i].hasOwnProperty('affinityResourceId')) {
                                       newObj.resourceId = pinnedStudent[i].affinityResourceId;
-                                      var index = -1;
-                                      for (var i = 0; i < affinityList.length; i++) {
-                                            if(affinityList[i].id == newObj.id &&
-                                                affinityList[i].startHour.getTime() == startHour.getTime()){
-                                                index = i;
+                                      var xindex = -1;
+                                      for (var x = 0; x < affinityList.length; x++) {
+                                            if(affinityList[x].id == newObj.id &
+                                                affinityList[x].startHour.getTime() == startHour.getTime()){
+                                                xindex = x;
                                                 break;
                                             }
                                       }
-                                      if (index == -1) {
+                                      if (xindex == -1) {
                                           affinityList.push(newObj);
                                       }
                                   }
-
-                              }
-                              else{
+                              }else{
                                   newObj.start = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
                                   newObj.end = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
                                   var startHour = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
@@ -2939,15 +2937,15 @@ function SylvanCalendar() {
                                   startHour = new Date(new Date(startHour).setSeconds(0));
                                   newObj.startHour = startHour;
 
-                                  var index = -1;
-                                  for (var i = 0; i < noResourceList.length; i++) {
-                                      if(noResourceList[i].id == newObj.id &&
-                                        noResourceList[i].startHour.getTime() == startHour.getTime()){
-                                        index = i;
+                                  var findex = -1;
+                                  for (var f = 0; f < noResourceList.length; f++) {
+                                      if(noResourceList[f].id == newObj.id &&
+                                        noResourceList[f].startHour.getTime() == startHour.getTime()){
+                                        findex = f;
                                         break;
                                       }
                                   }
-                                  if (index == -1) {
+                                  if (findex == -1) {
                                       noResourceList.push(newObj);
                                   }
                               }
@@ -2972,8 +2970,7 @@ function SylvanCalendar() {
                               noResourceList.push(obj);
                           }
                         }
-                    }
-                    else {
+                    }else {
                         obj.start = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
                         obj.end = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
                         var startHour = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
@@ -3065,6 +3062,8 @@ function SylvanCalendar() {
                     }
                 }
             });
+            
+            //out of loop
             if (pinnedList.length) {
                 for(var i=0; i<pinnedList.length; i++){
                     var index = -1;
