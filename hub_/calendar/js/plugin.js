@@ -1882,7 +1882,7 @@ function SylvanCalendar() {
             minTime: 8,
             maxTime: 20,
             allDayText: '',
-            //allDaySlot:false,
+            allDaySlot:false,
             droppable: true,
             drop: function (date, allDay, ev, ui, resource) {
                 t.createEventOnDrop(t, date, allDay, ev, ui, resource, this);
@@ -2886,7 +2886,12 @@ function SylvanCalendar() {
                         }
                     }
                     if(index == -1){
-                        eventObjList.push(obj);
+                        if(obj.sessionStatus == INVALID_STATUS ||
+                            obj.sessionStatus == UNEXCUSED_STATUS ||
+                            obj.sessionStatus == OMIT_STATUS || 
+                            obj.sessionStatus == EXCUSED_STATUS){
+                            eventObjList.push(obj);
+                        }
                     }
                 }
                 else if(obj.sessionStatus != INVALID_STATUS &&
