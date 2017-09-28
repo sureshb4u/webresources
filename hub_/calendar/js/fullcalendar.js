@@ -3761,7 +3761,7 @@ function ResourceView(element, calendar, viewName) {
                 }else{
                     var d1 = cellDate(cell);
                     var d2 = addMinutes(cloneDate(d1), opt('defaultEventMinutes'));
-                    renderSlotOverlay(d1, d2,cell);
+                    renderSlotOverlay(d1, d2, cell);
                 }
             }
         }, ev);
@@ -6878,7 +6878,7 @@ function CoordinateGrid(buildFunc) {
 		var origin = originElement.offset();
 		return {
 			top: rows[row0][0] - origin.top,
-			left: cols[col0][0] - origin.left,
+			left: cols[col0][0] ,
 			width: cols[col1][1] - cols[col0][0],
 			height: rows[row1][1] - rows[row0][0]
 		};

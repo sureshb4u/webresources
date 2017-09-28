@@ -5690,11 +5690,11 @@ function SylvanCalendar() {
         wjQuery('.' + selector).draggable({
             revert: true,
             revertDuration: 0,
-            appendTo: '#scrollarea',
+            //appendTo: '#scrollarea',
             helper: 'clone',
             cursor: "move",
             scroll: true,
-            cursorAt: { top: 0 },
+            cursorAt: { top: 10, left : 20 },
             drag: function () {
                 if (sofExpanded) {
                     wjQuery('.sof-pane').css('opacity', '.1');
