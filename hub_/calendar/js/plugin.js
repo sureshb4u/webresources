@@ -189,6 +189,9 @@ setTimeout(function () {
                     if(wjQuery(".sof-pane").hasClass("open")){
                         wjQuery(".sof-btn,.sof-close-icon").trigger('click');
                     }
+                    if(wjQuery(".ta-pane").hasClass("open")){
+                        wjQuery(".ta-btn,.ta-close-icon").trigger('click');
+                    }
                     wjQuery(".sof-btn").removeClass('overflow-info');
                     sylvanCalendar.weekView();
                 });
