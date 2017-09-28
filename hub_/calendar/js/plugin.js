@@ -2878,7 +2878,7 @@ function SylvanCalendar() {
                         var pinnedStudent = self.convertedPinnedList.filter(function (x) {
                             return x.studentId == obj.id &&
                                    x.startTime == val['hub_starttime@OData.Community.Display.V1.FormattedValue'] &&
-                                   x.dayId == self.getDayValue(currentCalendarDate);
+                                   x.dayId == self.getDayValue(sDate);
                         });
                         var priceList = self.enrollmentPriceList.filter(function (x) {
                             return x['aenrollment_x002e_hub_enrollmentid'] == obj.enrollmentId;
@@ -3811,8 +3811,7 @@ function SylvanCalendar() {
                                             self.convertedStudentObj.push(studentList[i]);
                                             if(currentView.name == 'resourceDay'){
                                                 self.populateStudentEvent(obj, true, true);
-                                            }
-                                            else{
+                                            }else{
                                                self.generateWeekEventObject(obj,'studentSession'); 
                                             }
                                         }else{
@@ -3826,6 +3825,7 @@ function SylvanCalendar() {
                                           //     self.populateStudentEvent(obj, true, true);
                                           // }
                                           studentList.splice(i,1);
+                                          i -= 1;
                                         }
                                     }
                                 }
@@ -3863,6 +3863,7 @@ function SylvanCalendar() {
                                     //     self.populateStudentEvent(obj, true, true);
                                     // }
                                     studentList.splice(i,1);
+                                    i -= 1;
                                 }
                             }
                         });
@@ -3900,6 +3901,7 @@ function SylvanCalendar() {
                             //     self.populateStudentEvent(obj, true, true);
                             // }
                             studentList.splice(i,1);
+                            i -= 1;
                         }
                     }
                 }
@@ -3918,8 +3920,7 @@ function SylvanCalendar() {
                 }
                 if (index == -1) {
                     studentsForSOF.push(studentList[i]);
-                }
-                else{
+                }else{
                     // if(self.convertedStudentObj[index].sessionStatus == INVALID_STATUS||
                     //     self.convertedStudentObj[index].sessionStatus == UNEXCUSED_STATUS ||
                     //     self.convertedStudentObj[index].sessionStatus == OMIT_STATUS || 
@@ -3929,6 +3930,7 @@ function SylvanCalendar() {
                     //     studentsForSOF.push(studentList[i]);
                     // }
                     studentList.splice(i,1);
+                    i -= 1;
                 }
             }
         }
