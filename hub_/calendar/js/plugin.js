@@ -66,8 +66,8 @@ setTimeout(function () {
                     if(wjQuery(".sof-pane").hasClass("open")){
                         wjQuery(".sof-btn,.sof-close-icon").trigger('click');
                     }
-                    wjQuery(".sof-btn").removeClass('overflow-info');
                     sylvanCalendar.weekView();
+                    wjQuery(".sof-btn").removeClass('overflow-info');
                 }
             }
         });
@@ -192,8 +192,8 @@ setTimeout(function () {
                     if(wjQuery(".ta-pane").hasClass("open")){
                         wjQuery(".ta-btn,.ta-close-icon").trigger('click');
                     }
-                    wjQuery(".sof-btn").removeClass('overflow-info');
                     sylvanCalendar.weekView();
+                    wjQuery(".sof-btn").removeClass('overflow-info');
                 });
                 wjQuery('.dayView').off('click').on('click', function () {
                     wjQuery(".sof-btn").prop("disabled", false);
@@ -2755,12 +2755,7 @@ function SylvanCalendar() {
                         }
                     }
                     if(index == -1){
-                        if(obj.sessionStatus == INVALID_STATUS ||
-                            obj.sessionStatus == UNEXCUSED_STATUS ||
-                            obj.sessionStatus == OMIT_STATUS || 
-                            obj.sessionStatus == EXCUSED_STATUS){
-                            eventObjList.push(obj);
-                        }
+                        eventObjList.push(obj);
                     }
                 }
                 else if(obj.sessionStatus != INVALID_STATUS &&
