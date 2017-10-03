@@ -2012,8 +2012,7 @@ function SylvanCalendar() {
         wjQuery("#scrollarea").scroll(function () {
 
             var showHeight = wjQuery('table thead th.fc-agenda-axis.fc-widget-header.fc-first').offset().top + wjQuery('table thead th.fc-agenda-axis.fc-widget-header.fc-first').height() + 3;
-            //slot 0
-            //slot1
+            //slot0
             if((wjQuery('tr.fc-slot0').offset().top + 4) < showHeight){
                 wjQuery('tr.fc-slot0 th').css('top',(wjQuery('tr.fc-slot0').offset().top + (showHeight - wjQuery('tr.fc-slot0').offset().top + 4)) +'px');
                 var h1 = 160 - (160 +(showHeight - wjQuery('tr.fc-slot1').offset().top + 4));
@@ -2548,7 +2547,7 @@ function SylvanCalendar() {
     this.sofPane = function () {
         wjQuery('.sof-pane').show();
         wjQuery("#scrollarea").scroll(function () {
-            wjQuery('tr.fc-slot0 th').css('top',(wjQuery('tr.fc-slot0').offset().top) +'px');
+            //wjQuery('tr.fc-slot0 th').css('top',(wjQuery('tr.fc-slot0').offset().top) +'px');
             wjQuery('.sof-pane').prop("scrollTop", this.scrollTop)
                 .prop("scrollLeft", this.scrollLeft);
         });
