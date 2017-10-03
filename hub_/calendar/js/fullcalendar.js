@@ -6846,6 +6846,9 @@ function CoordinateGrid(buildFunc) {
 	var rows;
 	var cols;
 	
+	var lastScrollLeft = wjQuery('.calendar-holder').scrollLeft();
+	var scrollDiff = 0;
+	var scrolled = false;
 	
 	t.build = function() {
 		rows = [];
@@ -6873,12 +6876,25 @@ function CoordinateGrid(buildFunc) {
 		return (r>=0 && c>=0) ? { row:r, col:c } : null;
 	};
 	
+	t.initialize = function(){
+		lastScrollLeft = wjQuery('.calendar-holder').scrollLeft();
+		scrollDiff = 0;
+		scrolled = false;
+	}
 	
 	t.rect = function(row0, col0, row1, col1, originElement) { // row1,col1 is inclusive
+		wjQuery('.calendar-holder').scroll(function(){
+			scrolled = true;
+		});
 		var origin = originElement.offset();
+	    var documentScrollLeft = wjQuery('.calendar-holder').scrollLeft();
+	    if (scrolled && lastScrollLeft != documentScrollLeft) {
+	        scrollDiff += documentScrollLeft - lastScrollLeft;
+	        lastScrollLeft = documentScrollLeft
+	    }
 		return {
 			top: rows[row0][0] - origin.top,
-			left: cols[col0][0] ,
+			left: cols[col0][0] - origin.left - scrollDiff,
 			width: cols[col1][1] - cols[col0][0],
 			height: rows[row1][1] - rows[row0][0]
 		};
@@ -6900,6 +6916,7 @@ function HoverListener(coordinateGrid) {
 		change = _change;
 		firstCell = cell = null;
 		coordinateGrid.build();
+		coordinateGrid.initialize();
 		mouse(ev);
 		bindType = _bindType || 'mousemove';
 		$(document).bind(bindType, mouse);
