@@ -444,8 +444,8 @@ function SylvanCalendar() {
         });
         wjQuery('.sof-pane').css('height', wjQuery('#calendar').height() - 10 + "px");
         wjQuery('.ta-pane').css('height', wjQuery('#calendar').height() - 10 + "px");
-        wjQuery('.sof-pane').css('overflow', 'hidden');
-        wjQuery('.ta-pane').css('overflow', 'hidden');
+        wjQuery('.sof-pane').css('overflow', 'auto');
+        wjQuery('.ta-pane').css('overflow', 'auto');
         wjQuery('.ta-pane').hide();
         wjQuery('.sof-pane').hide();
     }
@@ -2546,17 +2546,24 @@ function SylvanCalendar() {
 
     this.sofPane = function () {
         wjQuery('.sof-pane').show();
-        wjQuery("#scrollarea").scroll(function () {
+        var slotScrollTop = wjQuery("#scrollarea").scrollTop;
+        var sofScrollTop = wjQuery(".sof-pane").scrollTop;
+        wjQuery("#scrollarea").on('mousewheel DOMMouseScroll',function () {
             //wjQuery('tr.fc-slot0 th').css('top',(wjQuery('tr.fc-slot0').offset().top) +'px');
             wjQuery('.sof-pane').prop("scrollTop", this.scrollTop)
                 .prop("scrollLeft", this.scrollLeft);
         });
-        wjQuery('.student-overflow').on('mousewheel DOMMouseScroll', function (e) {
+        wjQuery(".sof-pane").on('mousewheel DOMMouseScroll',function () {
+            //wjQuery('tr.fc-slot0 th').css('top',(wjQuery('tr.fc-slot0').offset().top) +'px');
+            wjQuery('#scrollarea').prop("scrollTop", this.scrollTop)
+                .prop("scrollLeft", this.scrollLeft);
+        });
+        /*wjQuery('.student-overflow').on('mousewheel DOMMouseScroll', function (e) {
             var e0 = e.originalEvent;
             var delta = e0.wheelDelta || -e0.detail;
             this.scrollTop += (delta < 0 ? 1 : -1) * 30;
             e.preventDefault();
-        });
+        });*/
         if (taExpanded) {
             taExpanded = !taExpanded; // to change the slide
             taExpanded ? wjQuery('.ta-pane').addClass('open') : wjQuery('.ta-pane').removeClass('open');
@@ -2582,17 +2589,22 @@ function SylvanCalendar() {
     this.taPane = function () {
         var self = this;
         wjQuery('.ta-pane').show();
-        wjQuery("#scrollarea").scroll(function () {
+        wjQuery("#scrollarea").on('mousewheel DOMMouseScroll',function () {
             wjQuery('.ta-pane').prop("scrollTop", this.scrollTop)
                 .prop("scrollLeft", this.scrollLeft);
         });
+        wjQuery(".ta-pane").on('mousewheel DOMMouseScroll',function () {
+            //wjQuery('tr.fc-slot0 th').css('top',(wjQuery('tr.fc-slot0').offset().top) +'px');
+            wjQuery('#scrollarea').prop("scrollTop", this.scrollTop)
+                .prop("scrollLeft", this.scrollLeft);
+        });
 
-        wjQuery('.teacher-availability').on('mousewheel DOMMouseScroll', function (e) {
+        /*wjQuery('.teacher-availability').on('mousewheel DOMMouseScroll', function (e) {
             var e0 = e.originalEvent;
             var delta = e0.wheelDelta || -e0.detail;
             this.scrollTop += (delta < 0 ? 1 : -1) * 30;
             e.preventDefault();
-        });
+        });*/
 
         if (sofExpanded) {
             sofExpanded = !sofExpanded;
@@ -6089,6 +6101,12 @@ function SylvanCalendar() {
           }
       });
     }
+
+    window.scrollBy({ 
+      top: 100, // could be negative value
+      left: 0, 
+      behavior: 'smooth' 
+    });
 
     // Conflict messages update method
     this.updateConflictMsg = function (event) {
