@@ -87,7 +87,7 @@ setTimeout(function () {
                 setTimeout(resizeend, delta);
             } else {
                 timeout = false;
-                fetchResources(locationId, deliveryTypeList, true);
+                fetchResources(sylvanCalendar.locationId, deliveryTypeList, true);
             }               
         }
         var resources = [];
@@ -213,7 +213,7 @@ setTimeout(function () {
                 });
                 sylvanCalendar.draggable('teacher-container');
                 wjQuery(".refresh-icon").off('click').on('click',function (){
-                    fetchResources(locationId, deliveryTypeList, true);
+                    fetchResources(sylvanCalendar.locationId, deliveryTypeList, true);
                 });
             } else {
                 wjQuery(".loading").hide();
@@ -239,7 +239,7 @@ setTimeout(function () {
                     }
                 }
             });
-            fetchResources(locationId, deliveryTypeList, false);
+            fetchResources(sylvanCalendar.locationId, deliveryTypeList, false);
         });
         fetchResources(locationId, deliveryTypeList, true);
     }, 300);
