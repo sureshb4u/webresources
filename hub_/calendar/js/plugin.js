@@ -476,17 +476,18 @@ function SylvanCalendar() {
 
     this.populateResource = function (args, isFetch) {
         var currentCalendarDate;
-        if (this.calendar != undefined) {
-            currentCalendarDate = this.calendar.fullCalendar('getDate');
+        var self = this;
+        if (self.calendar != undefined) {
+            currentCalendarDate = self.calendar.fullCalendar('getDate');
         }
-        this.clearAll();
+        self.clearAll();
         if (args != null) {
             var resourceData = [];
             if (args[0] != undefined) {
                 args[0][0] == undefined ? resourceData = args : resourceData = args[0];
-                this.resourceList = [];
+                self.resourceList = [];
                 for (var i = 0; i < resourceData.length; i++) {
-                    this.resourceList.push({
+                    self.resourceList.push({
                         name: resourceData[i].hub_name,
                         id: resourceData[i].hub_center_resourcesid,
                         deliveryType: resourceData[i]["_hub_deliverytype_value@OData.Community.Display.V1.FormattedValue"],
@@ -494,7 +495,16 @@ function SylvanCalendar() {
                         capacity: resourceData[i]["hub_capacity"]
                     });
                 }
-                this.loadCalendar(currentCalendarDate);
+                var view = 'resourceDay';
+                setTimeout(function(){
+                    if(wjQuery('#dayBtn:checked').val() == 'on'){
+                        view = 'resourceDay';
+                    }
+                    else{
+                        view = 'agendaWeek';
+                    }
+                    self.loadCalendar(currentCalendarDate,view);
+                },150);
             }
         }
     }
@@ -1873,7 +1883,7 @@ function SylvanCalendar() {
         self.calendar.fullCalendar('removeEventSource');
     }
 
-    this.loadCalendar = function (args) {
+    this.loadCalendar = function (args,view) {
 
         // assign filter object to local scope filter to avoid this conflict
         var filters = this.filters;
@@ -1887,7 +1897,7 @@ function SylvanCalendar() {
 
         this.calendarOptions = {
             header: false,
-            defaultView: 'resourceDay',
+            defaultView: view,
             disableResizing: true,
             minTime: 8,
             maxTime: 20,
@@ -7495,6 +7505,9 @@ function SylvanCalendar() {
             self.calendar.fullCalendar('addEventSource', { events: self.eventList });
             self.calendar.fullCalendar('refetchEvents');
             wjQuery('.fc-view-agendaWeek .fc-event-time').css('visibility','hidden');
+            wjQuery('.loading').hide();
+        }
+        else{
             wjQuery('.loading').hide();
         }
     }
