@@ -66,7 +66,7 @@ setTimeout(function () {
                     if(wjQuery(".sof-pane").hasClass("open")){
                         wjQuery(".sof-btn,.sof-close-icon").trigger('click');
                     }
-                    
+
                     sylvanCalendar.locationId = locationId;
                     fetchResources(sylvanCalendar.locationId, deliveryTypeList, true);
                     wjQuery(".sof-btn").removeClass('overflow-info');
@@ -223,6 +223,8 @@ setTimeout(function () {
                     sylvanCalendar.calendar.fullCalendar('removeEvents');
                     sylvanCalendar.calendar.fullCalendar('removeEventSource');
                     sylvanCalendar.calendar.fullCalendar('refetchEvents');
+                    sylvanCalendar.calendar.fullCalendar('destroy');
+                    sylvanCalendar.calendar = undefined;
                 }
                 wjQuery(".loading").hide();
             }
@@ -2281,28 +2283,33 @@ function SylvanCalendar() {
     this.weekView = function () {
         var filterElement = undefined;
         wjQuery('.loading').show();
-        wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').css('text-align', 'center');
-        if (this.calendar.fullCalendar('getView').name != 'agendaWeek') {
-            var isFilterOpen = false;
-            if (wjQuery('.filter-section').length) {
-                isFilterOpen = wjQuery('.filter-section').css("marginLeft");
-                filterElement = wjQuery('.filter-section');
-                wjQuery('.filter-section').remove();
-            }
-            this.calendar.fullCalendar('changeView', 'agendaWeek');
+        if(self.calendar != undefined){
+            wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').css('text-align', 'center');
+            if (this.calendar.fullCalendar('getView').name != 'agendaWeek') {
+                var isFilterOpen = false;
+                if (wjQuery('.filter-section').length) {
+                    isFilterOpen = wjQuery('.filter-section').css("marginLeft");
+                    filterElement = wjQuery('.filter-section');
+                    wjQuery('.filter-section').remove();
+                }
+                this.calendar.fullCalendar('changeView', 'agendaWeek');
 
-            if (filterElement != undefined) {
-                wjQuery(".fc-agenda-divider.fc-widget-header:visible").after(filterElement);
+                if (filterElement != undefined) {
+                    wjQuery(".fc-agenda-divider.fc-widget-header:visible").after(filterElement);
+                }
+                else {
+                    wjQuery(".fc-agenda-divider.fc-widget-header:visible").after("<div class='filter-section'></div>");
+                    this.calendarFilter();
+                }
+                this.filterSlide(wjQuery, isFilterOpen == '0px');
             }
-            else {
-                wjQuery(".fc-agenda-divider.fc-widget-header:visible").after("<div class='filter-section'></div>");
-                this.calendarFilter();
-            }
-            this.filterSlide(wjQuery, isFilterOpen == '0px');
+            this.weekEventObject = {};
+            this.calendar.fullCalendar('removeEvents');
+            this.refreshCalendarEvent(this.locationId,true);
         }
-        this.weekEventObject = {};
-        this.calendar.fullCalendar('removeEvents');
-        this.refreshCalendarEvent(this.locationId,true);
+        else{
+         wjQuery('.loading').hide();
+        }
     }
 
     this.dayView = function () {
@@ -2310,74 +2317,79 @@ function SylvanCalendar() {
         var self = this;
         self.eventList = [];
         wjQuery('.loading').show();
-        self.calendar.fullCalendar('removeEvents');
-        if (self.calendar.fullCalendar('getView').name != 'resourceDay') {
-            var isFilterOpen = false;
-            if (wjQuery('.filter-section').length) {
-                isFilterOpen = wjQuery('.filter-section').css("marginLeft");
-                filterElement = wjQuery('.filter-section');
-                wjQuery('.filter-section').remove();
-            }
-            self.calendar.fullCalendar('changeView', 'resourceDay');
-            setTimeout(function () {
-                var currentCalendarDate = self.calendar.fullCalendar('getDate');
-                wjQuery('.headerDate').text(moment(currentCalendarDate).format('MM/DD/YYYY'));
-                if (moment(currentCalendarDate).format('MM/DD/YYYY') == moment(new Date()).format('MM/DD/YYYY')) {
-                    wjQuery('.headerDate').addClass('today');
+        if(self.calendar != undefined){
+            self.calendar.fullCalendar('removeEvents');
+            if (self.calendar.fullCalendar('getView').name != 'resourceDay') {
+                var isFilterOpen = false;
+                if (wjQuery('.filter-section').length) {
+                    isFilterOpen = wjQuery('.filter-section').css("marginLeft");
+                    filterElement = wjQuery('.filter-section');
+                    wjQuery('.filter-section').remove();
+                }
+                self.calendar.fullCalendar('changeView', 'resourceDay');
+                setTimeout(function () {
+                    var currentCalendarDate = self.calendar.fullCalendar('getDate');
+                    wjQuery('.headerDate').text(moment(currentCalendarDate).format('MM/DD/YYYY'));
+                    if (moment(currentCalendarDate).format('MM/DD/YYYY') == moment(new Date()).format('MM/DD/YYYY')) {
+                        wjQuery('.headerDate').addClass('today');
+                    }
+                    else {
+                        wjQuery('.headerDate').removeClass('today');
+                    }
+                    var dayOfWeek = moment(currentCalendarDate).format('dddd');
+                    var dayofMonth = moment(currentCalendarDate).format('M/D');
+                    wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').html(dayOfWeek + " <br/> " + dayofMonth);
+
+                }, 500);
+                if (filterElement != undefined) {
+                    wjQuery(".fc-agenda-divider.fc-widget-header:visible").after(filterElement);
                 }
                 else {
-                    wjQuery('.headerDate').removeClass('today');
+                    wjQuery(".fc-agenda-divider.fc-widget-header:visible").after("<div class='filter-section'></div>");
+                    self.calendarFilter();
                 }
-                var dayOfWeek = moment(currentCalendarDate).format('dddd');
-                var dayofMonth = moment(currentCalendarDate).format('M/D');
-                wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').html(dayOfWeek + " <br/> " + dayofMonth);
-
-            }, 500);
-            if (filterElement != undefined) {
-                wjQuery(".fc-agenda-divider.fc-widget-header:visible").after(filterElement);
+                self.filterSlide(wjQuery, isFilterOpen == '0px');
+            }
+            this.resourceList = [];
+            var resources  = data.getResources(this.locationId);
+            if (resources.length) {
+                var pi = [];
+                var gi = [];
+                var gf = [];
+                for (var i = 0; i < resources.length; i++) {
+                    switch (resources[i]['_hub_deliverytype_value@OData.Community.Display.V1.FormattedValue']) {
+                        case 'Personal Instruction':
+                            pi.push(resources[i]);
+                            break;
+                        case 'Group Facilitation':
+                            gf.push(resources[i]);
+                            break;
+                        case 'Group Instruction':
+                            gi.push(resources[i]);
+                            break;
+                    }
+                }
+                resources = pi.concat(gf);
+                resources = resources.concat(gi);
+            }
+            if (self.selectedDeliveryType.length == deliveryType.length) {
+                this.resourceList = resources;
             }
             else {
-                wjQuery(".fc-agenda-divider.fc-widget-header:visible").after("<div class='filter-section'></div>");
-                self.calendarFilter();
-            }
-            self.filterSlide(wjQuery, isFilterOpen == '0px');
-        }
-        this.resourceList = [];
-        var resources  = data.getResources(this.locationId);
-        if (resources.length) {
-            var pi = [];
-            var gi = [];
-            var gf = [];
-            for (var i = 0; i < resources.length; i++) {
-                switch (resources[i]['_hub_deliverytype_value@OData.Community.Display.V1.FormattedValue']) {
-                    case 'Personal Instruction':
-                        pi.push(resources[i]);
-                        break;
-                    case 'Group Facilitation':
-                        gf.push(resources[i]);
-                        break;
-                    case 'Group Instruction':
-                        gi.push(resources[i]);
-                        break;
-                }
-            }
-            resources = pi.concat(gf);
-            resources = resources.concat(gi);
-        }
-        if (self.selectedDeliveryType.length == deliveryType.length) {
-            this.resourceList = resources;
-        }
-        else {
-            for (var i = 0; i < this.selectedDeliveryType.length; i++) {
-                for (var j = 0; j < resources.length; j++) {
-                    if (resources[j]['_hub_deliverytype_value'] == this.selectedDeliveryType[i]) {
-                        this.resourceList.push(resources[j]);
+                for (var i = 0; i < this.selectedDeliveryType.length; i++) {
+                    for (var j = 0; j < resources.length; j++) {
+                        if (resources[j]['_hub_deliverytype_value'] == this.selectedDeliveryType[i]) {
+                            this.resourceList.push(resources[j]);
+                        }
                     }
                 }
             }
+            this.populateResource(this.resourceList,true);
+            this.refreshCalendarEvent(this.locationId, true);
         }
-        this.populateResource(this.resourceList,true);
-        this.refreshCalendarEvent(this.locationId, true);
+        else{
+         wjQuery('.loading').hide();
+        }
     }
 
     this.addAppointment = function () {
