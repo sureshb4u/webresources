@@ -66,8 +66,9 @@ setTimeout(function () {
                     if(wjQuery(".sof-pane").hasClass("open")){
                         wjQuery(".sof-btn,.sof-close-icon").trigger('click');
                     }
+                    
                     sylvanCalendar.locationId = locationId;
-                    sylvanCalendar.weekView();
+                    fetchResources(sylvanCalendar.locationId, deliveryTypeList, true);
                     wjQuery(".sof-btn").removeClass('overflow-info');
                 }
             }
