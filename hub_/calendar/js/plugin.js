@@ -5129,80 +5129,88 @@ function SylvanCalendar() {
                     flag = false;
                 }
                 var responseObj = data.rescheduleStudentSession(objPrevSession, objNewSession);
-                if (responseObj != undefined && flag) {
-                    wjQuery(".excuseSave").removeClass('reschedule');
-                    var index = -1;
-                    for (var i = 0; i < self.convertedStudentObj.length; i++) {
-                        if(self.convertedStudentObj[i].id == uniqueIds[0] &&
-                            self.convertedStudentObj[i].resourceId == uniqueIds[1] &&
-                            moment(self.convertedStudentObj[i].startHour).format('h') == h){
-                            index = i;
-                            break;
-                        }
-                    }
-                    if (index != -1) {
-                        delete self.convertedStudentObj[index].resourceId;
-                        self.convertedStudentObj[index].start =  new Date(objNewSession.hub_session_date+" "+wjQuery(".timing-dropdown-btn").val());
-                        self.convertedStudentObj[index].end =  new Date(objNewSession.hub_session_date+" "+wjQuery(".excuse-to-timepicker-input").text());
-                        self.convertedStudentObj[index].startHour =  self.convertedStudentObj[index].start;
-                        setTimeout(function() {
-                          self.pushStudentToSOF(self.convertedStudentObj[index]);
-                          self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
-                          self.openSofPane();
-                      },500);
-                      // self.convertedStudentObj.splice(index, 1);
-                    }
-
-                    wjQuery("#excuseModal").dialog("close");
-                    var prevEventId = wjQuery(element).attr("eventid");
-                    var prevEvent = self.calendar.fullCalendar('clientEvents', prevEventId);
-                    if (prevEvent) {
-                        var eventTitleHTML = wjQuery(prevEvent[0].title);
-                        for (var i = 0; i < eventTitleHTML.length; i++) {
-                            if (wjQuery(eventTitleHTML[i]).attr('value') == wjQuery(element).attr('value')) {
-                                eventTitleHTML.splice(i, 1);
+                if(typeof(responseObj) == 'boolean'){
+                    if(responseObj && flag) {
+                        wjQuery(".excuseSave").removeClass('reschedule');
+                        var index = -1;
+                        for (var i = 0; i < self.convertedStudentObj.length; i++) {
+                            if(self.convertedStudentObj[i].id == uniqueIds[0] &&
+                                self.convertedStudentObj[i].resourceId == uniqueIds[1] &&
+                                moment(self.convertedStudentObj[i].startHour).format('h') == h){
+                                index = i;
+                                break;
                             }
                         }
-                        if (eventTitleHTML.prop('outerHTML') != undefined) {
-                            if (eventTitleHTML.length == 1) {
-                                prevEvent[0].title = eventTitleHTML.prop('outerHTML');
-                            } else {
-                                prevEvent[0].title = "";
-                                for (var i = 0; i < eventTitleHTML.length; i++) {
-                                    prevEvent[0].title += eventTitleHTML[i].outerHTML;
+                        if (index != -1) {
+                            delete self.convertedStudentObj[index].resourceId;
+                            self.convertedStudentObj[index].start =  new Date(objNewSession.hub_session_date+" "+wjQuery(".timing-dropdown-btn").val());
+                            self.convertedStudentObj[index].end =  new Date(objNewSession.hub_session_date+" "+wjQuery(".excuse-to-timepicker-input").text());
+                            self.convertedStudentObj[index].startHour =  self.convertedStudentObj[index].start;
+                            setTimeout(function() {
+                              self.pushStudentToSOF(self.convertedStudentObj[index]);
+                              self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
+                              self.openSofPane();
+                          },500);
+                          // self.convertedStudentObj.splice(index, 1);
+                        }
+
+                        wjQuery("#excuseModal").dialog("close");
+                        var prevEventId = wjQuery(element).attr("eventid");
+                        var prevEvent = self.calendar.fullCalendar('clientEvents', prevEventId);
+                        if (prevEvent) {
+                            var eventTitleHTML = wjQuery(prevEvent[0].title);
+                            for (var i = 0; i < eventTitleHTML.length; i++) {
+                                if (wjQuery(eventTitleHTML[i]).attr('value') == wjQuery(element).attr('value')) {
+                                    eventTitleHTML.splice(i, 1);
                                 }
                             }
-                            var removeStudentIndex = prevEvent[0].students.map(function (x) {
-                                return x.id;
-                            }).indexOf(wjQuery(element).attr('value'));
-                            prevEvent[0].students.splice(removeStudentIndex, 1);
+                            if (eventTitleHTML.prop('outerHTML') != undefined) {
+                                if (eventTitleHTML.length == 1) {
+                                    prevEvent[0].title = eventTitleHTML.prop('outerHTML');
+                                } else {
+                                    prevEvent[0].title = "";
+                                    for (var i = 0; i < eventTitleHTML.length; i++) {
+                                        prevEvent[0].title += eventTitleHTML[i].outerHTML;
+                                    }
+                                }
+                                var removeStudentIndex = prevEvent[0].students.map(function (x) {
+                                    return x.id;
+                                }).indexOf(wjQuery(element).attr('value'));
+                                prevEvent[0].students.splice(removeStudentIndex, 1);
 
-                            self.removeAllConflictsFromPrevEvent(prevEvent[0]);
-                            if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "student-placeholder-"+prevEvent[0].deliveryType)) ||
-                              (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder" && eventTitleHTML[1].className == "student-placeholder-"+prevEvent[0].deliveryType) ||
-                              (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder" && eventTitleHTML[2].className == "student-placeholder-"+prevEvent[0].deliveryType)) {
+                                self.removeAllConflictsFromPrevEvent(prevEvent[0]);
+                                if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "student-placeholder-"+prevEvent[0].deliveryType)) ||
+                                  (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder" && eventTitleHTML[1].className == "student-placeholder-"+prevEvent[0].deliveryType) ||
+                                  (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder" && eventTitleHTML[2].className == "student-placeholder-"+prevEvent[0].deliveryType)) {
+                                    for (var i = 0; i < self.eventList.length; i++) {
+                                        if (self.eventList[i].id == prevEventId)
+                                            self.eventList.splice(i, 1);
+                                    }
+                                    self.calendar.fullCalendar('removeEvents', prevEventId);
+                                }
+                                self.calendar.fullCalendar('updateEvent', prevEvent);
+                            }else {
                                 for (var i = 0; i < self.eventList.length; i++) {
                                     if (self.eventList[i].id == prevEventId)
                                         self.eventList.splice(i, 1);
                                 }
                                 self.calendar.fullCalendar('removeEvents', prevEventId);
                             }
-                            self.calendar.fullCalendar('updateEvent', prevEvent);
-                        }else {
-                            for (var i = 0; i < self.eventList.length; i++) {
-                                if (self.eventList[i].id == prevEventId)
-                                    self.eventList.splice(i, 1);
-                            }
-                            self.calendar.fullCalendar('removeEvents', prevEventId);
+                            
                         }
-                        
-                    }
-                }else {
-                    if (wjQuery('#error_block').text() == '') {
-                        wjQuery('#error_block').text('All Fields are mandatory');
-                        wjQuery('#error_block').css('color', 'red');
+                    }else {
+                        if (wjQuery('#error_block').text() == '') {
+                            wjQuery('#error_block').text('All Fields are mandatory');
+                            wjQuery('#error_block').css('color', 'red');
+                        }
                     }
                 }
+                else {
+                        if (wjQuery('#error_block').text() == '') {
+                            wjQuery('#error_block').text('All Fields are mandatory');
+                            wjQuery('#error_block').css('color', 'red');
+                        }
+                    }
                 wjQuery('.loading').hide();
             });
         }
