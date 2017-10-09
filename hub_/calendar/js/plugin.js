@@ -215,7 +215,12 @@ setTimeout(function () {
                 wjQuery(".refresh-icon").off('click').on('click',function (){
                     fetchResources(sylvanCalendar.locationId, deliveryTypeList, true);
                 });
-            } else {
+            } 
+            else {
+                sylvanCalendar.calendar.fullCalendar('removeEvents');
+                sylvanCalendar.calendar.fullCalendar('removeEventSource');
+                sylvanCalendar.calendar.fullCalendar('addEventSource', { events: sylvanCalendar.eventList });
+                sylvanCalendar.calendar.fullCalendar('refetchEvents');
                 wjQuery(".loading").hide();
             }
         }
@@ -7060,15 +7065,19 @@ function SylvanCalendar() {
         }
 
         var piSpace = 0,giSpace=0,gfSpace=0;
+        var hasPiResource = false,hasGiResource=false,hasGfResource=false;
         for (var i = 0; i < self.resourceList.length; i++) {
             if(self.resourceList[i].deliveryType == 'Personal Instruction'){
                 piSpace += self.resourceList[i].capacity;
+                hasPiResource = true;
             }
             else if(self.resourceList[i].deliveryType == 'Group Instruction'){
                 giSpace += self.resourceList[i].capacity;
+                hasGiResource = true;
             }
             else if(self.resourceList[i].deliveryType == 'Group Facilitation'){
                 gfSpace += self.resourceList[i].capacity;
+                hasGfResource = true;
             }
         }
         if(Object.keys(this.weekEventObject).length){
@@ -7258,7 +7267,7 @@ function SylvanCalendar() {
                         else{
                             piObj.title += "0 </div>"
                         }
-                        if(piFlag)
+                        if(piFlag && hasPiResource)
                             self.eventList.push(piObj);
                     }
                     if(giSelected){
@@ -7358,7 +7367,7 @@ function SylvanCalendar() {
                         else{
                             giObj.title += "0</div>"
                         }
-                        if(giFlag)
+                        if(giFlag && hasGiResource)
                             self.eventList.push(giObj);
                     }
                     if(gfSelected){
@@ -7458,7 +7467,7 @@ function SylvanCalendar() {
                         else{
                             gfObj.title += "0</div>"
                         }
-                        if(gfFlag)
+                        if(gfFlag && hasGfResource)
                         self.eventList.push(gfObj);
                     }
                 }
