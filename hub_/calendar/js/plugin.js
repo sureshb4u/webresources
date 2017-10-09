@@ -5451,7 +5451,8 @@ function SylvanCalendar() {
                 obj.float = {
                     name: "Float",
                     callback : function(key, options) {
-                        self.makeupPopup(data.getMakeupNFloat({"hub_center@odata.bind":self.locationId, "isForMakeup":false}), options.$trigger[0], false);
+                        var startDate = moment(currentView.start).format("YYYY-MM-DD");
+                        self.makeupPopup(data.getMakeupNFloat({"hub_center@odata.bind":self.locationId, "isForMakeup":false, "hub_date":startDate}), options.$trigger[0], false);
                     }
                 }
                 wjQuery.contextMenu( 'destroy', 'span[uniqueId="' + uniqueId + '"]');
