@@ -5207,7 +5207,7 @@ function SylvanCalendar() {
                 }
                 else {
                         if (wjQuery('#error_block').text() == '') {
-                            wjQuery('#error_block').text('All Fields are mandatory');
+                            wjQuery('#error_block').text(responseObj);
                             wjQuery('#error_block').css('color', 'red');
                         }
                     }
