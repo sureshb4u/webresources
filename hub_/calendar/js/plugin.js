@@ -66,6 +66,7 @@ setTimeout(function () {
                     if(wjQuery(".sof-pane").hasClass("open")){
                         wjQuery(".sof-btn,.sof-close-icon").trigger('click');
                     }
+                    sylvanCalendar.locationId = locationId;
                     sylvanCalendar.weekView();
                     wjQuery(".sof-btn").removeClass('overflow-info');
                 }
@@ -217,10 +218,11 @@ setTimeout(function () {
                 });
             } 
             else {
-                sylvanCalendar.calendar.fullCalendar('removeEvents');
-                sylvanCalendar.calendar.fullCalendar('removeEventSource');
-                sylvanCalendar.calendar.fullCalendar('addEventSource', { events: sylvanCalendar.eventList });
-                sylvanCalendar.calendar.fullCalendar('refetchEvents');
+                if(sylvanCalendar.calendar != undefined){
+                    sylvanCalendar.calendar.fullCalendar('removeEvents');
+                    sylvanCalendar.calendar.fullCalendar('removeEventSource');
+                    sylvanCalendar.calendar.fullCalendar('refetchEvents');
+                }
                 wjQuery(".loading").hide();
             }
         }
