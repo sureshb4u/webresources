@@ -5426,7 +5426,12 @@ function SylvanCalendar() {
                 name: "Makeup",
                 callback : function(key, options) {
                     var startDate = moment(currentView.start).format("YYYY-MM-DD");
-                    self.makeupPopup(data.getMakeupNFloat({"hub_center@odata.bind":self.locationId, "isForMakeup":true, "hub_date":startDate}), options.$trigger[0], true);
+                    var locationObj = self.getLocationObject(self.locationId);
+                    if(locationObj['_hub_parentcenter_value'] != undefined){
+                        self.makeupPopup(data.getMakeupNFloat({"hub_center@odata.bind":self.locationId, "isForMakeup":true, "hub_date":startDate, "hub_parentcenter":locationObj['_hub_parentcenter_value']}), options.$trigger[0], true);
+                    }else{
+                        self.makeupPopup(data.getMakeupNFloat({"hub_center@odata.bind":self.locationId, "isForMakeup":true, "hub_date":startDate}), options.$trigger[0], true);
+                    }
                 }
               }
               // float menu
@@ -5434,7 +5439,12 @@ function SylvanCalendar() {
                 name: "Float",
                 callback : function(key, options) {
                     var startDate = moment(currentView.start).format("YYYY-MM-DD");
-                    self.makeupPopup(data.getMakeupNFloat({"hub_center@odata.bind":self.locationId, "isForMakeup":false, "hub_date":startDate}), options.$trigger[0], false);
+                    var locationObj = self.getLocationObject(self.locationId);
+                    if(locationObj['_hub_parentcenter_value'] != undefined){
+                        self.makeupPopup(data.getMakeupNFloat({"hub_center@odata.bind":self.locationId, "isForMakeup":false, "hub_date":startDate, "hub_parentcenter":locationObj['_hub_parentcenter_value']}), options.$trigger[0], false);
+                    }else{
+                        self.makeupPopup(data.getMakeupNFloat({"hub_center@odata.bind":self.locationId, "isForMakeup":false, "hub_date":startDate}), options.$trigger[0], false);
+                    }
                 }
               }
               wjQuery.contextMenu( 'destroy', 'span[uniqueId="' + uniqueId + '"]');
@@ -5452,7 +5462,12 @@ function SylvanCalendar() {
                     name: "Float",
                     callback : function(key, options) {
                         var startDate = moment(currentView.start).format("YYYY-MM-DD");
-                        self.makeupPopup(data.getMakeupNFloat({"hub_center@odata.bind":self.locationId, "isForMakeup":false, "hub_date":startDate}), options.$trigger[0], false);
+                        var locationObj = self.getLocationObject(self.locationId);
+                        if(locationObj['_hub_parentcenter_value'] != undefined){
+                            self.makeupPopup(data.getMakeupNFloat({"hub_center@odata.bind":self.locationId, "isForMakeup":false, "hub_date":startDate, "hub_parentcenter":locationObj['_hub_parentcenter_value']}), options.$trigger[0], false);
+                        }else{
+                            self.makeupPopup(data.getMakeupNFloat({"hub_center@odata.bind":self.locationId, "isForMakeup":false, "hub_date":startDate}), options.$trigger[0], false);
+                        }
                     }
                 }
                 wjQuery.contextMenu( 'destroy', 'span[uniqueId="' + uniqueId + '"]');
@@ -7778,5 +7793,16 @@ function SylvanCalendar() {
         var n = dateObj.getHours();
         var scrollNum = (n - 8) * 161;
         $("#scrollarea").animate({scrollTop: scrollNum});
+    }
+
+    this.getLocationObject = function(locationId){
+        var locationObj = data.getLocation();
+        locationObj = locationObj == null ? []: locationObj;
+        for(var i=0;i < locationObj.length; i++){
+            if(locationId == locationObj[i]['hub_centerid']){
+                return locationObj[i];
+                break;
+            }    
+        }
     }
 }
