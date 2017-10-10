@@ -1905,7 +1905,7 @@ function SylvanCalendar() {
             minTime: 8,
             maxTime: 20,
             allDayText: '',
-            allDaySlot:false,
+            allDaySlot:true,
             droppable: true,
             drop: function (date, allDay, ev, ui, resource) {
                 t.createEventOnDrop(t, date, allDay, ev, ui, resource, this);
@@ -4779,7 +4779,11 @@ function SylvanCalendar() {
             }
             objCancelSession['hub_enrollment@odata.bind'] = objStudent[0]['enrollmentId'];
             objCancelSession['hub_service@odata.bind'] = objStudent[0]['serviceId'];
-            objCancelSession['hub_center@odata.bind'] = objStudent[0]["locationId"];
+            objCancelSession['hub_center@odata.bind'] = self.locationId;
+            var locationObj = self.getLocationObject(self.locationId);
+            if(locationObj['_hub_parentcenter_value'] != undefined){
+                objCancelSession['hub_parentcenter'] = locationObj['_hub_parentcenter_value'];
+            }
             objCancelSession['hub_student@odata.bind'] = objStudent[0]['id'];
             objCancelSession['hub_resourceid@odata.bind'] = null;
             var responseObj = data.excuseStudentFromSession(objCancelSession);
@@ -6096,7 +6100,11 @@ function SylvanCalendar() {
                     objSession["hub_enrollment@odata.bind"] = studentObj[0]["enrollmentId"];
                     objSession["hub_student@odata.bind"] = studentObj[0].id;
                     objSession["hub_service@odata.bind"] = studentObj[0]["serviceId"];
-                    objSession["hub_center@odata.bind"] = studentObj[0]["locationId"];
+                    objSession["hub_center@odata.bind"] = self.locationId;
+                    var locationObj = self.getLocationObject(self.locationId);
+                    if(locationObj['_hub_parentcenter_value'] != undefined){
+                        objSession["hub_parentcenter"] = locationObj['_hub_parentcenter_value'];
+                    }
                     objSession["hub_session_date"] = moment(new Date(idArry[2])).format("YYYY-MM-DD");
                     objSession["hub_start_time"] = start;
                     objSession["hub_end_time"] = start + 60;

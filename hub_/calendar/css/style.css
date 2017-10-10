@@ -535,3 +535,7 @@ ul{
 .subject-name{
     margin-left: 5px;
 }
+
+.fc-agenda-allday{
+    display: none;
+}
