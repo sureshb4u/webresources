@@ -46,18 +46,6 @@ setTimeout(function () {
                 }
                 if(view.name == "resourceDay" || view.name == undefined){
                     wjQuery('#dayBtn').trigger( "click");
-                    wjQuery('#datepicker').datepicker({
-                        buttonImage: "/webresources/hub_/calendar/images/calendar.png",
-                        buttonImageOnly: true,
-                        changeMonth: true,
-                        changeYear: true,
-                        showOn: 'button',
-                        onSelect: function (date) {
-                            wjQuery(".loading").show();
-                            sylvanCalendar.dateFromCalendar(date, locationId);
-                            wjQuery('#datepicker').hide();
-                        }
-                    });
                     return fetchResources(locationId, deliveryTypeList, true);
                 }else{
                     wjQuery(".sof-btn").prop("disabled", true);
