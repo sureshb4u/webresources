@@ -15,6 +15,12 @@ var OMIT_STATUS = 5;
 var MAKEUP_STATUS = 6;
 var INVALID_STATUS = 7;
 
+
+var personalInstruction = 1;
+var groupFacilitation = 2;
+var groupInstruction = 3;
+
+
 setTimeout(function () {
     var deliveryTypeList = [];
     var sylvanCalendar = new SylvanCalendar();
@@ -23,12 +29,12 @@ setTimeout(function () {
     wjQuery('.headerDate').text(moment(currentCalendarDate).format('MM/DD/YYYY'));
     setTimeout(function () {
         for (var i = 0; i < deliveryType.length; i++) {
-            switch (deliveryType[i]['hub_name']) {
-                case 'Personal Instruction':
+            switch (deliveryType[i]['hub_code']) {
+                case personalInstruction:
                     wjQuery('#pi-btn input').val(deliveryType[i]['hub_deliverytypeid']);
                     deliveryTypeList.push(deliveryType[i]['hub_deliverytypeid']);
                     break;
-                case 'Group Instruction':
+                case groupInstruction:
                     wjQuery('#gi-btn input').val(deliveryType[i]['hub_deliverytypeid']);
                     break;
             }
@@ -99,14 +105,14 @@ setTimeout(function () {
                     var gi = [];
                     var gf = [];
                     for (var i = 0; i < resources.length; i++) {
-                        switch (resources[i]['_hub_deliverytype_value@OData.Community.Display.V1.FormattedValue']) {
-                            case 'Personal Instruction':
+                        switch (resources[i]['adeliverytype_x002e_hub_code']) {
+                            case personalInstruction:
                                 pi.push(resources[i]);
                                 break;
-                            case 'Group Facilitation':
+                            case groupFacilitation:
                                 gf.push(resources[i]);
                                 break;
-                            case 'Group Instruction':
+                            case groupInstruction:
                                 gi.push(resources[i]);
                                 break;
                         }
@@ -142,6 +148,8 @@ setTimeout(function () {
                             id: resourceList[i].hub_center_resourcesid,
                             deliveryType: resourceList[i]["_hub_deliverytype_value@OData.Community.Display.V1.FormattedValue"],
                             deliveryTypeId: resourceList[i]['_hub_deliverytype_value'],
+                            deliveryTypeCode: resourceList[i]['adeliverytype_x002e_hub_code'],
+                            deliveryTypeCodeVal: resourceList[i]['adeliverytype_x002e_hub_code@OData.Community.Display.V1.FormattedValue'],
                             capacity: resourceList[i]["hub_capacity"]
                         });
                     }
@@ -227,9 +235,9 @@ setTimeout(function () {
                     deliveryTypeList.push(wjQuery(elm).val());
                     for (var i = 0; i < deliveryType.length; i++) {
                         if (deliveryType[i]['hub_deliverytypeid'] == wjQuery(elm).val() &&
-                          deliveryType[i]['hub_name'] == 'Group Instruction') {
+                          deliveryType[i]['hub_code'] == groupInstruction) {
                             for (var j = 0; j < deliveryType.length; j++) {
-                                if (deliveryType[j]['hub_name'] == 'Group Facilitation') {
+                                if (deliveryType[j]['hub_code'] == groupFacilitation) {
                                     deliveryTypeList.push(deliveryType[j]['hub_deliverytypeid']);
                                 }
                             }
@@ -483,6 +491,8 @@ function SylvanCalendar() {
                         id: resourceData[i].hub_center_resourcesid,
                         deliveryType: resourceData[i]["_hub_deliverytype_value@OData.Community.Display.V1.FormattedValue"],
                         deliveryTypeId: resourceData[i]['_hub_deliverytype_value'],
+                        deliveryTypeCode: resourceData[i]['adeliverytype_x002e_hub_code'],
+                        deliveryTypeCodeVal: resourceData[i]['adeliverytype_x002e_hub_code@OData.Community.Display.V1.FormattedValue'],
                         capacity: resourceData[i]["hub_capacity"]
                     });
                 }
@@ -656,7 +666,7 @@ function SylvanCalendar() {
             wjQuery('.sof-pane').append(elm);;
         }
         for (var j = 0; j < Object.keys(sofList).length; j++) {
-            if (Object.keys(sofList)[j] == 'Personal Instruction') {
+            if (Object.keys(sofList)[j] == "Personal Instruction") {
                 for (var i = 0; i < sofList[Object.keys(sofList)[j]].length; i++) {
                     var studentStartHour = sofList[Object.keys(sofList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
@@ -1245,7 +1255,7 @@ function SylvanCalendar() {
                               }
                             } else {
                               if (newResourceObj.deliveryType == prevStudObj.deliveryType) {
-                                if (newResourceObj.deliveryType == "Personal Instruction") {
+                                if (newResourceObj.deliveryTypeCode == personalInstruction) {
                                   //  Validation for oneToOne check
                                   //* if oneToOne then show popup
                                   if (newEvent[0]['is1to1']) {
@@ -1265,7 +1275,7 @@ function SylvanCalendar() {
                                         t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Capacity has reached the maximum. Do you wish to continue?");
                                     }
                                   }
-                                } else if (newResourceObj.deliveryType == "Group Facilitation") {
+                                } else if (newResourceObj.deliveryTypeCode == groupFacilitation) {
                                   // Check Services for same DI
                                   var studentIndex = prevEvent[0]['students'].map(function (x) {
                                     return x.id;
@@ -1284,7 +1294,7 @@ function SylvanCalendar() {
                                   }
                                 }
                               } else {
-                                if (newResourceObj.deliveryType == "Personal Instruction") {
+                                if (newResourceObj.deliveryTypeCode == personalInstruction) {
                                   //  Validation for oneToOne check
                                   //* if oneToOne then show popup
                                   if (newEvent[0]['is1to1']) {
@@ -1304,7 +1314,7 @@ function SylvanCalendar() {
                                         t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "DeliveryType is different and Capacity has reached the maximum. Do you wish to continue?");
                                     }
                                   }
-                                } else if (newResourceObj.deliveryType == "Group Facilitation") {
+                                } else if (newResourceObj.deliveryTypeCode == groupFacilitation) {
                                   // Check Services for same DI
                                   var studentIndex = prevEvent[0]['students'].map(function (x) {
                                       return x.id;
@@ -1371,7 +1381,7 @@ function SylvanCalendar() {
                               }
                             } else {
                               if (newResourceObj.deliveryType == prevStudObj.deliveryType) {
-                                if (newResourceObj.deliveryType == "Personal Instruction") {
+                                if (newResourceObj.deliveryTypeCode == personalInstruction) {
                                   //  Validation for oneToOne check
                                   //* if oneToOne then show popup
                                   if (newEvent[0]['is1to1']) {
@@ -1391,7 +1401,7 @@ function SylvanCalendar() {
                                         t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and Capacity has reached the maximum. Do you wish to continue?");
                                     }
                                   }
-                                } else if (newResourceObj.deliveryType == "Group Facilitation") {
+                                } else if (newResourceObj.deliveryTypeCode == groupFacilitation) {
                                   // Check Services for same DT
                                   var studentIndex = prevEvent[0]['students'].map(function (x) {
                                     return x.id;
@@ -1410,7 +1420,7 @@ function SylvanCalendar() {
                                   }
                                 }
                               } else {
-                                if (newResourceObj.deliveryType == "Personal Instruction") {
+                                if (newResourceObj.deliveryTypeCode == personalInstruction) {
                                   //  Validation for oneToOne check
                                   //* if oneToOne then show popup
                                   if (newEvent[0]['is1to1']) {
@@ -1430,7 +1440,7 @@ function SylvanCalendar() {
                                         t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and DeliveryType is different and Capacity has reached the maximum. Do you wish to continue?");
                                     }
                                   }
-                                } else if (newResourceObj.deliveryType == "Group Facilitation") {
+                                } else if (newResourceObj.deliveryTypeCode == groupFacilitation) {
                                   // Check Services for same DI
                                   var studentIndex = prevEvent[0]['students'].map(function (x) {
                                       return x.id;
@@ -1626,7 +1636,7 @@ function SylvanCalendar() {
                         // self.updateConflictMsg(prevEvent[0]);
                         if (prevEvent[0].title.indexOf('<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>') == -1) {
                             prevEvent[0].title += '<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>';
-                            self.addContext("", 'studentPlaceholder', true, prevEvent[0].deliveryType);
+                            self.addContext("", 'studentPlaceholder', true, prevEvent[0].deliveryTypeCode);
                         }
                     }
                 }
@@ -2345,14 +2355,14 @@ function SylvanCalendar() {
                 var gi = [];
                 var gf = [];
                 for (var i = 0; i < resources.length; i++) {
-                    switch (resources[i]['_hub_deliverytype_value@OData.Community.Display.V1.FormattedValue']) {
-                        case 'Personal Instruction':
+                    switch (resources[i]['adeliverytype_x002e_hub_code']) {
+                        case personalInstruction:
                             pi.push(resources[i]);
                             break;
-                        case 'Group Facilitation':
+                        case groupFacilitation:
                             gf.push(resources[i]);
                             break;
-                        case 'Group Instruction':
+                        case groupInstruction:
                             gi.push(resources[i]);
                             break;
                     }
@@ -2544,7 +2554,9 @@ function SylvanCalendar() {
                             sessionDate: val['hub_session_date@OData.Community.Display.V1.FormattedValue'],
                             resourceId: val['_hub_resourceid_value'],
                             centerId: val['_hub_center_value'],
-                            deliveryTypeId: val.aproductservice_x002e_hub_deliverytype,
+                            deliveryTypeId: val['aproductservice_x002e_hub_deliverytype'],
+                            deliveryTypeCode:val['adeliverytype_x002e_hub_code'],
+                            deliveryTypeCodeVal:val['adeliverytype_x002e_hub_code@OData.Community.Display.V1.FormattedValue'],
                             deliveryType: val['aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue'],
                             radio: false
                         });
@@ -2727,6 +2739,8 @@ function SylvanCalendar() {
                     grade: val['astudent_x002e_hub_grade@OData.Community.Display.V1.FormattedValue'],
                     deliveryTypeId: val['aproductservice_x002e_hub_deliverytype'],
                     deliveryType: val['aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue'],
+                    deliveryTypeCode:val['adeliverytype_x002e_hub_code'],
+                    deliveryTypeCodeVal:val['adeliverytype_x002e_hub_code@OData.Community.Display.V1.FormattedValue'],
                     locationId: val['_hub_center_value'],
                     locationName: val['_hub_center_value@OData.Community.Display.V1.FormattedValue'],
                     enrollmentId: val['_hub_enrollment_value'],
@@ -2860,6 +2874,8 @@ function SylvanCalendar() {
                         grade: val['astudent_x002e_hub_grade@OData.Community.Display.V1.FormattedValue'],
                         deliveryTypeId: val['aproductservice_x002e_hub_deliverytype'],
                         deliveryType: val['aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue'],
+                        deliveryTypeCode:val['adeliverytype_x002e_hub_code'],
+                        deliveryTypeCodeVal:val['adeliverytype_x002e_hub_code@OData.Community.Display.V1.FormattedValue'],
                         locationId: val['aenrollment_x002e_hub_location'],
                         locationName: val['aenrollment_x002e_hub_location@OData.Community.Display.V1.FormattedValue'],
                         subject: val['aprogram_x002e_hub_areaofinterest@OData.Community.Display.V1.FormattedValue'],
@@ -2887,7 +2903,7 @@ function SylvanCalendar() {
                       obj['nonPreferredTeacher'] = val['aenrollment_x002e_hub_nonpreferredteacher'];
                     }
 
-                    if (obj.deliveryType == 'Personal Instruction') {
+                    if (obj.deliveryTypeCode == personalInstruction) {
                         var pinnedStudent = self.convertedPinnedList.filter(function (x) {
                             return x.studentId == obj.id &&
                                    x.startTime == val['hub_starttime@OData.Community.Display.V1.FormattedValue'] &&
@@ -3033,7 +3049,7 @@ function SylvanCalendar() {
                             }
                         }
                         else {
-                            if (obj.deliveryType == 'Group Instruction') {
+                            if (obj.deliveryTypeCode == groupInstruction) {
                               if (serviceGI.hasOwnProperty(obj.serviceId+obj.startHour)) {
                                 var index = -1;
                                 for (var i = 0; i < serviceGI[obj.serviceId+obj.startHour].length; i++) {
@@ -3052,7 +3068,7 @@ function SylvanCalendar() {
                                 serviceGI[obj.serviceId+obj.startHour].push(obj);
                               }
                             }
-                            else if (obj.deliveryType == 'Group Facilitation') {
+                            else if (obj.deliveryTypeCode == groupFacilitation) {
                               if (serviceGF.hasOwnProperty(obj.serviceId+obj.startHour)) {
                                 var index = -1;
                                 for (var i = 0; i < serviceGF[obj.serviceId+obj.startHour].length; i++) {
@@ -3355,8 +3371,8 @@ function SylvanCalendar() {
                 var name = value['name'];
                 if (value['resourceId'] == undefined) {
                     for (var i = 0; i < self.resourceList.length; i++) {
-                        if (self.resourceList[i].deliveryType == 'Personal Instruction' ||
-                          self.resourceList[i].deliveryType == 'Group Facilitation') {
+                        if (self.resourceList[i].deliveryTypeCode == personalInstruction ||
+                          self.resourceList[i].deliveryTypeCode == groupFacilitation) {
                             eventId = self.resourceList[i].id + value['startHour'];
                             event = self.calendar.fullCalendar('clientEvents', eventId);
                             if (event.length == 0) {
@@ -3438,7 +3454,7 @@ function SylvanCalendar() {
                                 });
                                 if (event[k].hasOwnProperty("students")) {
                                     wjQuery.each(event[k].students, function (ke, val) {
-                                        if (resourceObj.deliveryType == "Group Instruction") {
+                                        if (resourceObj.deliveryTypeCode == groupInstruction) {
                                             event[k].title += "<span class='drag-student' eventid='" + eventId + "' uniqueId='" + val.id + "_" + value['resourceId'] + "_" + value['startHour'] + "' id='" + val.id + value['resourceId'] + "' type='studentSession' value='" + val.id + "'>" + val.name + ", " + val.grade + "<i class='material-icons' title='"+val['serviceValue']+"' style='color:" + val['subjectColorCode'] + "'>location_on</i></span>";
                                         } else {
                                             if (val['pinId'] != undefined) {
@@ -3454,13 +3470,13 @@ function SylvanCalendar() {
                                     if (resourceObj['capacity'] > event[k].students.length) {
                                         if (event[k].title.indexOf('<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>') == -1) {
                                             event[k].title += '<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>';
-                                            self.addContext("", 'studentPlaceholder', true, event[k].deliveryType);
+                                            self.addContext("", 'studentPlaceholder', true, event[k].deliveryTypeCode);
                                         }
                                     }
                                 } else {
                                     if (event[k].title.indexOf('<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>') == -1) {
                                         event[k].title += '<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>';
-                                        self.addContext("", 'studentPlaceholder', true, event[k].deliveryType);
+                                        self.addContext("", 'studentPlaceholder', true, event[k].deliveryTypeCode);
                                     }
                                 }
                             }
@@ -3493,7 +3509,7 @@ function SylvanCalendar() {
                             var studentList = event[k].students;
                             event[k].teachers = [{ id: id, name: name }];
                             wjQuery.each(studentList, function (ke, val) {
-                                if (resourceObj.deliveryType == "Group Instruction") {
+                                if (resourceObj.deliveryTypeCode == groupInstruction) {
                                     event[k].title += "<span class='drag-student' eventid='" + eventId + "' uniqueId='" + val.id + "_" + value['resourceId'] + "_" + value['startHour'] + "' id='" + val.id + value['resourceId'] + "' type='studentSession' value='" + val.id + "'>" + val.name + ", " + val.grade + "<i class='material-icons' title='"+val['serviceValue']+"' style='color:" + val['subjectColorCode'] + "'>location_on</i></span>";
                                 } else {
                                     if (val['pinId']) {
@@ -3508,7 +3524,7 @@ function SylvanCalendar() {
                             if (event[k].students.length < resourceObj["capacity"] || resourceObj["capacity"] == undefined) {
                                 if (event[k].title.indexOf('<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>') == -1){
                                   event[k].title += '<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>';
-                                  self.addContext("", 'studentPlaceholder', true, event[k].deliveryType);
+                                  self.addContext("", 'studentPlaceholder', true, event[k].deliveryTypeCode);
                                 }
                                 // Conflict removal 
                                 // Capacity conflict reamoval
@@ -3536,18 +3552,18 @@ function SylvanCalendar() {
                             if (resourceObj['capacity'] > event[k].students.length) {
                                 if (event[k].title.indexOf('<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>') == -1) {
                                     event[k].title += '<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>';
-                                    self.addContext("", 'studentPlaceholder', true, event[k].deliveryType);
+                                    self.addContext("", 'studentPlaceholder', true, event[k].deliveryTypeCode);
                                 }
                             }
                         } else {
                             if (event[k].title.indexOf('<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>') == -1) {
                                 event[k].title += '<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>';
-                                self.addContext("", 'studentPlaceholder', true, event[k].deliveryType);
+                                self.addContext("", 'studentPlaceholder', true, event[k].deliveryTypeCode);
                             }
                         }
 
 
-                      if(resourceObj['deliveryType'] == "Personal Instruction"){
+                      if(resourceObj['deliveryTypeCode'] == personalInstruction){
                         var eventIs1to1 = self.checkEventIsOneToOne(event[k]['students']); 
                         if(eventIs1to1){
                           event[k].is1to1 = true;
@@ -3604,6 +3620,8 @@ function SylvanCalendar() {
                         isConflict: false,
                         deliveryTypeId: resourceObj.deliveryTypeId,
                         deliveryType : resourceObj.deliveryType,
+                        deliveryTypeCode: resourceObj.deliveryTypeCode,
+                        deliveryTypeCodeVal: resourceObj.deliveryTypeCodeVal,
                         textColor:"#333333",
                         conflictMsg: []
                     }
@@ -3618,15 +3636,15 @@ function SylvanCalendar() {
                         }
                     }
 
-                    if (obj.deliveryType == "Group Facilitation") {
+                    if (obj.deliveryTypeCode == groupFacilitation) {
                         obj.backgroundColor = "#dff0d5";
                         obj.borderColor = "#7bc143";
                         obj.deliveryType = "Group-Facilitation";
-                    } else if (obj.deliveryType == "Group Instruction") {
+                    } else if (obj.deliveryTypeCode == groupInstruction) {
                         obj.backgroundColor = "#fedeb7";
                         obj.borderColor = "#f88e50";
                         obj.deliveryType = "Group-Instruction";
-                    } else if (obj.deliveryType == "Personal Instruction") {
+                    } else if (obj.deliveryTypeCode == personalInstruction) {
                         obj.backgroundColor = "#ebf5fb";
                         obj.borderColor = "#9acaea";
                         obj.deliveryType = "Personal-Instruction";
@@ -3634,7 +3652,7 @@ function SylvanCalendar() {
 
                     if(obj.deliveryType != undefined){
                       obj.title += '<span class="student-placeholder-'+obj.deliveryType+'">Student name</span>';
-                      self.addContext("",'studentPlaceholder',true, obj.deliveryType);
+                      self.addContext("",'studentPlaceholder',true, obj.deliveryTypeCode);
                     }
 
                     if (value['pinId'] != undefined) {
@@ -4082,7 +4100,7 @@ function SylvanCalendar() {
             var currentCalendarDate = this.calendar.fullCalendar('getDate');
             var dateFlag = moment(currentCalendarDate).format("YYYY-MM-DD") == moment(data.startHour).format("YYYY-MM-DD");
             if(studentPushFlagDecision && dateFlag){
-                if (data.deliveryType == "Personal Instruction") {
+                if (data.deliveryTypeCode == personalInstruction) {
                     var index = -1;
                     for (var i = 0; i < this.sofList['Personal Instruction'].length; i++) {
                         if(this.sofList['Personal Instruction'][i].id == data.id &&
@@ -4094,7 +4112,7 @@ function SylvanCalendar() {
                     if (index == -1) {
                         this.sofList['Personal Instruction'].push(data);
                     }
-                } else if (data.deliveryType == "Group Instruction") {
+                } else if (data.deliveryTypeCode == groupInstruction) {
                     var index = -1;
                     for (var i = 0; i < this.sofList['Group Instruction'].length; i++) {
                         if(this.sofList['Group Instruction'][i].id == data.id &&
@@ -4106,7 +4124,7 @@ function SylvanCalendar() {
                     if (index == -1) {
                         this.sofList['Group Instruction'].push(data);
                     }
-                } else if (data.deliveryType == "Group Facilitation") {
+                } else if (data.deliveryTypeCode == groupFacilitation) {
                     var index = -1;
                     for (var i = 0; i < this.sofList['Group Facilitation'].length; i++) {
                         if(this.sofList['Group Facilitation'][i].id == data.id &&
@@ -4158,7 +4176,7 @@ function SylvanCalendar() {
                                         return x.id;
                                     }).indexOf(id);
                                     if (index == -1) {
-                                        if (resourceObj.deliveryType == "Group Instruction") {
+                                        if (resourceObj.deliveryTypeCode == groupInstruction) {
                                             if (value['pinId'] != undefined) {
                                                 event[k].title += "<span class='drag-student' eventid='" + eventId + "' pinnedId='" + value['pinId'] + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='studentSession' value='" + id + "'><img src='/webresources/hub_/calendar/images/pin.png'/>" + name + ", " + grade + "<i class='material-icons' title='"+value['serviceValue']+"' style='color:" + value['subjectColorCode'] + "'>location_on</i></span>";
                                             } else {
@@ -4196,7 +4214,7 @@ function SylvanCalendar() {
                                     }
                                 }
                             } else {
-                                if (resourceObj.deliveryType == "Group Instruction") {
+                                if (resourceObj.deliveryTypeCode == groupInstruction) {
                                     if (value['pinId'] != undefined) {
                                         event[k].title += "<span class='drag-student' eventid='" + eventId + "' pinnedId='" + value['pinId'] + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='studentSession' value='" + id + "'><img src='/webresources/hub_/calendar/images/pin.png'/>" + name + ", " + grade + "<i class='material-icons' title='"+value['serviceValue']+"' style='color:" + value['subjectColorCode'] + "'>location_on</i></span>";
                                     } else {
@@ -4238,7 +4256,7 @@ function SylvanCalendar() {
                             }
                             if (event[k].students.length < resourceObj["capacity"] || resourceObj["capacity"] == undefined) {
                                 event[k].title += '<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>';
-                                self.addContext("", 'studentPlaceholder', true, event[k].deliveryType);
+                                self.addContext("", 'studentPlaceholder', true, event[k].deliveryTypeCode);
                                 // Conflict removal
                                 // capacity conflict removal
                                 var msgIndex = event[k].conflictMsg.map(function (x) {
@@ -4271,7 +4289,7 @@ function SylvanCalendar() {
                             }
                             
                             // One to one type lock and conflict ico is only for PI DT
-                            if(resourceObj.deliveryType == "Personal Instruction"){
+                            if(resourceObj.deliveryTypeCode == personalInstruction){
                               if(event[k].is1to1 == true || value.is1to1 == true){
                                 if(event[k].title.indexOf('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">') == -1){
                                   event[k].title += '<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">';
@@ -4304,10 +4322,10 @@ function SylvanCalendar() {
                         });
                         // if (value['deliveryType'] != "Group Instruction" ) {
                             if (value['pinId'] != undefined) {
-                                self.addContext(uniqueId, 'student', true, value['deliveryType'], value['sessionStatus']);
+                                self.addContext(uniqueId, 'student', true, value['deliveryTypeCode'], value['sessionStatus']);
                             }
                             else {
-                                self.addContext(uniqueId, 'student', false, value['deliveryType'], value['sessionStatus']);
+                                self.addContext(uniqueId, 'student', false, value['deliveryTypeCode'], value['sessionStatus']);
                             }
                         // }
                         self.calendar.fullCalendar('updateEvent', event);
@@ -4339,14 +4357,14 @@ function SylvanCalendar() {
                         obj.title = "";
 
                         // Display one to one icon only for PI DT
-                        if(resourceObj.deliveryType == "Personal Instruction"){
+                        if(resourceObj.deliveryTypeCode == personalInstruction){
                           if (value['is1to1']) {
                               obj.title += '<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">';
                           }
                         }
 
                         obj.title += "<span class='placeholder'>Teacher name</span>";
-                        if (resourceObj.deliveryType == "Group Instruction") {
+                        if (resourceObj.deliveryTypeCode == groupInstruction) {
                             if (value['pinId'] != undefined) {
                                 obj.title += "<span class='drag-student' eventid='" + eventId + "' pinnedId='" + value['pinId'] + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='studentSession' value='" + id + "'><img src='/webresources/hub_/calendar/images/pin.png'/>" + name + ", " + grade + "<i class='material-icons' title='"+value['serviceValue']+"' style='color:" + value['subjectColorCode'] + "'>location_on</i></span>";
                             } else {
@@ -4369,15 +4387,15 @@ function SylvanCalendar() {
                                 }
                             }
                         }
-                        if (resourceObj.deliveryType == "Group Facilitation") {
+                        if (resourceObj.deliveryTypeCode == groupFacilitation) {
                             obj.backgroundColor = "#dff0d5";
                             obj.borderColor = "#7bc143";
                             obj.deliveryType = "Group-Facilitation";
-                        } else if (resourceObj.deliveryType == "Group Instruction") {
+                        } else if (resourceObj.deliveryTypeCode == groupInstruction) {
                             obj.backgroundColor = "#fedeb7";
                             obj.borderColor = "#f88e50";
                             obj.deliveryType = "Group-Instruction";
-                        } else if (resourceObj.deliveryType == "Personal Instruction") {
+                        } else if (resourceObj.deliveryTypeCode == personalInstruction) {
                             obj.backgroundColor = "#ebf5fb";
                             obj.borderColor = "#9acaea";
                             obj.deliveryType = "Personal-Instruction";
@@ -4385,14 +4403,14 @@ function SylvanCalendar() {
 
                         if (resourceObj["capacity"] > 1 && obj.deliveryType != undefined) {
                             obj.title += '<span class="student-placeholder-'+obj.deliveryType+'">Student name</span>';
-                            self.addContext("", 'studentPlaceholder', true, obj.deliveryType);
+                            self.addContext("", 'studentPlaceholder', true, obj.deliveryTypeCode);
                         }
                         // if (value['deliveryType'] != "Group Instruction") {
                             if (value['pinId'] != undefined) {
-                                self.addContext(uniqueId, 'student', true, value['deliveryType'], value['sessionStatus']);
+                                self.addContext(uniqueId, 'student', true, value['deliveryTypeCode'], value['sessionStatus']);
                             }
                             else {
-                                self.addContext(uniqueId, 'student', false, value['deliveryType'], value['sessionStatus']);
+                                self.addContext(uniqueId, 'student', false, value['deliveryTypeCode'], value['sessionStatus']);
                             }
                         // }
                         self.eventList.push(obj);
@@ -4421,7 +4439,7 @@ function SylvanCalendar() {
             this.sofList['Group Instruction'] = [];
         }
         if (this.selectedDeliveryType.length == 1) {
-            if (this.getDeliveryTypeVal(this.selectedDeliveryType[0]) == "Personal Instruction") {
+            if (this.getDeliveryTypeVal(this.selectedDeliveryType[0]) == personalInstruction) {
                 if (this.sofList['Personal Instruction'].length == 0) {
                     closeSofPane = true;
                 }
@@ -4540,12 +4558,11 @@ function SylvanCalendar() {
         }
         else if (typeof (responseObj) == 'object') {
             if (responseObj != undefined) {
+
                 //self.convertPinnedData(responseObj, true);
                 var txt = wjQuery(element)[0].innerHTML;
-                if(!element.hasAttribute("pinnedId")){
-                    wjQuery(element).html("<img src='/webresources/hub_/calendar/images/pin.png'/>" + txt);
-                    wjQuery(element).attr('pinnedId', responseObj['hub_pinned_student_teacher_id']);
-                }
+                wjQuery(element).html("<img src='/webresources/hub_/calendar/images/pin.png'/>" + txt);
+                wjQuery(element).attr('pinnedId', responseObj['hub_pinned_student_teacher_id']);
             }
         }
         wjQuery('.loading').hide();
@@ -4615,10 +4632,8 @@ function SylvanCalendar() {
             wjQuery('.loading').hide();
             if (responseObj != undefined) {
                 var txt = wjQuery(element).text();
-                if(!element.hasAttribute("pinnedId")){
-                    wjQuery(element).html("<img src='/webresources/hub_/calendar/images/pin.png'/>" + txt);
-                    wjQuery(element).attr('pinnedId', responseObj['hub_pinned_student_teacher_id']);
-                }
+                wjQuery(element).html("<img src='/webresources/hub_/calendar/images/pin.png'/>" + txt);
+                wjQuery(element).attr('pinnedId', responseObj['hub_pinned_student_teacher_id']);
             }
         }
     };
@@ -5250,7 +5265,7 @@ function SylvanCalendar() {
         var currentView = self.calendar.fullCalendar('getView');
         var obj = {};
         if (labelFor == 'student') {
-            if (deliveryType == "Personal Instruction") {
+            if (deliveryType == personalInstruction) {
                 obj.unpin = { name: "Unpin" };
                 obj.unpin.visible = true;
                 obj.unpin.callback = function (key, options) {
@@ -5310,7 +5325,7 @@ function SylvanCalendar() {
                 });
 
             }
-            else if (deliveryType == "Group Facilitation") {
+            else if (deliveryType == groupFacilitation) {
                 obj.reschedule = {
                     name: "Reschedule",
                     callback: function (key, options) {
@@ -5339,7 +5354,7 @@ function SylvanCalendar() {
                     }
                 });
             }
-            else if(deliveryType == "Group Instruction"){
+            else if(deliveryType == groupInstruction){
                 obj.omit = {
                     name: "Omit",
                     callback: function (key, options) {
@@ -5415,8 +5430,8 @@ function SylvanCalendar() {
                 }
             });
         } else if (labelFor == "studentPlaceholder") {
-          if(deliveryType != "Group-Instruction"){
-            if(deliveryType == "Personal-Instruction"){
+          if(deliveryType != groupInstruction){
+            if(deliveryType == personalInstruction){
               obj.makeup = {
                 name: "Makeup",
                 callback : function(key, options) {
@@ -5705,23 +5720,19 @@ function SylvanCalendar() {
     }
 
     this.getDeliveryTypeVal = function (deliveryTypeId) {
-        var deliveryType = "";
+        var deliveryTypeCode = "";
         wjQuery.each(this.resourceList, function (k, v) {
             if (deliveryTypeId == v.deliveryTypeId) {
-                deliveryType = v.deliveryType;
+                deliveryTypeCode = v.deliveryTypeCode;
             }
         });
-        return deliveryType;
+        return deliveryTypeCode;
     }
 
     this.saveStudentToSession = function (prevStudent, newStudent) {
         var objPrevSession = {};
         var objNewSession = {};
         if (prevStudent != undefined) {
-            // Session type condition
-            /*if(oldDate == sessionDate && newTime != oldTime && student.deliveryType == "Personal Instruction"){
-              objNewSession['hub_sessiontype'] = 1;
-            }*/
             if (prevStudent['isFromMasterSchedule']) {
                 objPrevSession['hub_session_date'] = moment(newStudent.startHour).format('YYYY-MM-DD');
                 objPrevSession.hub_start_time = this.convertToMinutes(moment(prevStudent.start).format("h:mm A"));
@@ -6353,7 +6364,7 @@ function SylvanCalendar() {
                             self.updateConflictMsg(prevEvent[0]);
                             if (prevEvent[0].title.indexOf('<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>') == -1) {
                                 prevEvent[0].title += '<span class="student-placeholder-'+prevEvent[0].deliveryType+'">Student name</span>';
-                                self.addContext("", 'studentPlaceholder', true, prevEvent[0].deliveryType);
+                                self.addContext("", 'studentPlaceholder', true, prevEvent[0].deliveryTypeCode);
                             }
                         }
                     }
@@ -6404,7 +6415,7 @@ function SylvanCalendar() {
                         arrayList[i].deliveryTypeId = resourceObj.deliveryTypeId;
                         if(this.weekEventObject.hasOwnProperty(arrayList[i].startHour)){
                             if(this.weekEventObject[arrayList[i].startHour].hasOwnProperty('teacherSchedule')){
-                                if(arrayList[i].deliveryType == 'Personal Instruction'){
+                                if(arrayList[i].deliveryTypeCode == personalInstruction){
                                     var index = -1;
                                     for (var k = 0; k < this.weekEventObject[arrayList[i].startHour].teacherSchedule.pi.length; k++) {
                                         if(this.weekEventObject[arrayList[i].startHour].teacherSchedule.pi[k].id == arrayList[i].id){
@@ -6416,7 +6427,7 @@ function SylvanCalendar() {
                                         this.weekEventObject[arrayList[i].startHour].teacherSchedule.pi.push(arrayList[i]);
                                     }
                                 }
-                                else if(arrayList[i].deliveryType == 'Group Instruction'){
+                                else if(arrayList[i].deliveryTypeCode == groupInstruction){
                                     var index = -1;
                                     for (var k = 0; k < this.weekEventObject[arrayList[i].startHour].teacherSchedule.gi.length; k++) {
                                         if(this.weekEventObject[arrayList[i].startHour].teacherSchedule.gi[k].id == arrayList[i].id){
@@ -6427,7 +6438,7 @@ function SylvanCalendar() {
                                     if(index == -1)
                                         this.weekEventObject[arrayList[i].startHour].teacherSchedule.gi.push(arrayList[i]);
                                 }
-                                else if(arrayList[i].deliveryType == 'Group Facilitation'){
+                                else if(arrayList[i].deliveryTypeCode == groupFacilitation){
                                     var index = -1;
                                     for (var k = 0; k < this.weekEventObject[arrayList[i].startHour].teacherSchedule.gf.length; k++) {
                                         if(this.weekEventObject[arrayList[i].startHour].teacherSchedule.gf[k].id == arrayList[i].id){
@@ -6443,13 +6454,13 @@ function SylvanCalendar() {
                                 this.weekEventObject[arrayList[i].startHour].teacherSchedule.pi = [];
                                 this.weekEventObject[arrayList[i].startHour].teacherSchedule.gi = [];
                                 this.weekEventObject[arrayList[i].startHour].teacherSchedule.gf = [];
-                                if(arrayList[i].deliveryType == 'Personal Instruction'){
+                                if(arrayList[i].deliveryTypeCode == personalInstruction){
                                     this.weekEventObject[arrayList[i].startHour].teacherSchedule.pi.push(arrayList[i]);
                                 }
-                                else if(arrayList[i].deliveryType == 'Group Instruction'){
+                                else if(arrayList[i].deliveryTypeCode == groupInstruction){
                                     this.weekEventObject[arrayList[i].startHour].teacherSchedule.gi.push(arrayList[i]);
                                 }
-                                else if(arrayList[i].deliveryType == 'Group Facilitation'){
+                                else if(arrayList[i].deliveryTypeCode == groupFacilitation){
                                     this.weekEventObject[arrayList[i].startHour].teacherSchedule.gf.push(arrayList[i]);
                                 }
                             }
@@ -6460,13 +6471,13 @@ function SylvanCalendar() {
                             this.weekEventObject[arrayList[i].startHour].teacherSchedule.pi = [];
                             this.weekEventObject[arrayList[i].startHour].teacherSchedule.gi = [];
                             this.weekEventObject[arrayList[i].startHour].teacherSchedule.gf = [];
-                            if(arrayList[i].deliveryType == 'Personal Instruction'){
+                            if(arrayList[i].deliveryTypeCode == personalInstruction){
                                 this.weekEventObject[arrayList[i].startHour].teacherSchedule.pi.push(arrayList[i]);
                             }
-                            else if(arrayList[i].deliveryType == 'Group Instruction'){
+                            else if(arrayList[i].deliveryTypeCode == groupInstruction){
                                 this.weekEventObject[arrayList[i].startHour].teacherSchedule.gi.push(arrayList[i]);
                             }
-                            else if(arrayList[i].deliveryType == 'Group Facilitation'){
+                            else if(arrayList[i].deliveryTypeCode == groupFacilitation){
                                 this.weekEventObject[arrayList[i].startHour].teacherSchedule.gf.push(arrayList[i]);
                             }
                         }
@@ -6703,7 +6714,7 @@ function SylvanCalendar() {
                     if(arrayList[i].hasOwnProperty('startHour')){
                         if(this.weekEventObject.hasOwnProperty(arrayList[i].startHour)){
                             if(this.weekEventObject[arrayList[i].startHour].hasOwnProperty('student')){
-                                if(arrayList[i].deliveryType == 'Personal Instruction'){
+                                if(arrayList[i].deliveryTypeCode == personalInstruction){
                                     var index = -1;
                                     for (var k = 0; k < this.weekEventObject[arrayList[i].startHour].student.pi.length; k++) {
                                         if(this.weekEventObject[arrayList[i].startHour].student.pi[k].id == arrayList[i].id){
@@ -6720,7 +6731,7 @@ function SylvanCalendar() {
                                     }
 
                                 }
-                                else if(arrayList[i].deliveryType == 'Group Instruction'){
+                                else if(arrayList[i].deliveryTypeCode == groupInstruction){
                                     var index = -1;
                                     for (var k = 0; k < this.weekEventObject[arrayList[i].startHour].student.gi.length; k++) {
                                         if(this.weekEventObject[arrayList[i].startHour].student.gi[k].id == arrayList[i].id){
@@ -6736,7 +6747,7 @@ function SylvanCalendar() {
                                         this.weekEventObject[arrayList[i].startHour].student.gi.push(arrayList[i]);
                                     }
                                 }
-                                else if(arrayList[i].deliveryType == 'Group Facilitation'){
+                                else if(arrayList[i].deliveryTypeCode == groupFacilitation){
                                     var index = -1;
                                     for (var k = 0; k < this.weekEventObject[arrayList[i].startHour].student.gf.length; k++) {
                                         if(this.weekEventObject[arrayList[i].startHour].student.gf[k].id == arrayList[i].id){
@@ -6759,21 +6770,21 @@ function SylvanCalendar() {
                                 this.weekEventObject[arrayList[i].startHour].student.pi = [];
                                 this.weekEventObject[arrayList[i].startHour].student.gf = [];
                                 this.weekEventObject[arrayList[i].startHour].student.gi = [];
-                                if(arrayList[i].deliveryType == 'Personal Instruction'){
+                                if(arrayList[i].deliveryTypeCode == personalInstruction){
                                     if(arrayList[i].sessionStatus == SCHEDULE_STATUS ||
                                             arrayList[i].sessionStatus == RESCHEDULE_STATUS || 
                                             arrayList[i].sessionStatus == MAKEUP_STATUS|| 
                                             arrayList[i].isFromMasterSchedule)
                                     this.weekEventObject[arrayList[i].startHour].student.pi.push(arrayList[i]);
                                 }
-                                else if(arrayList[i].deliveryType == 'Group Instruction'){
+                                else if(arrayList[i].deliveryTypeCode == groupInstruction){
                                     if(arrayList[i].sessionStatus == SCHEDULE_STATUS ||
                                             arrayList[i].sessionStatus == RESCHEDULE_STATUS || 
                                             arrayList[i].sessionStatus == MAKEUP_STATUS|| 
                                             arrayList[i].isFromMasterSchedule)
                                     this.weekEventObject[arrayList[i].startHour].student.gi.push(arrayList[i]);
                                 }
-                                else if(arrayList[i].deliveryType == 'Group Facilitation'){
+                                else if(arrayList[i].deliveryTypeCode == groupFacilitation){
                                     if(arrayList[i].sessionStatus == SCHEDULE_STATUS ||
                                             arrayList[i].sessionStatus == RESCHEDULE_STATUS || 
                                             arrayList[i].sessionStatus == MAKEUP_STATUS|| 
@@ -6788,21 +6799,21 @@ function SylvanCalendar() {
                             this.weekEventObject[arrayList[i].startHour].student.pi = [];
                             this.weekEventObject[arrayList[i].startHour].student.gf = [];
                             this.weekEventObject[arrayList[i].startHour].student.gi = [];
-                            if(arrayList[i].deliveryType == 'Personal Instruction'){
+                            if(arrayList[i].deliveryTypeCode == personalInstruction){
                                 if(arrayList[i].sessionStatus == SCHEDULE_STATUS ||
                                             arrayList[i].sessionStatus == RESCHEDULE_STATUS || 
                                             arrayList[i].sessionStatus == MAKEUP_STATUS|| 
                                             arrayList[i].isFromMasterSchedule)
                                 this.weekEventObject[arrayList[i].startHour].student.pi.push(arrayList[i]);
                             }
-                            else if(arrayList[i].deliveryType == 'Group Instruction'){
+                            else if(arrayList[i].deliveryTypeCode == groupInstruction){
                                 if(arrayList[i].sessionStatus == SCHEDULE_STATUS ||
                                             arrayList[i].sessionStatus == RESCHEDULE_STATUS || 
                                             arrayList[i].sessionStatus == MAKEUP_STATUS|| 
                                             arrayList[i].isFromMasterSchedule)
                                 this.weekEventObject[arrayList[i].startHour].student.gi.push(arrayList[i]);
                             }
-                            else if(arrayList[i].deliveryType == 'Group Facilitation'){
+                            else if(arrayList[i].deliveryTypeCode == groupFacilitation){
                                 if(arrayList[i].sessionStatus == SCHEDULE_STATUS ||
                                             arrayList[i].sessionStatus == RESCHEDULE_STATUS || 
                                             arrayList[i].sessionStatus == MAKEUP_STATUS|| 
@@ -7109,15 +7120,15 @@ function SylvanCalendar() {
         var piSpace = 0,giSpace=0,gfSpace=0;
         var hasPiResource = false,hasGiResource=false,hasGfResource=false;
         for (var i = 0; i < self.resourceList.length; i++) {
-            if(self.resourceList[i].deliveryType == 'Personal Instruction'){
+            if(self.resourceList[i].deliveryTypeCode == personalInstruction){
                 piSpace += self.resourceList[i].capacity;
                 hasPiResource = true;
             }
-            else if(self.resourceList[i].deliveryType == 'Group Instruction'){
+            else if(self.resourceList[i].deliveryTypeCode == groupInstruction){
                 giSpace += self.resourceList[i].capacity;
                 hasGiResource = true;
             }
-            else if(self.resourceList[i].deliveryType == 'Group Facilitation'){
+            else if(self.resourceList[i].deliveryTypeCode == groupFacilitation){
                 gfSpace += self.resourceList[i].capacity;
                 hasGfResource = true;
             }
@@ -7751,7 +7762,7 @@ function SylvanCalendar() {
       if (prevEvent.hasOwnProperty('students') && resourceObj['capacity'] > prevEvent['students'].length) {
         if (prevEvent.title.indexOf('<span class="student-placeholder-'+prevEvent.deliveryType+'">Student name</span>') == -1) {
           prevEvent.title += '<span class="student-placeholder-'+prevEvent.deliveryType+'">Student name</span>';
-          self.addContext("", 'studentPlaceholder', true, prevEvent.deliveryType);
+          self.addContext("", 'studentPlaceholder', true, prevEvent.deliveryTypeCode);
         }
       }
 
