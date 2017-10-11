@@ -5298,19 +5298,32 @@ function SylvanCalendar() {
         var obj = {};
         if (labelFor == 'student') {
             if (deliveryType == personalInstruction) {
-                obj.unpin = { name: "Unpin" };
-                obj.unpin.visible = true;
-                obj.unpin.callback = function (key, options) {
-                    obj.unpin.visible = false;
-                    obj.pin.visible = true;
-                    self.unPinStudent(options.$trigger[0]);
-                }
-                obj.pin = { name: "Pin" };
-                obj.pin.visible = true;
-                obj.pin.callback = function (key, options) {
+                var resourceObj = self.getResourceObj(uniqueId.split("_")[1]);
+                if(resourceObj.deliveryTypeCode == deliveryType){
+                    obj.unpin = { name: "Unpin" };
                     obj.unpin.visible = true;
-                    obj.pin.visible = false;
-                    self.pinStudent(options.$trigger[0]);
+                    obj.unpin.callback = function (key, options) {
+                        obj.unpin.visible = false;
+                        obj.pin.visible = true;
+                        self.unPinStudent(options.$trigger[0]);
+                    }
+                    obj.pin = { name: "Pin" };
+                    obj.pin.visible = true;
+                    obj.pin.callback = function (key, options) {
+                        obj.unpin.visible = true;
+                        obj.pin.visible = false;
+                        self.pinStudent(options.$trigger[0]);
+                    }
+
+                    if (isPinned) {
+                        obj.unpin.visible = true;
+                        obj.pin.visible = false;
+                    }
+                    else {
+                        obj.unpin.visible = false;
+                        obj.pin.visible = true;
+                    }
+                    
                 }
                 obj.omit = {
                   name: "Omit",
@@ -5338,14 +5351,7 @@ function SylvanCalendar() {
                         self.moveStudentToSOF(options.$trigger[0]);
                     }
                 }
-                if (isPinned) {
-                    obj.unpin.visible = true;
-                    obj.pin.visible = false;
-                }
-                else {
-                    obj.unpin.visible = false;
-                    obj.pin.visible = true;
-                }
+                
                 wjQuery.contextMenu( 'destroy', 'span[uniqueId="' + uniqueId + '"]');
                 wjQuery.contextMenu({
                     selector: 'span[uniqueId="' + uniqueId + '"]',
