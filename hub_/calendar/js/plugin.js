@@ -47,8 +47,8 @@ setTimeout(function () {
             changeYear: true,
             showOn: 'button',
             onSelect: function (date) {
-                wjQuery('.headerDate').text(moment(date).format('MM/DD/YYYY'));
-                if (moment(currentCalendarDate).format('MM/DD/YYYY') == moment(new Date()).format('MM/DD/YYYY')) {
+                wjQuery('.headerDate').text(date);
+                if (moment(new Date(date)).format('MM/DD/YYYY') == moment(new Date()).format('MM/DD/YYYY')) {
                     wjQuery('.headerDate').addClass('today');
                 }
                 else {
@@ -81,8 +81,8 @@ setTimeout(function () {
                         changeYear: true,
                         showOn: 'button',
                         onSelect: function (date) {
-                            wjQuery('.headerDate').text(moment(date).format('MM/DD/YYYY'));
-                            if (moment(currentCalendarDate).format('MM/DD/YYYY') == moment(new Date()).format('MM/DD/YYYY')) {
+                            wjQuery('.headerDate').text(date);
+                            if (moment(new Date(date)).format('MM/DD/YYYY') == moment(new Date()).format('MM/DD/YYYY')) {
                                 wjQuery('.headerDate').addClass('today');
                             }
                             else {
@@ -1922,7 +1922,7 @@ function SylvanCalendar() {
         var filters = this.filters;
         var t = this;
         var self = this;
-        var date = new Date();
+        var date = new Date(wjQuery('.headerDate').text());
 
         var d = date.getDate();
         var m = date.getMonth();
