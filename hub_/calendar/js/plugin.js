@@ -4580,7 +4580,7 @@ function SylvanCalendar() {
         var self = this;
         var id = wjQuery(element).attr('value');
         var uniqueId = wjQuery(element).attr('uniqueId');
-        wjQuery('span[uniqueId="' + uniqueId + '"]').contextMenu("hide");
+        wjQuery('span[uniqueId="' + uniqueId + '"]').trigger("contextmenu:hide");
         var startTime = uniqueId.split('_')[2];
         var today = self.calendar.fullCalendar('getDate');
         var student = self.convertedStudentObj.filter(function (x) {
@@ -4670,7 +4670,7 @@ function SylvanCalendar() {
     this.pinTeacher = function (element, pinFor) {
         var id = wjQuery(element).attr('value');
         var uniqueId = wjQuery(element).attr('uniqueId');
-        wjQuery('span[uniqueId="' + uniqueId + '"]').contextMenu("hide");
+        wjQuery('span[uniqueId="' + uniqueId + '"]').trigger("contextmenu:hide");
         var uniqueIds = wjQuery(element).attr('uniqueId').split('_');
         var startTime = uniqueId.split('_')[2];
         var today = this.calendar.fullCalendar('getDate');
