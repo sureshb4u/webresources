@@ -4580,7 +4580,6 @@ function SylvanCalendar() {
         var self = this;
         var id = wjQuery(element).attr('value');
         var uniqueId = wjQuery(element).attr('uniqueId');
-        wjQuery('span[uniqueId="' + uniqueId + '"]').trigger("contextmenu:hide");
         var startTime = uniqueId.split('_')[2];
         var today = self.calendar.fullCalendar('getDate');
         var student = self.convertedStudentObj.filter(function (x) {
@@ -4670,7 +4669,6 @@ function SylvanCalendar() {
     this.pinTeacher = function (element, pinFor) {
         var id = wjQuery(element).attr('value');
         var uniqueId = wjQuery(element).attr('uniqueId');
-        wjQuery('span[uniqueId="' + uniqueId + '"]').trigger("contextmenu:hide");
         var uniqueIds = wjQuery(element).attr('uniqueId').split('_');
         var startTime = uniqueId.split('_')[2];
         var today = this.calendar.fullCalendar('getDate');
@@ -5339,6 +5337,7 @@ function SylvanCalendar() {
                     obj.unpin = { name: "Unpin" };
                     obj.unpin.visible = true;
                     obj.unpin.callback = function (key, options) {
+                        options.$menu.trigger("contextmenu:hide");
                         obj.unpin.visible = false;
                         obj.pin.visible = true;
                         self.unPinStudent(options.$trigger[0]);
@@ -5346,6 +5345,7 @@ function SylvanCalendar() {
                     obj.pin = { name: "Pin" };
                     obj.pin.visible = true;
                     obj.pin.callback = function (key, options) {
+                        options.$menu.trigger("contextmenu:hide");
                         obj.unpin.visible = true;
                         obj.pin.visible = false;
                         self.pinStudent(options.$trigger[0]);
@@ -5455,6 +5455,7 @@ function SylvanCalendar() {
                     "pinbyTime": {
                         "name": "Time",
                         callback: function (key, options) {
+                            options.$menu.trigger("contextmenu:hide");
                             obj.unpin.visible = true;
                             obj.pin.visible = false;
                             self.pinTeacher(options.$trigger[0], 'time');
@@ -5463,6 +5464,7 @@ function SylvanCalendar() {
                     "pinbyResource": {
                         "name": "Resource",
                         callback: function (key, options) {
+                            options.$menu.trigger("contextmenu:hide");
                             obj.unpin.visible = true;
                             obj.pin.visible = false;
                             self.pinTeacher(options.$trigger[0], 'resource');
@@ -5475,6 +5477,7 @@ function SylvanCalendar() {
                 "name": "Unpin",
                 "visible": false,
                 callback: function (key, options) {
+                    options.$menu.trigger("contextmenu:hide");
                     obj.unpin.visible = false;
                     obj.pin.visible = true;
                     self.unPinTeacher(options.$trigger[0]);
