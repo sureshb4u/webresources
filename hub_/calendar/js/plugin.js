@@ -40,6 +40,21 @@ setTimeout(function () {
             }
         }
 
+        wjQuery('#datepicker').datepicker({
+            buttonImage: "/webresources/hub_/calendar/images/calendar.png",
+            buttonImageOnly: true,
+            changeMonth: true,
+            changeYear: true,
+            showOn: 'button',
+            onSelect: function (date) {
+                wjQuery(".loading").show();
+                if(sylvanCalendar.calendar != undefined){
+                    sylvanCalendar.dateFromCalendar(date, locationId);
+                }
+                wjQuery('#datepicker').hide();
+            }
+        });
+
         wjQuery(".loc-dropdown .dropdown-menu").on('click', 'li a', function () {
             if (wjQuery(".location-btn").val() != wjQuery(this).attr('value-id')) {
                 wjQuery(".location-btn").text(wjQuery(this).text());
@@ -52,6 +67,20 @@ setTimeout(function () {
                 }
                 if(view.name == "resourceDay" || view.name == undefined){
                     wjQuery('#dayBtn').trigger( "click");
+                    wjQuery('#datepicker').datepicker({
+                        buttonImage: "/webresources/hub_/calendar/images/calendar.png",
+                        buttonImageOnly: true,
+                        changeMonth: true,
+                        changeYear: true,
+                        showOn: 'button',
+                        onSelect: function (date) {
+                            wjQuery(".loading").show();
+                            if(sylvanCalendar.calendar != undefined){
+                                sylvanCalendar.dateFromCalendar(date, locationId);
+                            }
+                            wjQuery('#datepicker').hide();
+                        }
+                    });
                     return fetchResources(locationId, deliveryTypeList, true);
                 }else{
                     wjQuery(".sof-btn").prop("disabled", true);
@@ -162,18 +191,7 @@ setTimeout(function () {
                     sylvanCalendar.prev(locationId);
                 });
 
-                wjQuery('#datepicker').datepicker({
-                    buttonImage: "/webresources/hub_/calendar/images/calendar.png",
-                    buttonImageOnly: true,
-                    changeMonth: true,
-                    changeYear: true,
-                    showOn: 'button',
-                    onSelect: function (date) {
-                        wjQuery(".loading").show();
-                        sylvanCalendar.dateFromCalendar(date, locationId);
-                        wjQuery('#datepicker').hide();
-                    }
-                });
+
 
                 wjQuery('.nextBtn').off('click').on('click', function () {
                     wjQuery(".loading").show();
