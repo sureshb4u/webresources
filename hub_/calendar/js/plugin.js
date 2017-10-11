@@ -192,16 +192,46 @@ setTimeout(function () {
             }
             if (resourceList.length) {
                 sylvanCalendar.refreshCalendarEvent(locationId, true);
-                wjQuery('.prevBtn').off('click').on('click', function () {
-                    wjQuery(".loading").show();
-                    sylvanCalendar.prev(locationId);
+                 wjQuery('.prevBtn').off('click').on('click', function () {
+                    var date  = new Date(wjQuery('.headerDate').text());
+                    if(wjQuery('#dayBtn:checked').val() == 'on'){
+                        date = new Date(new Date(date).setDate(date.getDate() - 1));
+                    }
+                    else{
+                        date = new Date(new Date(date).setDate(date.getDate() - 7));
+                    }
+                    wjQuery('.headerDate').text(moment(date).format('MM/DD/YYYY'));
+                    if (moment(date).format('MM/DD/YYYY') == moment(new Date()).format('MM/DD/YYYY')) {
+                        wjQuery('.headerDate').addClass('today');
+                    }
+                    else {
+                        wjQuery('.headerDate').removeClass('today');
+                    }
+                    if(sylvanCalendar.calendar != undefined){
+                        wjQuery(".loading").show();
+                        sylvanCalendar.prev(locationId);
+                    }
                 });
 
-
-
                 wjQuery('.nextBtn').off('click').on('click', function () {
-                    wjQuery(".loading").show();
-                    sylvanCalendar.next(locationId);
+                    var date  = new Date(wjQuery('.headerDate').text());
+                    if(wjQuery('#dayBtn:checked').val() == 'on'){
+                        date = new Date(new Date(date).setDate(date.getDate() + 1));
+                    }
+                    else{
+                        date = new Date(new Date(date).setDate(date.getDate() + 7));
+                    }
+                    wjQuery('.headerDate').text(moment(date).format('MM/DD/YYYY'));
+                    if (moment(date).format('MM/DD/YYYY') == moment(new Date()).format('MM/DD/YYYY')) {
+                        wjQuery('.headerDate').addClass('today');
+                    }
+                    else {
+                        wjQuery('.headerDate').removeClass('today');
+                    }
+                    if(sylvanCalendar.calendar != undefined){
+                        wjQuery(".loading").show();
+                        sylvanCalendar.next(locationId);
+                    }
                 });
 
                 wjQuery('.wkView').off('click').on('click', function () {
