@@ -1982,6 +1982,11 @@ function SylvanCalendar() {
             this.calendarOptions.month = args.getMonth();
             this.calendarOptions.date = args.getDate();
         }
+        else{
+            this.calendarOptions.year = y;
+            this.calendarOptions.month = m;
+            this.calendarOptions.date = d;
+        }
         this.calendar = wjQuery('#calendar').fullCalendar(this.calendarOptions);
         this.loadMasterInformation();
 
