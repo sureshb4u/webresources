@@ -4562,6 +4562,7 @@ function SylvanCalendar() {
         var self = this;
         var id = wjQuery(element).attr('value');
         var uniqueId = wjQuery(element).attr('uniqueId');
+        wjQuery('span[uniqueId="' + uniqueId + '"]').contextMenu("hide");
         var startTime = uniqueId.split('_')[2];
         var today = self.calendar.fullCalendar('getDate');
         var student = self.convertedStudentObj.filter(function (x) {
@@ -4597,7 +4598,6 @@ function SylvanCalendar() {
         objPinnedStudent.hub_day = self.getDayValue(today);
         objPinnedStudent.hub_session_date = moment(today).format("YYYY-MM-DD");
         var responseObj = data.savePinStudent(objPinnedStudent);
-        wjQuery('.loading').hide();
         if (typeof (responseObj) == 'boolean') {
             if (responseObj) {
                 var txt = wjQuery(element)[0].innerHTML;
@@ -4653,6 +4653,7 @@ function SylvanCalendar() {
     this.pinTeacher = function (element, pinFor) {
         var id = wjQuery(element).attr('value');
         var uniqueId = wjQuery(element).attr('uniqueId');
+        wjQuery('span[uniqueId="' + uniqueId + '"]').contextMenu("hide");
         var uniqueIds = wjQuery(element).attr('uniqueId').split('_');
         var startTime = uniqueId.split('_')[2];
         var today = this.calendar.fullCalendar('getDate');
