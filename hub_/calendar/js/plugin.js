@@ -5337,18 +5337,20 @@ function SylvanCalendar() {
                     obj.unpin = { name: "Unpin" };
                     obj.unpin.visible = true;
                     obj.unpin.callback = function (key, options) {
-                        options.$menu.trigger("contextmenu:hide");
-                        obj.unpin.visible = false;
-                        obj.pin.visible = true;
-                        self.unPinStudent(options.$trigger[0]);
+                        if(obj.unpin.visible){
+                            obj.unpin.visible = false;
+                            obj.pin.visible = true;
+                            self.unPinStudent(options.$trigger[0]);
+                        }
                     }
                     obj.pin = { name: "Pin" };
                     obj.pin.visible = true;
                     obj.pin.callback = function (key, options) {
-                        options.$menu.trigger("contextmenu:hide");
-                        obj.unpin.visible = true;
-                        obj.pin.visible = false;
-                        self.pinStudent(options.$trigger[0]);
+                        if(obj.pin.visible){
+                            obj.unpin.visible = true;
+                            obj.pin.visible = false;
+                            self.pinStudent(options.$trigger[0]);
+                        }
                     }
 
                     if (isPinned) {
@@ -5455,19 +5457,21 @@ function SylvanCalendar() {
                     "pinbyTime": {
                         "name": "Time",
                         callback: function (key, options) {
-                            options.$menu.trigger("contextmenu:hide");
-                            obj.unpin.visible = true;
-                            obj.pin.visible = false;
-                            self.pinTeacher(options.$trigger[0], 'time');
+                            if(obj.pin.visible){
+                                obj.unpin.visible = true;
+                                obj.pin.visible = false;
+                                self.pinTeacher(options.$trigger[0], 'time');
+                            }
                         }
                     },
                     "pinbyResource": {
                         "name": "Resource",
                         callback: function (key, options) {
-                            options.$menu.trigger("contextmenu:hide");
-                            obj.unpin.visible = true;
-                            obj.pin.visible = false;
-                            self.pinTeacher(options.$trigger[0], 'resource');
+                            if(obj.pin.visible){
+                                obj.unpin.visible = true;
+                                obj.pin.visible = false;
+                                self.pinTeacher(options.$trigger[0], 'resource');
+                            }
                         }
 
                     }
@@ -5477,10 +5481,11 @@ function SylvanCalendar() {
                 "name": "Unpin",
                 "visible": false,
                 callback: function (key, options) {
-                    options.$menu.trigger("contextmenu:hide");
-                    obj.unpin.visible = false;
-                    obj.pin.visible = true;
-                    self.unPinTeacher(options.$trigger[0]);
+                    if(obj.unpin.visible){
+                        obj.unpin.visible = false;
+                        obj.pin.visible = true;
+                        self.unPinTeacher(options.$trigger[0]);
+                    }
                 }
             };
             obj.moveToSof = {
