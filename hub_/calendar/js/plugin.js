@@ -1915,9 +1915,9 @@ function SylvanCalendar() {
                 t.saveStudentToSession(t.convertedStudentObj[index], newStudentObj);
             }
         }
-        self.openSofPane();
-        self.showConflictMsg();
-        self.draggable('draggable');
+        this.openSofPane();
+        this.showConflictMsg();
+        this.draggable('draggable');
     }
 
     this.clearEvents = function () {
