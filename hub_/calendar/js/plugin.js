@@ -6226,13 +6226,15 @@ function SylvanCalendar() {
                 subjectColorCode: val['aprogram_x002e_hub_color'],
                 programId: val['aprogram_x002e_hub_programid'],
                 serviceId: val['_hub_service_value'],
+                serviceValue: val['_hub_service_value@OData.Community.Display.V1.FormattedValue'],
                 sessionId: val['hub_studentsessionid'],
-                sessionStatus : val['hub_session_status'],
                 sessionType: val['hub_sessiontype'],
+                sessionStatus : val['hub_session_status'],
                 duration: val['aproductservice_x002e_hub_duration'],
                 timeSlotType: val['aproductservice_x002e_hub_timeslottype'],
                 namedHoursId: val['aproductservice_x002e_hub_namedgfhoursid'],
-                expiryDate: val['hub_makeup_expiry_date']
+                expiryDate: val['hub_makeup_expiry_date'],
+                namedHoursId: val['aproductservice_x002e_hub_namedgfhoursid']
             }
 
             if(val['hub_name'] != undefined){
