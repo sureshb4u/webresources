@@ -41,8 +41,15 @@ setTimeout(function () {
             changeYear: true,
             showOn: 'button',
             onSelect: function (date) {
-                wjQuery(".loading").show();
+                wjQuery('.headerDate').text(moment(date).format('MM/DD/YYYY'));
+                if (moment(currentCalendarDate).format('MM/DD/YYYY') == moment(new Date()).format('MM/DD/YYYY')) {
+                    wjQuery('.headerDate').addClass('today');
+                }
+                else {
+                    wjQuery('.headerDate').removeClass('today');
+                }
                 if(sylvanCalendar.calendar != undefined){
+                    wjQuery(".loading").show();
                     sylvanCalendar.dateFromCalendar(date, locationId);
                 }
                 wjQuery('#datepicker').hide();
@@ -68,8 +75,15 @@ setTimeout(function () {
                         changeYear: true,
                         showOn: 'button',
                         onSelect: function (date) {
-                            wjQuery(".loading").show();
+                            wjQuery('.headerDate').text(moment(date).format('MM/DD/YYYY'));
+                            if (moment(currentCalendarDate).format('MM/DD/YYYY') == moment(new Date()).format('MM/DD/YYYY')) {
+                                wjQuery('.headerDate').addClass('today');
+                            }
+                            else {
+                                wjQuery('.headerDate').removeClass('today');
+                            }
                             if(sylvanCalendar.calendar != undefined){
+                                wjQuery(".loading").show();
                                 sylvanCalendar.dateFromCalendar(date, locationId);
                             }
                             wjQuery('#datepicker').hide();
