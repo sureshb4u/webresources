@@ -5339,7 +5339,7 @@ function SylvanCalendar() {
             if (deliveryType == personalInstruction) {
                 var resourceObj = self.getResourceObj(uniqueId.split("_")[1]);
                 if(resourceObj.deliveryTypeCode == deliveryType && sessionStatus == SCHEDULE_STATUS 
-                    && sessionStatus == MAKEUP_STATUS){
+                    || sessionStatus == MAKEUP_STATUS){
                     obj.unpin = { name: "Unpin" };
                     obj.unpin.visible = true;
                     obj.unpin.callback = function (key, options) {
