@@ -990,6 +990,7 @@ function SylvanCalendar() {
     };
 
     this.createEventOnDrop = function (t, date, allDay, ev, ui, resource, elm) {
+        var self = t;
         if (wjQuery(elm).attr("type") == 'student') {
           var newEvent = this.calendar.fullCalendar('clientEvents', resource.id + date);
           var stuId = wjQuery(elm).attr("value");
