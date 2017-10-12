@@ -4475,7 +4475,7 @@ function SylvanCalendar() {
 
                         if (resourceObj["capacity"] > 1 && obj.deliveryType != undefined) {
                             obj.title += '<span class="student-placeholder-'+obj.deliveryType+'">Student name</span>';
-                            self.addContext("", 'studentPlaceholder', true, obj.deliveryTypeCode);
+                            self.addContext("", 'studentPlaceholder', true, value['deliveryTypeCode']);
                         }
                         // if (value['deliveryType'] != "Group Instruction") {
                             if (value['pinId'] != undefined) {
@@ -5523,6 +5523,8 @@ function SylvanCalendar() {
               obj.makeup = {
                 name: "Makeup",
                 callback : function(key, options) {
+                    wjQuery('.loading').fadeIn();
+                    wjQuery('.loading').css("opacity", 1);
                     var startDate = moment(currentView.start).format("YYYY-MM-DD");
                     var locationObj = self.getLocationObject(self.locationId);
                     if(locationObj['_hub_parentcenter_value'] != undefined){
@@ -5536,6 +5538,8 @@ function SylvanCalendar() {
               obj.float = {
                 name: "Float",
                 callback : function(key, options) {
+                    wjQuery('.loading').fadeIn();
+                    wjQuery('.loading').css("opacity", 1);
                     var startDate = moment(currentView.start).format("YYYY-MM-DD");
                     var locationObj = self.getLocationObject(self.locationId);
                     if(locationObj['_hub_parentcenter_value'] != undefined){
@@ -6164,7 +6168,6 @@ function SylvanCalendar() {
 
             // On click Makeup student save makeup session will be called
             wjQuery(".makeup-item").click(function (event) {
-                wjQuery(".loading").show();
                 var objSession = {};
                 var id = wjQuery(this).attr("id");
                 var nameNGrade = wjQuery(this).text();
@@ -6244,24 +6247,21 @@ function SylvanCalendar() {
                               self.populateStudentEvent([studentObj[0]], true);
                               self.draggable('draggable');
                               wjQuery("#makeup").dialog("close");
-                              wjQuery(".loading").hide();
                           } else {
-                              wjQuery(".loading").hide();
                               wjQuery("#makeup").dialog("close");
                           }
                       } else {
-                          wjQuery(".loading").hide();
                           wjQuery("#makeup").dialog("close");
                       }
                     }else{
-                      wjQuery(".loading").hide();
                       wjQuery("#makeup").dialog("close");
                       self.prompt("The selected student is already scheduled for the respective timeslot.");
                     }
                 }
             });
-        }
-        else{
+            wjQuery(".loading").css("opacity",0);
+            wjQuery(".loading").fadeOut();
+        }else{
             wjQuery("#makeup > .makeup-lst").html('No Students found');
             wjQuery("#makeup").dialog({
                 resizable: false,
@@ -6279,6 +6279,8 @@ function SylvanCalendar() {
             } else {
                 wjQuery("#makeup").dialog('option', 'title', 'Add Float');
             }
+            wjQuery(".loading").css("opacity",0);
+            wjQuery(".loading").fadeOut();
         }
     }
 
@@ -6323,6 +6325,8 @@ function SylvanCalendar() {
                 grade: val['astudent_x002e_hub_grade@OData.Community.Display.V1.FormattedValue'],
                 deliveryTypeId: val['aproductservice_x002e_hub_deliverytype'],
                 deliveryType: val['aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue'],
+                deliveryTypeCode:val['adeliverytype_x002e_hub_code'],
+                deliveryTypeCodeVal:val['adeliverytype_x002e_hub_code@OData.Community.Display.V1.FormattedValue'],
                 subject: val['aprogram_x002e_hub_areaofinterest@OData.Community.Display.V1.FormattedValue'],
                 subjectId: val['aprogram_x002e_hub_areaofinterest'],
                 subjectColorCode: val['aprogram_x002e_hub_color'],
