@@ -2835,12 +2835,18 @@ function SylvanCalendar() {
                     if (self.convertedPinnedList.length) {
                         var isPinned = self.convertedPinnedList.filter(function (x) {
                             return (x.studentId == obj.id &&
-                                    x.resourceId == obj.resourceId &&
+                                    // x.resourceId == obj.resourceId &&
                                     x.dayId == self.getDayValue(startHour) &&
-                                    x.startTime == moment(startHour).format("h:mm A"))
+                                    x.startTime == moment(startHour).format("h:mm A") && 
+                                    (obj.sessionStatus == SCHEDULE_STATUS || obj.sessionStatus == MAKEUP_STATUS ))
+
                         });
                         if (isPinned[0] != undefined) {
-                            obj.pinId = isPinned[0].id;
+                            if(isPinned[0].resourceId == obj.resourceId){
+                                obj.pinId = isPinned[0].id;
+                            }else{
+                                obj.tempPinId = isPinned[0].id;
+                            }
                         }
                     }
 
@@ -4620,6 +4626,9 @@ function SylvanCalendar() {
         if (typeof (responseObj) == 'boolean') {
             if (responseObj) {
                 var txt = wjQuery(element)[0].innerHTML;
+                if(txt.indexOf('<img style="transform:rotate(45deg);" src="/webresources/hub_/calendar/images/pin.png">') != 1){
+                    txt = txt.replace('<img style="transform:rotate(45deg);" src="/webresources/hub_/calendar/images/pin.png">', '');
+                }
                 wjQuery(element).html("<img src='/webresources/hub_/calendar/images/pin.png'/>" + txt);
                 wjQuery(element).attr('pinnedId', objPinnedStudent.hub_sch_pinned_students_teachersid);
             }
@@ -4629,6 +4638,9 @@ function SylvanCalendar() {
 
                 //self.convertPinnedData(responseObj, true);
                 var txt = wjQuery(element)[0].innerHTML;
+                if(txt.indexOf('<img style="transform:rotate(45deg);" src="/webresources/hub_/calendar/images/pin.png">') != 1){
+                    txt = txt.replace('<img style="transform:rotate(45deg);" src="/webresources/hub_/calendar/images/pin.png">', '');
+                }
                 wjQuery(element).html("<img src='/webresources/hub_/calendar/images/pin.png'/>" + txt);
                 wjQuery(element).attr('pinnedId', responseObj['hub_pinned_student_teacher_id']);
             }
@@ -6132,143 +6144,144 @@ function SylvanCalendar() {
         var self = this;
         makeupList = (makeupList == null || makeupList == undefined) ? [] : makeupList;
         makeupList = this.getUniqueFromMakeupNFloat(this.convertMakeupNFloatObj(makeupList));
-        var idArry = wjQuery(placeholderEvent).prev("span").attr("uniqueid").split('_');
-        if (makeupList.length) {
-            var list = "";
+        var selectedPlaceHolder = wjQuery(placeholderEvent).prev("span").attr("uniqueid");
+        if(selectedPlaceHolder != undefined){
+            var idArry = selectedPlaceHolder.split('_');
+            if (makeupList.length) {
+                var list = "";
 
-            wjQuery.each(makeupList, function (k, v) {
-                list += "<li id='" + v.enrollmentId + "' class='makeup-item' >" + v.fullName + ", " + v.grade + "</li>";
-            });
-
-            wjQuery("#makeup > .makeup-lst").html(list);
-            wjQuery("#makeup").dialog({
-                resizable: false,
-                height: 300,
-                width: 350,
-                modal: true,
-                buttons: {
-                    Cancel: function () {
-                        wjQuery(this).dialog("close");
-                    }
-                }
-            });
-
-            if (isForMakeup) {
-                wjQuery("#makeup").dialog('option', 'title', 'Add Makeup');
-            } else {
-                wjQuery("#makeup").dialog('option', 'title', 'Add Float');
-            }
-
-            // On click Makeup student save makeup session will be called
-            wjQuery(".makeup-item").click(function (event) {
-                var objSession = {};
-                var id = wjQuery(this).attr("id");
-                var nameNGrade = wjQuery(this).text();
-                var start = self.convertToMinutes(moment(idArry[2]).format("h:mm A"));
-                var studentObj = [];
-                studentObj = makeupList.filter(function (obj) {
-                    return obj.enrollmentId == id ;
+                wjQuery.each(makeupList, function (k, v) {
+                    list += "<li id='" + v.enrollmentId + "' class='makeup-item' >" + v.fullName + ", " + v.grade + "</li>";
                 });
-            
-                if (studentObj.length) {
-                    if (isForMakeup) {
-                        objSession['hub_studentsessionid'] = studentObj[0].sessionId;
-                        objSession["isForMakeup"] = true;
-                    } else {
-                        objSession['hub_studentsessionid'] = "";
-                        objSession["isForMakeup"] = false;
-                    }
-                    objSession["hub_enrollment@odata.bind"] = studentObj[0]["enrollmentId"];
-                    objSession["hub_student@odata.bind"] = studentObj[0].id;
-                    objSession["hub_service@odata.bind"] = studentObj[0]["serviceId"];
-                    objSession["hub_center@odata.bind"] = self.locationId;
-                    var locationObj = self.getLocationObject(self.locationId);
-                    if(locationObj['_hub_parentcenter_value'] != undefined){
-                        objSession["hub_parentcenter"] = locationObj['_hub_parentcenter_value'];
-                    }
-                    objSession["hub_session_date"] = moment(new Date(idArry[2])).format("YYYY-MM-DD");
-                    objSession["hub_start_time"] = start;
-                    objSession["hub_end_time"] = start + 60;
 
-                    if (studentObj[0]["is1to1"] != undefined) {
-                        objSession["hub_is_1to1"] = studentObj[0]["is1to1"];
+                wjQuery("#makeup > .makeup-lst").html(list);
+                wjQuery("#makeup").dialog({
+                    resizable: false,
+                    height: 300,
+                    width: 350,
+                    modal: true,
+                    buttons: {
+                        Cancel: function () {
+                            wjQuery(this).dialog("close");
+                        }
                     }
-                    objSession["hub_resourceid@odata.bind"] = idArry[1];
-                    var eventId = idArry[1] + idArry[2];
-                    var eventObj = self.calendar.fullCalendar('clientEvents', eventId);
-                    var callSave = false;
-                    var allowToDropStudent = self.validateStudentOnSameRow(studentObj[0].id, idArry[2]);
-                    if(allowToDropStudent){
-                      if (eventObj[0].hasOwnProperty("students") && eventObj[0].students.length > 0) {
-                          var stdIndex = -1;
-                          for (var i = 0; i < eventObj[0].students.length; i++) {
-                              if(eventObj[0].students[i].id == studentObj[0].id){
-                                stdIndex = i;
-                                break;
+                });
+
+                if (isForMakeup) {
+                    wjQuery("#makeup").dialog('option', 'title', 'Add Makeup');
+                } else {
+                    wjQuery("#makeup").dialog('option', 'title', 'Add Float');
+                }
+
+                // On click Makeup student save makeup session will be called
+                wjQuery(".makeup-item").click(function (event) {
+                    var objSession = {};
+                    var id = wjQuery(this).attr("id");
+                    var nameNGrade = wjQuery(this).text();
+                    var start = self.convertToMinutes(moment(idArry[2]).format("h:mm A"));
+                    var studentObj = [];
+                    studentObj = makeupList.filter(function (obj) {
+                        return obj.enrollmentId == id ;
+                    });
+                
+                    if (studentObj.length) {
+                        if (isForMakeup) {
+                            objSession['hub_studentsessionid'] = studentObj[0].sessionId;
+                            objSession["isForMakeup"] = true;
+                        } else {
+                            objSession['hub_studentsessionid'] = "";
+                            objSession["isForMakeup"] = false;
+                        }
+                        objSession["hub_enrollment@odata.bind"] = studentObj[0]["enrollmentId"];
+                        objSession["hub_student@odata.bind"] = studentObj[0].id;
+                        objSession["hub_service@odata.bind"] = studentObj[0]["serviceId"];
+                        objSession["hub_center@odata.bind"] = self.locationId;
+                        var locationObj = self.getLocationObject(self.locationId);
+                        if(locationObj['_hub_parentcenter_value'] != undefined){
+                            objSession["hub_parentcenter"] = locationObj['_hub_parentcenter_value'];
+                        }
+                        objSession["hub_session_date"] = moment(new Date(idArry[2])).format("YYYY-MM-DD");
+                        objSession["hub_start_time"] = start;
+                        objSession["hub_end_time"] = start + 60;
+
+                        if (studentObj[0]["is1to1"] != undefined) {
+                            objSession["hub_is_1to1"] = studentObj[0]["is1to1"];
+                        }
+                        objSession["hub_resourceid@odata.bind"] = idArry[1];
+                        var eventId = idArry[1] + idArry[2];
+                        var eventObj = self.calendar.fullCalendar('clientEvents', eventId);
+                        var callSave = false;
+                        var allowToDropStudent = self.validateStudentOnSameRow(studentObj[0].id, idArry[2]);
+                        if(allowToDropStudent){
+                          if (eventObj[0].hasOwnProperty("students") && eventObj[0].students.length > 0) {
+                              var stdIndex = -1;
+                              for (var i = 0; i < eventObj[0].students.length; i++) {
+                                  if(eventObj[0].students[i].id == studentObj[0].id){
+                                    stdIndex = i;
+                                    break;
+                                  }
                               }
-                          }
-                          if (stdIndex == -1) {
+                              if (stdIndex == -1) {
+                                  callSave = true;
+                              }
+                          } else {
                               callSave = true;
                           }
-                      } else {
-                          callSave = true;
-                      }
-                      if (callSave) {
-                          var responseObj = data.saveMakeupNFloat(objSession);
-                          if (responseObj != null) {
-                              var uniqueid = studentObj[0].id + "_" + idArry[1] + "_" + idArry[2];
-                              // Update New student Session
-                              studentObj[0]['resourceId'] = idArry[1];
-                              studentObj[0]['start'] = new Date(idArry[2]);
-                              studentObj[0]['startHour'] = new Date(idArry[2]);
-                              studentObj[0]['end'] = new Date(new Date(idArry[2]).setHours(new Date(idArry[2]).getHours() + 1));
-                              studentObj[0]['sessionId'] = responseObj['hub_studentsessionid'];
-                              studentObj[0]['sessionDate'] = responseObj['hub_session_date'];
-                              if(responseObj['hub_sessiontype'] != undefined){
-                                studentObj[0]['sessiontype'] = responseObj['hub_sessiontype'];
+                          if (callSave) {
+                              var responseObj = data.saveMakeupNFloat(objSession);
+                              if (responseObj != null) {
+                                  var uniqueid = studentObj[0].id + "_" + idArry[1] + "_" + idArry[2];
+                                  // Update New student Session
+                                  studentObj[0]['resourceId'] = idArry[1];
+                                  studentObj[0]['start'] = new Date(idArry[2]);
+                                  studentObj[0]['startHour'] = new Date(idArry[2]);
+                                  studentObj[0]['end'] = new Date(new Date(idArry[2]).setHours(new Date(idArry[2]).getHours() + 1));
+                                  studentObj[0]['sessionId'] = responseObj['hub_studentsessionid'];
+                                  studentObj[0]['sessionDate'] = responseObj['hub_session_date'];
+                                  if(responseObj['hub_sessiontype'] != undefined){
+                                    studentObj[0]['sessiontype'] = responseObj['hub_sessiontype'];
+                                  }
+                                  if(responseObj['hub_session_status'] != undefined){
+                                    studentObj[0]['sessionStatus'] = responseObj['hub_session_status'];
+                                  }
+                                  // update Student
+                                  self.convertedStudentObj.push(studentObj[0]);
+                                  self.populateStudentEvent([studentObj[0]], true);
+                                  self.draggable('draggable');
+                                  wjQuery("#makeup").dialog("close");
+                              } else {
+                                  wjQuery("#makeup").dialog("close");
                               }
-                              if(responseObj['hub_session_status'] != undefined){
-                                studentObj[0]['sessionStatus'] = responseObj['hub_session_status'];
-                              }
-                              // update Student
-                              self.convertedStudentObj.push(studentObj[0]);
-                              self.populateStudentEvent([studentObj[0]], true);
-                              self.draggable('draggable');
-                              wjQuery("#makeup").dialog("close");
                           } else {
                               wjQuery("#makeup").dialog("close");
                           }
-                      } else {
+                        }else{
                           wjQuery("#makeup").dialog("close");
-                      }
-                    }else{
-                      wjQuery("#makeup").dialog("close");
-                      self.prompt("The selected student is already scheduled for the respective timeslot.");
+                          self.prompt("The selected student is already scheduled for the respective timeslot.");
+                        }
                     }
-                }
-            });
-            wjQuery(".loading").css("opacity",0);
-            wjQuery(".loading").fadeOut();
-        }else{
-            wjQuery("#makeup > .makeup-lst").html('No Students found');
-            wjQuery("#makeup").dialog({
-                resizable: false,
-                height: 300,
-                width: 350,
-                modal: true,
-                buttons: {
-                    Cancel: function () {
-                        wjQuery(this).dialog("close");
+                });
+                wjQuery(".loading").css("opacity",0);
+                wjQuery(".loading").fadeOut();
+            }else{
+                wjQuery("#makeup > .makeup-lst").html('No Students found');
+                wjQuery("#makeup").dialog({
+                    resizable: false,
+                    height: 300,
+                    width: 350,
+                    modal: true,
+                    buttons: {
+                        Cancel: function () {
+                            wjQuery(this).dialog("close");
+                        }
                     }
+                });
+                if (isForMakeup) {
+                    wjQuery("#makeup").dialog('option', 'title', 'Add Makeup');
+                } else {
+                    wjQuery("#makeup").dialog('option', 'title', 'Add Float');
                 }
-            });
-            if (isForMakeup) {
-                wjQuery("#makeup").dialog('option', 'title', 'Add Makeup');
-            } else {
-                wjQuery("#makeup").dialog('option', 'title', 'Add Float');
             }
-            wjQuery(".loading").css("opacity",0);
-            wjQuery(".loading").fadeOut();
         }
     }
 
