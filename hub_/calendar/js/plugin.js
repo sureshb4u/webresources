@@ -143,10 +143,10 @@ setTimeout(function () {
             if (fetchData) {
                 var obj = data.getResources(locationId);
                 resources = obj == null ? [] : obj;
+                var pi = [];
+                var gi = [];
+                var gf = [];
                 if (resources.length) {
-                    var pi = [];
-                    var gi = [];
-                    var gf = [];
                     for (var i = 0; i < resources.length; i++) {
                         switch (resources[i]['adeliverytype_x002e_hub_code']) {
                             case personalInstruction:
@@ -162,6 +162,9 @@ setTimeout(function () {
                     }
                     resources = pi.concat(gf);
                     resources = resources.concat(gi);
+                    if(pi.length == 0 && (gf.length != 0 || gi.length != 0)){
+                        sylvanCalendar.prompt("The selected center doesn't have the PI Resource. Please change the filter to see the Group Resources.");
+                    }
                 }
             }
             if (selectedDeliveryType.length == deliveryType.length) {
