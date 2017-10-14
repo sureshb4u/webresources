@@ -5541,6 +5541,7 @@ function SylvanCalendar() {
               obj.makeup = {
                 name: "Makeup",
                 callback : function(key, options) {
+                    wjQuery(".loading").show();
                     var startDate = moment(currentView.start).format("YYYY-MM-DD");
                     var locationObj = self.getLocationObject(self.locationId);
                     if(locationObj['_hub_parentcenter_value'] != undefined){
@@ -5554,6 +5555,7 @@ function SylvanCalendar() {
               obj.float = {
                 name: "Float",
                 callback : function(key, options) {
+                    wjQuery(".loading").show();
                     var startDate = moment(currentView.start).format("YYYY-MM-DD");
                     var locationObj = self.getLocationObject(self.locationId);
                     if(locationObj['_hub_parentcenter_value'] != undefined){
@@ -5577,6 +5579,7 @@ function SylvanCalendar() {
                 obj.float = {
                     name: "Float",
                     callback : function(key, options) {
+                        wjQuery(".loading").show();
                         var startDate = moment(currentView.start).format("YYYY-MM-DD");
                         var locationObj = self.getLocationObject(self.locationId);
                         if(locationObj['_hub_parentcenter_value'] != undefined){
@@ -6165,6 +6168,12 @@ function SylvanCalendar() {
                     height: 300,
                     width: 350,
                     modal: true,
+                    show: {
+                        effect: 'slide',
+                        complete: function() {
+                            wjQuery(".loading").hide();
+                        }
+                    },
                     buttons: {
                         Cancel: function () {
                             wjQuery(this).dialog("close");
@@ -6266,8 +6275,6 @@ function SylvanCalendar() {
                         }
                     }
                 });
-                wjQuery(".loading").css("opacity",0);
-                wjQuery(".loading").fadeOut();
             }else{
                 wjQuery("#makeup > .makeup-lst").html('No Students found');
                 wjQuery("#makeup").dialog({
@@ -6275,6 +6282,12 @@ function SylvanCalendar() {
                     height: 300,
                     width: 350,
                     modal: true,
+                    show: {
+                        effect: 'slide',
+                        complete: function() {
+                            wjQuery(".loading").hide();
+                        }
+                    },
                     buttons: {
                         Cancel: function () {
                             wjQuery(this).dialog("close");
@@ -6289,6 +6302,7 @@ function SylvanCalendar() {
             }
         }else{
             wjQuery("#makeup").dialog("close");
+            wjQuery(".loading").hide();
         }
     }
 
