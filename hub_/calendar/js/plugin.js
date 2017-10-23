@@ -4874,8 +4874,8 @@ function SylvanCalendar() {
             }
             objCancelSession['hub_enrollment@odata.bind'] = objStudent[0]['enrollmentId'];
             objCancelSession['hub_service@odata.bind'] = objStudent[0]['serviceId'];
-            objCancelSession['hub_center@odata.bind'] = self.locationId;
-            var locationObj = self.getLocationObject(self.locationId);
+            objCancelSession['hub_center@odata.bind'] = this.locationId;
+            var locationObj = this.getLocationObject(this.locationId);
             if(locationObj['_hub_parentcenter_value'] != undefined){
                 objCancelSession['hub_parentcenter'] = locationObj['_hub_parentcenter_value'];
             }
