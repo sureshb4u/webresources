@@ -1677,7 +1677,8 @@ function SylvanCalendar() {
             if (eventTitleHTML.prop('outerHTML') != undefined) {
                 if (eventTitleHTML.length == 1) {
                     if (prevEvent[0].teachers.length == 1) {
-                        prevEvent[0].title = "<span class='placeholder'>Teacher name</span>";
+                        prevEvent[0].title = "<span class='placeholder teacher-placeholder'>Teacher name</span>";
+                        self.addContext("", 'teacherPlaceholder', true, true);
                         prevEvent[0].title += eventTitleHTML.prop('outerHTML');
                     } else {
                         prevEvent[0].title = eventTitleHTML.prop('outerHTML');
@@ -1685,7 +1686,8 @@ function SylvanCalendar() {
                 } else {
                     prevEvent[0].title = "";
                     if (prevEvent[0].teachers.length == 1) {
-                        prevEvent[0].title += "<span class='placeholder'>Teacher name</span>";
+                        prevEvent[0].title += "<span class='placeholder teacher-placeholder'>Teacher name</span>";
+                        self.addContext("", 'teacherPlaceholder', true, true);
                     }
                     for (var i = 0; i < eventTitleHTML.length; i++) {
                         prevEvent[0].title += eventTitleHTML[i].outerHTML;
@@ -4440,7 +4442,8 @@ function SylvanCalendar() {
                           }
                         }
                         var showPinIcon = self.checkforPinOrTempPin(value);
-                        obj.title += "<span class='placeholder'>Teacher name</span>";
+                        obj.title += "<span class='placeholder teacher-placeholder'>Teacher name</span>";
+                        self.addContext("", 'teacherPlaceholder', true, true);
                         if (resourceObj.deliveryTypeCode == groupInstruction) {
                             // if (value['pinId'] != undefined) {
                             //     obj.title += "<span class='drag-student' eventid='" + eventId + "' pinnedId='" + value['pinId'] + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='studentSession' value='" + id + "'><img src='/webresources/hub_/calendar/images/pin.png'/>" + name + ", " + grade + "<i class='material-icons' title='"+value['serviceValue']+"' style='color:" + value['subjectColorCode'] + "'>location_on</i></span>";
@@ -5470,8 +5473,7 @@ function SylvanCalendar() {
                       };
                     }
                 });
-            }
-           
+            }   
         } 
         else if (labelFor == 'teacher') {
             obj.pin = {
@@ -5600,6 +5602,43 @@ function SylvanCalendar() {
                 }); 
             }
           }
+        }else if(labelFor == "teacherPlaceholder"){
+            obj.makeup = {
+                name: "Makeup",
+                callback : function(key, options) {
+                    wjQuery(".loading").show();
+                    var startDate = moment(currentView.start).format("YYYY-MM-DD");
+                    var locationObj = self.getLocationObject(self.locationId);
+                    if(locationObj['_hub_parentcenter_value'] != undefined){
+                        self.makeupPopup(data.getMakeupNFloat({"hub_center@odata.bind":self.locationId, "isForMakeup":true, "hub_date":startDate, "hub_parentcenter":locationObj['_hub_parentcenter_value']}), options.$trigger[0], true);
+                    }else{
+                        self.makeupPopup(data.getMakeupNFloat({"hub_center@odata.bind":self.locationId, "isForMakeup":true, "hub_date":startDate}), options.$trigger[0], true);
+                    }
+                }
+            }
+            // float menu
+            obj.float = {
+                name: "Float",
+                callback : function(key, options) {
+                    wjQuery(".loading").show();
+                    var startDate = moment(currentView.start).format("YYYY-MM-DD");
+                    var locationObj = self.getLocationObject(self.locationId);
+                    if(locationObj['_hub_parentcenter_value'] != undefined){
+                        self.makeupPopup(data.getMakeupNFloat({"hub_center@odata.bind":self.locationId, "isForMakeup":false, "hub_date":startDate, "hub_parentcenter":locationObj['_hub_parentcenter_value']}), options.$trigger[0], false);
+                    }else{
+                        self.makeupPopup(data.getMakeupNFloat({"hub_center@odata.bind":self.locationId, "isForMakeup":false, "hub_date":startDate}), options.$trigger[0], false);
+                    }
+                }
+            }
+            wjQuery.contextMenu( 'destroy', 'span[uniqueId="' + uniqueId + '"]');
+            wjQuery.contextMenu({
+                selector: '.teacher-placeholder', 
+                build: function($trigger, e) {
+                  return {
+                    items: obj
+                  };
+                }
+            }); 
         }
     };
 
@@ -6453,7 +6492,8 @@ function SylvanCalendar() {
                 if (eventTitleHTML.prop('outerHTML') != undefined) {
                     if (eventTitleHTML.length == 1) {
                         if (prevEvent[0].teachers.length == 1) {
-                            prevEvent[0].title = "<span class='placeholder'>Teacher name</span>";
+                            prevEvent[0].title = "<span class='placeholder teacher-placeholder'>Teacher name</span>";
+                            self.addContext("", 'teacherPlaceholder', true, true);
                             prevEvent[0].title += eventTitleHTML.prop('outerHTML');
                         } else {
                             prevEvent[0].title = eventTitleHTML.prop('outerHTML');
@@ -6461,7 +6501,8 @@ function SylvanCalendar() {
                     } else {
                         prevEvent[0].title = "";
                         if (prevEvent[0].teachers.length == 1) {
-                            prevEvent[0].title += "<span class='placeholder'>Teacher name</span>";
+                            prevEvent[0].title += "<span class='placeholder teacher-placeholder'>Teacher name</span>";
+                            self.addContext("", 'teacherPlaceholder', true, true);
                         }
                         for (var i = 0; i < eventTitleHTML.length; i++) {
                             prevEvent[0].title += eventTitleHTML[i].outerHTML;
@@ -7145,6 +7186,7 @@ function SylvanCalendar() {
                 }
                 else{
                     teacherHtml += "<div class='teacherHolder'><div class='placeholder'>Teacher Name</div></div>";
+                    self.addContext("", 'teacherPlaceholder', true, true);
                     oneResource += teacherHtml;
                 }
                 if(!studentPlaceFlag){
