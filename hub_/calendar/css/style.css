@@ -509,13 +509,13 @@ ul{
     list-style-type: none;
 }
 
-.makeup-item{
+.makeup-item, .float-item{
     padding: 5px 2px;
     cursor: pointer;
     list-style-type: none;
     transition: all 0.2s;
 }
-.makeup-item:hover{
+.makeup-item:hover, .float-item:hover{
     color: #fff;
     text-decoration: none;
     background-color: #0081c2;

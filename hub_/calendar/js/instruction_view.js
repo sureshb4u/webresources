@@ -5507,6 +5507,36 @@ var studentTimings = [
 ];
 
 
+var FloatTeacherList = [
+  {
+      "@odata.etag":"W/\"4240362\"",
+      "hub_name":"John Smith",
+      "hub_startdate@OData.Community.Display.V1.FormattedValue":"10/19/2016",
+      "hub_startdate":"2016-10-19T00:00:00Z",
+      "hub_staffid":"5886bcbd-ab77-e711-80f3-c4346bad526c"
+   },
+   {
+      "@odata.etag":"W/\"4187176\"",
+      "hub_name":"Jordan S",
+      "hub_startdate@OData.Community.Display.V1.FormattedValue":"10/4/2016",
+      "hub_startdate":"2016-10-04T00:00:00Z",
+      "hub_staffid":"ed7614e3-fc79-e711-80f5-c4346badc680"
+   },
+   {
+      "@odata.etag":"W/\"3916216\"",
+      "hub_name":"Judy Thomas",
+      "hub_startdate@OData.Community.Display.V1.FormattedValue":"12/28/2016",
+      "hub_startdate":"2016-12-28T00:00:00Z",
+      "hub_staffid":"43f9ff04-2292-e711-80f7-c4346bac4304"
+   },
+   {
+      "@odata.etag":"W/\"3916251\"",
+      "hub_name":"Sam Rehn",
+      "hub_startdate@OData.Community.Display.V1.FormattedValue":"10/4/2016",
+      "hub_startdate":"2016-10-04T00:00:00Z",
+      "hub_staffid":"ae2a944d-2292-e711-80f7-c4346bac4304"
+   }
+];
 
 
 function Data(){
@@ -5629,6 +5659,14 @@ function Data(){
 
   this.getMakeupNFloat = function(objSession){
     return makeupNfloatList;
+  }
+
+  this.getFLoatTeacher = function(locationId, startDate, endDate){
+    return FloatTeacherList;
+  }
+
+  this.saveTeacherFloat = function(objStaffSch){
+    return true
   }
 
   this.saveMakeupNFloat = function(objNewSession){
