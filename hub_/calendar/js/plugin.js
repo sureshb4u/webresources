@@ -1806,7 +1806,7 @@ function SylvanCalendar() {
             }
             student[0].start = date;
             student[0].startHour = startHour;
-            student[0].end = new Date(endDate.setHours(endDate.getHours() + 1));
+            //student[0].end = new Date(endDate.setHours(endDate.getHours() + 1));
             student[0].resourceId = resource.id;
             // student[0].deliveryType = t.getResourceObj(resource.id)['deliveryType'];
             // student[0].deliveryTypeId = t.getResourceObj(resource.id)['deliveryTypeId'];
@@ -4149,7 +4149,6 @@ function SylvanCalendar() {
         }, 300);
     }
 
-
     this.pushStudentToSOF = function (data) {
         var currentView = this.calendar.fullCalendar('getView');
         if(currentView.name == 'resourceDay'){
@@ -4424,7 +4423,7 @@ function SylvanCalendar() {
                                 nonPreferredTeacher: value['nonPreferredTeacher']
                             }],
                             start: value['startHour'],
-                            //end:value['end'],
+                            end:value['end'],
                             allDay: false,
                             resourceId: value['resourceId'],
                             isTeacher: false,
