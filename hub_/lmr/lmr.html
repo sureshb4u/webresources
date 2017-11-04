@@ -2,96 +2,30 @@
 <html>
 	<head>
 		<title>License Marketing Royalties</title>
-		<style type="text/css" ></style>
-		<link rel="stylesheet" type="text/css" href="/webresources/hub_/lmr/lmr.css">
+		<link rel="stylesheet" type="text/css" href="/webresources/hub_/calendar/css/jquery_ui_1.8.23.css">
+		<link rel="stylesheet" type="text/css" href="/webresources/hub_/lmr/css/lmr.css">
 	</head>
 	<body>
 		<header>
 			<span>License Marketing Royalties</span>
 		</header>
-		<aside id="dropdown">
-        	<span class="month"></span>
-        	<span class="year"></span>
-		</aside>
-		<aside class="heading">
-			<article class="row">
-				<span class="first">Center#</span>
-				<span>1509</span>
-			</article>
-			<article class="row">
-				<span class="first">Center Name:</span>
-				<span>Timonium LLC</span>
-			</article>
-			<article class="row">
-				<span class="first">Center Address:</span>
-				<span>Beaver dam road,timonium</span>
-			</article>
-			<article class="row">
-				<span class="first">License Agreement</span>
-				<span>4A</span>
-			</article>
-		</aside>
-		<aside class="desc">
-			<section class="by4">
-				<h1>ROYALTY CALCULATION:</h1>
-				<article class="dark">
-					<span class="first-colm">&nbsp;</span>
-					<span>Amount</span>
-					<span>Royalty%</span>
-					<span>Total</span>
-				</article>
-				<article>
-					<span class="first-colm">Core Revenue summary</span>
-					<span>20000</span>
-					<span>6</span>
-					<span>1200</span>
-				</article>
-				<article>
-					<span class="first-colm">EDGE revenue summary</span>
-					<span>10000</span>
-					<span>8</span>
-					<span>800</span>
-				</article>
-				<article>
-					<span class="first-colm">Total Cash collected subject to Royalty</span>
-					<span>30000</span>
-					<span>&nbsp;</span>
-					<span>&nbsp;</span>
-				</article>
-				<article class="brdr-btm">
-					<span class="first-colm">&nbsp;</span>
-					<span>&nbsp;</span>
-					<span><b>Total Royalty Due</b></span>
-					<span>2000</span>
-				</article>
-				<h1>NATIONAL ADVERTISING:</h1>
-				<article>
-					<span class="first-colm">National Advertising Fund</span>
-					<span>20000</span>
-					<span>6</span>
-					<span>1200</span>
-				</article>
-				<article>
-					<span class="first-colm">National Advertising Campaign</span>
-					<span>20000</span>
-					<span>6</span>
-					<span>1200</span>
-				</article>
-				<article>
-					<span class="first-colm">&nbsp;</span>
-					<span>&nbsp;</span>
-					<span><b>Total National Advertising due:</b></span>
-					<span>2000</span>
-				</article>
-				<article class="no-brdr">
-					<span class="first-colm">&nbsp;</span>
-					<span>&nbsp;</span>
-					<span>&nbsp;</span>
-					<span><button>Submit LMR</button></span>
-				</article>
-			</section>
-		</aside>
+		<div id="lmr">
+			<div id="dialog" style="display: none;">
+	            <p class="dialog-msg"></p>
+	        </div>
+			<aside id="dropdown">
+	        	<span class="month"></span>
+	        	<span class="year"></span>
+			</aside>
+	        <div id="lmr-table">
+	        </div>
+			<div class="loading">
+		         <img class="load-img" src="/webresources/hub_/calendar/images/loading.gif">
+		     </div>
+		</div>
 		<script src="/webresources/hub_/calendar/js/jquery_1.9.0.min.js"></script>
-		<script src="/webresources/hub_/lmr/lmr.js"></script>
+		<script type="text/javascript" src="/webresources/hub_/calendar/js/jquery_ui_1.9.2.min.js"></script>
+		<script src="/webresources/hub_/lmr/js/lmrui.js"></script>
+		<script src="/webresources/hub_/lmr/js/lmr_view.js"></script>
 	</body>
 </html>
