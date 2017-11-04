@@ -3759,6 +3759,7 @@ function ResourceView(element, calendar, viewName) {
                 }else{
                     var d1 = cellDate(cell);
                     var d2 = addMinutes(cloneDate(d1), opt('defaultEventMinutes'));
+                    trigger('onDrag',d1,d1);
                     renderSlotOverlay(d1, d2,cell);
                 }
             }

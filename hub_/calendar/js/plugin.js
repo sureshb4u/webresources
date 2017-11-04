@@ -346,7 +346,8 @@ function SylvanCalendar() {
     this.conflictMsg = ["Multiple teachers are placed", 
                         "Capacity has reached max", 
                         "OneToOne Conflict", 
-                        "Non preferred teacher Conflict"
+                        "Non preferred teacher Conflict",
+                        "Slot Timings are Overlapped"
                       ];
     this.calendarOptions = {};
     this.convertedTeacherObj = [];
@@ -1243,6 +1244,8 @@ function SylvanCalendar() {
             var prevEventId = wjQuery(elm).attr("eventid");
             var newEvent = this.calendar.fullCalendar('clientEvents', resource.id + date);
             var prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
+            var eventDuration = (new Date(prevEvent[0].end).getTime() - new Date(prevEvent[0].start).getTime())/(1000*60);
+
             var newResourceObj = t.getResourceObj(resource.id);
             var prevResourceObj = t.getResourceObj(prevEvent[0]['resourceId']);
             var uniqueId = wjQuery(elm).attr('uniqueId');
@@ -1264,18 +1267,66 @@ function SylvanCalendar() {
                   allowToDropStudent = self.validateStudentOnSameRow(stuId, startHour);
                 }
                 if(allowToDropStudent){
-                  if (newEvent.length == 0) {
-                      if (wjQuery(elm).attr("pinnedId")) {
-                          t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This student will be temporarily un pinned. Do you wish to continue?");
-                      } else {
-                          if (newResourceObj.deliveryType == prevStudObj.deliveryType) {
-                              t.studentSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
-                          } else {
-                              t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "DeliveryType is different. Do you wish to continue?");
+                    var minuteflag = true;
+                    if(newEvent.length > 0){
+                        var newEventDuration = (new Date(newEvent[0].end).getTime() - new Date(newEvent[0].start).getTime())/(1000*60);
+                        if(newEventDuration != eventDuration){
+                            minuteflag = false;
+                            t.prompt("Student slot timings are mismatching.Cannot be placed.");
+                        }
+                    }
+                    else if(newEvent.length == 0){
+                        var checkForNextEvent = this.calendar.fullCalendar('clientEvents', resource.id + new Date(new Date(date).setHours(new Date(date).getHours() + 1)));
+                        var checkForPrevEvent = this.calendar.fullCalendar('clientEvents', resource.id + new Date(new Date(date).setHours(new Date(date).getHours() - 1)));
+                        if(checkForNextEvent.length){
+                            if(checkForNextEvent[0].students.length == 1){
+                                if(checkForNextEvent[0].students[0].id != prevStudObj.id){
+                                    minuteflag = false;
+                                    t.prompt("Slot timings are getting Overlapped.Cannot be placed.");
+                                }
+                            }
+                            var prevStudentDuration = (new Date(date).getTime() - new Date(prevStudObj.end).getTime())/(1000*60);
+                            var prevStudentEndTime = new Date(new Date(date).setMinutes(Math.abs(prevStudentDuration)));
+                            if(prevStudentEndTime.getTime() > checkForNextEvent[0].start){
+                                minuteflag = false;
+                                t.prompt("Slot timings are getting Overlapped.Cannot be placed.");
+                            }
+                        }
+                        if(checkForPrevEvent.length){
+                            if(checkForPrevEvent[0].students.length == 1){
+                                if(checkForPrevEvent[0].students[0].id != prevStudObj.id){
+                                    minuteflag = false;
+                                    t.prompt("Slot timings are getting Overlapped.Cannot be placed.");
+                                }
+                            }
+                            if(checkForPrevEvent[0].end.getTime() <= new Date(date).getTime())
+                            {
+                                var prevStudentDuration = (new Date(date).getTime() - new Date(prevStudObj.end).getTime())/(1000*60);
+                                var prevStudentEndTime = new Date(new Date(date).setMinutes(Math.abs(prevStudentDuration)));
+                                if(prevStudentEndTime.getTime() < checkForPrevEvent[0].end){
+                                    minuteflag = false;
+                                    t.prompt("Slot timings are getting Overlapped.Cannot be placed.");
+                                }
+                            }    
+                            else{
+                                 minuteflag = false;
+                                 t.prompt("Slot timings are getting Overlapped.Cannot be placed.");
+                            }
+                        }
+                    }
+                    if(minuteflag){
+                        if (newEvent.length == 0) {
+                            if (wjQuery(elm).attr("pinnedId")) {
+                                t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This student will be temporarily un pinned. Do you wish to continue?");
+                            } else {
+                                if (newResourceObj.deliveryType == prevStudObj.deliveryType) {
+                                  t.studentSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
+                                } else {
+                                    t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "DeliveryType is different. Do you wish to continue?");
+                                }
                           }
                       }
-                  }
-                  else if (newEvent.length == 1) {
+                      else if (newEvent.length == 1) {
                       var teacherIsPrefered = t.checkNonPreferredTeacher(prevStudObj, newEvent[0]);
                       if(!teacherIsPrefered){
                         if (newEvent[0]['students'] == undefined) {
@@ -1530,6 +1581,7 @@ function SylvanCalendar() {
                         }
                       }
                   }
+              }
                 }else{
                   t.prompt("The selected student is already scheduled for the respective timeslot.");
                 }
@@ -1723,9 +1775,8 @@ function SylvanCalendar() {
 
                 // remove all conflicts By passing prevEvent Object 
                 t.removeAllConflictsFromPrevEvent(prevEvent[0]);
-
                 if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "student-placeholder-"+prevEvent[0].deliveryType)) ||
-                   (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder" && eventTitleHTML[1].className == "student-placeholder-"+prevEvent[0].deliveryType) ||
+                   (eventTitleHTML.length == 2 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "placeholder teacher-placeholder") && eventTitleHTML[1].className == "student-placeholder-"+prevEvent[0].deliveryType) ||
                    (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder" && eventTitleHTML[2].className == "student-placeholder-"+prevEvent[0].deliveryType)) {
                     for (var i = 0; i < this.eventList.length; i++) {
                         if (this.eventList[i].id == prevEventId)
@@ -1749,16 +1800,20 @@ function SylvanCalendar() {
             elm.remove();
             newTeacherSession.start = date;
             newTeacherSession.startHour = startHour;
-            newTeacherSession.end = new Date(endDate.setHours(endDate.getHours() + 1));
+            newTeacherSession.end = this.setEnd(t.convertedTeacherObj[index],newTeacherSession);
             newTeacherSession.resourceId = resource.id;
             newTeacherSession.deliveryTypeId = t.getResourceObj(resource.id).deliveryTypeId;
             newTeacherSession.deliveryType = t.getResourceObj(resource.id).deliveryType;
             t.saveTeacherToSession(newTeacherSession, t.convertedTeacherObj[index]);
         }
-        self.openSofPane();
-        self.showConflictMsg();
-        self.draggable('draggable');
+        this.openSofPane();
+        this.showConflictMsg();
+        this.draggable('draggable');
+    }
 
+    this.setEnd = function(prevObj,newObj){
+        var duration = (prevObj.end.getTime() - prevObj.start.getTime())/(1000*60);
+        return new Date(new Date(newObj.start).setMinutes(new Date(newObj.start).getMinutes() + duration))
     }
 
     this.studentSofConflictCheck = function (t, date, allDay, ev, ui, resource, elm) {
@@ -1806,7 +1861,7 @@ function SylvanCalendar() {
             }
             student[0].start = date;
             student[0].startHour = startHour;
-            //student[0].end = new Date(endDate.setHours(endDate.getHours() + 1));
+            student[0].end = this.setEnd(prevStudent,student[0]);
             student[0].resourceId = resource.id;
             // student[0].deliveryType = t.getResourceObj(resource.id)['deliveryType'];
             // student[0].deliveryTypeId = t.getResourceObj(resource.id)['deliveryTypeId'];
@@ -1884,9 +1939,19 @@ function SylvanCalendar() {
                     }
 
                     // remove all conflicts By passing prevEvent Object 
+
+                    var checkForNearbyPrevEventBefore = this.calendar.fullCalendar('clientEvents', prevEvent[0].resourceId + new Date(new Date(prevEvent[0].start).setHours(new Date(prevEvent[0].start).getHours() + 1)));
+                    var checkForNearbyPrevEventAfter = this.calendar.fullCalendar('clientEvents', prevEvent[0].resourceId + new Date(new Date(prevEvent[0].start).setHours(new Date(prevEvent[0].start).getHours() - 1)));
+                    if(checkForNearbyPrevEventBefore.length){
+                        t.removeAllConflictsFromPrevEvent(checkForNearbyPrevEventBefore[0]);
+                    }
+                    if(checkForNearbyPrevEventAfter.length){
+                        t.removeAllConflictsFromPrevEvent(checkForNearbyPrevEventAfter[0]);
+                    }
                     t.removeAllConflictsFromPrevEvent(prevEvent[0]);
+                    eventTitleHTML = wjQuery(prevEvent[0].title);
                     if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "student-placeholder-"+prevEvent[0].deliveryType)) ||
-                      (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder" && eventTitleHTML[1].className == "student-placeholder-"+prevEvent[0].deliveryType) ||
+                      (eventTitleHTML.length == 2 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "placeholder teacher-placeholder") && eventTitleHTML[1].className == "student-placeholder-"+prevEvent[0].deliveryType) ||
                       (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder" && eventTitleHTML[2].className == "student-placeholder-"+prevEvent[0].deliveryType)) {
                         for (var i = 0; i < this.eventList.length; i++) {
                             if (this.eventList[i].id == prevEventId)
@@ -1910,7 +1975,7 @@ function SylvanCalendar() {
                 elm.remove();
                 newStudentObj.start = date;
                 newStudentObj.startHour = startHour;
-                newStudentObj.end = new Date(endDate.setHours(endDate.getHours() + 1));
+                newStudentObj.end = this.setEnd(t.convertedStudentObj[index],newStudentObj);
                 newStudentObj.resourceId = resource.id;
                 if (wjQuery(elm).attr("tempPinId")) {
                     newStudentObj.tempPinId = wjQuery(elm).attr("tempPinId");
@@ -1973,6 +2038,9 @@ function SylvanCalendar() {
             allDayText: '',
             allDaySlot:true,
             droppable: true,
+            onDrag: function(date){
+               self.helperStartTime =  moment(date).format('hh:mm a'); 
+            },
             drop: function (date, allDay, ev, ui, resource) {
                 t.createEventOnDrop(t, date, allDay, ev, ui, resource, this);
             },
@@ -2916,11 +2984,17 @@ function SylvanCalendar() {
                 var allowStudentFlag = false;
                 if(currentView.name == 'resourceDay'){
                     var effEndDate = currentCalendarDate;
+
                     if(val['hub_effectiveenddate'] != undefined){
                         effEndDate = new Date(val['hub_effectiveenddate']);
                     }
                     else if(val['aenrollment_x002e_hub_enrollmentenddate'] != undefined){
                         effEndDate = new Date(val['aenrollment_x002e_hub_enrollmentenddate']);
+                    }
+                    if(val['adeliverytype_x002e_hub_code'] == personalInstruction){
+                        if(val['aenrollment_x002e_hub_committedsessionenddate'] != undefined){
+                            effEndDate = new Date(val['aenrollment_x002e_hub_committedsessionenddate']);
+                        }
                     }
                     effEndDate = new Date(effEndDate).setHours(23);
                     effEndDate = new Date(new Date(effEndDate).setMinutes(59));
@@ -2936,6 +3010,11 @@ function SylvanCalendar() {
                     }
                     else if(val['aenrollment_x002e_hub_enrollmentenddate'] != undefined){
                         effEndDate = new Date(val['aenrollment_x002e_hub_enrollmentenddate']);
+                    }
+                    if(val['adeliverytype_x002e_hub_code'] == personalInstruction){
+                        if(val['aenrollment_x002e_hub_committedsessionenddate'] != undefined){
+                            effEndDate = new Date(val['aenrollment_x002e_hub_committedsessionenddate']);
+                        }
                     }
                     effEndDate = new Date(effEndDate).setHours(23);
                     effEndDate = new Date(new Date(effEndDate).setMinutes(59));
@@ -3692,7 +3771,7 @@ function SylvanCalendar() {
                         id: value['resourceId']+value['startHour'],
                         teachers:[{id:id, name:name}],
                         start:value['startHour'],
-                        //end:value['end'],
+                        end:value['end'],
                         allDay: false,
                         resourceId: value['resourceId'],
                         isTeacher: true,
@@ -4467,6 +4546,26 @@ function SylvanCalendar() {
                             }
                         }
 
+                        var checkForNextEvent = self.calendar.fullCalendar('clientEvents', value['resourceId'] + new Date(new Date(value['startHour']).setHours(new Date(value['startHour']).getHours() + 1)));
+                        var checkForPrevEvent = self.calendar.fullCalendar('clientEvents', value['resourceId'] + new Date(new Date(value['startHour']).setHours(new Date(value['startHour']).getHours() - 1)));
+                        if(checkForNextEvent.length){
+                            var nextStudentDuration = (new Date(value['startHour']).getTime() - new Date(value.end).getTime())/(1000*60);
+                            var nextStudentEndTime = new Date(new Date(value['startHour']).setMinutes(Math.abs(nextStudentDuration)));
+                            if(nextStudentEndTime.getTime() > checkForNextEvent[0].start){
+                                obj.isConflict = true;
+                                obj.conflictMsg.push(4);
+                                self.updateConflictMsg(obj);
+                            }
+                        }
+                        if(checkForPrevEvent.length){
+                            var prevStudentDuration = (new Date(value['startHour']).getTime() - new Date(value.end).getTime())/(1000*60);
+                            var prevStudentEndTime = new Date(new Date(value['startHour']).setMinutes(Math.abs(prevStudentDuration)));
+                            if(prevStudentEndTime.getTime() > value['startHour'].getTime()){
+                                obj.isConflict = true;
+                                obj.conflictMsg.push(4);
+                                self.updateConflictMsg(obj);
+                            }
+                        }   
 
                         if (resourceObj.deliveryTypeCode == groupFacilitation) {
                             obj.backgroundColor = "#dff0d5";
@@ -4816,9 +4915,9 @@ function SylvanCalendar() {
                         }).indexOf(wjQuery(element).attr('value'));
                         prevEvent[0].students.splice(removeStudentIndex, 1);
                         
-                        self.removeAllConflictsFromPrevEvent(prevEvent[0]);
+                        this.removeAllConflictsFromPrevEvent(prevEvent[0]);
                         if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "student-placeholder-"+prevEvent[0].deliveryType)) ||
-                          (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder" && eventTitleHTML[1].className == "student-placeholder-"+prevEvent[0].deliveryType) ||
+                          (eventTitleHTML.length == 2 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "placeholder teacher-placeholder") && eventTitleHTML[1].className == "student-placeholder-"+prevEvent[0].deliveryType) ||
                           (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder" && eventTitleHTML[2].className == "student-placeholder-"+prevEvent[0].deliveryType)) {
                             for (var i = 0; i < this.eventList.length; i++) {
                                 if (this.eventList[i].id == prevEventId)
@@ -4838,9 +4937,9 @@ function SylvanCalendar() {
                 }
             }
         }
-        self.openSofPane();
-        self.showConflictMsg();
-        self.draggable('draggable');
+        this.openSofPane();
+        this.showConflictMsg();
+        this.draggable('draggable');
         wjQuery('.loading').hide();
 
     };
@@ -4918,7 +5017,7 @@ function SylvanCalendar() {
 
                         self.removeAllConflictsFromPrevEvent(prevEvent[0]);
                         if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "student-placeholder-"+prevEvent[0].deliveryType)) ||
-                          (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder" && eventTitleHTML[1].className == "student-placeholder-"+prevEvent[0].deliveryType) ||
+                          (eventTitleHTML.length == 2 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "placeholder teacher-placeholder") && eventTitleHTML[1].className == "student-placeholder-"+prevEvent[0].deliveryType) ||
                           (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder" && eventTitleHTML[2].className == "student-placeholder-"+prevEvent[0].deliveryType)) {
                             for (var i = 0; i < this.eventList.length; i++) {
                                 if (this.eventList[i].id == prevEventId)
@@ -5106,7 +5205,7 @@ function SylvanCalendar() {
 
                             self.removeAllConflictsFromPrevEvent(prevEvent[0]);
                             if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "student-placeholder-"+prevEvent[0].deliveryType)) ||
-                              (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder" && eventTitleHTML[1].className == "student-placeholder-"+prevEvent[0].deliveryType) ||
+                              (eventTitleHTML.length == 2 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "placeholder teacher-placeholder") && eventTitleHTML[1].className == "student-placeholder-"+prevEvent[0].deliveryType) ||
                               (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder" && eventTitleHTML[2].className == "student-placeholder-"+prevEvent[0].deliveryType)) {
                                 for (var i = 0; i < self.eventList.length; i++) {
                                     if (self.eventList[i].id == prevEventId)
@@ -5308,7 +5407,7 @@ function SylvanCalendar() {
 
                                 self.removeAllConflictsFromPrevEvent(prevEvent[0]);
                                 if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "student-placeholder-"+prevEvent[0].deliveryType)) ||
-                                  (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder" && eventTitleHTML[1].className == "student-placeholder-"+prevEvent[0].deliveryType) ||
+                                  (eventTitleHTML.length == 2 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "placeholder teacher-placeholder") && eventTitleHTML[1].className == "student-placeholder-"+prevEvent[0].deliveryType) ||
                                   (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder" && eventTitleHTML[2].className == "student-placeholder-"+prevEvent[0].deliveryType)) {
                                     for (var i = 0; i < self.eventList.length; i++) {
                                         if (self.eventList[i].id == prevEventId)
@@ -5772,7 +5871,7 @@ function SylvanCalendar() {
                   self.removeAllConflictsFromPrevEvent(prevEvent[0]);
 
                   if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "student-placeholder-"+prevEvent[0].deliveryType)) ||
-                    (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder" && eventTitleHTML[1].className == "student-placeholder-"+prevEvent[0].deliveryType) ||
+                    (eventTitleHTML.length == 2 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "placeholder teacher-placeholder") && eventTitleHTML[1].className == "student-placeholder-"+prevEvent[0].deliveryType) ||
                     (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder" && eventTitleHTML[2].className == "student-placeholder-"+prevEvent[0].deliveryType)) {
                       for (var i = 0; i < self.eventList.length; i++) {
                         if (self.eventList[i].id == prevEventId)
@@ -5808,14 +5907,14 @@ function SylvanCalendar() {
             cursor: "move",
             scroll: true,
             cursorAt: { top: 0 },
-            drag: function () {
+           /* drag: function () {
                 if (sofExpanded) {
                     wjQuery('.sof-pane').css('opacity', '.1');
                 }
                 if (taExpanded) {
                     wjQuery('.ta-pane').css('opacity', '.1');
                 }
-            },
+            },*/
             stop: function () {
                 if (sofExpanded) {
                     wjQuery('.sof-pane').css('opacity', '1');
@@ -5824,6 +5923,18 @@ function SylvanCalendar() {
                     wjQuery('.ta-pane').css('opacity', '1');
                 }
             }
+        });
+        wjQuery('.' + selector).bind("drag", function(event, ui) {
+            if (sofExpanded) {
+                wjQuery('.sof-pane').css('opacity', '.1');
+            }
+            if (taExpanded) {
+                wjQuery('.ta-pane').css('opacity', '.1');
+            }
+            var elm = ui.helper;
+            setTimeout(function(){
+                wjQuery(elm).text("Starting at "+self.helperStartTime);
+            },30);
         });
         wjQuery('.drag-student').off('dblclick').on('dblclick',function (e) {
             self.findStudentEnrollment(this);    
@@ -6226,6 +6337,9 @@ function SylvanCalendar() {
               event.title += '<img class="conflict" title="' + msg + '" src="/webresources/hub_/calendar/images/warning.png">';
           }
         }
+        else{
+
+        }
     }
 
     this.makeupPopup = function (makeupList, placeholderEvent, isForMakeup) {
@@ -6574,7 +6688,7 @@ function SylvanCalendar() {
                     self.removeAllConflictsFromPrevEvent(prevEvent[0]);
 
                     if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "student-placeholder-"+prevEvent[0].deliveryType)) ||
-                       (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder" && eventTitleHTML[1].className == "student-placeholder-"+prevEvent[0].deliveryType) ||
+                       (eventTitleHTML.length == 2 && (eventTitleHTML[0].className == "placeholder" || eventTitleHTML[0].className == "placeholder teacher-placeholder") && eventTitleHTML[1].className == "student-placeholder-"+prevEvent[0].deliveryType) ||
                        (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder" && eventTitleHTML[2].className == "student-placeholder-"+prevEvent[0].deliveryType)) {
                         for (var i = 0; i < this.eventList.length; i++) {
                           if (this.eventList[i].id == prevEventId)
@@ -7976,6 +8090,14 @@ function SylvanCalendar() {
         self.updateConflictMsg(prevEvent);
       }
 
+      // remove Slot Timings Overlap Conflict
+        var msgIndex = prevEvent.conflictMsg.map(function (x) {
+          return x;
+        }).indexOf(4);
+        if (msgIndex > -1) {
+            prevEvent.conflictMsg.splice(msgIndex, 1);
+        }
+        self.updateConflictMsg(prevEvent);
     }
 
     this.scrollToEvent = function(){
