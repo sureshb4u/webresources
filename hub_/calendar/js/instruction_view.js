@@ -5666,7 +5666,7 @@ function Data(){
   }
 
   this.saveTeacherFloat = function(objStaffSch){
-    return true
+    return {}
   }
 
   this.saveMakeupNFloat = function(objNewSession){
