@@ -1254,7 +1254,7 @@ function SylvanCalendar() {
             for (var i = 0; i < t.convertedStudentObj.length; i++) {
                 if(t.convertedStudentObj[i].id == stuId &&
                         t.convertedStudentObj[i].resourceId == uniqueId.split('_')[1] &&
-                        moment(t.convertedStudentObj[i].startHour).format("h:mm A") == moment(startTime).format("h:mm A")){
+                        t.convertedStudentObj[i].startHour.getTime() == new Date(startTime).getTime()){
                     index = i;
                     break;
                 }
@@ -1285,9 +1285,9 @@ function SylvanCalendar() {
                                     t.prompt("Slot timings are getting Overlapped.Cannot be placed.");
                                 }
                             }
-                            var prevStudentDuration = (new Date(date).getTime() - new Date(prevStudObj.end).getTime())/(1000*60);
+                            var prevStudentDuration = (new Date(prevStudObj.start).getTime() - new Date(prevStudObj.end).getTime())/(1000*60);
                             var prevStudentEndTime = new Date(new Date(date).setMinutes(Math.abs(prevStudentDuration)));
-                            if(prevStudentEndTime.getTime() > checkForNextEvent[0].start){
+                            if(prevStudentEndTime.getTime() > checkForNextEvent[0].start.getTime()){
                                 minuteflag = false;
                                 t.prompt("Slot timings are getting Overlapped.Cannot be placed.");
                             }
@@ -1301,9 +1301,9 @@ function SylvanCalendar() {
                             }
                             if(checkForPrevEvent[0].end.getTime() <= new Date(date).getTime())
                             {
-                                var prevStudentDuration = (new Date(date).getTime() - new Date(prevStudObj.end).getTime())/(1000*60);
+                                var prevStudentDuration = (new Date(prevStudObj.start).getTime() - new Date(prevStudObj.end).getTime())/(1000*60);
                                 var prevStudentEndTime = new Date(new Date(date).setMinutes(Math.abs(prevStudentDuration)));
-                                if(prevStudentEndTime.getTime() < checkForPrevEvent[0].end){
+                                if(prevStudentEndTime.getTime() < checkForPrevEvent[0].end.getTime()){
                                     minuteflag = false;
                                     t.prompt("Slot timings are getting Overlapped.Cannot be placed.");
                                 }
@@ -4550,18 +4550,14 @@ function SylvanCalendar() {
                         var checkForNextEvent = self.calendar.fullCalendar('clientEvents', value['resourceId'] + new Date(new Date(value['startHour']).setHours(new Date(value['startHour']).getHours() + 1)));
                         var checkForPrevEvent = self.calendar.fullCalendar('clientEvents', value['resourceId'] + new Date(new Date(value['startHour']).setHours(new Date(value['startHour']).getHours() - 1)));
                         if(checkForNextEvent.length){
-                            var nextStudentDuration = (new Date(value['startHour']).getTime() - new Date(value.end).getTime())/(1000*60);
-                            var nextStudentEndTime = new Date(new Date(value['startHour']).setMinutes(Math.abs(nextStudentDuration)));
-                            if(nextStudentEndTime.getTime() > checkForNextEvent[0].start){
+                            if(value['end'].getTime() > checkForNextEvent[0].start.getTime()){
                                 obj.isConflict = true;
                                 obj.conflictMsg.push(4);
                                 self.updateConflictMsg(obj);
                             }
                         }
                         if(checkForPrevEvent.length){
-                            var prevStudentDuration = (new Date(value['startHour']).getTime() - new Date(value.end).getTime())/(1000*60);
-                            var prevStudentEndTime = new Date(new Date(value['startHour']).setMinutes(Math.abs(prevStudentDuration)));
-                            if(prevStudentEndTime.getTime() > value['startHour'].getTime()){
+                            if(checkForPrevEvent[0].end.getTime() > value['startHour'].getTime()){
                                 obj.isConflict = true;
                                 obj.conflictMsg.push(4);
                                 self.updateConflictMsg(obj);
