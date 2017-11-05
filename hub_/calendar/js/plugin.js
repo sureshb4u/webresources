@@ -732,7 +732,7 @@ function SylvanCalendar() {
         var sofTemplate = [];
         wjQuery('.student-overflow').html("");
         for (var i = 0; i < (maxTime - minTime) ; i++) {
-            var elm = '<div class="student-overflow" id="student_block_' + i + '" style="height:' + wjQuery(".fc-agenda-slots td div").height() + 'px;overflow:auto"></div>';
+            var elm = '<div class="student-overflow" id="student_block_' + i + '" style="height:' + (wjQuery(".fc-agenda-slots td div").height()*4) + 'px;overflow:auto"></div>';
             wjQuery('.sof-pane').append(elm);;
         }
         for (var j = 0; j < Object.keys(sofList).length; j++) {
@@ -861,7 +861,7 @@ function SylvanCalendar() {
     this.populateTAPane = function (teacherData) {
         wjQuery(".teacher-availability").html("");
         for (var i = 0; i < (this.calendarOptions.maxTime - this.calendarOptions.minTime) ; i++) {
-            var elm = '<div class="teacher-availability" id="teacher_block_' + i + '" style="overflow-y:auto;height:' + wjQuery(".fc-agenda-slots td div").height() + 'px"></div>';
+            var elm = '<div class="teacher-availability" id="teacher_block_' + i + '" style="overflow-y:auto;height:' + wjQuery(".fc-agenda-slots td div").height()*4 + 'px"></div>';
             wjQuery('.ta-pane').append(elm);
         }
         var currentCalendarDate = this.calendar.fullCalendar('getDate');
@@ -1002,8 +1002,7 @@ function SylvanCalendar() {
         if (wjQuery(elm).attr("type") == 'student') {
           var newEvent = this.calendar.fullCalendar('clientEvents', resource.id + date);
           var stuId = wjQuery(elm).attr("value");
-          var startHour = new Date(date).setMinutes(0);
-          startHour = new Date(new Date(startHour).setSeconds(0));
+          var startHour = new Date(date);
 
           var prevStudObj = {};
           var index = t.sofList['Personal Instruction'].map(function (x) {
@@ -1123,8 +1122,7 @@ function SylvanCalendar() {
           var newEvent = this.calendar.fullCalendar('clientEvents', resource.id + date);
           var teacherId = wjQuery(elm).attr("value");
           var techerPrograms = this.getProgramObj(teacherId);
-          var startHour = new Date(date).setMinutes(0);
-          startHour = new Date(new Date(startHour).setSeconds(0));
+          var startHour = new Date(date);
 
           varallowToDropTeacher = self.validateTeacherOnSameRow(teacherId, startHour);
           if(allowToDropTeacher){
@@ -1239,8 +1237,7 @@ function SylvanCalendar() {
         }
         else if (wjQuery(elm).attr("type") == 'studentSession') {
             var stuId = wjQuery(elm).attr("value");
-            var startHour = new Date(date).setMinutes(0);
-            startHour = new Date(new Date(startHour).setSeconds(0));
+            var startHour = new Date(date);
             var prevEventId = wjQuery(elm).attr("eventid");
             var newEvent = this.calendar.fullCalendar('clientEvents', resource.id + date);
             var prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
@@ -1279,12 +1276,6 @@ function SylvanCalendar() {
                         var checkForNextEvent = this.calendar.fullCalendar('clientEvents', resource.id + new Date(new Date(date).setHours(new Date(date).getHours() + 1)));
                         var checkForPrevEvent = this.calendar.fullCalendar('clientEvents', resource.id + new Date(new Date(date).setHours(new Date(date).getHours() - 1)));
                         if(checkForNextEvent.length){
-                            if(checkForNextEvent[0].students.length == 1){
-                                if(checkForNextEvent[0].students[0].id != prevStudObj.id){
-                                    minuteflag = false;
-                                    t.prompt("Slot timings are getting Overlapped.Cannot be placed.");
-                                }
-                            }
                             var prevStudentDuration = (new Date(prevStudObj.start).getTime() - new Date(prevStudObj.end).getTime())/(1000*60);
                             var prevStudentEndTime = new Date(new Date(date).setMinutes(Math.abs(prevStudentDuration)));
                             if(prevStudentEndTime.getTime() > checkForNextEvent[0].start.getTime()){
@@ -1293,24 +1284,16 @@ function SylvanCalendar() {
                             }
                         }
                         if(checkForPrevEvent.length){
-                            if(checkForPrevEvent[0].students.length == 1){
-                                if(checkForPrevEvent[0].students[0].id != prevStudObj.id){
-                                    minuteflag = false;
-                                    t.prompt("Slot timings are getting Overlapped.Cannot be placed.");
-                                }
-                            }
-                            if(checkForPrevEvent[0].end.getTime() <= new Date(date).getTime())
-                            {
-                                var prevStudentDuration = (new Date(prevStudObj.start).getTime() - new Date(prevStudObj.end).getTime())/(1000*60);
-                                var prevStudentEndTime = new Date(new Date(date).setMinutes(Math.abs(prevStudentDuration)));
-                                if(prevStudentEndTime.getTime() < checkForPrevEvent[0].end.getTime()){
-                                    minuteflag = false;
-                                    t.prompt("Slot timings are getting Overlapped.Cannot be placed.");
-                                }
-                            }    
-                            else{
-                                 minuteflag = false;
-                                 t.prompt("Slot timings are getting Overlapped.Cannot be placed.");
+                            if(checkForPrevEvent[0].end != null){
+                                if(checkForPrevEvent[0].end.getTime() <= new Date(date).getTime())
+                                {
+                                    var prevStudentDuration = (new Date(prevStudObj.start).getTime() - new Date(prevStudObj.end).getTime())/(1000*60);
+                                    var prevStudentEndTime = new Date(new Date(date).setMinutes(Math.abs(prevStudentDuration)));
+                                    if(prevStudentEndTime.getTime() < checkForPrevEvent[0].end.getTime()){
+                                        minuteflag = false;
+                                        t.prompt("Slot timings are getting Overlapped.Cannot be placed.");
+                                    }
+                                }    
                             }
                         }
                     }
@@ -1592,8 +1575,7 @@ function SylvanCalendar() {
         }
         else if (wjQuery(elm).attr("type") == 'teacherSession') {
             var teacherId = wjQuery(elm).attr("value");
-            var startHour = new Date(date).setMinutes(0);
-            startHour = new Date(new Date(startHour).setSeconds(0));
+            var startHour = new Date(date);
             var prevEventId = wjQuery(elm).attr("eventid");
             var techerPrograms = this.getProgramObj(teacherId);
             var prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
@@ -1665,8 +1647,7 @@ function SylvanCalendar() {
 
     this.tapaneConflictCheck = function (t, date, allDay, ev, ui, resource, elm) {
         var endDate = new Date(date);
-        var startHour = new Date(date).setMinutes(0);
-        var startHour = new Date(new Date(startHour).setSeconds(0));
+        var startHour = new Date(date);
         var teacherId = wjQuery(elm).attr("value");
         var teacher = t.taList.filter(function (x) {
             return x.id == teacherId;
@@ -1700,8 +1681,7 @@ function SylvanCalendar() {
 
     this.teacherSessionConflictCheck = function (t, date, allDay, ev, ui, resource, elm) {
         var endDate = new Date(date);
-        var startHour = new Date(date).setMinutes(0);
-            startHour = new Date(new Date(startHour).setSeconds(0));
+        var startHour = new Date(date);
         var teacherId = wjQuery(elm).attr("value");
         var uniqTeacherId = wjQuery(elm).attr("id");
         var prevEventId = wjQuery(elm).attr("eventid");
@@ -1820,8 +1800,7 @@ function SylvanCalendar() {
     this.studentSofConflictCheck = function (t, date, allDay, ev, ui, resource, elm) {
         var newEvent = this.calendar.fullCalendar('clientEvents', resource.id + date);
         var endDate = new Date(date);
-        var startHour = new Date(date).setMinutes(0);
-        startHour = new Date(new Date(startHour).setSeconds(0));
+        var startHour = new Date(date);
         var stuId = wjQuery(elm).attr("value");
         var parentElement = elm.parentElement;
         var student = [];
@@ -1892,8 +1871,7 @@ function SylvanCalendar() {
 
     this.studentSessionConflictCheck = function (t, date, allDay, ev, ui, resource, elm) {
         var endDate = new Date(date);
-        var startHour = new Date(date).setMinutes(0);
-        var startHour = new Date(new Date(startHour).setSeconds(0));
+        var startHour = new Date(date);
         var stuId = wjQuery(elm).attr("value");
         var uniqStuId = wjQuery(elm).attr("id");
         var prevEventId = wjQuery(elm).attr("eventid");
@@ -2047,7 +2025,7 @@ function SylvanCalendar() {
             },
             handleWindowResize: true,
             height: window.innerHeight - 60,
-            slotMinutes: 60,
+            slotMinutes: 15,
             selectable: false,
             slotEventOverlap: true,
             selectHelper: true,
@@ -2737,8 +2715,6 @@ function SylvanCalendar() {
                             sDate = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['startTime']);
                             eDate = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['endTime']);
                             startHour = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['startTime']);
-                            startHour = startHour.setMinutes(0);
-                            startHour = new Date(new Date(startHour).setSeconds(0));
                         }
                         var teacher = {
                             id: val['teacherId'],
@@ -2779,9 +2755,7 @@ function SylvanCalendar() {
                   val['hub_start_time@OData.Community.Display.V1.FormattedValue'] != undefined) {
                     sDate = new Date(val['hub_date@OData.Community.Display.V1.FormattedValue'] + " " + val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
                     eDate = new Date(val['hub_date@OData.Community.Display.V1.FormattedValue'] + " " + val['hub_end_time@OData.Community.Display.V1.FormattedValue']);
-                    startHour = new Date(val['hub_date@OData.Community.Display.V1.FormattedValue'] + " " + val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
-                    startHour = startHour.setMinutes(0);
-                    startHour = new Date(new Date(startHour).setSeconds(0)); 
+                    startHour = new Date(val['hub_date@OData.Community.Display.V1.FormattedValue'] + " " + val['hub_start_time@OData.Community.Display.V1.FormattedValue']); 
                     currentCalendarDate = startHour;
                 }
                 else{
@@ -2868,8 +2842,6 @@ function SylvanCalendar() {
                 var sDate = new Date(val['hub_session_date@OData.Community.Display.V1.FormattedValue'] + " " + val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
                 var eDate = new Date(val['hub_session_date@OData.Community.Display.V1.FormattedValue'] + " " + val['hub_end_time@OData.Community.Display.V1.FormattedValue']);
                 var startHour = new Date(val['hub_session_date@OData.Community.Display.V1.FormattedValue'] + " " + val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
-                startHour = startHour.setMinutes(0);
-                startHour = new Date(new Date(startHour).setSeconds(0));
                 var obj = {
                     id: val._hub_student_value,
                     name: val["_hub_student_value@OData.Community.Display.V1.FormattedValue"],
@@ -3085,8 +3057,6 @@ function SylvanCalendar() {
                               newObj.end = new Date(moment(sDate).format('YYYY-MM-DD') + " " + pinnedStudent[i].endTime);
                               var startHour = new Date(moment(sDate).format('YYYY-MM-DD') + " " + pinnedStudent[i].startTime);
                               var studentStart = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
-                              startHour = startHour.setMinutes(0);
-                              startHour = new Date(new Date(startHour).setSeconds(0));
                               newObj.startHour = startHour;
                               if(studentStart.getTime() == newObj.start.getTime()){
                                   if (pinnedStudent[i].hasOwnProperty('resourceId')) {
@@ -3121,8 +3091,6 @@ function SylvanCalendar() {
                                   newObj.start = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
                                   newObj.end = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
                                   var startHour = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
-                                  startHour = startHour.setMinutes(0);
-                                  startHour = new Date(new Date(startHour).setSeconds(0));
                                   newObj.startHour = startHour;
 
                                   var findex = -1;
@@ -3143,8 +3111,6 @@ function SylvanCalendar() {
                           obj.start = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
                           obj.end = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
                           var startHour = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
-                          startHour = startHour.setMinutes(0);
-                          startHour = new Date(new Date(startHour).setSeconds(0));
                           obj.startHour = startHour;
                           var index = -1;
                           for (var i = 0; i < noResourceList.length; i++) {
@@ -3162,8 +3128,6 @@ function SylvanCalendar() {
                         obj.start = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
                         obj.end = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
                         var startHour = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
-                        startHour = startHour.setMinutes(0);
-                        startHour = new Date(new Date(startHour).setSeconds(0));
                         obj.startHour = startHour;
                         if (val.hasOwnProperty('aproductservice_x002e_hub_resource')) {
                             obj.resourceId = val['aproductservice_x002e_hub_resource'];
@@ -4557,10 +4521,12 @@ function SylvanCalendar() {
                             }
                         }
                         if(checkForPrevEvent.length){
-                            if(checkForPrevEvent[0].end.getTime() > value['startHour'].getTime()){
-                                obj.isConflict = true;
-                                obj.conflictMsg.push(4);
-                                self.updateConflictMsg(obj);
+                            if(checkForPrevEvent[0].end != null){
+                                if(checkForPrevEvent[0].end.getTime() > value['startHour'].getTime()){
+                                    obj.isConflict = true;
+                                    obj.conflictMsg.push(4);
+                                    self.updateConflictMsg(obj);
+                                }
                             }
                         }   
 
@@ -4757,7 +4723,7 @@ function SylvanCalendar() {
         var student = this.convertedStudentObj.filter(function (x) {
             return x.id == id &&
                    x.resourceId == uniqueId.split('_')[1] &&
-                   moment(x.startHour).format("h:mm A") == moment(startTime).format("h:mm A");
+                   x.startHour.getTime() == new Date(startTime).getTime();
         });
 
         var objUnPinnedStudent = {};
@@ -6531,8 +6497,6 @@ function SylvanCalendar() {
             var sDate = new Date(val['hub_session_date@OData.Community.Display.V1.FormattedValue'] + " " + val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
             var eDate = new Date(val['hub_session_date@OData.Community.Display.V1.FormattedValue'] + " " + val['hub_end_time@OData.Community.Display.V1.FormattedValue']);
             var startHour = new Date(val['hub_session_date@OData.Community.Display.V1.FormattedValue'] + " " + val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
-            startHour = startHour.setMinutes(0);
-            startHour = new Date(new Date(startHour).setSeconds(0));
             var obj = {
                 id: val._hub_student_value,
                 name: val["_hub_student_value@OData.Community.Display.V1.FormattedValue"],
@@ -8094,6 +8058,8 @@ function SylvanCalendar() {
       }
 
       // remove Slot Timings Overlap Conflict
+      if((!prevEvent.hasOwnProperty('students') ||  prevEvent['students'].length == 0) &&
+        (!prevEvent.hasOwnProperty('teachers') ||  prevEvent['teachers'].length == 0)){
         var msgIndex = prevEvent.conflictMsg.map(function (x) {
           return x;
         }).indexOf(4);
@@ -8101,6 +8067,7 @@ function SylvanCalendar() {
             prevEvent.conflictMsg.splice(msgIndex, 1);
         }
         self.updateConflictMsg(prevEvent);
+      }
     }
 
     this.scrollToEvent = function(){
