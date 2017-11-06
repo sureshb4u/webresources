@@ -1,0 +1,51 @@
+body {
+    margin: 0;
+}
+
+.header-container {
+    padding: 8px 0;
+    width: calc(100% - 10px);
+    margin: auto;
+ }
+
+#appointment {
+    width: calc(100% - 10px);
+    margin: 0 auto;
+    height: 100%;
+}
+.warning{
+	width: 25px;
+	cursor: pointer;
+}
+
+.draggable{
+	color: #333;
+}
+
+.fc-agenda-slots td div {
+    height: 50px;
+    width: 50px;
+}
+
+.fc-agenda .fc-agenda-axis{
+	/*width: 20px;*/
+}
+
+.fc-event-time{
+	display: none;
+}
+
+.fc-view.fc-view-agendaWeek.fc-agenda .fc-event-title{
+	font-size: 15px; 
+	color: #333333;
+	padding: 7px 0px;
+	height: calc(100% - 16px);
+}
+
+.fc-event{
+	overflow: hidden;
+}
+
+.fc-agenda-allday{
+	display: none;
+}
