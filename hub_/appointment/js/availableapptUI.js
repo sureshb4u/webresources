@@ -166,12 +166,13 @@ function Appointment() {
                 appException['hub_date'] = moment(new Date(appException['hub_date'])).format("YYYY-MM-DD");
                 var startObj = new Date(appException['hub_date']+" "+self.convertMinsNumToTime(appException['hub_start_time']));
                 var endObj = new Date(appException['hub_date']+" "+self.convertMinsNumToTime(appException['hub_end_time']));
-                var eventId = appException['aworkhours_x002e_hub_type']+"_"+startObj;
+                var eventId = appException['aa_x002e_hub_type']+"_"+startObj;
                 var obj = {
                     eventId:eventId,
                     appointmentHourId:appException['hub_timingsid'],
                     id: appException['hub_appointment_slot_exceptionid'],
-                    type: appException['aworkhours_x002e_hub_type'],
+                    type: appException['aa_x002e_hub_type'],
+                    typeName: appException['aa_x002e_hub_type@OData.Community.Display.V1.FormattedValue'],
                     startObj: startObj,
                     endObj: endObj
                 } 
@@ -215,7 +216,7 @@ function Appointment() {
                 if(!calEvent['isHourException']){
                     self.confirmPopup(calEvent, "Selected slot ", true);
                 }else{
-                    console.log("Exception");
+                    self.prompt("Exceptional appointment is not selectable");
                 }
             },
             eventRender: function (event, element, view) {
@@ -398,8 +399,8 @@ function Appointment() {
                                         // }
                                     }else{
                                         eventObj["isHourException"] = true;
-                                        eventObj["backgroundColor"] = "#333";
-                                        eventObj["borderColor"] = "#333";
+                                        eventObj["backgroundColor"] = "#999";
+                                        eventObj["borderColor"] = "#999";
                                     }
                                     self.eventList.push(eventObj);
                                     self.appointment.fullCalendar('removeEvents');
@@ -601,7 +602,7 @@ function Appointment() {
             width: 350,
             modal: true,
             buttons: {
-                Cancel: function () {
+                Ok: function () {
                     wjQuery(this).dialog("close");
                 }
             }

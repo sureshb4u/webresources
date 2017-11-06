@@ -420,20 +420,20 @@ var businessClosure = [
 
 var appointmentExceptions = [
   {
-    "@odata.etag":"W/\"4540475\"",
-    "hub_end_time@OData.Community.Display.V1.FormattedValue":"09:00 AM",
-    "hub_end_time":540,
-    "_hub_appointment_hourid_value@OData.Community.Display.V1.FormattedValue":"Initial Assessment Hours",
+    "@odata.etag":"W/\"4552340\"",
+    "hub_end_time@OData.Community.Display.V1.FormattedValue":"7:00 PM",
+    "hub_end_time":1140,
+    "_hub_appointment_hourid_value@OData.Community.Display.V1.FormattedValue":"Center Visit Hours",
     "_hub_appointment_hourid_value@Microsoft.Dynamics.CRM.associatednavigationproperty":"hub_appointment_hourId",
     "_hub_appointment_hourid_value@Microsoft.Dynamics.CRM.lookuplogicalname":"hub_workhours",
-    "_hub_appointment_hourid_value":"a2fb028e-1fc2-e711-8100-c4346bacfbbc",
-    "hub_start_time@OData.Community.Display.V1.FormattedValue":"08:30 AM",
-    "hub_start_time":510,
-    "hub_appointment_slot_exceptionid":"6c1aa1cb-1fc2-e711-8100-c4346bacfbbc",
-    "hub_date@OData.Community.Display.V1.FormattedValue":"11/5/2017",
+    "_hub_appointment_hourid_value":"c5b0cb21-77ab-e711-80fb-c4346bac4304",
+    "hub_start_time@OData.Community.Display.V1.FormattedValue":"6:00 PM",
+    "hub_start_time":1080,
+    "hub_appointment_slot_exceptionid":"c33c790b-d6c2-e711-8100-c4346bacfbbc",
+    "hub_date@OData.Community.Display.V1.FormattedValue":"11/6/2017",
     "hub_date":"2017-11-06T00:00:00Z",
-    "aworkhours_x002e_hub_type@OData.Community.Display.V1.FormattedValue":"Initial Assessment",
-    "aworkhours_x002e_hub_type":4
+    "aa_x002e_hub_type@OData.Community.Display.V1.FormattedValue":"Center Visit",
+    "aa_x002e_hub_type":1
   }
 ];
 
