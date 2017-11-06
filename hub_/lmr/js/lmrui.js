@@ -159,18 +159,6 @@ function LmrUI() {
                             '        </article>'+
                             '        <article>'+
                             '           <span class="first-colm">National Advertising Fund</span>';
-                                        if(el.hasOwnProperty("NACAmount")){
-                                            skeleton += ' <span>$'+el.NACAmount+'</span>';
-                                        }
-                                        if(el.hasOwnProperty("NACRate")){
-                                            skeleton += ' <span>'+el.NACRate+'</span>';
-                                        }
-                                        if(el.hasOwnProperty("NACPayment")){
-                                            skeleton += ' <span>$'+el.NACPayment+'</span>';
-                                        }
-                skeleton += '        </article>'+
-                            '        <article>'+
-                            '           <span class="first-colm">National Advertising Campaign</span>';
                                         if(el.hasOwnProperty("NAFAmount")){
                                             skeleton += ' <span>$'+el.NAFAmount+'</span>';
                                         }
@@ -179,6 +167,18 @@ function LmrUI() {
                                         }
                                         if(el.hasOwnProperty("NAFPayment")){
                                             skeleton += ' <span>$'+el.NAFPayment+'</span>';
+                                        }
+                skeleton += '        </article>'+
+                            '        <article>'+
+                            '           <span class="first-colm">National Advertising Campaign</span>';
+                                        if(el.hasOwnProperty("NACAmount")){
+                                            skeleton += ' <span>$'+el.NACAmount+'</span>';
+                                        }
+                                        if(el.hasOwnProperty("NACRate")){
+                                            skeleton += ' <span>'+el.NACRate+'</span>';
+                                        }
+                                        if(el.hasOwnProperty("NACPayment")){
+                                            skeleton += ' <span>$'+el.NACPayment+'</span>';
                                         }
                 skeleton += '        </article>'+
                             '        <article>'+
