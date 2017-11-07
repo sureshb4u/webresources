@@ -1139,7 +1139,7 @@ function SylvanCalendar() {
           var techerPrograms = this.getProgramObj(teacherId);
           var startHour = new Date(date);
 
-          varallowToDropTeacher = self.validateTeacherOnSameRow(teacherId, startHour);
+          var allowToDropTeacher = self.validateTeacherOnSameRow(teacherId, startHour);
           if(allowToDropTeacher){
             if(self.checkForStaffAvailability(teacherId, startHour)){
               if (newEvent.length == 0) {
@@ -1287,7 +1287,7 @@ function SylvanCalendar() {
                             t.prompt("Student slot timings are mismatching.Cannot be placed.");
                         }
                     }
-                    else if(newEvent.length == 0){
+                    /*else if(newEvent.length == 0){
                         var checkForNextEvent = this.calendar.fullCalendar('clientEvents', resource.id + new Date(new Date(date).setHours(new Date(date).getHours() + 1)));
                         var checkForPrevEvent = this.calendar.fullCalendar('clientEvents', resource.id + new Date(new Date(date).setHours(new Date(date).getHours() - 1)));
                         if(checkForNextEvent.length){
@@ -1311,7 +1311,7 @@ function SylvanCalendar() {
                                 }    
                             }
                         }
-                    }
+                    }*/
                     if(minuteflag){
                         if (newEvent.length == 0) {
                             if (wjQuery(elm).attr("pinnedId")) {
@@ -2036,7 +2036,7 @@ function SylvanCalendar() {
             allDaySlot:true,
             droppable: true,
             onDrag: function(date){
-               self.helperStartTime =  moment(date).format('hh:mm a'); 
+               self.helperStartTime =  moment(date).format('hh:mm A'); 
             },
             drop: function (date, allDay, ev, ui, resource) {
                 t.createEventOnDrop(t, date, allDay, ev, ui, resource, this);
@@ -4537,7 +4537,7 @@ function SylvanCalendar() {
                             }
                         }
 
-                        var checkForNextEvent = self.calendar.fullCalendar('clientEvents', value['resourceId'] + new Date(new Date(value['startHour']).setHours(new Date(value['startHour']).getHours() + 1)));
+                        /*var checkForNextEvent = self.calendar.fullCalendar('clientEvents', value['resourceId'] + new Date(new Date(value['startHour']).setHours(new Date(value['startHour']).getHours() + 1)));
                         var checkForPrevEvent = self.calendar.fullCalendar('clientEvents', value['resourceId'] + new Date(new Date(value['startHour']).setHours(new Date(value['startHour']).getHours() - 1)));
                         if(checkForNextEvent.length){
                             if(value['end'].getTime() > checkForNextEvent[0].start.getTime()){
@@ -4554,7 +4554,7 @@ function SylvanCalendar() {
                                     self.updateConflictMsg(obj);
                                 }
                             }
-                        }   
+                        }   */
 
                         if (resourceObj.deliveryTypeCode == groupFacilitation) {
                             obj.backgroundColor = "#dff0d5";
