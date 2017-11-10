@@ -88,7 +88,15 @@ var appointmentType = [
     backgroundColor:"red",
     display:"customer",
     slotMinutes:30
-  }
+  },
+  {
+    type:11,
+    name:"Starter Session",
+    borderColor:"#9acaea",
+    backgroundColor:"#ebf5fb",
+    display:"student",
+    appointmentHour:true
+  },
 ];
 
 var appointmentHours = [
