@@ -17,6 +17,7 @@ var INVALID_STATUS = 7;
 
 // Session type
 var FLOAT_TYPE = 2;
+var MAKEUP_TYPE = 3;
 
 
 
@@ -874,7 +875,7 @@ function SylvanCalendar() {
         var self = this;
         wjQuery(".teacher-availability").html("");
         for (var i = 0; i < (this.calendarOptions.maxTime - this.calendarOptions.minTime) ; i++) {
-            var elm = '<div class="teacher-availability" id="teacher_block_' + i + '" style="overflow-y:auto;height:' + wjQuery(".fc-agenda-slots td div").height()*4 + 'px"></div>';
+            var elm = '<div class="teacher-availability" id="teacher_block_' + i + '" style="overflow-y:auto;height:' + (wjQuery(".fc-agenda-slots td div").height()*4+3)+ 'px"></div>';
             wjQuery('.ta-pane').append(elm);
         }
         var currentCalendarDate = this.calendar.fullCalendar('getDate');
@@ -965,6 +966,9 @@ function SylvanCalendar() {
                 }
                 objNewSession['hub_session_status'] = student[0]['sessionStatus'];
                 objSession['hub_session_status'] = student[0]['sessionStatus'];
+                
+                objNewSession['hub_makeup_expiry_date'] = student[0]['makeupExpiryDate'];
+                objSession['hub_makeup_expiry_date'] = student[0]['makeupExpiryDate'];
                 
                 objNewSession['hub_is_1to1'] = student[0]['is1to1'];
                 objNewSession['hub_enrollment@odata.bind'] = oldStudent['enrollmentId'];
@@ -2895,6 +2899,7 @@ function SylvanCalendar() {
                     sessionStatus: val['hub_session_status'],
                     duration: val['aproductservice_x002e_hub_duration'],
                     timeSlotType: val['aproductservice_x002e_hub_timeslottype'],
+                    makeupExpiryDate: val['hub_makeup_expiry_date'],
                     namedHoursId: val['aproductservice_x002e_hub_namedgfhoursid']
                 }
 
@@ -4717,6 +4722,12 @@ function SylvanCalendar() {
         objPinnedStudent.hub_end_time = objPinnedStudent.hub_start_time + 60;
         objPinnedStudent.hub_day = self.getDayValue(today);
         objPinnedStudent.hub_session_date = moment(today).format("YYYY-MM-DD");
+        objPinnedStudent['hub_sessiontype'] = 1;
+        if(student[0]['sessiontype'] != undefined){
+            objPinnedStudent['hub_sessiontype'] = student[0]['sessiontype'];
+        }
+        objPinnedStudent['hub_makeup_expiry_date'] = student[0]['makeupExpiryDate'];
+        objPinnedStudent['hub_session_status'] = student[0]['sessionStatus'];
         var responseObj = data.savePinStudent(objPinnedStudent);
         if (typeof (responseObj) == 'boolean') {
             if (responseObj) {
@@ -5501,7 +5512,7 @@ function SylvanCalendar() {
                 }
                 obj.excuse = {
                     name: "Excuse",
-                    disabled:MAKEUP_STATUS == sessionStatus,
+                    // disabled:MAKEUP_TYPE == sessionType,
                     callback: function (key, options) {
                         wjQuery(".loading").show();
                         options = wjQuery.extend(true, {}, options);
@@ -6064,6 +6075,11 @@ function SylvanCalendar() {
                 objNewSession['hub_is_1to1'] = newStudent['is1to1'];
             }
 
+
+            objNewSession['hub_makeup_expiry_date'] = prevStudent['makeupExpiryDate'];
+            objPrevSession['hub_makeup_expiry_date'] = prevStudent['makeupExpiryDate'];
+
+
             objPrevSession['hub_enrollment@odata.bind'] = prevStudent['enrollmentId'];
             objPrevSession['hub_deliverytype'] = prevStudent['deliveryTypeId'];
             objPrevSession['hub_service@odata.bind'] = prevStudent['serviceId'];
@@ -6424,6 +6440,9 @@ function SylvanCalendar() {
                         objSession["hub_session_date"] = moment(new Date(idArry[2])).format("YYYY-MM-DD");
                         objSession["hub_start_time"] = start;
                         objSession["hub_end_time"] = start + 60;
+                        objSession["hub_sessiontype"] = studentObj[0]['sessionType'];
+                        objSession["hub_session_status"] = studentObj[0]['sessionStatus'];
+                        objSession["hub_makeup_expiry_date"] = studentObj[0]['makeupExpiryDate'];
 
                         if (studentObj[0]["is1to1"] != undefined) {
                             objSession["hub_is_1to1"] = studentObj[0]["is1to1"];
@@ -6527,11 +6546,12 @@ function SylvanCalendar() {
         if(index == -1){
           uniquewList.push(val);
         }else{
-          if((new Date(makeupList[index].expiryDate)).getTime() > (new Date(val.expiryDate)).getTime()){
+          if((new Date(makeupList[index].makeupExpiryDate)).getTime() > (new Date(val.makeupExpiryDate)).getTime()){
             uniquewList.splice(index, 1);
             uniquewList.push(val);
           }
         }
+
       });
       return uniquewList;
     }
@@ -6568,7 +6588,7 @@ function SylvanCalendar() {
                 duration: val['aproductservice_x002e_hub_duration'],
                 timeSlotType: val['aproductservice_x002e_hub_timeslottype'],
                 namedHoursId: val['aproductservice_x002e_hub_namedgfhoursid'],
-                expiryDate: val['hub_makeup_expiry_date'],
+                makeupExpiryDate: val['hub_makeup_expiry_date'],
                 namedHoursId: val['aproductservice_x002e_hub_namedgfhoursid']
             }
 
