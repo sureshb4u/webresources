@@ -2900,6 +2900,7 @@ function SylvanCalendar() {
                     duration: val['aproductservice_x002e_hub_duration'],
                     timeSlotType: val['aproductservice_x002e_hub_timeslottype'],
                     makeupExpiryDate: val['hub_makeup_expiry_date'],
+                    isAttended:val['hub_isattended'],
                     namedHoursId: val['aproductservice_x002e_hub_namedgfhoursid']
                 }
 
@@ -4473,14 +4474,14 @@ function SylvanCalendar() {
                             }
 
                         });
-                        // if (value['deliveryType'] != "Group Instruction" ) {
+                        if (!value['isAttended']) {
                             if (value['pinId'] != undefined) {
                                 self.addContext(uniqueId, 'student', true, value['deliveryTypeCode'], value['sessionStatus'], value['sessiontype']);
                             }
                             else {
                                 self.addContext(uniqueId, 'student', false, value['deliveryTypeCode'], value['sessionStatus'], value['sessiontype']);
                             }
-                        // }
+                        }
                         self.calendar.fullCalendar('updateEvent', event);
                     } else {
                         var obj = {
@@ -4579,14 +4580,14 @@ function SylvanCalendar() {
                             obj.title += '<span class="student-placeholder-'+obj.deliveryType+'">Student name</span>';
                             self.addContext("", 'studentPlaceholder', true, value['deliveryTypeCode']);
                         }
-                        // if (value['deliveryType'] != "Group Instruction") {
+                        if (!value['isAttended']) {
                             if (value['pinId'] != undefined) {
                                 self.addContext(uniqueId, 'student', true, value['deliveryTypeCode'], value['sessionStatus'], value['sessiontype']);
                             }
                             else {
                                 self.addContext(uniqueId, 'student', false, value['deliveryTypeCode'], value['sessionStatus'], value['sessiontype']);
                             }
-                        // }
+                        }
                         self.eventList.push(obj);
                         if (isFromFilter) {
                             self.calendar.fullCalendar('removeEvents');
@@ -6588,6 +6589,7 @@ function SylvanCalendar() {
                 duration: val['aproductservice_x002e_hub_duration'],
                 timeSlotType: val['aproductservice_x002e_hub_timeslottype'],
                 namedHoursId: val['aproductservice_x002e_hub_namedgfhoursid'],
+                isAttended:val['hub_isattended'],
                 makeupExpiryDate: val['hub_makeup_expiry_date'],
                 namedHoursId: val['aproductservice_x002e_hub_namedgfhoursid']
             }
