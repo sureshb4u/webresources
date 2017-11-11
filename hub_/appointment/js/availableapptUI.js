@@ -206,12 +206,12 @@ function Appointment() {
             selectable: true,
             slotEventOverlap: true,
             selectHelper: false,
-            select: function (start, end, allDay, event, resourceId) {
-                var calEvent = { start: start, end: end };
-                if (!self.checkBusinessClosure(start)) {
-                    self.confirmPopup(calEvent, "Selected slot ", false);
-                }
-            },
+            // select: function (start, end, allDay, event, resourceId) {
+            //     var calEvent = { start: start, end: end };
+            //     if (!self.checkBusinessClosure(start)) {
+            //         self.confirmPopup(calEvent, "Selected slot ", false);
+            //     }
+            // },
             eventClick: function (calEvent, jsEvent, view) {
                 if(!calEvent['isHourException']){
                     self.confirmPopup(calEvent, "Selected slot ", true);
