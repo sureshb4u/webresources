@@ -4474,14 +4474,14 @@ function SylvanCalendar() {
                             }
 
                         });
-                        if (!value['isAttended']) {
+                        // if (!value['isAttended']) {
                             if (value['pinId'] != undefined) {
-                                self.addContext(uniqueId, 'student', true, value['deliveryTypeCode'], value['sessionStatus'], value['sessiontype']);
+                                self.addContext(uniqueId, 'student', true, value['deliveryTypeCode'], value['sessionStatus'], value['sessiontype'], value['isAttended']);
                             }
                             else {
-                                self.addContext(uniqueId, 'student', false, value['deliveryTypeCode'], value['sessionStatus'], value['sessiontype']);
+                                self.addContext(uniqueId, 'student', false, value['deliveryTypeCode'], value['sessionStatus'], value['sessiontype', value['isAttended']]);
                             }
-                        }
+                        // }
                         self.calendar.fullCalendar('updateEvent', event);
                     } else {
                         var obj = {
@@ -4580,14 +4580,14 @@ function SylvanCalendar() {
                             obj.title += '<span class="student-placeholder-'+obj.deliveryType+'">Student name</span>';
                             self.addContext("", 'studentPlaceholder', true, value['deliveryTypeCode']);
                         }
-                        if (!value['isAttended']) {
+                        // if (!value['isAttended']) {
                             if (value['pinId'] != undefined) {
-                                self.addContext(uniqueId, 'student', true, value['deliveryTypeCode'], value['sessionStatus'], value['sessiontype']);
+                                self.addContext(uniqueId, 'student', true, value['deliveryTypeCode'], value['sessionStatus'], value['sessiontype'], value['isAttended']);
                             }
                             else {
-                                self.addContext(uniqueId, 'student', false, value['deliveryTypeCode'], value['sessionStatus'], value['sessiontype']);
+                                self.addContext(uniqueId, 'student', false, value['deliveryTypeCode'], value['sessionStatus'], value['sessiontype'], value['isAttended']);
                             }
-                        }
+                        // }
                         self.eventList.push(obj);
                         if (isFromFilter) {
                             self.calendar.fullCalendar('removeEvents');
@@ -5455,7 +5455,7 @@ function SylvanCalendar() {
     };
 
     //Method to add the context menu for Student and Teacher
-    this.addContext = function (uniqueId, labelFor, isPinned, deliveryType, sessionStatus, sessionType) {
+    this.addContext = function (uniqueId, labelFor, isPinned, deliveryType, sessionStatus, sessionType, isAttended) {
         var self = this;
         var currentView = self.calendar.fullCalendar('getView');
         var obj = {};
@@ -5464,7 +5464,7 @@ function SylvanCalendar() {
                 var resourceObj = self.getResourceObj(uniqueId.split("_")[1]);
                 if(resourceObj.deliveryTypeCode == deliveryType && (sessionStatus == SCHEDULE_STATUS 
                     || sessionStatus == undefined) && sessionType != FLOAT_TYPE ){
-                    obj.unpin = { name: "Unpin" };
+                    obj.unpin = { name: "Unpin", disabled: isAttended};
                     obj.unpin.visible = true;
                     obj.unpin.callback = function (key, options) {
                         wjQuery(".loading").show();
@@ -5477,7 +5477,7 @@ function SylvanCalendar() {
                             }
                         }, 300);
                     }
-                    obj.pin = { name: "Pin" };
+                    obj.pin = { name: "Pin", disabled: isAttended};
                     obj.pin.visible = true;
                     obj.pin.callback = function (key, options) {
                         wjQuery(".loading").show();
@@ -5503,6 +5503,7 @@ function SylvanCalendar() {
                 }
                 obj.omit = {
                   name: "Omit",
+                  disabled: isAttended,
                   callback: function (key, options) {
                     wjQuery(".loading").show();
                     options = wjQuery.extend(true, {}, options);
@@ -5513,6 +5514,7 @@ function SylvanCalendar() {
                 }
                 obj.excuse = {
                     name: "Excuse",
+                    disabled: isAttended,
                     // disabled:MAKEUP_TYPE == sessionType,
                     callback: function (key, options) {
                         wjQuery(".loading").show();
@@ -5531,6 +5533,7 @@ function SylvanCalendar() {
                 // }
                 obj.moveToSof = {
                     name: "Move to SOF",
+                    disabled: isAttended,
                     callback: function (key, options) {
                         wjQuery(".loading").show();
                         options = wjQuery.extend(true, {}, options);
