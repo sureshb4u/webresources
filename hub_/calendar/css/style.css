@@ -332,7 +332,7 @@ button{
     /*margin-bottom: 38px;*/
     position: fixed;
     width: 200px;
-    height: 20px;
+    height: 22px;
     background-color: #f4f4f4;
 }
 .teacher-block{
@@ -344,7 +344,7 @@ button{
     border-top: 1px solid #ccc;
 }
 #student_block_0, #teacher_block_0 {
-	margin-top: 42px;
+	margin-top: 43px;
 }
 .loc-dropdown.btn-group .btn {
     width: 200px;

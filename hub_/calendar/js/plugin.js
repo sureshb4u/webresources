@@ -744,8 +744,8 @@ function SylvanCalendar() {
         var sofTemplate = [];
         wjQuery('.student-overflow').html("");
         for (var i = 0; i < (maxTime - minTime) ; i++) {
-            var elm = '<div class="student-overflow" id="student_block_' + i + '" style="height:' + (wjQuery(".fc-agenda-slots td div").height()*4) + 'px;overflow:auto"></div>';
-            wjQuery('.sof-pane').append(elm);;
+            var elm = '<div class="student-overflow" id="student_block_' + i + '" style="height:' + (wjQuery(".fc-widget-content").height()*4+3) + 'px;overflow:auto"></div>';
+            wjQuery('.sof-pane').append(elm);
         }
         for (var j = 0; j < Object.keys(sofList).length; j++) {
             if (Object.keys(sofList)[j] == "Personal Instruction") {
@@ -2901,6 +2901,8 @@ function SylvanCalendar() {
                     timeSlotType: val['aproductservice_x002e_hub_timeslottype'],
                     makeupExpiryDate: val['hub_makeup_expiry_date'],
                     isAttended:val['hub_isattended'],
+                    enrolStartDate:val['aenrollment_x002e_hub_enrollmentstartdate@OData.Community.Display.V1.FormattedValue'],
+                    enrolEndDate:val['aenrollment_x002e_hub_enrollmentenddate@OData.Community.Display.V1.FormattedValue'],
                     namedHoursId: val['aproductservice_x002e_hub_namedgfhoursid']
                 }
 
@@ -2997,7 +2999,9 @@ function SylvanCalendar() {
                     }
                     if(val['adeliverytype_x002e_hub_code'] == personalInstruction){
                         if(val['aenrollment_x002e_hub_committedsessionenddate'] != undefined){
-                            effEndDate = new Date(val['aenrollment_x002e_hub_committedsessionenddate']);
+                            var dateArry =  val['aenrollment_x002e_hub_committedsessionenddate'].split("-");
+                            effEndDate = new Date(parseInt(dateArry[0]), parseInt(dateArry[1]), parseInt(dateArry[2]));
+                            // effEndDate = new Date(val['aenrollment_x002e_hub_committedsessionenddate']);
                         }
                     }
                     effEndDate = new Date(effEndDate).setHours(23);
@@ -3017,7 +3021,9 @@ function SylvanCalendar() {
                     }
                     if(val['adeliverytype_x002e_hub_code'] == personalInstruction){
                         if(val['aenrollment_x002e_hub_committedsessionenddate'] != undefined){
-                            effEndDate = new Date(val['aenrollment_x002e_hub_committedsessionenddate']);
+                            var dateArry =  val['aenrollment_x002e_hub_committedsessionenddate'].split("-");
+                            effEndDate = new Date(parseInt(dateArry[0]), parseInt(dateArry[1]), parseInt(dateArry[2]));
+                            // effEndDate = new Date(val['aenrollment_x002e_hub_committedsessionenddate']);
                         }
                     }
                     effEndDate = new Date(effEndDate).setHours(23);
@@ -5279,11 +5285,19 @@ function SylvanCalendar() {
             objPrevSession['hub_student@odata.bind'] = objStudent[0]['id'];
             objPrevSession['hub_resourceid@odata.bind'] = null;
 
+            var maxDate = "";
+            if(objStudent[0]['enrolEndDate'] != undefined){
+                var dateArry = objStudent[0]['enrolEndDate'].split("/");
+                // maxDate = new Date(objStudent[0]['enrolEndDate']);
+                maxDate = new Date(parseInt(dateArry[2]),parseInt(dateArry[0]),parseInt(dateArry[1]));
+            }
+            
             var objNewSession = {};
             objNewSession['hub_resourceid@odata.bind'] = null;
             wjQuery("#studentNameofExcuse").text(objStudent[0]['name']);
             wjQuery(".excuse-datepicker-input").datepicker({
                 minDate: self.calendar.fullCalendar('getDate'),
+                maxDate: maxDate,
                 format: 'mm/dd/yyyy'
             });
             var selectedFromDate;
