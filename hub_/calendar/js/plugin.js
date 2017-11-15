@@ -5312,7 +5312,7 @@ function SylvanCalendar() {
             if(objStudent[0]['enrolEndDate'] != undefined){
                 var dateArry = objStudent[0]['enrolEndDate'].split("/");
                 // maxDate = new Date(objStudent[0]['enrolEndDate']);
-                maxDate = new Date(parseInt(dateArry[2]),parseInt(dateArry[0]),parseInt(dateArry[1]));
+                maxDate = new Date(parseInt(dateArry[2]),parseInt(dateArry[0])-1,parseInt(dateArry[1]));
             }
             
             var objNewSession = {};

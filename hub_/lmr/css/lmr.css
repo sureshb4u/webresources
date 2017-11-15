@@ -77,8 +77,15 @@ button {
   width: 100px;
   margin: 0px; }
 
+.btm-brdr {
+  border-bottom: 1px solid #333; }
+
 .btn-article {
-  padding: 10px 0px; }
+  padding: 10px 0px;
+  text-align: right; }
+  .btn-article button {
+    width: 150px;
+    margin: 0px 5%; }
 
 [class^=by] {
   overflow: auto;
@@ -91,7 +98,8 @@ button {
   overflow: hidden;
   border-top: 1px solid #333;
   border-right: 1px solid #333;
-  border-left: 1px solid #333; }
+  border-left: 1px solid #333;
+  height: 40px; }
 
 [class^=by] span {
   display: block;
@@ -99,7 +107,7 @@ button {
   padding: 10px 5px;
   text-align: left;
   border-right: 1px solid;
-  height: 20px;
+  height: calc(100% - 20px);
   font-family: Segoe\000020UI,Arial,sans\00002Dserif;
   font-size: 13px; }
 
@@ -153,5 +161,55 @@ section .dark {
 
 .ui-dialog .ui-dialog-buttonpane button {
   width: 75px; }
+
+.input-field {
+  text-align: right !important; }
+  .input-field .form-control {
+    width: 95%;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #f7f7f7;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-top: -5px; }
+
+.form-area {
+  display: table;
+  width: calc(95% - 2px);
+  margin: 10px auto;
+  border: 1px solid #333;
+  padding: 0px;
+  font-size: 13px; }
+  .form-area aside:nth-of-type(2) {
+    border-left: 1px solid #333; }
+  .form-area .form-aside {
+    display: table-cell;
+    width: calc(50% - 7px);
+    margin: 5px;
+    padding: 15px; }
+    .form-area .form-aside h1 {
+      margin: 0px;
+      color: #cd0a0a; }
+    .form-area .form-aside .form-row {
+      width: 100%;
+      display: block; }
+      .form-area .form-aside .form-row label {
+        display: inline-block;
+        width: 200px;
+        word-wrap: break-word; }
+      .form-area .form-aside .form-row input {
+        display: inline-block;
+        width: calc(100% - 204px);
+        padding: 6px 12px;
+        font-size: 14px;
+        line-height: 1.42857143;
+        color: #555;
+        background-color: #f7f7f7;
+        background-image: none;
+        border: 1px solid #ccc;
+        border-radius: 4px; }
 
 /*# sourceMappingURL=lmr.css.map */
