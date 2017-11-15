@@ -3023,7 +3023,7 @@ function SylvanCalendar() {
                     if(val['adeliverytype_x002e_hub_code'] == personalInstruction){
                         if(val['aenrollment_x002e_hub_committedsessionenddate'] != undefined){
                             var dateArry =  val['aenrollment_x002e_hub_committedsessionenddate'].split("-");
-                            effEndDate = new Date(parseInt(dateArry[0]), parseInt(dateArry[1]), parseInt(dateArry[2]));
+                            effEndDate = new Date(parseInt(dateArry[0]), parseInt(dateArry[1])-1, parseInt(dateArry[2]));
                             // effEndDate = new Date(val['aenrollment_x002e_hub_committedsessionenddate']);
                         }
                     }
