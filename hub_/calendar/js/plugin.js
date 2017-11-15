@@ -4,6 +4,10 @@ var DEFAULT_START_TIME = "8:00 AM";
 var DEFAULT_END_TIME = "9:00 AM";
 var deliveryType = data.getDeliveryType();
 var currentCalendarDate = moment(new Date()).format("YYYY-MM-DD");
+
+// 4 Weeks to get master schedule data.
+var numOfDays = 28;
+
 /*
  * Student Session Status
  */
@@ -2175,8 +2179,10 @@ function SylvanCalendar() {
     this.findDataSource = function (currentCalendarDate,view) {
         var self = this;
         var now = new Date();
+        now = self.getEndOfWeek(now);
+        now.setDate(now.getDate()+numOfDays);
         //constant from instruction view js
-        now.setDate(now.getDate() + MASTER_SCHEDULE_CONST);
+        // now.setDate(now.getDate() + MASTER_SCHEDULE_CONST);
         if(view.name == 'resourceDay'){
             if (currentCalendarDate > now.getTime()) {
                 return true;
@@ -2189,6 +2195,21 @@ function SylvanCalendar() {
             }
             return false;
         }
+    }
+
+    this.getStartOfWeek = function(date) {
+        // Copy date if provided, or use current date if not
+        date = date? new Date(+date) : new Date();
+        date.setHours(0,0,0,0);
+        // Set date to previous Sunday
+        date.setDate(date.getDate() - date.getDay());
+        return date;
+    }
+
+    this.getEndOfWeek = function(date) {
+      date = this.getStartOfWeek(date);
+      date.setDate(date.getDate() + 6);
+      return date; 
     }
 
     this.prev = function (locationId) {
