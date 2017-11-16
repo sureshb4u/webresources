@@ -24,7 +24,6 @@ var FLOAT_TYPE = 2;
 var MAKEUP_TYPE = 3;
 
 
-
 var personalInstruction = 1;
 var groupFacilitation = 2;
 var groupInstruction = 3;
@@ -549,6 +548,8 @@ function SylvanCalendar() {
         }
     }
 
+
+    // Class room population
     this.populateResource = function (args, isFetch) {
         var self = this;
         var currentCalendarDate;
@@ -2446,6 +2447,7 @@ function SylvanCalendar() {
         }
     };
 
+    // Week view of calendar
     this.weekView = function () {
         var self = this;
         var filterElement = undefined;
@@ -2479,6 +2481,8 @@ function SylvanCalendar() {
         }
     }
 
+
+    // Day view of calendar
     this.dayView = function () {
         var self = this;
         var filterElement = undefined;
@@ -5998,6 +6002,7 @@ function SylvanCalendar() {
                    x.resourceId == uniqueIds[1] &&
                    x.startHour.getTime() == new Date(uniqueIds[2]).getTime();
         });
+
         if (objStudent[0] != undefined) {
             data.openEnrollment(objStudent[0].enrollmentId);
         }

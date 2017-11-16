@@ -137,18 +137,18 @@ function LmrUI() {
                 skeleton += '        </article>' +
                             '        <article>' +
                             '            <span class="first-colm">Credit Card Fees:</span>';
-                skeleton += '<span class="input-field">$<input type="text" class="form-control table-input" id="creditval" name="creditval" value="0" ></span>';
+                skeleton += '<span class="input-field">$<input type="text" class="form-control table-input" id="creditval" name="creditval" value="' + el.creditval + '" ></span>';
                 if (el.hasOwnProperty("CorePecent")) {
                     skeleton += '<span id="creditPercent" >' + el.CorePecent + '</span>';
                 }
-                    skeleton += '<span id="creditTotal" >$0</span>';
+                    skeleton += '<span id="creditTotal" >$' + el.creditTotal + '</span>';
 
                 skeleton += '        </article>' +
                             '        <article>' +
                             '            <span class="first-colm">Misc Royalty Reduction</span>';
-                    skeleton += '<span class="input-field">$<input type="text" class="form-control table-input" id="miscval" name="miscval" value="0" ></span>';
+                    skeleton += '<span class="input-field">$<input type="text" class="form-control table-input" id="miscval" name="miscval" value="' + el.miscval + '" ></span>';
                     skeleton += '<span >-</span>';
-                    skeleton += '<span id="miscTotal" >$0</span>';
+                    skeleton += '<span id="miscTotal" >$' + el.miscTotal + '</span>';
 
                 skeleton += '        </article>' +
                             '        <article>' +
@@ -214,6 +214,7 @@ function LmrUI() {
             skeleton = "<span>No data found</span>";
         }
         wjQuery("#lmr-table").html(skeleton);
+        wjQuery("#lmr-table").nextAll().remove();
         wjQuery("#lmr-table").after(self.appendOtherSkeleten());
         setTimeout(function () {
             self.attachAllEvent();
@@ -222,28 +223,30 @@ function LmrUI() {
     }
 
     this.appendOtherSkeleten = function(){
+        var self = this;
+        var el= self.lmrList[0];
         var skeleton =  '<section class="form-area">'+
                 '        <aside class="form-aside">'+
                 '           <h1>ADVERTISING</h1>'+
                 '           <p class="form-row">'+
                 '               <label><b>TV</b></label>'+
-                '               <input type="text" class="table-input advtVal" value="0" name="tv">'+
+                '               <input type="text" class="table-input advtVal" value="'+el.tv+'" name="tv">'+
                 '           </p>'+
                 '           <p class="form-row">'+
                 '               <label><b>Radio</b></label>'+
-                '               <input type="text" class="table-input advtVal" value="0" name="radio">'+
+                '               <input type="text" class="table-input advtVal" value="'+el.radio+'" name="radio">'+
                 '           </p>'+
                 '           <p class="form-row">'+
                 '               <label><b>Outdoor</b></label>'+
-                '               <input type="text" class="table-input advtVal" value="0" name="outdoor">'+
+                '               <input type="text" class="table-input advtVal" value="'+el.outdoor+'" name="outdoor">'+
                 '           </p>'+
                 '           <p class="form-row">'+
                 '               <label><b>Magazine/Newpaper</b></label>'+
-                '               <input type="text" class="table-input advtVal" value="0" name="magazine">'+
+                '               <input type="text" class="table-input advtVal" value="'+el.magazine+'" name="magazine">'+
                 '           </p>'+
                 '           <p class="form-row">'+
                 '               <label><b>Other</b></label>'+
-                '               <input type="text" class="table-input advtVal" value="0" name="aother">'+
+                '               <input type="text" class="table-input advtVal" value="'+el.aother+'" name="aother">'+
                 '           </p>'+
                 '           <p class="form-row">'+
                 '               <label></label>'+
@@ -252,49 +255,49 @@ function LmrUI() {
                 '               <label></label>'+
                 '           </p>'+
                 '           <p class="form-row">'+
-                '               <label><b>Total</b></label>'+
-                '               <span id="advTotal">$0</span>'+
+                '               <label><b>TOTAL ADVERTISING SPEND:</b></label>'+
+                '               <span id="advTotal">$'+el.advTotal+'</span>'+
                 '           </p>'+
                 '        </aside>'+
                 '        <aside class="form-aside">'+
                 '           <h1>LOCAL MARKETING</h1>'+
                 '           <p class="form-row">'+
                 '               <label><b>Direct Mail</b></label>'+
-                '               <input type="text" class="table-input localVal" value="0" name="mail">'+
+                '               <input type="text" class="table-input localVal" value="'+el.mail+'" name="mail">'+
                 '           </p>'+
                 '           <p class="form-row">'+
                 '               <label><b>Sylvan Promotional Items</b></label>'+
-                '               <input type="text" class="table-input localVal" value="0" name="Promotional">'+
+                '               <input type="text" class="table-input localVal" value="'+el.promotional+'" name="promotional">'+
                 '           </p>'+
                 '           <p class="form-row">'+
                 '               <label><b>Brochures and Flyers</b></label>'+
-                '               <input type="text" class="table-input localVal" value="0" name="brochure">'+
+                '               <input type="text" class="table-input localVal" value="'+el.brochure+'" name="brochure">'+
                 '           </p>'+
                 '           <p class="form-row">'+
                 '               <label><b>Demos and Events</b></label>'+
-                '               <input type="text" class="table-input localVal" value="0" name="demos">'+
+                '               <input type="text" class="table-input localVal" value="'+el.demos+'" name="demos">'+
                 '           </p>'+
                 '           <p class="form-row">'+
-                '               <label><b>Teams or Club Sponsoprships</b></label>'+
-                '               <input type="text" class="table-input localVal" value="0" name="teams">'+
+                '               <label><b>Teams or Club Sponsorships</b></label>'+
+                '               <input type="text" class="table-input localVal" value="'+el.teams+'" name="teams">'+
                 '           </p>'+
                 '           <p class="form-row">'+
                 '               <label><b>Payroll</b></label>'+
-                '               <input type="text" class="table-input localVal" value="0" name="Payroll">'+
+                '               <input type="text" class="table-input localVal" value="'+el.payroll+'" name="payroll">'+
                 '           </p>'+
                 '           <p class="form-row">'+
                 '               <label><b>Other</b></label>'+
-                '               <input type="text" class="table-input localVal" value="0" name="lother">'+
+                '               <input type="text" class="table-input localVal" value="'+el.lother+'" name="lother">'+
                 '           </p>'+
                 '           <p class="form-row">'+
-                '               <label><b>Total</b></label>'+
-                '               <span id="localTotal">$0</span>'+
+                '               <label><b>TOTAL LOCAL MARKETING SPEND:</b></label>'+
+                '               <span id="localTotal">$'+el.localTotal+'</span>'+
                 '           </p>'+
                 '        </aside>'+
                 '</section>'+
                 '<article class="no-brdr btn-article">' +
-                '            <span class="first-colm">&nbsp;</span>' +
-                '            <span>&nbsp;</span>' +
+                '            <span class="first-colm">Comment</span>' +
+                '            <span><input type="text" value="'+el.comment+'" class="form-control" id="comment" ></span>' +
                 '            <span>&nbsp;</span>' +
                 '            <span><button class="lmr-submit" >Submit LMR</button></span>' +
                 '</article>';
@@ -325,6 +328,7 @@ function LmrUI() {
         //         onLoad(query.recordid, query.entityname, self.selectedMonth, self.selectedYear);
         //     },300);
         // })
+        wjQuery(".getLmr").off();
         wjQuery(".getLmr").click(function (event) {
             wjQuery(".loading").show();
             self.selectedYear = wjQuery("#yearSelected").val();
@@ -336,6 +340,7 @@ function LmrUI() {
             }, 300);
         });
 
+        wjQuery(".lmr-submit").off();
         wjQuery(".lmr-submit").click(function (event) {
             wjQuery(".loading").show();
             self.centerId = wjQuery("#center-id").text();
@@ -346,11 +351,11 @@ function LmrUI() {
 
         wjQuery(".table-input").keydown(function (e) {
             // validation
-            var alllowKeys = [8, 13, 9, 110, 37, 39];
+            var alllowKeys = [8, 13, 9, 110, 37, 39, 47, 48, 49, 50, 51, 52, 53, 54, 56, 57];
             var index = alllowKeys.indexOf(e.keyCode);
             var allow = false;
+            // console.log(e.keyCode);
             if(e.keyCode >= 96 && e.keyCode <= 105){
-                // console.log(e.keyCode);
                 allow = true;
             }else{
                 if(index == -1){
@@ -399,6 +404,7 @@ function LmrUI() {
             }
         });
 
+        wjQuery(".localVal").off();
         wjQuery(".localVal").on("input", function(e) {
             var val = wjQuery(this).val();
             var ltotal = 0;
@@ -412,6 +418,7 @@ function LmrUI() {
             }
         });
 
+        wjQuery(".advtVal").off();
         wjQuery(".advtVal").on("input", function(e) {
             var val = wjQuery(this).val();
             var ltotal = 0;
@@ -448,7 +455,13 @@ function LmrUI() {
         // update lmr object
         self.lmrList[0]['creditval'] = wjQuery("#creditval").val();
         self.lmrList[0]['miscval'] = wjQuery("#miscval").val();
-
+        self.lmrList[0]['creditTotal'] = wjQuery("#creditTotal").text().replace("$","");
+        self.lmrList[0]['miscTotal'] = wjQuery("#miscTotal").text().replace("$","");
+        self.lmrList[0]['TotalRoyaltyAmount'] = wjQuery("#r1Total").text().replace("$","");
+        self.lmrList[0]['TotalDue'] = wjQuery("#rTotal").text().replace("$","");
+        self.lmrList[0]['localTotal'] = wjQuery("#localTotal").text().replace("$","");
+        self.lmrList[0]['advTotal'] = wjQuery("#advTotal").text().replace("$","");
+        self.lmrList[0]['Comment'] = wjQuery("#comment").val();
 
         this.lmrList = self.lmrList;
         var response = OnSubmitLMR(result.recordid, self.selectedMonth, self.selectedYear, self.lmrList[0]);
