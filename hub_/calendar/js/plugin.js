@@ -6127,7 +6127,6 @@ function SylvanCalendar() {
             objNewSession['hub_makeup_expiry_date'] = prevStudent['makeupExpiryDate'];
             objPrevSession['hub_makeup_expiry_date'] = prevStudent['makeupExpiryDate'];
 
-
             objPrevSession['hub_enrollment@odata.bind'] = prevStudent['enrollmentId'];
             objPrevSession['hub_deliverytype'] = prevStudent['deliveryTypeId'];
             objPrevSession['hub_service@odata.bind'] = prevStudent['serviceId'];
