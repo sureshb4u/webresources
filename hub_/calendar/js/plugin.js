@@ -5320,19 +5320,20 @@ function SylvanCalendar() {
             objPrevSession['hub_student@odata.bind'] = objStudent[0]['id'];
             objPrevSession['hub_resourceid@odata.bind'] = null;
 
-            var maxDate = null;
+            var maxDate1 = null;
             if(objStudent[0]['enrolEndDate'] != undefined){
                 var dateArry = objStudent[0]['enrolEndDate'].split("/");
                 // maxDate = new Date(objStudent[0]['enrolEndDate']);
-                maxDate = new Date(parseInt(dateArry[2]),parseInt(dateArry[0])-1,parseInt(dateArry[1]));
+                maxDate1 = new Date(parseInt(dateArry[2]),parseInt(dateArry[0])-1,parseInt(dateArry[1]));
             }
             
             var objNewSession = {};
             objNewSession['hub_resourceid@odata.bind'] = null;
             wjQuery("#studentNameofExcuse").text(objStudent[0]['name']);
+            wjQuery( ".excuse-datepicker-input" ).datepicker( "destroy" );
             wjQuery(".excuse-datepicker-input").datepicker({
                 minDate: self.calendar.fullCalendar('getDate'),
-                maxDate: maxDate,
+                maxDate: maxDate1,
                 format: 'mm/dd/yyyy'
             });
             var selectedFromDate;
