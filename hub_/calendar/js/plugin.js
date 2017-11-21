@@ -2841,7 +2841,7 @@ function SylvanCalendar() {
                     name: val["_hub_staff_value@OData.Community.Display.V1.FormattedValue"],
                     start: sDate,
                     end: eDate,
-                    startHour: startHour,
+                    startHour: currentCalendarDate,
                     resourceId: val['_hub_resourceid_value'],
                     deliveryTypeId: val['aproductservice_x002e_hub_deliverytype'],
                     deliveryType: val['aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue'],
