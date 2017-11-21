@@ -1046,14 +1046,25 @@ function SylvanCalendar() {
             }
           }
 
-          var giValidation = false;
-          // if(prevStudObj['deliveryType'] == groupInstruction){
-          //   if(prevStudObj['start'] == date){
+          var giValidation = true;
+          var numHour = prevStudObj['duration']/60;
+          var prevdate1 = new Date(prevStudObj['startHour']);
+          var prevStudEndHour = new Date(prevdate1.setHours(prevdate1.getHours() + numHour));
+          var date1 = new Date(date);
+          var endHour = new Date(date1.setHours(date1.getHours() + 1));
+          if(prevStudObj['deliveryTypeCode'] == groupInstruction){
+            if(prevStudObj['startHour'].getTime() == date.getTime() && prevStudEndHour.getTime() == endHour.getTime() ){
+                giValidation = false;
+            }
+          }else{
+            giValidation = false;
+          }
 
-          //   }
-          // }  
+          var displayStart = moment(new Date(prevStudObj['startHour'])).format("DD-MM-YYYY hh:mm A");
+          var displayEnd = moment(new Date(prevStudEndHour)).format("DD-MM-YYYY hh:mm A");
+ 
           if(giValidation){
-                t.prompt("The selected student is not allowed to scheduled for the respective timeslot.");
+                t.prompt("The selected student is not allowed to scheduled for the respective timeslot.<br>Student session start time:-"+displayStart+"<br> Student session end time:-"+displayEnd);
           }else{
               var allowToDropStudent = self.validateStudentOnSameRow(stuId, startHour,prevStudObj, false);
               if(allowToDropStudent){
@@ -4690,6 +4701,7 @@ function SylvanCalendar() {
             wjQuery(".sof-btn").removeClass('overflow-info');
             wjQuery(".sof-btn").addClass('overflow-info');
             wjQuery('.sof-btn,.sof-close-icon').prop('title', "There are students in overflow pane");
+            self.sofWidthCalc();
         }
     }
 
@@ -6341,11 +6353,11 @@ function SylvanCalendar() {
 
     this.prompt = function (message) {
         var self = this;
-        wjQuery("#dialog > .dialog-msg").text(message);
+        wjQuery("#dialog > .dialog-msg").html(message);
         wjQuery("#dialog").dialog({
             resizable: false,
             height: "auto",
-            width: 350,
+            width: 400,
             modal: true,
             show: {
                 effect: 'slide',
