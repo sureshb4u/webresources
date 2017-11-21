@@ -343,6 +343,12 @@ button{
     border-left: 1px solid #ccc;
     border-top: 1px solid #ccc;
 }
+
+/*.teacher-availability{
+    display: inline-block;
+    width: calc(100% - 20px);
+}*/
+
 #student_block_0, #teacher_block_0 {
 	margin-top: 43px;
 }
@@ -374,7 +380,9 @@ button{
     background: #ebf5fb;
     padding: 3px;
     border: 1px solid #9acaea;
-    display: inline-table;
+    /*display: inline-table;*/
+    display: inline-block;
+    overflow-y: auto;
     width: calc(50% - 8px);
     height: calc(100% - 1px);
 }
@@ -382,7 +390,9 @@ button{
     padding: 3px;
     border: 1px solid #f88e50;
     background: #fedeb7;
-    display: inline-table;
+    /*display: inline-table;*/
+    display: inline-block;
+    overflow-y: auto;
     width: calc(50% - 8px);
     height: calc(100% - 1px);
 }
@@ -390,7 +400,9 @@ button{
     padding: 3px;
     border: 1px solid #7bc143;
     background: #dff0d5;
-    display: inline-table;
+    /*display: inline-table;*/
+    display: inline-block;
+    overflow-y: auto;
     width: calc(50% - 8px);
     height: calc(100% - 1px);
 }

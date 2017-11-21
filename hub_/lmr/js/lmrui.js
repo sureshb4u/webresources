@@ -408,7 +408,6 @@ function LmrUI() {
             }
         });
 
-        wjQuery(".localVal").off();
         wjQuery(".localVal").on("input", function(e) {
             var val = wjQuery(this).val();
             var ltotal = 0;
@@ -426,7 +425,6 @@ function LmrUI() {
             }
         });
 
-        wjQuery(".advtVal").off();
         wjQuery(".advtVal").on("input", function(e) {
             var val = wjQuery(this).val();
             var ltotal = 0;
