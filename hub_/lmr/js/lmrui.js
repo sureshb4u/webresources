@@ -372,6 +372,10 @@ function LmrUI() {
         wjQuery("#creditval").on("input", function(e) {
             var val = wjQuery(this).val();
             if(val){
+                if(val.length == 0){
+                    wjQuery(this).val(0);
+                    val = 0;
+                }
                 var creditval = parseFloat(val);
                 var creditPercent = parseFloat(wjQuery("#creditPercent").text());
                 var creditTotal = ((creditval*creditPercent)/100).toFixed(2)
@@ -398,6 +402,10 @@ function LmrUI() {
         wjQuery("#miscval").on("input", function(e) {
             var val = wjQuery(this).val();
             if(val){
+                if(val.length == 0){
+                    wjQuery(this).val(0);
+                    val = 0;
+                }
                 var miscVal = parseFloat(val);
                 var coreVal = parseFloat(wjQuery("#coreval").text().replace("$",""));
                 var coreTotal = parseFloat(wjQuery("#coreTotal").text().replace("$",""));
