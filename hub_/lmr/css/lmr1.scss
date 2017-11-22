@@ -5,7 +5,7 @@ body{
     color: #444444;
     font-size: 14px;
 	header {
-		background-color: #039be5;
+		background-color: #5C2985;
 		width: 100%;
 		height: 50px;
 		color: white;
@@ -84,7 +84,7 @@ h1{
 
 
 button{
-	background-color: #5384bd;
+	background-color: #65635d;
     font-weight: bold;
     border: none;
     outline: none;
@@ -103,7 +103,7 @@ button{
 }
 
 .btm-brdr{
-	border-bottom:1px solid #ababab;
+	border-bottom:1px solid #333;
 }
 .btn-article{
 	padding:10px 0px;
@@ -125,9 +125,9 @@ button{
     display: block;
     overflow: hidden;
     // padding: 15px 0px;
-    border-top:1px solid #ababab;
-    border-right:1px solid #ababab;
-    border-left:1px solid #ababab;
+    border-top:1px solid #333;
+    border-right:1px solid #333;
+    border-left:1px solid #333;
     height: 40px;
 }
 
@@ -140,7 +140,7 @@ button{
     float: left;
     padding: 10px 5px;
     text-align: left;
-    border-right: 1px solid #ababab;
+    border-right: 1px solid;
     height: calc(100% - 20px);
 	font-family: Segoe\000020UI,Arial,sans\00002Dserif;
     font-size: 13px;
@@ -169,7 +169,7 @@ button{
 
 section{
 	.dark{
-		background: #71c472;
+		background: #E8AD38;
 		font-weight: bold;
 		color: white;
 
@@ -186,7 +186,7 @@ section{
 
 
 .brdr-btm{
-	border-bottom:1px solid #ababab;
+	border-bottom:1px solid #333;
 }
 
 #dropdown{
@@ -249,11 +249,11 @@ section{
 	display: table;
     width: calc(95% - 2px);
     margin: 10px auto;
-    border: 1px solid #ababab;
+    border: 1px solid #333;
     padding: 0px;
     font-size: 13px;
     aside:nth-of-type(2){
-    	border-left:1px solid #ababab;
+    	border-left:1px solid #333;
     }
 	.form-aside{
 		display: table-cell;

@@ -2761,6 +2761,62 @@ function SylvanCalendar() {
         });
     }
 
+    this.getEffectiveEndDate = function(val){
+        var self = this;
+        var currentCalendarDate = self.calendar.fullCalendar('getDate');        
+        var effEndDate1 = val['hub_effectiveenddate'];
+        var effEndDate2 = val['aenrollment_x002e_hub_enrollmentenddate'];
+        var effEndDate3 = undefined;
+        var effEndDate = currentCalendarDate;
+        if(val['aenrollment_x002e_hub_committedsessionenddate'] != undefined){
+            var dateArry =  val['aenrollment_x002e_hub_committedsessionenddate'].split("-");
+            effEndDate3 = new Date(parseInt(dateArry[0]), parseInt(dateArry[1])-1, parseInt(dateArry[2]));
+        }
+
+        if(effEndDate1 == undefined && effEndDate2 == undefined && effEndDate3 == undefined){
+            effEndDate = currentCalendarDate;
+        }else if(effEndDate1 == undefined && effEndDate2 == undefined && effEndDate3 != undefined){
+            effEndDate = effEndDate3;
+        }else if(effEndDate1 == undefined && effEndDate2 != undefined && effEndDate3 == undefined){
+            effEndDate = effEndDate2;
+        }else if(effEndDate1 != undefined && effEndDate2 == undefined && effEndDate3 == undefined){
+            effEndDate = effEndDate;
+        }else if(effEndDate1 != undefined && effEndDate2 != undefined && effEndDate3 == undefined){
+            if(new Date(effEndDate1).getTime() >= new Date(effEndDate2).getTime()){
+                effEndDate = effEndDate2;
+            }else{
+                effEndDate = effEndDate1;
+            }
+        }else if(effEndDate1 != undefined && effEndDate2 == undefined && effEndDate3 != undefined){
+            if(new Date(effEndDate1).getTime() >= new Date(effEndDate3).getTime()){
+                effEndDate = effEndDate3;
+            }else{
+                effEndDate = effEndDate1;
+            }
+        }else if(effEndDate1 == undefined && effEndDate2 != undefined && effEndDate3 != undefined){
+            if(new Date(effEndDate2).getTime() >= new Date(effEndDate3).getTime()){
+                effEndDate = effEndDate3;
+            }else{
+                effEndDate = effEndDate2;
+            }
+        }else if(effEndDate1 != undefined && effEndDate2 != undefined && effEndDate3 != undefined){
+            var tempDate = "";
+            if(new Date(effEndDate1).getTime() >= new Date(effEndDate2).getTime()){
+                tempDate = effEndDate2;
+            }else{
+                tempDate = effEndDate1;
+            }
+            if(new Date(tempDate).getTime() >= new Date(effEndDate3).getTime()){
+                effEndDate = effEndDate3;
+            }else{
+                effEndDate = tempDate;
+            }
+
+        }
+        return new Date(effEndDate);
+    }
+
+
     this.generateEventObject = function (args, label) {
         var self = this;
         var currentView = self.calendar.fullCalendar('getView');
@@ -2839,7 +2895,7 @@ function SylvanCalendar() {
                 var teacher = {
                     id: val['_hub_staff_value'],
                     name: val["_hub_staff_value@OData.Community.Display.V1.FormattedValue"],
-                    start: sDate,
+                    start: currentCalendarDate,
                     end: eDate,
                     startHour: currentCalendarDate,
                     resourceId: val['_hub_resourceid_value'],
@@ -3035,21 +3091,26 @@ function SylvanCalendar() {
                 var effStartDate = new Date(val['hub_effectivestartdate']);
                 var allowStudentFlag = false;
                 if(currentView.name == 'resourceDay'){
-                    var effEndDate = currentCalendarDate;
+                    // if(val['hub_effectiveenddate'] != undefined){
+                    //     effEndDate = new Date(val['hub_effectiveenddate']);
+                    //     effEndDate1 = new Date(val['hub_effectiveenddate']);
+                    // }
+                    // else if(val['aenrollment_x002e_hub_enrollmentenddate'] != undefined){
+                    //     effEndDate = new Date(val['aenrollment_x002e_hub_enrollmentenddate']);
+                    //     effEndDate2 = new Date(val['aenrollment_x002e_hub_enrollmentenddate']);
+                    // }
+                    // if(val['adeliverytype_x002e_hub_code'] == personalInstruction){
+                    //     if(val['aenrollment_x002e_hub_committedsessionenddate'] != undefined){
+                    //         var dateArry =  val['aenrollment_x002e_hub_committedsessionenddate'].split("-");
+                    //         effEndDate = new Date(parseInt(dateArry[0]), parseInt(dateArry[1])-1, parseInt(dateArry[2]));
+                    //         effEndDate3 = new Date(parseInt(dateArry[0]), parseInt(dateArry[1])-1, parseInt(dateArry[2]));
+                    //         // effEndDate = new Date(val['aenrollment_x002e_hub_committedsessionenddate']);
+                    //     }
+                    // }
 
-                    if(val['hub_effectiveenddate'] != undefined){
-                        effEndDate = new Date(val['hub_effectiveenddate']);
-                    }
-                    else if(val['aenrollment_x002e_hub_enrollmentenddate'] != undefined){
-                        effEndDate = new Date(val['aenrollment_x002e_hub_enrollmentenddate']);
-                    }
-                    if(val['adeliverytype_x002e_hub_code'] == personalInstruction){
-                        if(val['aenrollment_x002e_hub_committedsessionenddate'] != undefined){
-                            var dateArry =  val['aenrollment_x002e_hub_committedsessionenddate'].split("-");
-                            effEndDate = new Date(parseInt(dateArry[0]), parseInt(dateArry[1])-1, parseInt(dateArry[2]));
-                            // effEndDate = new Date(val['aenrollment_x002e_hub_committedsessionenddate']);
-                        }
-                    }
+                    // Effective end date logic
+                    effEndDate = self.getEffectiveEndDate(val);
+
                     effEndDate = new Date(effEndDate).setHours(23);
                     effEndDate = new Date(new Date(effEndDate).setMinutes(59));
                     if(currentCalendarDate.getTime() >= effStartDate.getTime() &&
@@ -3058,20 +3119,24 @@ function SylvanCalendar() {
                     }
                 }
                 else if(currentView.name == 'agendaWeek'){
-                    var effEndDate = currentView.end;
-                    if(val['hub_effectiveenddate'] != undefined){
-                        effEndDate = new Date(val['hub_effectiveenddate']);
-                    }
-                    else if(val['aenrollment_x002e_hub_enrollmentenddate'] != undefined){
-                        effEndDate = new Date(val['aenrollment_x002e_hub_enrollmentenddate']);
-                    }
-                    if(val['adeliverytype_x002e_hub_code'] == personalInstruction){
-                        if(val['aenrollment_x002e_hub_committedsessionenddate'] != undefined){
-                            var dateArry =  val['aenrollment_x002e_hub_committedsessionenddate'].split("-");
-                            effEndDate = new Date(parseInt(dateArry[0]), parseInt(dateArry[1]), parseInt(dateArry[2]));
-                            // effEndDate = new Date(val['aenrollment_x002e_hub_committedsessionenddate']);
-                        }
-                    }
+                    // var effEndDate = currentView.end;
+                    // if(val['hub_effectiveenddate'] != undefined){
+                    //     effEndDate = new Date(val['hub_effectiveenddate']);
+                    // }
+                    // else if(val['aenrollment_x002e_hub_enrollmentenddate'] != undefined){
+                    //     effEndDate = new Date(val['aenrollment_x002e_hub_enrollmentenddate']);
+                    // }
+                    // if(val['adeliverytype_x002e_hub_code'] == personalInstruction){
+                    //     if(val['aenrollment_x002e_hub_committedsessionenddate'] != undefined){
+                    //         var dateArry =  val['aenrollment_x002e_hub_committedsessionenddate'].split("-");
+                    //         effEndDate = new Date(parseInt(dateArry[0]), parseInt(dateArry[1]), parseInt(dateArry[2]));
+                    //         // effEndDate = new Date(val['aenrollment_x002e_hub_committedsessionenddate']);
+                    //     }
+                    // }
+
+                    // Effective end date logic
+                    effEndDate = self.getEffectiveEndDate(val);
+
                     effEndDate = new Date(effEndDate).setHours(23);
                     effEndDate = new Date(new Date(effEndDate).setMinutes(59));
                     if(effStartDate.getTime() <= currentView.end.getTime() &&
