@@ -142,7 +142,7 @@ function LmrUI() {
                 if (el.hasOwnProperty("CorePecent")) {
                     skeleton += '<span id="creditPercent" >' + el.CorePecent + '</span>';
                 }
-                    skeleton += '<span id="creditTotal" >$' + el.creditTotal + '</span>';
+                    skeleton += '<span id="creditTotal" >($' + el.creditTotal + ')</span>';
 
                 skeleton += '        </article>' +
                             '        <article>' +
@@ -371,59 +371,59 @@ function LmrUI() {
 
         wjQuery("#creditval").on("input", function(e) {
             var val = wjQuery(this).val();
-            if(val){
-                if(val.length == 0){
-                    wjQuery(this).val(0);
-                    val = 0;
-                }
-                var creditval = parseFloat(val);
-                var creditPercent = parseFloat(wjQuery("#creditPercent").text());
-                var creditTotal = ((creditval*creditPercent)/100).toFixed(2)
-                wjQuery("#creditTotal").text("($"+creditTotal+")");
-                creditTotal = parseFloat(wjQuery("#creditTotal").text().replace("($",""));
-                var coreVal = parseFloat(wjQuery("#coreval").text().replace("$",""));
-                var coreTotal = parseFloat(wjQuery("#coreTotal").text().replace("$",""));
-                var edgeVal = parseFloat(wjQuery("#edgeval").text().replace("$",""));
-                var edgeTotal = parseFloat(wjQuery("#edgeTotal").text().replace("$",""));
-                var miscVal = parseFloat(wjQuery("#miscval").val());
-                var miscTotal = parseFloat(wjQuery("#miscTotal").text().replace("$",""));
-                var rTotal = (coreTotal+miscTotal+edgeTotal) - creditTotal;
-                var r1Total = coreVal+edgeVal+miscVal;
-                if (rTotal > 0) {
-                    wjQuery("#rTotal").text("$"+rTotal);
-                }else{
-                    rTotal = rTotal.toString().replace("-","");
-                    wjQuery("#rTotal").text("($"+rTotal+")");
-                }
-                wjQuery("#r1Total").text("$"+r1Total);
+            if(val == ""){
+                val = 0;
             }
+            if(wjQuery("#miscval").val() == ""){
+                wjQuery("#miscval").val(0);
+            }
+            var creditval = parseFloat(val);
+            var creditPercent = parseFloat(wjQuery("#creditPercent").text());
+            var creditTotal = ((creditval*creditPercent)/100).toFixed(2)
+            wjQuery("#creditTotal").text("($"+creditTotal+")");
+            creditTotal = parseFloat(wjQuery("#creditTotal").text().replace("($",""));
+            var coreVal = parseFloat(wjQuery("#coreval").text().replace("$",""));
+            var coreTotal = parseFloat(wjQuery("#coreTotal").text().replace("$",""));
+            var edgeVal = parseFloat(wjQuery("#edgeval").text().replace("$",""));
+            var edgeTotal = parseFloat(wjQuery("#edgeTotal").text().replace("$",""));
+            var miscVal = parseFloat(wjQuery("#miscval").val());
+            var miscTotal = parseFloat(wjQuery("#miscTotal").text().replace("$",""));
+            var rTotal = (coreTotal+miscTotal+edgeTotal) - creditTotal;
+            var r1Total = coreVal+edgeVal+miscVal;
+            if (rTotal > 0) {
+                wjQuery("#rTotal").text("$"+rTotal);
+            }else{
+                rTotal = rTotal.toString().replace("-","");
+                wjQuery("#rTotal").text("($"+rTotal+")");
+            }
+            wjQuery("#r1Total").text("$"+r1Total);
         });
 
         wjQuery("#miscval").on("input", function(e) {
             var val = wjQuery(this).val();
-            if(val){
-                if(val.length == 0){
-                    wjQuery(this).val(0);
-                    val = 0;
-                }
-                var miscVal = parseFloat(val);
-                var coreVal = parseFloat(wjQuery("#coreval").text().replace("$",""));
-                var coreTotal = parseFloat(wjQuery("#coreTotal").text().replace("$",""));
-                var edgeVal = parseFloat(wjQuery("#edgeval").text().replace("$",""));
-                var edgeTotal = parseFloat(wjQuery("#edgeTotal").text().replace("$",""));
-                var creditVal1 = parseFloat(wjQuery("#creditval").val());
-                var creditTotal = parseFloat(wjQuery("#creditTotal").text().replace("($",""));
-                wjQuery("#miscTotal").text("$"+miscVal);
-                var rTotal = (coreTotal+miscVal+edgeTotal) - creditTotal;
-                var r1Total = coreVal+edgeVal+miscVal;
-                if (rTotal > 0) {
-                    wjQuery("#rTotal").text("$"+rTotal);
-                }else{
-                    rTotal = rTotal.toString().replace("-","");
-                    wjQuery("#rTotal").text("($"+rTotal+")");
-                }
-                wjQuery("#r1Total").text("$"+r1Total);
+            if(val == ""){
+                val = 0;
             }
+            if(wjQuery("#creditval").val() == ""){
+                wjQuery("#creditval").val(0);
+            }
+            var miscVal = parseFloat(val);
+            var coreVal = parseFloat(wjQuery("#coreval").text().replace("$",""));
+            var coreTotal = parseFloat(wjQuery("#coreTotal").text().replace("$",""));
+            var edgeVal = parseFloat(wjQuery("#edgeval").text().replace("$",""));
+            var edgeTotal = parseFloat(wjQuery("#edgeTotal").text().replace("$",""));
+            var creditVal1 = parseFloat(wjQuery("#creditval").val());
+            var creditTotal = parseFloat(wjQuery("#creditTotal").text().replace("($",""));
+            wjQuery("#miscTotal").text("$"+miscVal);
+            var rTotal = (coreTotal+miscVal+edgeTotal) - creditTotal;
+            var r1Total = coreVal+edgeVal+miscVal;
+            if (rTotal > 0) {
+                wjQuery("#rTotal").text("$"+rTotal);
+            }else{
+                rTotal = rTotal.toString().replace("-","");
+                wjQuery("#rTotal").text("($"+rTotal+")");
+            }
+            wjQuery("#r1Total").text("$"+r1Total);
         });
 
         wjQuery(".localVal").on("input", function(e) {
