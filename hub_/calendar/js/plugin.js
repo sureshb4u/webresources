@@ -5836,6 +5836,7 @@ function SylvanCalendar() {
                     wjQuery(".loading").show();
                     options = wjQuery.extend(true, {}, options);
                     setTimeout(function(){
+                        currentView = self.calendar.fullCalendar('getView');
                         var startDate = moment(currentView.start).format("YYYY-MM-DD");
                         var locationObj = self.getLocationObject(self.locationId);
                         if(locationObj['_hub_parentcenter_value'] != undefined){
@@ -5853,6 +5854,7 @@ function SylvanCalendar() {
                     wjQuery(".loading").show();
                     options = wjQuery.extend(true, {}, options);
                     setTimeout(function(){
+                        currentView = self.calendar.fullCalendar('getView');
                         var startDate = moment(currentView.start).format("YYYY-MM-DD");
                         var locationObj = self.getLocationObject(self.locationId);
                         if(locationObj['_hub_parentcenter_value'] != undefined){
@@ -5878,13 +5880,17 @@ function SylvanCalendar() {
                     name: "Float",
                     callback : function(key, options) {
                         wjQuery(".loading").show();
-                        var startDate = moment(currentView.start).format("YYYY-MM-DD");
-                        var locationObj = self.getLocationObject(self.locationId);
-                        if(locationObj['_hub_parentcenter_value'] != undefined){
-                            self.makeupPopup(data.getMakeupNFloat({"hub_center@odata.bind":self.locationId, "isForMakeup":false, "hub_date":startDate, "hub_parentcenter":locationObj['_hub_parentcenter_value']}), options.$trigger[0], false);
-                        }else{
-                            self.makeupPopup(data.getMakeupNFloat({"hub_center@odata.bind":self.locationId, "isForMakeup":false, "hub_date":startDate}), options.$trigger[0], false);
-                        }
+                        options = wjQuery.extend(true, {}, options);
+                        setTimeout(function(){
+                            currentView = self.calendar.fullCalendar('getView');
+                            var startDate = moment(currentView.start).format("YYYY-MM-DD");
+                            var locationObj = self.getLocationObject(self.locationId);
+                            if(locationObj['_hub_parentcenter_value'] != undefined){
+                                self.makeupPopup(data.getMakeupNFloat({"hub_center@odata.bind":self.locationId, "isForMakeup":false, "hub_date":startDate, "hub_parentcenter":locationObj['_hub_parentcenter_value']}), options.$trigger[0], false);
+                            }else{
+                                self.makeupPopup(data.getMakeupNFloat({"hub_center@odata.bind":self.locationId, "isForMakeup":false, "hub_date":startDate}), options.$trigger[0], false);
+                            }
+                        });
                     }
                 }
                 wjQuery.contextMenu( 'destroy', 'span[uniqueId="' + uniqueId + '"]');
@@ -5904,6 +5910,7 @@ function SylvanCalendar() {
                 name: "Float",
                 callback : function(key, options) {
                     wjQuery(".loading").show();
+                    currentView = self.calendar.fullCalendar('getView');
                     var startDate = moment(currentView.start).format("YYYY-MM-DD");
                     var locationObj = self.getLocationObject(self.locationId);
                     options = wjQuery.extend(true, {}, options);
