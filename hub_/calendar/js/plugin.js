@@ -1840,8 +1840,10 @@ function SylvanCalendar() {
     }
 
     this.setEnd = function(prevObj,newObj){
-        var duration = (prevObj.end.getTime() - prevObj.start.getTime())/(1000*60);
-        return new Date(new Date(newObj.start).setMinutes(new Date(newObj.start).getMinutes() + duration))
+        if(prevObj.end != undefined && prevObj.start != undefined){
+            var duration = (prevObj.end.getTime() - prevObj.start.getTime())/(1000*60);
+            return new Date(new Date(newObj.start).setMinutes(new Date(newObj.start).getMinutes() + duration))
+        }
     }
 
     this.studentSofConflictCheck = function (t, date, allDay, ev, ui, resource, elm) {
@@ -2895,9 +2897,9 @@ function SylvanCalendar() {
                 var teacher = {
                     id: val['_hub_staff_value'],
                     name: val["_hub_staff_value@OData.Community.Display.V1.FormattedValue"],
-                    start: currentCalendarDate,
+                    start: sDate,
                     end: eDate,
-                    startHour: currentCalendarDate,
+                    startHour: startHour,
                     resourceId: val['_hub_resourceid_value'],
                     deliveryTypeId: val['aproductservice_x002e_hub_deliverytype'],
                     deliveryType: val['aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue'],
@@ -2934,8 +2936,8 @@ function SylvanCalendar() {
                             // Set time for end date
                             exceptionEndDate = new Date(exceptionEndDate).setHours(23);
                             exceptionEndDate = new Date(new Date(exceptionEndDate).setMinutes(59));
-                            if(startHour != undefined){
-                                if(startHour.getTime() >= exceptionStartDate.getTime() && startHour.getTime() <= exceptionEndDate.getTime()){
+                            if(currentCalendarDate != undefined){
+                                if(currentCalendarDate.getTime() >= exceptionStartDate.getTime() && currentCalendarDate.getTime() <= exceptionEndDate.getTime()){
                                     if(self.staffExceptions[k]['hub_entireday']){
                                         index = 1;
                                         break;
@@ -2943,7 +2945,7 @@ function SylvanCalendar() {
                                     else{
                                         exceptionStartHour = self.staffExceptions[k]['hub_starttime'] / 60;
                                         exceptionEndHour = self.staffExceptions[k]['hub_endtime'] / 60;
-                                        if(moment(startHour).format('h') >= exceptionStartHour && moment(startHour).format('h') < exceptionEndHour){
+                                        if(moment(currentCalendarDate).format('h') >= exceptionStartHour && moment(currentCalendarDate).format('h') < exceptionEndHour){
                                             index = 1;
                                             break;
                                         }
@@ -3701,24 +3703,26 @@ function SylvanCalendar() {
                                 // Conflict update
                                 // More than one teacher conflict 
                                 var msgIndex = event[k].conflictMsg.map(function (x) {
-                                    return x.id;
+                                    return x;
                                 }).indexOf(0);
                                 if (msgIndex == -1) {
                                     event[k].conflictMsg.push(0);
-                                    self.updateConflictMsg(event[k]);
                                 }
+                                self.updateConflictMsg(event[k]);
 
-                                event[k].teachers.push({ id: id, name: name });
+                                event[k].teachers.push({ id: id, name: name, pinId: value['pinId'] });
                                 wjQuery.each(event[k].teachers, function (ka, teacherObj) {
                                     var uniqueId = teacherObj.id + "_" + value['resourceId'] + "_" + value['startHour'];
-                                    if (value['pinId'] != undefined) {
+                                    if (teacherObj['pinId'] != undefined) {
                                         event[k].title += "<span class='draggable drag-teacher' pinnedId='" + value['pinId'] + "' eventid='" + eventId + "' uniqueId='" + uniqueId + "' id='" + teacherObj.id + value['resourceId'] + "' type='teacherSession' value='" + teacherObj.id + "'><img src='/webresources/hub_/calendar/images/pin.png'/>" + teacherObj.name + "</span>";
+                                        self.addContext(uniqueId, 'teacher', true, "");
                                     } else {
                                         // temp unpin teacher
                                         if (value['tempPinId'] != undefined) {
                                             event[k].title += "<span class='draggable drag-teacher' tempPinId='" + value['tempPinId'] + "' eventid='" + eventId + "' uniqueId='" + uniqueId + "' id='" + teacherObj.id + value['resourceId'] + "' type='teacherSession' value='" + teacherObj.id + "'><img style='transform:rotate(45deg);' src='/webresources/hub_/calendar/images/pin.png'/>" + teacherObj.name + "</span>";
                                         } else {
                                             event[k].title += "<span class='draggable drag-teacher' eventid='" + eventId + "' uniqueId='" + uniqueId + "' id='" + teacherObj.id + value['resourceId'] + "' type='teacherSession' value='" + teacherObj.id + "'>" + teacherObj.name + "</span>";
+                                            self.addContext(uniqueId, 'teacher', false, "");
                                         }
                                     }
                                     event[k].isConflict = true;
@@ -3866,23 +3870,24 @@ function SylvanCalendar() {
                         }).indexOf(3);
                         if (msgIndex == -1) {
                           event[k].conflictMsg.push(3);
-                          self.updateConflictMsg(event[k]);
                         }                      
+                        self.updateConflictMsg(event[k]);
                       }
 
 
                     });
-                    self.calendar.fullCalendar('updateEvent', event);
                     if (value['pinId'] != undefined) {
                         self.addContext(uniqueId, 'teacher', true, "");
                     }
                     else {
                         self.addContext(uniqueId, 'teacher', false, "");
                     }
+                    self.calendar.fullCalendar('updateEvent', event);
+                    self.calendar.fullCalendar('refetchEvents');
                 } else {
                     var obj = {
                         id: value['resourceId']+value['startHour'],
-                        teachers:[{id:id, name:name}],
+                        teachers:[{id:id, name:name, pinId: value['pinId']}],
                         start:value['startHour'],
                         end:value['end'],
                         allDay: false,
@@ -3933,11 +3938,11 @@ function SylvanCalendar() {
                         self.addContext(uniqueId, 'teacher', false, "");
                     }
                     self.eventList.push(obj);
-                    self.calendar.fullCalendar('refetchEvents');
                     if (isFromFilter) {
                         self.calendar.fullCalendar('removeEvents');
                         self.calendar.fullCalendar('removeEventSource');
                         self.calendar.fullCalendar('addEventSource', { events: self.eventList });
+                        self.calendar.fullCalendar('refetchEvents');
                     }
                 }
                 self.draggable('draggable');
@@ -6490,7 +6495,11 @@ function SylvanCalendar() {
             }
         }
         if (event.conflictMsg.length) {
-          wjQuery.each(event.conflictMsg, function (k, v) {
+          var uniqueNames = [];
+          $.each(event.conflictMsg, function(i, el){
+            if($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
+          });
+          wjQuery.each(uniqueNames, function (k, v) {
               msg += (k + 1) + ". " + self.conflictMsg[v] + "|";
           });
           var lastIndex = msg.lastIndexOf("|");
