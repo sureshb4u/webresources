@@ -2361,7 +2361,16 @@ function SylvanCalendar() {
 
     this.refreshCalendarEvent = function (locationId, isFetch) {
         var self = this;
-        var cwidth = 178;
+        var scwidth = (wjQuery(window).width()-121);
+        var cwidth;
+        if(self.resourceList.length==6){
+            cwidth = (Math.floor(scwidth/6));
+            alert(cwidth);
+        }
+        else{
+            cwidth = 200;
+            alert(cwidth);
+        }
         setTimeout(function () {
             // Table Fixed column code +scroll  Start
                 wjQuery('table.fc-border-separate, table.fc-border-separate.fc td,.fc th').css('width',+cwidth+'px');
