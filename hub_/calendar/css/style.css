@@ -551,3 +551,75 @@ ul{
 .fc-agenda-allday{
     display: none;
 }
+
+/*=============tablescroll Css start=====================*/
+table.fc-border-separate{table-layout: fixed;}
+.fc-agenda .fc-agenda-axis{
+    width: 91px !important;
+}
+/*.fc-widget-header{
+    background: #1e88e5;
+    color: #fff;
+}*/
+.filter-section{z-index: 999 !important;height: 530px !important;position: fixed !important;}
+.calendar-firstCol{width: 100px;
+    position: fixed;
+    z-index: 99;
+    background: #fff;
+    /* padding-right: 10px; */
+    border-right:1px solid #ccc;
+    height: 550px;
+    overflow: hidden;}
+.firstcolContainer{height: inherit;
+    overflow-y: scroll;width: 115px;}
+.coldata{
+    border-top: 1px solid #ccc;
+    padding: 0 10px;
+    text-align: right;
+    height: 40px;
+    border-width: 1px 0 0;
+    /*background: #1e88e5;
+    color: #fff;*/
+}
+.col_0{border-top-width: 0;}    
+.slotdata{
+    /*background: #1e88e5;*/
+    /*color: #fff;*/
+    height: 40px;
+    border-top: 1px dotted #ccc;
+    }
+.tablebody1{
+    height: 530px !important;
+    overflow: hidden !important;
+    z-index: 99;
+}
+.fc-header{
+    position: fixed;
+}
+.fc-agenda-gutter{
+    width: 20px !important;
+}
+
+.fc-scroll-content {
+    width: 100%;
+    overflow-x: scroll !important;
+    overflow-y: hidden;
+    height: 555px;
+}
+#calendar .fc-content{
+    background: #ccc;
+}
+/*.filter-label-outer {
+    background: darkgreen;
+    color: #fff;
+}*/
+#teacher_block_0 {
+    margin-top: 44px !important;
+}
+
+/*@media(max-width: 768px){
+    .fc-content .fc-view  {
+    width: 300% !important;
+}
+}*/
+/*=============tablescroll css End=====================*/
