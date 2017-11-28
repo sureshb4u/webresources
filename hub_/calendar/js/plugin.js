@@ -2361,15 +2361,22 @@ function SylvanCalendar() {
 
     this.refreshCalendarEvent = function (locationId, isFetch) {
         var self = this;
+        // Table Fixed column code +scroll  Start
         var scwidth = (wjQuery(window).width()-121);
         var cwidth;
         if(self.resourceList.length==6){
-            cwidth = (Math.floor(scwidth/6));
-            alert(cwidth);
+            if (wjQuery(window).width()>1100) {
+                cwidth = (Math.floor(scwidth/6));
+                //alert(cwidth);
+            }
+            else{
+                cwidth = 200;
+            }
+            
         }
         else{
             cwidth = 200;
-            alert(cwidth);
+            //alert(cwidth);
         }
         setTimeout(function () {
             // Table Fixed column code +scroll  Start
