@@ -4812,6 +4812,7 @@ function SylvanCalendar() {
         wjQuery('.loading').show();
         var id = wjQuery(element).attr('value');
         var uniqueId = wjQuery(element).attr('uniqueId');
+        var eventId = wjQuery(element).attr('eventid');
         var startTime = uniqueId.split('_')[2];
         var today = self.calendar.fullCalendar('getDate');
         var student = self.convertedStudentObj.filter(function (x) {
@@ -4853,6 +4854,7 @@ function SylvanCalendar() {
         objPinnedStudent['hub_makeup_expiry_date'] = student[0]['makeupExpiryDate'];
         objPinnedStudent['hub_session_status'] = student[0]['sessionStatus'];
         var responseObj = data.savePinStudent(objPinnedStudent);
+        var eventObj = self.calendar.fullCalendar('clientEvents', eventId);
         if (typeof (responseObj) == 'boolean') {
             if (responseObj) {
                 var txt = wjQuery(element)[0].innerHTML;
@@ -4861,6 +4863,24 @@ function SylvanCalendar() {
                 }
                 wjQuery(element).html("<img src='/webresources/hub_/calendar/images/pin.png'/>" + txt);
                 wjQuery(element).attr('pinnedId', objPinnedStudent.hub_sch_pinned_students_teachersid);
+                var eventTitleHTML = wjQuery(eventObj[0].title);
+                for (var i = 0; i < eventTitleHTML.length; i++) {
+                    if (wjQuery(eventTitleHTML[i]).attr('value') == wjQuery(element).attr('value')) {
+                        eventTitleHTML[i] = element;
+                    }
+                }
+                if (eventTitleHTML.prop('outerHTML') != undefined) {
+                    if (eventTitleHTML.length == 1) {
+                        eventObj[0].title = eventTitleHTML.prop('outerHTML');
+                    } else {
+                        eventObj[0].title = "";
+                        for (var i = 0; i < eventTitleHTML.length; i++) {
+                            eventObj[0].title += eventTitleHTML[i].outerHTML;
+                        }
+                    }
+                    self.calendar.fullCalendar('updateEvent', eventObj);
+                    self.calendar.fullCalendar('refetchEvents');
+                }
             }
         }
         else if (typeof (responseObj) == 'object') {
@@ -4872,6 +4892,24 @@ function SylvanCalendar() {
                 }
                 wjQuery(element).html("<img src='/webresources/hub_/calendar/images/pin.png'/>" + txt);
                 wjQuery(element).attr('pinnedId', responseObj['hub_pinned_student_teacher_id']);
+                var eventTitleHTML = wjQuery(eventObj[0].title);
+                for (var i = 0; i < eventTitleHTML.length; i++) {
+                    if (wjQuery(eventTitleHTML[i]).attr('value') == wjQuery(element).attr('value')) {
+                        eventTitleHTML[i] = element;
+                    }
+                }
+                if (eventTitleHTML.prop('outerHTML') != undefined) {
+                    if (eventTitleHTML.length == 1) {
+                        eventObj[0].title = eventTitleHTML.prop('outerHTML');
+                    } else {
+                        eventObj[0].title = "";
+                        for (var i = 0; i < eventTitleHTML.length; i++) {
+                            eventObj[0].title += eventTitleHTML[i].outerHTML;
+                        }
+                    }
+                    self.calendar.fullCalendar('updateEvent', eventObj);
+                    self.calendar.fullCalendar('refetchEvents');
+                }
             }
         }
         wjQuery('.loading').hide();
@@ -4880,6 +4918,7 @@ function SylvanCalendar() {
     this.unPinStudent = function (element) {
         var self = this;
         var id = wjQuery(element).attr('value');
+        var eventId = wjQuery(element).attr('eventid');
         var uniqueId = wjQuery(element).attr('uniqueId');
         var startTime = uniqueId.split('_')[2];
         var today = this.calendar.fullCalendar('getDate');
@@ -4907,9 +4946,28 @@ function SylvanCalendar() {
             objUnPinnedStudent.hub_sch_pinned_students_teachersid = wjQuery(element).attr('temppinid');
         }
         var unPinResponse = data.saveUnPinStudent(objUnPinnedStudent);
+        var eventObj = self.calendar.fullCalendar('clientEvents', eventId);
         if (unPinResponse) {
             wjQuery(element).removeAttr('pinnedId')
             wjQuery(element).find("img").remove();
+            var eventTitleHTML = wjQuery(eventObj[0].title);
+            for (var i = 0; i < eventTitleHTML.length; i++) {
+                if (wjQuery(eventTitleHTML[i]).attr('value') == wjQuery(element).attr('value')) {
+                    eventTitleHTML[i] = element;
+                }
+            }
+            if (eventTitleHTML.prop('outerHTML') != undefined) {
+                if (eventTitleHTML.length == 1) {
+                    eventObj[0].title = eventTitleHTML.prop('outerHTML');
+                } else {
+                    eventObj[0].title = "";
+                    for (var i = 0; i < eventTitleHTML.length; i++) {
+                        eventObj[0].title += eventTitleHTML[i].outerHTML;
+                    }
+                }
+                self.calendar.fullCalendar('updateEvent', eventObj);
+                self.calendar.fullCalendar('refetchEvents');
+            }
         }
         wjQuery('.loading').hide();
     };
@@ -5402,13 +5460,13 @@ function SylvanCalendar() {
             objPrevSession['hub_student@odata.bind'] = objStudent[0]['id'];
             objPrevSession['hub_resourceid@odata.bind'] = null;
 
-            var maxDate1 = moment().add(30, 'days')._d;
-            var minDate1 = moment().subtract(30, 'days')._d;
+            var maxDate1 = moment(self.calendar.fullCalendar('getDate')).add(30, 'days')._d;
+            var minDate1 = moment(self.calendar.fullCalendar('getDate')).subtract(30, 'days')._d;
             if(objStudent[0]['enrolEndDate'] != undefined){
                 var dateArry = objStudent[0]['enrolEndDate'].split("/");
                 // maxDate = new Date(objStudent[0]['enrolEndDate']);
                 maxDate1 = new Date(parseInt(dateArry[2]),parseInt(dateArry[0])-1,parseInt(dateArry[1]));
-                maxDate2 = moment().add(30, 'days')._d;
+                maxDate2 = moment(self.calendar.fullCalendar('getDate')).add(30, 'days')._d;
                 if(maxDate2.getTime() <= maxDate1.getTime()){
                     maxDate1 = maxDate2;
                 }
@@ -5416,7 +5474,7 @@ function SylvanCalendar() {
             if(objStudent[0]['enrolStartDate'] != undefined){
                 var dateArry = objStudent[0]['enrolStartDate'].split("/");
                 minDate1 = new Date(parseInt(dateArry[2]),parseInt(dateArry[0])-1,parseInt(dateArry[1]));
-                minDate2 = moment().subtract(30, 'days')._d;
+                minDate2 = moment(self.calendar.fullCalendar('getDate')).subtract(30, 'days')._d;
                 if(minDate2.getTime() >= minDate1.getTime()){
                     minDate1 = minDate2;
                 }
