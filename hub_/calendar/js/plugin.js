@@ -533,6 +533,10 @@ function SylvanCalendar() {
         wjQuery('.ta-pane').css('overflow', 'hidden');
         wjQuery('.ta-pane').hide();
         wjQuery('.sof-pane').hide();
+        //ScrollHeiht 
+        if (self.resourceList.length>6) {
+            wjQuery('.calendar-firstCol').css('height',wjQuery('#scrollarea').height() -10 +'px');
+        }
     }
 
     this.populateLocation = function (args) {
@@ -743,9 +747,11 @@ function SylvanCalendar() {
             }
             
         };
-        if(self.resourceList.length>5)
-            wjQuery(".fc-agenda-divider").after("<div class='calendar-firstCol'></div>");
-        if(self.resourceList.length<5)
+        if(self.resourceList.length>6){
+            if(wjQuery('.calendar-firstCol').length == 0) 
+                wjQuery(".fc-agenda-divider").after("<div class='calendar-firstCol'></div>");
+        }
+        if(self.resourceList.length<6)
             wjQuery('.calendar-firstCol').css('display','none');
         wjQuery('#scrollarea').scroll(function(e){
             wjQuery('.firstcolContainer').scrollTop(wjQuery(this).scrollTop());
@@ -2362,17 +2368,15 @@ function SylvanCalendar() {
     this.refreshCalendarEvent = function (locationId, isFetch) {
         var self = this;
         // Table Fixed column code +scroll  Start
-        var scwidth = (wjQuery(window).width()-121);
+        var scwidth = (wjQuery(window).width()-118);
         var cwidth;
         if(self.resourceList.length==6){
             if (wjQuery(window).width()>1100) {
                 cwidth = (Math.floor(scwidth/6));
-                //alert(cwidth);
             }
             else{
                 cwidth = 200;
             }
-            
         }
         else{
             cwidth = 200;

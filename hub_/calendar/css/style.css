@@ -568,7 +568,7 @@ table.fc-border-separate{table-layout: fixed;}
     background: #fff;
     /* padding-right: 10px; */
     border-right:1px solid #ccc;
-    height: 550px;
+    /*height: 510px;*/
     overflow: hidden;}
 .firstcolContainer{height: inherit;
     overflow-y: scroll;width: 115px;}
