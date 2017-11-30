@@ -27,7 +27,7 @@ var MAKEUP_TYPE = 3;
 var personalInstruction = 1;
 var groupFacilitation = 2;
 var groupInstruction = 3;
-
+var disableddates = [];
 
 setTimeout(function () {
     var deliveryTypeList = [];
@@ -5430,22 +5430,31 @@ function SylvanCalendar() {
     };
 
     this.disableSpecificDates = function(date) {
-        var m = date.getMonth();
-        var d = date.getDate();
-        var y = date.getFullYear();
-        // First convert the date in to the mm-dd-yyyy format 
-        // Take note that we will increment the month count by 1
-        console.log(this.businessClosure); 
-        var currentdate = (m + 1) + '/' + d + '/' + y ;
-        // We will now check if the date belongs to disableddates array 
-        for (var i = 0; i < disableddates.length; i++) {
-            // Now check if the current date is in disabled dates array. 
-            if ($.inArray(currentdate, disableddates) != -1 ) {
-                return [false];
+        var string = jQuery.datepicker.formatDate('mm/dd/yy', date);
+        return [disableddates.indexOf(string) == -1];  
+    }
+
+    this.getDisableDates = function(){
+        var businessClosures = data.getBusinessClosure(self.locationId, moment(minDate1).format("YYYY-MM-DD"), moment(maxDate1).format("YYYY-MM-DD"));
+        disableddates = [];
+        if(businessClosures != null && businessClosures.length){
+            for (var i = 0; i < businessClosures.length; i++) {
+                var startDate = businessClosures[i]['hub_startdatetime@OData.Community.Display.V1.FormattedValue'];
+                var endDate =businessClosures[i]['hub_enddatetime@OData.Community.Display.V1.FormattedValue'];
+                startDate = startDate.split('/');
+                endDate = endDate.split('/');
+                var businessClosureStartDate = new Date(startDate[2],startDate[0]-1,startDate[1]);
+                var businessClosureEndDate = new Date(endDate[2],endDate[0]-1,endDate[1]);
+                if(businessClosureStartDate.getTime() == businessClosureEndDate.getTime()){
+                    disableddates.push(moment(businessClosureStartDate).format('MM/DD/YYYY'));
+                }else{
+                    for (var j = businessClosureStartDate.getTime(); j <= businessClosureEndDate.getTime(); j+=(24*60*60*1000)) {
+                        disableddates.push(moment(new Date(j)).format('MM/DD/YYYY'));
+                    }
+                }
             }
         }
     }
-
 
     this.rescheduleStudentSession = function (element) {
         var self = this;
@@ -5505,13 +5514,35 @@ function SylvanCalendar() {
             var objNewSession = {};
             objNewSession['hub_resourceid@odata.bind'] = null;
             wjQuery("#studentNameofExcuse").text(objStudent[0]['name']);
-            self.businessClosure = data.getBusinessClosure(self.locationId, moment(minDate1).format("YYYY-MM-DD"), moment(maxDate1).format("YYYY-MM-DD"));
-            self.businessClosure = self.businessClosure == null ? [] : self.businessClosure;
-            self.findLeaveDays();
+            self.getDisableDates();
+            // var businessClosures = data.getBusinessClosure(self.locationId, moment(minDate1).format("YYYY-MM-DD"), moment(maxDate1).format("YYYY-MM-DD"));
+            // disableddates = [];
+            // if(businessClosures != null && businessClosures.length){
+            //     for (var i = 0; i < businessClosures.length; i++) {
+            //         var startDate = businessClosures[i]['hub_startdatetime@OData.Community.Display.V1.FormattedValue'];
+            //         var endDate =businessClosures[i]['hub_enddatetime@OData.Community.Display.V1.FormattedValue'];
+            //         startDate = startDate.split('/');
+            //         endDate = endDate.split('/');
+            //         var businessClosureStartDate = new Date(startDate[2],startDate[0]-1,startDate[1]);
+            //         var businessClosureEndDate = new Date(endDate[2],endDate[0]-1,endDate[1]);
+            //         if(businessClosureStartDate.getTime() == businessClosureEndDate.getTime()){
+            //             disableddates.push(moment(businessClosureStartDate).format('MM/DD/YYYY'));
+            //         }else{
+            //             for (var j = businessClosureStartDate.getTime(); j <= businessClosureEndDate.getTime(); j+=(24*60*60*1000)) {
+            //                 disableddates.push(moment(new Date(j)).format('MM/DD/YYYY'));
+            //             }
+            //         }
+            //     }
+            // }
+            // function DisableSpecificDates(date) {
+            //     var string = jQuery.datepicker.formatDate('mm/dd/yy', date);
+            //     return [disableddates.indexOf(string) == -1];  
+            // }
             wjQuery( ".excuse-datepicker-input" ).datepicker( "destroy" );
             wjQuery(".excuse-datepicker-input").datepicker({
                 minDate: minDate1,
                 maxDate: maxDate1,
+                beforeShowDay : self.disableSpecificDates,
                 format: 'mm/dd/yyyy'
             });
             var selectedFromDate;
