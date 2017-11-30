@@ -2309,7 +2309,8 @@ function SylvanCalendar() {
             if (currentView.name == 'resourceDay') {
                 startDate = endDate = moment(currentCalendarDate).format("YYYY-MM-DD");
                 // staff program fetching
-                self.businessClosure = data.getBusinessClosure(locationId, startDate, endDate) == null ? [] : data.getBusinessClosure(locationId, startDate, endDate);
+                var businessClosure1 = data.getBusinessClosure(locationId, startDate, endDate);
+                self.businessClosure = businessClosure1 == null ? [] : businessClosure1;
                 if (self.businessClosure == null) {
                     self.businessClosure = [];
                 }
@@ -2407,7 +2408,8 @@ function SylvanCalendar() {
                 self.weekEventObject = {};
                 startDate = moment(currentView.start).format("YYYY-MM-DD");
                 endDate = moment(moment(currentView.start).add(6, 'd')).format("YYYY-MM-DD");
-                self.businessClosure = data.getBusinessClosure(locationId, startDate, endDate) == null ? [] : data.getBusinessClosure(locationId, startDate, endDate);
+                var businessClosure1 = data.getBusinessClosure(locationId, startDate, endDate);
+                self.businessClosure = businessClosure1 == null ? [] : businessClosure1;
                 if (self.businessClosure == null) {
                     self.businessClosure = [];
                 }
@@ -5427,8 +5429,28 @@ function SylvanCalendar() {
         wjQuery('.loading').hide();
     };
 
+    this.disableSpecificDates = function(date) {
+        var m = date.getMonth();
+        var d = date.getDate();
+        var y = date.getFullYear();
+        // First convert the date in to the mm-dd-yyyy format 
+        // Take note that we will increment the month count by 1
+        console.log(this.businessClosure); 
+        var currentdate = (m + 1) + '/' + d + '/' + y ;
+        // We will now check if the date belongs to disableddates array 
+        for (var i = 0; i < disableddates.length; i++) {
+            // Now check if the current date is in disabled dates array. 
+            if ($.inArray(currentdate, disableddates) != -1 ) {
+                return [false];
+            }
+        }
+    }
+
+
     this.rescheduleStudentSession = function (element) {
         var self = this;
+        var currentCalendarDate = self.calendar.fullCalendar('getDate');
+        var startDate = moment(currentCalendarDate).format("YYYY-MM-DD");
         var uniqueIds = wjQuery(element).attr("uniqueId").split('_');
         var h = new Date(uniqueIds[2]).getHours();
         if (h > 12) {
@@ -5483,6 +5505,9 @@ function SylvanCalendar() {
             var objNewSession = {};
             objNewSession['hub_resourceid@odata.bind'] = null;
             wjQuery("#studentNameofExcuse").text(objStudent[0]['name']);
+            self.businessClosure = data.getBusinessClosure(self.locationId, moment(minDate1).format("YYYY-MM-DD"), moment(maxDate1).format("YYYY-MM-DD"));
+            self.businessClosure = self.businessClosure == null ? [] : self.businessClosure;
+            self.findLeaveDays();
             wjQuery( ".excuse-datepicker-input" ).datepicker( "destroy" );
             wjQuery(".excuse-datepicker-input").datepicker({
                 minDate: minDate1,
@@ -8158,12 +8183,36 @@ function SylvanCalendar() {
         var self = this;
         var allowToDropStudent = true;
         startHour = new Date(startHour);
+
         if(prevEvent['duration'] == undefined){
             prevEvent['duration'] = 60;
         }
-        var numHour = prevEvent['duration']/60;
+        // var numHour = prevEvent['duration']/60;
+        // var startHour1 = new Date(startHour);
+        // var endHour = new Date(startHour1.setHours(startHour1.getHours() + numHour));
+        
+        var numHour;
+        var numMinite;
+        var endHour;
+        if (prevEvent['duration']%60==0) {
+            numHour = prevEvent['duration']/60;
+            numMinite = 0;
+        }else{
+            numHour = Math.floor(prevEvent['duration']/60);
+            numMinite = prevEvent['duration']%60;
+        }
         var startHour1 = new Date(startHour);
-        var endHour = new Date(startHour1.setHours(startHour1.getHours() + numHour));
+        if ((startHour1.getMinutes()+numMinite)<60) {
+            endHour = new Date(startHour1.setHours(startHour1.getHours() + numHour));
+            endHour = new Date(startHour1.setMinutes(startHour1.getMinutes() + numMinite));
+        }
+        if ((startHour1.getMinutes()+numMinite)>=60){
+            numHour+= Math.floor((startHour1.getMinutes()+numMinite)/60);
+            numMinite+= (startHour1.getMinutes()+numMinite)%60;
+            endHour = new Date(startHour1.setHours(startHour1.getHours() + numHour));
+            endHour = new Date(startHour1.setMinutes(startHour1.getMinutes() + numMinite));
+        }
+
         var dropableEvent = [];
         if(sessionDrag){
             dropableEvent = self.calendar.fullCalendar('clientEvents',function(el){
@@ -8232,9 +8281,31 @@ function SylvanCalendar() {
         if(prevEvent['duration'] == undefined){
             prevEvent['duration'] = 60;
         }
-        var numHour = prevEvent['duration']/60;
+        // var numHour = prevEvent['duration']/60;
+        // var startHour1 = new Date(startHour);
+        // var endHour = new Date(startHour1.setHours(startHour1.getHours() + numHour));
+        var numHour;
+        var numMinite;
+        var endHour;
+        if (prevEvent['duration']%60==0) {
+            numHour = prevEvent['duration']/60;
+            numMinite = 0;
+        }else{
+            numHour = Math.floor(prevEvent['duration']/60);
+            numMinite = prevEvent['duration']%60;
+        }
         var startHour1 = new Date(startHour);
-        var endHour = new Date(startHour1.setHours(startHour1.getHours() + numHour));
+        if ((startHour1.getMinutes()+numMinite)<60) {
+            endHour = new Date(startHour1.setHours(startHour1.getHours() + numHour));
+            endHour = new Date(startHour1.setMinutes(startHour1.getMinutes() + numMinite));
+        }
+        if ((startHour1.getMinutes()+numMinite)>=60){
+            numHour+= Math.floor((startHour1.getMinutes()+numMinite)/60);
+            numMinite+= (startHour1.getMinutes()+numMinite)%60;
+            endHour = new Date(startHour1.setHours(startHour1.getHours() + numHour));
+            endHour = new Date(startHour1.setMinutes(startHour1.getMinutes() + numMinite));
+        }
+
         var dropableEvent = [];
         if(sessionDrag){
             dropableEvent = self.calendar.fullCalendar('clientEvents',function(el){
