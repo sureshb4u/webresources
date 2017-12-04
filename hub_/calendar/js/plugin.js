@@ -204,7 +204,11 @@ setTimeout(function () {
                             deliveryTypeId: resourceList[i]['_hub_deliverytype_value'],
                             deliveryTypeCode: resourceList[i]['adeliverytype_x002e_hub_code'],
                             deliveryTypeCodeVal: resourceList[i]['adeliverytype_x002e_hub_code@OData.Community.Display.V1.FormattedValue'],
-                            capacity: resourceList[i]["hub_capacity"]
+                            capacity: resourceList[i]["hub_capacity"],
+                            objOwner:{
+                                    id:resourceData[i]['_ownerid_value'], 
+                                    entityType:resourceData[i]['_ownerid_value@Microsoft.Dynamics.CRM.lookuplogicalname']
+                            }
                         });
                     }
                 }
@@ -571,7 +575,11 @@ function SylvanCalendar() {
                         deliveryTypeId: resourceData[i]['_hub_deliverytype_value'],
                         deliveryTypeCode: resourceData[i]['adeliverytype_x002e_hub_code'],
                         deliveryTypeCodeVal: resourceData[i]['adeliverytype_x002e_hub_code@OData.Community.Display.V1.FormattedValue'],
-                        capacity: resourceData[i]["hub_capacity"]
+                        capacity: resourceData[i]["hub_capacity"],
+                        objOwner:{
+                                id:resourceData[i]['_ownerid_value'], 
+                                entityType:resourceData[i]['_ownerid_value@Microsoft.Dynamics.CRM.lookuplogicalname']
+                        }
                     });
                 }
                 var view = 'resourceDay';
