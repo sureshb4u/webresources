@@ -4865,24 +4865,7 @@ function SylvanCalendar() {
                 }
                 wjQuery(element).html("<img src='/webresources/hub_/calendar/images/pin.png'/>" + txt);
                 wjQuery(element).attr('pinnedId', objPinnedStudent.hub_sch_pinned_students_teachersid);
-                var eventTitleHTML = wjQuery(eventObj[0].title);
-                for (var i = 0; i < eventTitleHTML.length; i++) {
-                    if (wjQuery(eventTitleHTML[i]).attr('value') == wjQuery(element).attr('value')) {
-                        eventTitleHTML[i] = element;
-                    }
-                }
-                if (eventTitleHTML.prop('outerHTML') != undefined) {
-                    if (eventTitleHTML.length == 1) {
-                        eventObj[0].title = eventTitleHTML.prop('outerHTML');
-                    } else {
-                        eventObj[0].title = "";
-                        for (var i = 0; i < eventTitleHTML.length; i++) {
-                            eventObj[0].title += eventTitleHTML[i].outerHTML;
-                        }
-                    }
-                    self.calendar.fullCalendar('updateEvent', eventObj);
-                    self.calendar.fullCalendar('refetchEvents');
-                }
+                self.updateEventTitle(eventObj, element);
             }
         }
         else if (typeof (responseObj) == 'object') {
@@ -4894,24 +4877,7 @@ function SylvanCalendar() {
                 }
                 wjQuery(element).html("<img src='/webresources/hub_/calendar/images/pin.png'/>" + txt);
                 wjQuery(element).attr('pinnedId', responseObj['hub_pinned_student_teacher_id']);
-                var eventTitleHTML = wjQuery(eventObj[0].title);
-                for (var i = 0; i < eventTitleHTML.length; i++) {
-                    if (wjQuery(eventTitleHTML[i]).attr('value') == wjQuery(element).attr('value')) {
-                        eventTitleHTML[i] = element;
-                    }
-                }
-                if (eventTitleHTML.prop('outerHTML') != undefined) {
-                    if (eventTitleHTML.length == 1) {
-                        eventObj[0].title = eventTitleHTML.prop('outerHTML');
-                    } else {
-                        eventObj[0].title = "";
-                        for (var i = 0; i < eventTitleHTML.length; i++) {
-                            eventObj[0].title += eventTitleHTML[i].outerHTML;
-                        }
-                    }
-                    self.calendar.fullCalendar('updateEvent', eventObj);
-                    self.calendar.fullCalendar('refetchEvents');
-                }
+                self.updateEventTitle(eventObj, element);
             }
         }
         wjQuery('.loading').hide();
@@ -4948,28 +4914,11 @@ function SylvanCalendar() {
             objUnPinnedStudent.hub_sch_pinned_students_teachersid = wjQuery(element).attr('temppinid');
         }
         var unPinResponse = data.saveUnPinStudent(objUnPinnedStudent);
-        var eventObj = self.calendar.fullCalendar('clientEvents', eventId);
         if (unPinResponse) {
+            var eventObj = self.calendar.fullCalendar('clientEvents', eventId);
             wjQuery(element).removeAttr('pinnedId')
             wjQuery(element).find("img").remove();
-            var eventTitleHTML = wjQuery(eventObj[0].title);
-            for (var i = 0; i < eventTitleHTML.length; i++) {
-                if (wjQuery(eventTitleHTML[i]).attr('value') == wjQuery(element).attr('value')) {
-                    eventTitleHTML[i] = element;
-                }
-            }
-            if (eventTitleHTML.prop('outerHTML') != undefined) {
-                if (eventTitleHTML.length == 1) {
-                    eventObj[0].title = eventTitleHTML.prop('outerHTML');
-                } else {
-                    eventObj[0].title = "";
-                    for (var i = 0; i < eventTitleHTML.length; i++) {
-                        eventObj[0].title += eventTitleHTML[i].outerHTML;
-                    }
-                }
-                self.calendar.fullCalendar('updateEvent', eventObj);
-                self.calendar.fullCalendar('refetchEvents');
-            }
+            self.updateEventTitle(eventObj, element);
         }
         wjQuery('.loading').hide();
     };
@@ -4977,6 +4926,7 @@ function SylvanCalendar() {
     this.pinTeacher = function (element, pinFor) {
         var self = this;
         var id = wjQuery(element).attr('value');
+        var eventId = wjQuery(element).attr('eventid');
         var uniqueId = wjQuery(element).attr('uniqueId');
         var uniqueIds = wjQuery(element).attr('uniqueId').split('_');
         var startTime = uniqueId.split('_')[2];
@@ -5004,9 +4954,13 @@ function SylvanCalendar() {
             }
             var responseObj = data.savePinTeacher(objPinnedStaff);
             if (responseObj != undefined) {
+                var eventObj = self.calendar.fullCalendar('clientEvents', eventId);
                 var txt = wjQuery(element).text();
                 wjQuery(element).html("<img src='/webresources/hub_/calendar/images/pin.png'/>" + txt);
                 wjQuery(element).attr('pinnedId', responseObj['hub_pinned_student_teacher_id']);
+                self.updateEventTitle(eventObj, element);
+            }else{
+                wjQuery('.loading').hide();
             }
         }
         wjQuery('.loading').hide();
@@ -5015,6 +4969,7 @@ function SylvanCalendar() {
     this.unPinTeacher = function (element) {
         var self = this;
         var id = wjQuery(element).attr('value');
+        var eventId = wjQuery(element).attr('eventid');
         var uniqueId = wjQuery(element).attr('uniqueId');
         var uniqueIds = wjQuery(element).attr('uniqueId').split('_');
         var startTime = uniqueId.split('_')[2];
@@ -5035,8 +4990,12 @@ function SylvanCalendar() {
             objUnPinnedStaff.hub_end_time = objUnPinnedStaff.hub_start_time + 60;
             objUnPinnedStaff['hub_resourceid@odata.bind'] = teacher[0].resourceId;
             if (data.saveUnPinTeacher(objUnPinnedStaff)) {
+                var eventObj = self.calendar.fullCalendar('clientEvents', eventId);
                 wjQuery(element).removeAttr('pinnedId');
                 wjQuery(element).find("img").remove();
+                self.updateEventTitle(eventObj, element);
+                wjQuery('.loading').hide();
+            }else{
                 wjQuery('.loading').hide();
             }
         }
@@ -8849,5 +8808,27 @@ function SylvanCalendar() {
             wjQuery("#makeup").dialog("close");
         }
         wjQuery(".loading").hide();
+    }
+
+    this.updateEventTitle = function(eventObj, element){
+        var self = this;
+        var eventTitleHTML = wjQuery(eventObj[0].title);
+        for (var i = 0; i < eventTitleHTML.length; i++) {
+            if (wjQuery(eventTitleHTML[i]).attr('value') == wjQuery(element).attr('value')) {
+                eventTitleHTML[i] = element;
+            }
+        }
+        if (eventTitleHTML.prop('outerHTML') != undefined) {
+            if (eventTitleHTML.length == 1) {
+                eventObj[0].title = eventTitleHTML.prop('outerHTML');
+            } else {
+                eventObj[0].title = "";
+                for (var i = 0; i < eventTitleHTML.length; i++) {
+                    eventObj[0].title += eventTitleHTML[i].outerHTML;
+                }
+            }
+            self.calendar.fullCalendar('updateEvent', eventObj);
+            self.calendar.fullCalendar('refetchEvents');
+        }
     }
 }
