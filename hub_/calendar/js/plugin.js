@@ -6982,6 +6982,7 @@ function SylvanCalendar() {
                         arrayList[i].isTeacher = true;
                         arrayList[i].deliveryType = resourceObj.deliveryType;
                         arrayList[i].deliveryTypeId = resourceObj.deliveryTypeId;
+                        arrayList[i].deliveryTypeCode = resourceObj.deliveryTypeCode;
                         if(this.weekEventObject.hasOwnProperty(arrayList[i].startHour)){
                             if(this.weekEventObject[arrayList[i].startHour].hasOwnProperty('teacherSchedule')){
                                 if(arrayList[i].deliveryTypeCode == personalInstruction){
@@ -7812,8 +7813,8 @@ function SylvanCalendar() {
                                 if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length !=0 &&
                                     this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.pi.length != 0){
                                     piFlag = true;
-                                    var num = this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length/parseFloat(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.pi.length);
-                                    piObj.title += num.toFixed(2)+" </div>"
+                                    var num = this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length+":"+parseFloat(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.pi.length);
+                                    piObj.title += num+" </div>"
                                 }
                                 else{
                                     piObj.title += "NA </div>"
