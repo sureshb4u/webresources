@@ -989,6 +989,11 @@ function SylvanCalendar() {
 
                 objSession['hub_start_time'] = this.convertToMinutes(moment(student[0]['start']).format("h:mm A"));
                 objSession['hub_end_time'] = this.convertToMinutes(moment(student[0]['end']).format("h:mm A"));
+                
+                // get location obj
+                var locationObj = self.getLocationObject(self.locationId);
+                objNewSession['ownerObj'] = locationObj['ownerObj'];
+                objSession['ownerObj'] = locationObj['ownerObj'];
                 return data.saveSOFtoSession(objNewSession, objSession);
             }
         }
@@ -1017,6 +1022,9 @@ function SylvanCalendar() {
             newScheduleObj.hub_end_time = this.convertToMinutes(moment(teacher.end).format("h:mm A"));
             newScheduleObj._hub_resourceid_value = teacher.resourceId;
             newScheduleObj._hub_staff_value = teacher.id;
+
+            var locationObj = self.getLocationObject(self.locationId);
+            newScheduleObj['ownerObj'] = locationObj['ownerObj'];
             // update teacher schedule object
             this.teacherSchedule.push(newScheduleObj);
             return responseObj;
@@ -8615,7 +8623,7 @@ function SylvanCalendar() {
         self.locationList = self.locationList == null ? []: self.locationList;
         for(var i=0;i < self.locationList.length; i++){
             if(locationId == self.locationList[i]['hub_centerid']){
-                self.locationList[i]['objOwner'] = {
+                self.locationList[i]['ownerObj'] = {
                     id:self.locationList[i]['_ownerid_value'], 
                     entityType:self.locationList[i]['_ownerid_value@Microsoft.Dynamics.CRM.lookuplogicalname']
                 }
@@ -8838,6 +8846,7 @@ function SylvanCalendar() {
             }
             self.calendar.fullCalendar('updateEvent', eventObj);
             self.calendar.fullCalendar('refetchEvents');
+            self.draggable('draggable');
         }
     }
 }
