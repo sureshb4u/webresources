@@ -334,6 +334,7 @@ button{
     width: 200px;
     height: 22px;
     background-color: #f4f4f4;
+    z-index: 5
 }
 .teacher-block{
     padding: 10px 10px 0px;
@@ -623,3 +624,47 @@ table.fc-border-separate{table-layout: fixed;}
 }
 }*/
 /*=============tablescroll css End=====================*/
+
+/*=============Header Codes=========================*/
+.header-container{
+   display: inline-block; 
+   width: 100%;
+}
+.display-inline-custom{float: left !important}
+.view-change-container{top: 0 !important}
+.delivery-type-container{top: 0 !important}
+i.material-icons.cursor.float-right {
+    margin: 7px 5px !important;
+}
+.float-right{float: right !important;}
+.info_custom{position: relative;}
+.info_custom .custom_title{
+    right: 0;
+}
+.service-info-custom{position: relative; text-decoration: none;display: initial;}
+.custom_title{
+    position: absolute;
+    z-index: 99;
+    background: #fff;
+    /*right: 0px;*/
+    border: 1px solid #ccc;
+    max-width: 250px;
+    min-width: 250px;
+    padding: 10px;
+    font-family: sans-serif;
+    font-size: 15px;
+    border-radius: 3px;
+    box-shadow: 0 0px 5px 0 #ccc;
+}
+.service-info-custom .custom_title {
+    display:none;
+}
+.service-info-custom .custom_title .subject-detail{line-height: 20px;}
+.service-info-custom:hover .custom_title {
+    display:block;
+    position:fixed;
+    overflow:hidden;
+    /*right: 160px;*/
+}
+
+/*=============Header Codes=========================*/
