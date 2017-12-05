@@ -562,7 +562,7 @@ table.fc-border-separate{table-layout: fixed;}
     background: #1e88e5;
     color: #fff;
 }*/
-.filter-section{z-index: 999 !important;height: 530px !important;position: fixed !important;}
+.filter-section{z-index: 999 !important;position: fixed !important;}
 .calendar-firstCol{width: 100px;
     position: fixed;
     z-index: 99;
