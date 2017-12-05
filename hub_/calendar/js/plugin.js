@@ -1,4 +1,4 @@
-
+// new file added
 var data = new Data();
 var DEFAULT_START_TIME = "8:00 AM";
 var DEFAULT_END_TIME = "9:00 AM";
@@ -33,6 +33,7 @@ setTimeout(function () {
     var deliveryTypeList = [];
     var sylvanCalendar = new SylvanCalendar();
     sylvanCalendar.init("widget-calendar");
+    sylvanCalendar.locationList = data.getLocation();
     var locationId = sylvanCalendar.populateLocation(data.getLocation());
     wjQuery('.headerDate').text(moment(currentCalendarDate).format('MM/DD/YYYY'));
     setTimeout(function () {
@@ -368,6 +369,7 @@ function SylvanCalendar() {
     this.staffExceptions = [];
     this.enrollmentPriceList = [];
     this.masterScheduleStudents = [];
+    this.locationList = [];
     this.init = function (element) {
     }
 
@@ -6974,6 +6976,7 @@ function SylvanCalendar() {
                         arrayList[i].isTeacher = true;
                         arrayList[i].deliveryType = resourceObj.deliveryType;
                         arrayList[i].deliveryTypeId = resourceObj.deliveryTypeId;
+                        arrayList[i].deliveryTypeCode = resourceObj.deliveryTypeCode;
                         if(this.weekEventObject.hasOwnProperty(arrayList[i].startHour)){
                             if(this.weekEventObject[arrayList[i].startHour].hasOwnProperty('teacherSchedule')){
                                 if(arrayList[i].deliveryTypeCode == personalInstruction){
@@ -7804,8 +7807,8 @@ function SylvanCalendar() {
                                 if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length !=0 &&
                                     this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.pi.length != 0){
                                     piFlag = true;
-                                    var num = this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length/parseFloat(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.pi.length);
-                                    piObj.title += num.toFixed(2)+" </div>"
+                                    var num = this.weekEventObject[Object.keys(this.weekEventObject)[i]].student.pi.length+":"+parseFloat(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.pi.length);
+                                    piObj.title += num+" </div>"
                                 }
                                 else{
                                     piObj.title += "NA </div>"
@@ -8606,11 +8609,17 @@ function SylvanCalendar() {
 
     this.getLocationObject = function(locationId){
         var self = this;
-        var locationObj = data.getLocation();
-        locationObj = locationObj == null ? []: locationObj;
-        for(var i=0;i < locationObj.length; i++){
-            if(locationId == locationObj[i]['hub_centerid']){
-                return locationObj[i];
+        // var locationObj = data.getLocation();
+        // var locationObj1 = {};
+        // console.log(self.locationList);
+        self.locationList = self.locationList == null ? []: self.locationList;
+        for(var i=0;i < self.locationList.length; i++){
+            if(locationId == self.locationList[i]['hub_centerid']){
+                self.locationList[i]['objOwner'] = {
+                    id:self.locationList[i]['_ownerid_value'], 
+                    entityType:self.locationList[i]['_ownerid_value@Microsoft.Dynamics.CRM.lookuplogicalname']
+                }
+                return self.locationList[i];
                 break;
             }    
         }
