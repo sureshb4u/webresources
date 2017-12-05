@@ -33,6 +33,7 @@ setTimeout(function () {
     var deliveryTypeList = [];
     var sylvanCalendar = new SylvanCalendar();
     sylvanCalendar.init("widget-calendar");
+    sylvanCalendar.locationList = data.getLocation();
     var locationId = sylvanCalendar.populateLocation(data.getLocation());
     wjQuery('.headerDate').text(moment(currentCalendarDate).format('MM/DD/YYYY'));
     setTimeout(function () {
@@ -204,11 +205,7 @@ setTimeout(function () {
                             deliveryTypeId: resourceList[i]['_hub_deliverytype_value'],
                             deliveryTypeCode: resourceList[i]['adeliverytype_x002e_hub_code'],
                             deliveryTypeCodeVal: resourceList[i]['adeliverytype_x002e_hub_code@OData.Community.Display.V1.FormattedValue'],
-                            capacity: resourceList[i]["hub_capacity"],
-                            objOwner:{
-                                    id:resourceData[i]['_ownerid_value'], 
-                                    entityType:resourceData[i]['_ownerid_value@Microsoft.Dynamics.CRM.lookuplogicalname']
-                            }
+                            capacity: resourceList[i]["hub_capacity"]
                         });
                     }
                 }
@@ -372,6 +369,7 @@ function SylvanCalendar() {
     this.staffExceptions = [];
     this.enrollmentPriceList = [];
     this.masterScheduleStudents = [];
+    this.locationList = [];
     this.init = function (element) {
     }
 
@@ -575,11 +573,7 @@ function SylvanCalendar() {
                         deliveryTypeId: resourceData[i]['_hub_deliverytype_value'],
                         deliveryTypeCode: resourceData[i]['adeliverytype_x002e_hub_code'],
                         deliveryTypeCodeVal: resourceData[i]['adeliverytype_x002e_hub_code@OData.Community.Display.V1.FormattedValue'],
-                        capacity: resourceData[i]["hub_capacity"],
-                        objOwner:{
-                                id:resourceData[i]['_ownerid_value'], 
-                                entityType:resourceData[i]['_ownerid_value@Microsoft.Dynamics.CRM.lookuplogicalname']
-                        }
+                        capacity: resourceData[i]["hub_capacity"]
                     });
                 }
                 var view = 'resourceDay';
@@ -8615,11 +8609,17 @@ function SylvanCalendar() {
 
     this.getLocationObject = function(locationId){
         var self = this;
-        var locationObj = data.getLocation();
-        locationObj = locationObj == null ? []: locationObj;
-        for(var i=0;i < locationObj.length; i++){
-            if(locationId == locationObj[i]['hub_centerid']){
-                return locationObj[i];
+        // var locationObj = data.getLocation();
+        // var locationObj1 = {};
+        // console.log(self.locationList);
+        self.locationList = self.locationList == null ? []: self.locationList;
+        for(var i=0;i < self.locationList.length; i++){
+            if(locationId == self.locationList[i]['hub_centerid']){
+                self.locationList[i]['objOwner'] = {
+                    id:self.locationList[i]['_ownerid_value'], 
+                    entityType:self.locationList[i]['_ownerid_value@Microsoft.Dynamics.CRM.lookuplogicalname']
+                }
+                return self.locationList[i];
                 break;
             }    
         }
