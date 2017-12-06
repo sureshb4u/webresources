@@ -8014,7 +8014,9 @@ function SylvanCalendar() {
                                         }
                                     }
                                     else{
+                                        if (this.getResourceObj(Object.keys(groupStudentsByResource)[x]).capacity != undefined) {
                                         count += groupStudentsByResource[Object.keys(groupStudentsByResource)[x]].length
+                                        }
                                     }
                                 }
                                 giObj.title += count +"/"+giSpace +"</div>";
@@ -8114,7 +8116,9 @@ function SylvanCalendar() {
                                         }
                                     }
                                     else{
+                                        if (this.getResourceObj(Object.keys(groupStudentsByResource)[x]).capacity != undefined) {
                                         count += groupStudentsByResource[Object.keys(groupStudentsByResource)[x]].length
+                                        }
                                     }
                                 }
                                 gfObj.title += count +"/"+gfSpace +"</div>";
