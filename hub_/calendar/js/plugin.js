@@ -3108,26 +3108,8 @@ function SylvanCalendar() {
                 var effStartDate = new Date(val['hub_effectivestartdate']);
                 var allowStudentFlag = false;
                 if(currentView.name == 'resourceDay'){
-                    // if(val['hub_effectiveenddate'] != undefined){
-                    //     effEndDate = new Date(val['hub_effectiveenddate']);
-                    //     effEndDate1 = new Date(val['hub_effectiveenddate']);
-                    // }
-                    // else if(val['aenrollment_x002e_hub_enrollmentenddate'] != undefined){
-                    //     effEndDate = new Date(val['aenrollment_x002e_hub_enrollmentenddate']);
-                    //     effEndDate2 = new Date(val['aenrollment_x002e_hub_enrollmentenddate']);
-                    // }
-                    // if(val['adeliverytype_x002e_hub_code'] == personalInstruction){
-                    //     if(val['aenrollment_x002e_hub_committedsessionenddate'] != undefined){
-                    //         var dateArry =  val['aenrollment_x002e_hub_committedsessionenddate'].split("-");
-                    //         effEndDate = new Date(parseInt(dateArry[0]), parseInt(dateArry[1])-1, parseInt(dateArry[2]));
-                    //         effEndDate3 = new Date(parseInt(dateArry[0]), parseInt(dateArry[1])-1, parseInt(dateArry[2]));
-                    //         // effEndDate = new Date(val['aenrollment_x002e_hub_committedsessionenddate']);
-                    //     }
-                    // }
-
                     // Effective end date logic
                     effEndDate = self.getEffectiveEndDate(val);
-
                     effEndDate = new Date(effEndDate).setHours(23);
                     effEndDate = new Date(new Date(effEndDate).setMinutes(59));
                     if(currentCalendarDate.getTime() >= effStartDate.getTime() &&
@@ -3136,24 +3118,8 @@ function SylvanCalendar() {
                     }
                 }
                 else if(currentView.name == 'agendaWeek'){
-                    // var effEndDate = currentView.end;
-                    // if(val['hub_effectiveenddate'] != undefined){
-                    //     effEndDate = new Date(val['hub_effectiveenddate']);
-                    // }
-                    // else if(val['aenrollment_x002e_hub_enrollmentenddate'] != undefined){
-                    //     effEndDate = new Date(val['aenrollment_x002e_hub_enrollmentenddate']);
-                    // }
-                    // if(val['adeliverytype_x002e_hub_code'] == personalInstruction){
-                    //     if(val['aenrollment_x002e_hub_committedsessionenddate'] != undefined){
-                    //         var dateArry =  val['aenrollment_x002e_hub_committedsessionenddate'].split("-");
-                    //         effEndDate = new Date(parseInt(dateArry[0]), parseInt(dateArry[1]), parseInt(dateArry[2]));
-                    //         // effEndDate = new Date(val['aenrollment_x002e_hub_committedsessionenddate']);
-                    //     }
-                    // }
-
                     // Effective end date logic
                     effEndDate = self.getEffectiveEndDate(val);
-
                     effEndDate = new Date(effEndDate).setHours(23);
                     effEndDate = new Date(new Date(effEndDate).setMinutes(59));
                     if(effStartDate.getTime() <= currentView.end.getTime() &&
@@ -3216,7 +3182,8 @@ function SylvanCalendar() {
                         for (var i = 0; i < pinnedStudent.length; i++) {
                             if (pinnedStudent[i] != undefined) {
                               var newObj = wjQuery.extend(true, {}, obj);
-                              newObj.pinId = undefined;
+                              // newObj.pinId = undefined;
+                              newObj.pinId = pinnedStudent[i].id;
                               newObj.enrollmentId = pinnedStudent[i].enrollmentId;
                               newObj.start = new Date(moment(sDate).format('YYYY-MM-DD') + " " + pinnedStudent[i].startTime);
                               newObj.end = new Date(moment(sDate).format('YYYY-MM-DD') + " " + pinnedStudent[i].endTime);
