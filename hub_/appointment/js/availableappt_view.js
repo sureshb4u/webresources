@@ -4,8 +4,8 @@ var appointmentType = [
   {
     type:0,
     name:"Instructional",
-    borderColor:"red",
-    backgroundColor:"red",
+    borderColor:"#d7cbe0",
+    backgroundColor:"#f8f4fc",
     display:"customer",
     slotMinutes:30
   },
@@ -28,8 +28,8 @@ var appointmentType = [
   {
     type:3,
     name:"School Visit",
-    borderColor:"red",
-    backgroundColor:"red",
+    borderColor:"#9acaea",
+    backgroundColor:"#ebf5fb",
     display:"customer",
     slotMinutes:30
   },
@@ -76,16 +76,16 @@ var appointmentType = [
   {
     type:9,
     name:"Care Call",
-    borderColor:"red",
-    backgroundColor:"red",
+    borderColor:"#d7cbe0",
+    backgroundColor:"#f8f4fc",
     display:"customer",
     slotMinutes:30
   },
   {
     type:10,
     name:"Event",
-    borderColor:"red",
-    backgroundColor:"red",
+    borderColor:"#d7cbe0",
+    backgroundColor:"#f8f4fc",
     display:"customer",
     slotMinutes:30
   },
