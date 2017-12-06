@@ -1845,6 +1845,20 @@ function SylvanCalendar() {
             newTeacherSession.resourceId = resource.id;
             newTeacherSession.deliveryTypeId = t.getResourceObj(resource.id).deliveryTypeId;
             newTeacherSession.deliveryType = t.getResourceObj(resource.id).deliveryType;
+            newTeacherSession.pinId = undefined;
+            // if (self.convertedPinnedList.length) {
+            //     var isPinned = self.convertedPinnedList.filter(function (obj) {
+            //         return (obj.teacherId == newTeacherSession.id &&
+            //                obj.resourceId == newTeacherSession.resourceId &&
+            //                obj.dayId == self.getDayValue(currentCalendarDate)) ||
+            //                (obj.teacherId == newTeacherSession.id &&
+            //                 obj.startTime == moment(date).format("h:mm A") &&
+            //                 obj.dayId == self.getDayValue(currentCalendarDate))
+            //     });
+            //     if (isPinned[0] != undefined) {
+            //         newTeacherSession.pinId = isPinned[0].id;
+            //     }
+            // }
             t.saveTeacherToSession(newTeacherSession, t.convertedTeacherObj[index]);
         }
         this.openSofPane();
