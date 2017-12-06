@@ -7896,19 +7896,25 @@ function SylvanCalendar() {
                                 for (var x = 0; x < Object.keys(groupStudentsByResource).length; x++) {
                                     find1to1 = false;
                                     piFlag = true;
-                                    for (var y = 0; y < groupStudentsByResource[Object.keys(groupStudentsByResource)[x]].length; y++) {
+
+                                    //Commented because irrespective of 1:1 ratio the no.of scheduled students should be counted 
+
+                                    /*for (var y = 0; y < groupStudentsByResource[Object.keys(groupStudentsByResource)[x]].length; y++) {
                                         if(groupStudentsByResource[Object.keys(groupStudentsByResource)[x]][y].is1to1){
                                             find1to1 = true;
                                             break;
                                         }
-                                    }
-                                    if(find1to1){
-                                        if(this.getResourceObj(Object.keys(groupStudentsByResource)[x]).capacity != undefined){
+                                    }*/
+
+                                    if (find1to1) {
+                                        if (this.getResourceObj(Object.keys(groupStudentsByResource)[x]).capacity != undefined) {
                                             count += this.getResourceObj(Object.keys(groupStudentsByResource)[x]).capacity;
                                         }
                                     }
-                                    else{
-                                        count += groupStudentsByResource[Object.keys(groupStudentsByResource)[x]].length
+                                    else {
+                                        if (this.getResourceObj(Object.keys(groupStudentsByResource)[x]).capacity != undefined) {
+                                            count += groupStudentsByResource[Object.keys(groupStudentsByResource)[x]].length
+                                        }
                                     }
                                 }
                                 piObj.title += count +"/"+piSpace +"</div>";
