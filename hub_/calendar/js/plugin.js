@@ -1079,7 +1079,7 @@ function SylvanCalendar() {
           if(giValidation){
                 t.prompt("The selected student is not allowed to scheduled for the respective timeslot.<br>Student session start time:-"+displayStart+"<br> Student session end time:-"+displayEnd);
           }else{
-              var allowToDropStudent = self.validateStudentOnSameRow(stuId, startHour,prevStudObj, false);
+              var allowToDropStudent = self.validateStudentOnSameRow(stuId, startHour,prevStudObj, false, true);
               if(allowToDropStudent){
                 if (prevStudObj['deliveryType'] == resource.deliveryType) {
                   if (newEvent.length == 0) {
@@ -1319,7 +1319,7 @@ function SylvanCalendar() {
               if (newResourceObj.deliveryType != "Group Instruction") {
                 var allowToDropStudent = true;
                 if(startHour.getTime() != prevEvent[0].start.getTime()){
-                  allowToDropStudent = self.validateStudentOnSameRow(stuId, startHour, prevStudObj, true);
+                  allowToDropStudent = self.validateStudentOnSameRow(stuId, startHour, prevStudObj, true, false);
                 }
                 if(allowToDropStudent){
                     var minuteflag = true;
@@ -6700,7 +6700,7 @@ function SylvanCalendar() {
                         var eventId = idArry[1] + idArry[2];
                         var eventObj = self.calendar.fullCalendar('clientEvents', eventId);
                         var callSave = false;
-                        var allowToDropStudent = self.validateStudentOnSameRow(studentObj[0].id, idArry[2], studentObj[0], false);
+                        var allowToDropStudent = self.validateStudentOnSameRow(studentObj[0].id, idArry[2], studentObj[0], false, false);
                         if(allowToDropStudent){
                           if (eventObj[0].hasOwnProperty("students") && eventObj[0].students.length > 0) {
                               var stdIndex = -1;
@@ -8188,7 +8188,7 @@ function SylvanCalendar() {
       }
     }
 
-    this.validateStudentOnSameRow = function(stuId, startHour, prevEvent, sessionDrag){
+    this.validateStudentOnSameRow = function(stuId, startHour, prevEvent, sessionDrag, isFromSof){
         var self = this;
         var allowToDropStudent = true;
         startHour = new Date(startHour);
@@ -8278,6 +8278,73 @@ function SylvanCalendar() {
                         break;
                     }
                 }
+            }
+        }
+        if(allowToDropStudent && !isFromSof){
+            if(self.sofList['Personal Instruction'].length){
+                dropableEvent = self.sofList['Personal Instruction'].filter(function(el){
+                    return  el.id == stuId &&
+                            (
+                                    (
+                                        startHour.getTime() <= el.start.getTime() && 
+                                        endHour.getTime() >= el.end.getTime()
+                                    ) ||
+                                    (
+                                        el.start.getTime() <= startHour.getTime() && 
+                                        el.end.getTime() >= endHour.getTime()
+                                    ) ||
+                                    (
+                                        endHour.getTime() > el.start.getTime() &&
+                                        el.end.getTime() > startHour.getTime() 
+                                    )
+                            )
+                });
+            }
+            if(dropableEvent.length == 0){
+                if(self.sofList['Group Instruction'].length){
+                    dropableEvent = self.sofList['Group Instruction'].filter(function(el){
+                        return  el.id == stuId &&
+                                (
+                                        (
+                                            startHour.getTime() <= el.start.getTime() && 
+                                            endHour.getTime() >= el.end.getTime()
+                                        ) ||
+                                        (
+                                            el.start.getTime() <= startHour.getTime() && 
+                                            el.end.getTime() >= endHour.getTime()
+                                        ) ||
+                                        (
+                                            endHour.getTime() > el.start.getTime() &&
+                                            el.end.getTime() > startHour.getTime() 
+                                        )
+                                )
+                    });
+                }
+                if(dropableEvent.length == 0){
+                    if(self.sofList['Group Facilitation'].length){
+                        dropableEvent = self.sofList['Group Facilitation'].filter(function(el){
+                            return  el.id == stuId &&
+                                    (
+                                            (
+                                                startHour.getTime() <= el.start.getTime() && 
+                                                endHour.getTime() >= el.end.getTime()
+                                            ) ||
+                                            (
+                                                el.start.getTime() <= startHour.getTime() && 
+                                                el.end.getTime() >= endHour.getTime()
+                                            ) ||
+                                            (
+                                                endHour.getTime() > el.start.getTime() &&
+                                                el.end.getTime() > startHour.getTime() 
+                                            )
+                                    )
+                        });
+                    }
+                }else{
+                    allowToDropStudent = false;
+                }
+            }else{
+                allowToDropStudent = false;
             }
         }
         return allowToDropStudent;
