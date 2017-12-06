@@ -398,6 +398,7 @@ function Appointment() {
                                         //     eventObj["borderColor"] = "#ddd";
                                         // }
                                     }else{
+                                        eventObj['title'] = "";
                                         eventObj["isHourException"] = true;
                                         eventObj["backgroundColor"] = "#999";
                                         eventObj["borderColor"] = "#999";
