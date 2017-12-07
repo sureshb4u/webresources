@@ -8301,8 +8301,8 @@ function SylvanCalendar() {
                 });
             }
             if(dropableEvent.length == 0){
-                if(self.sofList['Group Instruction'].length){
-                    dropableEvent = self.sofList['Group Instruction'].filter(function(el){
+                if(self.sofList['Group Facilitation'].length){
+                    dropableEvent = self.sofList['Group Facilitation'].filter(function(el){
                         return  el.id == stuId &&
                                 (
                                         (
@@ -8321,8 +8321,8 @@ function SylvanCalendar() {
                     });
                 }
                 if(dropableEvent.length == 0){
-                    if(self.sofList['Group Facilitation'].length){
-                        dropableEvent = self.sofList['Group Facilitation'].filter(function(el){
+                    if(self.sofList['Group Instruction'].length){
+                        dropableEvent = self.sofList['Group Instruction'].filter(function(el){
                             return  el.id == stuId &&
                                     (
                                             (
@@ -8339,6 +8339,11 @@ function SylvanCalendar() {
                                             )
                                     )
                         });
+                    }
+                    if(dropableEvent.length == 0){
+                        allowToDropStudent = true;
+                    }else{
+                        allowToDropStudent = false;
                     }
                 }else{
                     allowToDropStudent = false;
