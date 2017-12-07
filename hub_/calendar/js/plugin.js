@@ -8373,26 +8373,53 @@ function SylvanCalendar() {
         if(sessionDrag){
             var prevEventObj = self.calendar.fullCalendar('clientEvents', prevEvent.resourceId+prevEvent.startHour);
             var eventTitleHTML = wjQuery(prevEventObj[0].title);
-            dropableEvent = self.calendar.fullCalendar('clientEvents',function(el){
-                return  el.end != null &&
-                        resourceId == el.resourceId && 
-                        prevEvent.resourceId+prevEvent.startHour != el.id &&
-                        resourceId+startHour != el.id &&
-                        (
+            if(prevEventObj[0].hasOwnProperty("students") && prevEventObj[0]['students'].length > 1 ||
+                prevEventObj[0].hasOwnProperty("teachers") && prevEventObj[0]['teachers'].length > 1 ||
+                prevEventObj[0].hasOwnProperty("students") && prevEventObj[0]['students'].length >= 1 &&
+                prevEventObj[0].hasOwnProperty("teachers") && prevEventObj[0]['teachers'].length >= 1
+              ){
+                dropableEvent = self.calendar.fullCalendar('clientEvents',function(el){
+                    return  el.end != null &&
+                            resourceId == el.resourceId && 
+                            // prevEvent.resourceId+prevEvent.startHour == el.id &&
+                            resourceId+startHour != el.id &&
                             (
-                                startHour.getTime() <= el.start.getTime() && 
-                                endHour.getTime() >= el.end.getTime()
-                            ) ||
-                            (
-                                el.start.getTime() <= startHour.getTime() && 
-                                el.end.getTime() >= endHour.getTime()
-                            ) ||
-                            (
-                                endHour.getTime() > el.start.getTime() &&
-                                el.end.getTime() > startHour.getTime() 
+                                (
+                                    startHour.getTime() <= el.start.getTime() && 
+                                    endHour.getTime() >= el.end.getTime()
+                                ) ||
+                                (
+                                    el.start.getTime() <= startHour.getTime() && 
+                                    el.end.getTime() >= endHour.getTime()
+                                ) ||
+                                (
+                                    endHour.getTime() > el.start.getTime() &&
+                                    el.end.getTime() > startHour.getTime() 
+                                )
                             )
-                        )
-            });
+                });
+            }else{
+                dropableEvent = self.calendar.fullCalendar('clientEvents',function(el){
+                    return  el.end != null &&
+                            resourceId == el.resourceId && 
+                            prevEvent.resourceId+prevEvent.startHour != el.id &&
+                            resourceId+startHour != el.id &&
+                            (
+                                (
+                                    startHour.getTime() <= el.start.getTime() && 
+                                    endHour.getTime() >= el.end.getTime()
+                                ) ||
+                                (
+                                    el.start.getTime() <= startHour.getTime() && 
+                                    el.end.getTime() >= endHour.getTime()
+                                ) ||
+                                (
+                                    endHour.getTime() > el.start.getTime() &&
+                                    el.end.getTime() > startHour.getTime() 
+                                )
+                            )
+                });
+            }
         }else{
             dropableEvent = self.calendar.fullCalendar('clientEvents',function(el){
                 return  el.end != null &&
