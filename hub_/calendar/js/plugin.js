@@ -1058,120 +1058,124 @@ function SylvanCalendar() {
                 prevStudObj = t.sofList['Group Instruction'][index];
             }
           }
-
-          var giValidation = true;
-          var numHour = prevStudObj['duration']/60;
-          var prevdate1 = new Date(prevStudObj['startHour']);
-          var prevStudEndHour = new Date(prevdate1.setHours(prevdate1.getHours() + numHour));
-          var date1 = new Date(date);
-          var endHour = new Date(date1.setHours(date1.getHours() + 1));
-          if(prevStudObj['deliveryTypeCode'] == groupInstruction){
-            if(prevStudObj['startHour'].getTime() == date.getTime() && prevStudEndHour.getTime() == endHour.getTime() ){
-                giValidation = false;
-            }
-          }else{
-            giValidation = false;
-          }
-
-          var displayStart = moment(new Date(prevStudObj['startHour'])).format("DD-MM-YYYY hh:mm A");
-          var displayEnd = moment(new Date(prevStudEndHour)).format("DD-MM-YYYY hh:mm A");
- 
-          if(giValidation){
-                t.prompt("The selected student is not allowed to scheduled for the respective timeslot.<br>Student session start time:-"+displayStart+"<br> Student session end time:-"+displayEnd);
-          }else{
-              var allowToDropStudent = self.validateStudentOnSameRow(stuId, startHour,prevStudObj, false, true);
-              if(allowToDropStudent){
-                if (prevStudObj['deliveryType'] == resource.deliveryType) {
-                  if (newEvent.length == 0) {
-                    t.studentSofConflictCheck(t, date, allDay, ev, ui, resource, elm);
-                  } else if (newEvent.length == 1) {
-                    var teacherIsPrefered = t.checkNonPreferredTeacher(prevStudObj, newEvent[0]);
-                    if(!teacherIsPrefered){
-                      if (newEvent[0]['students'] == undefined) {
-                          t.studentSofConflictCheck(t, date, allDay, ev, ui, resource, elm);
-                      } else {
-                        // Check Services for same DT
-                        prevServiceId = prevStudObj['serviceId'];
-                        var showPromt = true;
-                        wjQuery.each(newEvent[0]['students'], function (k, v) {
-                          if (v.serviceId == prevServiceId) {
-                            showPromt = false;
-                          }
-                        });
-                        if(showPromt){
-                           // Services are not matching case
-                           //  Validation for oneToOne check
-                          if (newEvent[0]['is1to1']) {
-                              // OneToOne Conflict
-                              var msgIndex = newEvent[0].conflictMsg.map(function (x) {
-                                  return x;
-                              }).indexOf(2);
-                              if (msgIndex == -1) {
-                                  newEvent[0].conflictMsg.push(2);
-                                  self.updateConflictMsg(newEvent[0]);
-                              }
-                              t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Services are not matching and Session is 'OneToOne' Type. Do you wish to continue?");
-                          } else {
-                              if (!(newEvent[0].hasOwnProperty('students')) || newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length < resource.capacity || resource.capacity == undefined)) {
-                                t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Services are not matching. Do you wish to continue?");
-                              } else if (newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length >= resource.capacity || resource.capacity == undefined)) {
-                                t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Services are not matching and Capacity has reached the maximum. Do you wish to continue?");
-                              }
-                          }
-                        }else{
-                          //  Validation for oneToOne check
-                          if (newEvent[0]['is1to1']) {
-                              // OneToOne Conflict
-                              var msgIndex = newEvent[0].conflictMsg.map(function (x) {
-                                  return x;
-                              }).indexOf(2);
-                              if (msgIndex == -1) {
-                                  newEvent[0].conflictMsg.push(2);
-                                  self.updateConflictMsg(newEvent[0]);
-                              }
-                              t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Session is 'OneToOne' Type. Do you wish to continue?");
-                          } else {
-                              if (!(newEvent[0].hasOwnProperty('students')) || newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length < resource.capacity || resource.capacity == undefined)) {
-                                  t.studentSofConflictCheck(t, date, allDay, ev, ui, resource, elm);
-                              } else if (newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length >= resource.capacity || resource.capacity == undefined)) {
-                                  t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Capacity has reached the maximum. Do you wish to continue?");
-                              }
-                          }
-                        }
-                      }
-                    }else{
-                      // Non preferred teacher case
-                      if (newEvent[0]['students'] == undefined) {
-                          t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher. Do you wish to continue?");
-                      } else {
-                        //  Validation for oneToOne check
-                        if (newEvent[0]['is1to1']) {
-                            // OneToOne Conflict
-                            var msgIndex = newEvent[0].conflictMsg.map(function (x) {
-                                return x;
-                            }).indexOf(2);
-                            if (msgIndex == -1) {
-                                newEvent[0].conflictMsg.push(2);
-                                self.updateConflictMsg(newEvent[0]);
-                            }
-                            t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and Session is 'OneToOne' Type. Do you wish to continue?");
-                        } else {
-                            if (!(newEvent[0].hasOwnProperty('students')) || newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length < resource.capacity || resource.capacity == undefined)) {
-                                t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher. Do you wish to continue?");
-                            } else if (newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length >= resource.capacity || resource.capacity == undefined)) {
-                                t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and Capacity has reached the maximum. Do you wish to continue?");
-                            }
-                        }
-                      }
-                    }
-                  }
-                } else {
-                  // Pending DT 
-                  t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "DeliveryType is different. Do you wish to continue?");
+          var allowEventOverlap = self.validateOverlapingEvent(startHour, resource.id, prevStudObj, false);
+          if(allowEventOverlap){
+              var giValidation = true;
+              var numHour = prevStudObj['duration']/60;
+              var prevdate1 = new Date(prevStudObj['startHour']);
+              var prevStudEndHour = new Date(prevdate1.setHours(prevdate1.getHours() + numHour));
+              var date1 = new Date(date);
+              var endHour = new Date(date1.setHours(date1.getHours() + 1));
+              if(prevStudObj['deliveryTypeCode'] == groupInstruction){
+                if(prevStudObj['startHour'].getTime() == date.getTime() && prevStudEndHour.getTime() == endHour.getTime() ){
+                    giValidation = false;
                 }
               }else{
-                t.prompt("The selected student is already scheduled for the respective timeslot.");
+                giValidation = false;
               }
+
+              var displayStart = moment(new Date(prevStudObj['startHour'])).format("DD-MM-YYYY hh:mm A");
+              var displayEnd = moment(new Date(prevStudEndHour)).format("DD-MM-YYYY hh:mm A");
+     
+              if(giValidation){
+                    t.prompt("The selected student is not allowed to scheduled for the respective timeslot.<br>Student session start time:-"+displayStart+"<br> Student session end time:-"+displayEnd);
+              }else{
+                  var allowToDropStudent = self.validateStudentOnSameRow(stuId, startHour,prevStudObj, false, true);
+                  if(allowToDropStudent){
+                    if (prevStudObj['deliveryType'] == resource.deliveryType) {
+                      if (newEvent.length == 0) {
+                        t.studentSofConflictCheck(t, date, allDay, ev, ui, resource, elm);
+                      } else if (newEvent.length == 1) {
+                        var teacherIsPrefered = t.checkNonPreferredTeacher(prevStudObj, newEvent[0]);
+                        if(!teacherIsPrefered){
+                          if (newEvent[0]['students'] == undefined) {
+                              t.studentSofConflictCheck(t, date, allDay, ev, ui, resource, elm);
+                          } else {
+                            // Check Services for same DT
+                            prevServiceId = prevStudObj['serviceId'];
+                            var showPromt = true;
+                            wjQuery.each(newEvent[0]['students'], function (k, v) {
+                              if (v.serviceId == prevServiceId) {
+                                showPromt = false;
+                              }
+                            });
+                            if(showPromt){
+                               // Services are not matching case
+                               //  Validation for oneToOne check
+                              if (newEvent[0]['is1to1']) {
+                                  // OneToOne Conflict
+                                  var msgIndex = newEvent[0].conflictMsg.map(function (x) {
+                                      return x;
+                                  }).indexOf(2);
+                                  if (msgIndex == -1) {
+                                      newEvent[0].conflictMsg.push(2);
+                                      self.updateConflictMsg(newEvent[0]);
+                                  }
+                                  t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Services are not matching and Session is 'OneToOne' Type. Do you wish to continue?");
+                              } else {
+                                  if (!(newEvent[0].hasOwnProperty('students')) || newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length < resource.capacity || resource.capacity == undefined)) {
+                                    t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Services are not matching. Do you wish to continue?");
+                                  } else if (newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length >= resource.capacity || resource.capacity == undefined)) {
+                                    t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Services are not matching and Capacity has reached the maximum. Do you wish to continue?");
+                                  }
+                              }
+                            }else{
+                              //  Validation for oneToOne check
+                              if (newEvent[0]['is1to1']) {
+                                  // OneToOne Conflict
+                                  var msgIndex = newEvent[0].conflictMsg.map(function (x) {
+                                      return x;
+                                  }).indexOf(2);
+                                  if (msgIndex == -1) {
+                                      newEvent[0].conflictMsg.push(2);
+                                      self.updateConflictMsg(newEvent[0]);
+                                  }
+                                  t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Session is 'OneToOne' Type. Do you wish to continue?");
+                              } else {
+                                  if (!(newEvent[0].hasOwnProperty('students')) || newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length < resource.capacity || resource.capacity == undefined)) {
+                                      t.studentSofConflictCheck(t, date, allDay, ev, ui, resource, elm);
+                                  } else if (newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length >= resource.capacity || resource.capacity == undefined)) {
+                                      t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Capacity has reached the maximum. Do you wish to continue?");
+                                  }
+                              }
+                            }
+                          }
+                        }else{
+                          // Non preferred teacher case
+                          if (newEvent[0]['students'] == undefined) {
+                              t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher. Do you wish to continue?");
+                          } else {
+                            //  Validation for oneToOne check
+                            if (newEvent[0]['is1to1']) {
+                                // OneToOne Conflict
+                                var msgIndex = newEvent[0].conflictMsg.map(function (x) {
+                                    return x;
+                                }).indexOf(2);
+                                if (msgIndex == -1) {
+                                    newEvent[0].conflictMsg.push(2);
+                                    self.updateConflictMsg(newEvent[0]);
+                                }
+                                t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and Session is 'OneToOne' Type. Do you wish to continue?");
+                            } else {
+                                if (!(newEvent[0].hasOwnProperty('students')) || newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length < resource.capacity || resource.capacity == undefined)) {
+                                    t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher. Do you wish to continue?");
+                                } else if (newEvent[0].hasOwnProperty('students') && (newEvent[0]['students'].length >= resource.capacity || resource.capacity == undefined)) {
+                                    t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and Capacity has reached the maximum. Do you wish to continue?");
+                                }
+                            }
+                          }
+                        }
+                      }
+                    } else {
+                      // Pending DT 
+                      t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, "DeliveryType is different. Do you wish to continue?");
+                    }
+                  }else{
+                    t.prompt("The selected student is already scheduled for the respective timeslot.");
+                  }
+              }
+          }else{
+            t.prompt("The selected student is not allowed to scheduled for the respective timeslot.");
           }
         }
         else if (wjQuery(elm).attr("type") == 'teacher') {
@@ -1314,9 +1318,11 @@ function SylvanCalendar() {
                     break;
                 }
             }
-            var prevStudObj = t.convertedStudentObj[index];
             if (index != -1) {
-              if (newResourceObj.deliveryType != "Group Instruction") {
+              var prevStudObj = t.convertedStudentObj[index];
+              var allowEventOverlap = self.validateOverlapingEvent(startHour, resource.id, prevStudObj, true);
+              if(allowEventOverlap){
+                if (newResourceObj.deliveryType != "Group Instruction") {
                 var allowToDropStudent = true;
                 if(startHour.getTime() != prevEvent[0].start.getTime()){
                   allowToDropStudent = self.validateStudentOnSameRow(stuId, startHour, prevStudObj, true, false);
@@ -1330,31 +1336,6 @@ function SylvanCalendar() {
                             t.prompt("Student slot timings are mismatching.Cannot be placed.");
                         }
                     }
-                    /*else if(newEvent.length == 0){
-                        var checkForNextEvent = this.calendar.fullCalendar('clientEvents', resource.id + new Date(new Date(date).setHours(new Date(date).getHours() + 1)));
-                        var checkForPrevEvent = this.calendar.fullCalendar('clientEvents', resource.id + new Date(new Date(date).setHours(new Date(date).getHours() - 1)));
-                        if(checkForNextEvent.length){
-                            var prevStudentDuration = (new Date(prevStudObj.start).getTime() - new Date(prevStudObj.end).getTime())/(1000*60);
-                            var prevStudentEndTime = new Date(new Date(date).setMinutes(Math.abs(prevStudentDuration)));
-                            if(prevStudentEndTime.getTime() > checkForNextEvent[0].start.getTime()){
-                                minuteflag = false;
-                                t.prompt("Slot timings are getting Overlapped.Cannot be placed.");
-                            }
-                        }
-                        if(checkForPrevEvent.length){
-                            if(checkForPrevEvent[0].end != null){
-                                if(checkForPrevEvent[0].end.getTime() <= new Date(date).getTime())
-                                {
-                                    var prevStudentDuration = (new Date(prevStudObj.start).getTime() - new Date(prevStudObj.end).getTime())/(1000*60);
-                                    var prevStudentEndTime = new Date(new Date(date).setMinutes(Math.abs(prevStudentDuration)));
-                                    if(prevStudentEndTime.getTime() < checkForPrevEvent[0].end.getTime()){
-                                        minuteflag = false;
-                                        t.prompt("Slot timings are getting Overlapped.Cannot be placed.");
-                                    }
-                                }    
-                            }
-                        }
-                    }*/
                     if(minuteflag){
                         if (newEvent.length == 0) {
                             if (wjQuery(elm).attr("pinnedId")) {
@@ -1622,13 +1603,16 @@ function SylvanCalendar() {
                         }
                       }
                   }
-              }
+                }
                 }else{
                   t.prompt("The selected student is already scheduled for the respective timeslot.");
                 }
-            } else {
-                t.prompt("Can not be placed to a GI session.");
-            }
+                } else {
+                    t.prompt("Can not be placed to a GI session.");
+                }
+              }else{
+                t.prompt("The selected student is not allowed to scheduled for the respective timeslot.");
+              }
           }
         }
         else if (wjQuery(elm).attr("type") == 'teacherSession') {
@@ -8351,6 +8335,87 @@ function SylvanCalendar() {
             }else{
                 allowToDropStudent = false;
             }
+        }
+        return allowToDropStudent;
+    }
+
+    this.validateOverlapingEvent = function(startHour, resourceId, prevEvent, sessionDrag){
+        var self = this;
+        var allowToDropStudent = true;
+        startHour = new Date(startHour);
+
+        if(prevEvent['duration'] == undefined){
+            prevEvent['duration'] = 60;
+        }
+        var numHour;
+        var numMinite;
+        var endHour;
+        if (prevEvent['duration']%60==0) {
+            numHour = prevEvent['duration']/60;
+            numMinite = 0;
+        }else{
+            numHour = Math.floor(prevEvent['duration']/60);
+            numMinite = prevEvent['duration']%60;
+        }
+        var startHour1 = new Date(startHour);
+        if ((startHour1.getMinutes()+numMinite)<60) {
+            endHour = new Date(startHour1.setHours(startHour1.getHours() + numHour));
+            endHour = new Date(startHour1.setMinutes(startHour1.getMinutes() + numMinite));
+        }
+        if ((startHour1.getMinutes()+numMinite)>=60){
+            numHour+= Math.floor((startHour1.getMinutes()+numMinite)/60);
+            numMinite+= (startHour1.getMinutes()+numMinite)%60;
+            endHour = new Date(startHour1.setHours(startHour1.getHours() + numHour));
+            endHour = new Date(startHour1.setMinutes(startHour1.getMinutes() + numMinite));
+        }
+        var dropableEvent = [];
+        var dropableEvent = [];
+        if(sessionDrag){
+            var prevEventObj = self.calendar.fullCalendar('clientEvents', prevEvent.resourceId+prevEvent.startHour);
+            var eventTitleHTML = wjQuery(prevEventObj[0].title);
+            dropableEvent = self.calendar.fullCalendar('clientEvents',function(el){
+                return  el.end != null &&
+                        resourceId == el.resourceId && 
+                        prevEvent.resourceId+prevEvent.startHour != el.id &&
+                        resourceId+startHour != el.id &&
+                        (
+                            (
+                                startHour.getTime() <= el.start.getTime() && 
+                                endHour.getTime() >= el.end.getTime()
+                            ) ||
+                            (
+                                el.start.getTime() <= startHour.getTime() && 
+                                el.end.getTime() >= endHour.getTime()
+                            ) ||
+                            (
+                                endHour.getTime() > el.start.getTime() &&
+                                el.end.getTime() > startHour.getTime() 
+                            )
+                        )
+            });
+        }else{
+            dropableEvent = self.calendar.fullCalendar('clientEvents',function(el){
+                return  el.end != null &&
+                        resourceId == el.resourceId && 
+                        resourceId+startHour != el.id &&
+                        (
+                            (
+                                startHour.getTime() <= el.start.getTime() && 
+                                endHour.getTime() >= el.end.getTime()
+                            ) ||
+                            (
+                                el.start.getTime() <= startHour.getTime() && 
+                                el.end.getTime() >= endHour.getTime()
+                            ) ||
+                            (
+                                endHour.getTime() > el.start.getTime() &&
+                                el.end.getTime() > startHour.getTime() 
+                            )
+                        )
+            });
+        }
+        if(dropableEvent.length){
+            allowToDropStudent = false;
         }
         return allowToDropStudent;
     }
