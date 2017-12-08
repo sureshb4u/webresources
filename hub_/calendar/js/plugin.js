@@ -479,6 +479,7 @@ function SylvanCalendar() {
                             self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
                             self.populateTeacherEvent(self.convertedTeacherObj, true);
                             self.populateTAPane(self.taList);
+                            self.openSofPane();
                         } else {
                             var newArray = [];
                             var sofNewArray = [];
@@ -519,6 +520,7 @@ function SylvanCalendar() {
                             self.populateStudentEvent(newArray, true);
                             self.populateTeacherEvent(self.convertedTeacherObj, true);
                             self.populateTAPane(taNewArray);
+                            self.openSofPane();
                         }
                     }
                 });
@@ -3105,6 +3107,7 @@ function SylvanCalendar() {
                 if(Object.keys(self.sofList).length){
                     if (self.sofList['Personal Instruction'].length > 0 || self.sofList['Group Instruction'].length > 0 || self.sofList['Group Facilitation'].length > 0) {
                         self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
+                        self.openSofPane();
                     }
                 }
             }, 800);
@@ -3410,6 +3413,7 @@ function SylvanCalendar() {
             setTimeout(function () {
                 if (self.sofList['Personal Instruction'].length > 0 || self.sofList['Group Instruction'].length > 0 || self.sofList['Group Facilitation'].length > 0) {
                     self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
+                    self.openSofPane();
                 }
             }, 800);
         } 
@@ -4243,6 +4247,7 @@ function SylvanCalendar() {
         setTimeout(function () {
             if (self.sofList['Personal Instruction'].length > 0 || self.sofList['Group Instruction'].length > 0 || self.sofList['Group Facilitation'].length > 0) {
                 self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
+                self.openSofPane();
             }
         }, 300);
     }
