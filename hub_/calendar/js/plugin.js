@@ -174,6 +174,8 @@ setTimeout(function () {
                     if(pi.length == 0 && (gf.length != 0 || gi.length != 0)){
                         sylvanCalendar.prompt("The selected center doesn't have the PI Resource. Please change the filter to see the Group Resources.");
                     }
+                }else{
+                    sylvanCalendar.prompt("The selected center doesn't have the PI Resource. Please change the filter to see the Group Resources.");
                 }
             }
             if (selectedDeliveryType.length == deliveryType.length) {
@@ -8286,6 +8288,7 @@ function SylvanCalendar() {
             }
         }
         if(allowToDropStudent && !isFromSof){
+            dropableEvent = [];
             if(self.sofList['Personal Instruction'].length){
                 dropableEvent = self.sofList['Personal Instruction'].filter(function(el){
                     return  el.id == stuId &&
