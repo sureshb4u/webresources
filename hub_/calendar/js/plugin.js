@@ -75,6 +75,7 @@ setTimeout(function () {
             if (wjQuery(".location-btn").val() != wjQuery(this).attr('value-id')) {
                 wjQuery(".location-btn").text(wjQuery(this).text());
                 wjQuery(".location-btn").val(wjQuery(this).attr('value-id'));
+                wjQuery(".sof-btn").removeClass('overflow-info');
                 locationId = wjQuery(this).attr('value-id');
                 wjQuery('#datepicker').datepicker('destroy');
                 var view = "resourceDay";
@@ -174,8 +175,17 @@ setTimeout(function () {
                     if(pi.length == 0 && (gf.length != 0 || gi.length != 0)){
                         sylvanCalendar.prompt("The selected center doesn't have the PI Resource. Please change the filter to see the Group Resources.");
                     }
+                }else{
+                    if(selectedDeliveryType.length){
+                        sylvanCalendar.prompt("The selected center doesn't have the Resources.");
+                    }
+                }
+            }else{
+                if(resources.length == 0&& selectedDeliveryType.length){
+                    sylvanCalendar.prompt("The selected center doesn't have the Resources.");
                 }
             }
+
             if (selectedDeliveryType.length == deliveryType.length) {
                 resourceList = resources;
             }
@@ -479,6 +489,7 @@ function SylvanCalendar() {
                             self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
                             self.populateTeacherEvent(self.convertedTeacherObj, true);
                             self.populateTAPane(self.taList);
+                            self.openSofPane();
                         } else {
                             var newArray = [];
                             var sofNewArray = [];
@@ -519,6 +530,7 @@ function SylvanCalendar() {
                             self.populateStudentEvent(newArray, true);
                             self.populateTeacherEvent(self.convertedTeacherObj, true);
                             self.populateTAPane(taNewArray);
+                            self.openSofPane();
                         }
                     }
                 });
@@ -3099,6 +3111,7 @@ function SylvanCalendar() {
                 if(Object.keys(self.sofList).length){
                     if (self.sofList['Personal Instruction'].length > 0 || self.sofList['Group Instruction'].length > 0 || self.sofList['Group Facilitation'].length > 0) {
                         self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
+                        self.openSofPane();
                     }
                 }
             }, 800);
@@ -3404,6 +3417,7 @@ function SylvanCalendar() {
             setTimeout(function () {
                 if (self.sofList['Personal Instruction'].length > 0 || self.sofList['Group Instruction'].length > 0 || self.sofList['Group Facilitation'].length > 0) {
                     self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
+                    self.openSofPane();
                 }
             }, 800);
         } 
@@ -4237,6 +4251,7 @@ function SylvanCalendar() {
         setTimeout(function () {
             if (self.sofList['Personal Instruction'].length > 0 || self.sofList['Group Instruction'].length > 0 || self.sofList['Group Facilitation'].length > 0) {
                 self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
+                self.openSofPane();
             }
         }, 300);
     }
@@ -8271,6 +8286,7 @@ function SylvanCalendar() {
             }
         }
         if(allowToDropStudent && !isFromSof){
+            dropableEvent = [];
             if(self.sofList['Personal Instruction'].length){
                 dropableEvent = self.sofList['Personal Instruction'].filter(function(el){
                     return  el.id == stuId &&
