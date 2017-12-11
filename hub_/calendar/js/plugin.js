@@ -75,6 +75,7 @@ setTimeout(function () {
             if (wjQuery(".location-btn").val() != wjQuery(this).attr('value-id')) {
                 wjQuery(".location-btn").text(wjQuery(this).text());
                 wjQuery(".location-btn").val(wjQuery(this).attr('value-id'));
+                wjQuery(".sof-btn").removeClass('overflow-info');
                 locationId = wjQuery(this).attr('value-id');
                 wjQuery('#datepicker').datepicker('destroy');
                 var view = "resourceDay";
