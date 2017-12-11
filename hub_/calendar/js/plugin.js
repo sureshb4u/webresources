@@ -175,9 +175,16 @@ setTimeout(function () {
                         sylvanCalendar.prompt("The selected center doesn't have the PI Resource. Please change the filter to see the Group Resources.");
                     }
                 }else{
-                    sylvanCalendar.prompt("The selected center doesn't have the PI Resource. Please change the filter to see the Group Resources.");
+                    if(selectedDeliveryType.length){
+                        sylvanCalendar.prompt("The selected center doesn't have the Resources.");
+                    }
+                }
+            }else{
+                if(resources.length == 0&& selectedDeliveryType.length){
+                    sylvanCalendar.prompt("The selected center doesn't have the Resources.");
                 }
             }
+
             if (selectedDeliveryType.length == deliveryType.length) {
                 resourceList = resources;
             }
