@@ -2451,11 +2451,11 @@ function SylvanCalendar() {
                 cwidth = (Math.floor(scwidth/6));
             }
             else{
-                cwidth = 200;
+                cwidth = 230;
             }
         }
         else{
-            cwidth = 200;
+            cwidth = 230;
             //alert(cwidth);
         }
         setTimeout(function () {
