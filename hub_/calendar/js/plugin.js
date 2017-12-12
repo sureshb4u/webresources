@@ -2440,8 +2440,7 @@ function SylvanCalendar() {
         currentCalendarDate = moment(currentCalendarDate).format("YYYY-MM-DD");
         this.refreshCalendarEvent(this.locationId, true);
     }
-
-    this.refreshCalendarEvent = function (locationId, isFetch) {
+    this.calendarFixedWidth = function(){
         var self = this;
         // Table Fixed column code +scroll  Start
         var scwidth = (wjQuery(window).width()-118);
@@ -2458,24 +2457,28 @@ function SylvanCalendar() {
             cwidth = 230;
             //alert(cwidth);
         }
-        setTimeout(function () {
-            // Table Fixed column code +scroll  Start
-                wjQuery('table.fc-border-separate, table.fc-border-separate.fc td,.fc th').css('width',+cwidth+'px');
-                var contentWidth = (((self.resourceList.length+1)*cwidth)+91)-cwidth+27;
-                //alert(contentWidth);
-                wjQuery('.fc-content div.fc-view').css({'width': +contentWidth+'px','background':'#fff'});
-                if(wjQuery(window).width()>=1100){
-                    if (self.resourceList.length>6) {
-                        wjQuery('#calendar div.fc-content').addClass('fc-scroll-content');
-                    }
-                    if (self.resourceList.length<6) {
-                        wjQuery('#calendar div.fc-content').removeClass('fc-scroll-content');
-                    }
-                }
-                if (wjQuery(window).width()<1100) {
+        wjQuery('table.fc-border-separate, table.fc-border-separate.fc td,.fc th').css('width',+cwidth+'px');
+            var contentWidth = (((self.resourceList.length+1)*cwidth)+91)-cwidth+27;
+            //alert(contentWidth);
+            wjQuery('.fc-content div.fc-view').css({'width': +contentWidth+'px','background':'#fff'});
+            if(wjQuery(window).width()>=1100){
+                if (self.resourceList.length>6) {
                     wjQuery('#calendar div.fc-content').addClass('fc-scroll-content');
                 }
-                self.buildCalfirstCol();
+                if (self.resourceList.length<6) {
+                    wjQuery('#calendar div.fc-content').removeClass('fc-scroll-content');
+                }
+            }
+            if (wjQuery(window).width()<1100) {
+                wjQuery('#calendar div.fc-content').addClass('fc-scroll-content');
+            }
+    }
+    this.refreshCalendarEvent = function (locationId, isFetch) {
+        var self = this;
+        
+        setTimeout(function () {
+            self.buildCalfirstCol();
+            self.calendarFixedWidth();
             //table Fixed column code End
             var currentCalendarDate = self.calendar.fullCalendar('getDate');
             var currentView = self.calendar.fullCalendar('getView');
