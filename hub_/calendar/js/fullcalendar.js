@@ -3992,7 +3992,7 @@ function ResourceEventRenderer() {
             (availWidth / (levelI + forward + 1) * levelI) // indentation
             * dis + (rtl ? availWidth - outerWidth : 0);   // rtl
             seg.top = top;
-            seg.left = left-5;
+            seg.left = left;
             seg.outerWidth = outerWidth - 10;
             seg.outerHeight = bottom - top;
             html += slotSegHtml(event, seg);
