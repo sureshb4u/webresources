@@ -3117,7 +3117,10 @@ function SylvanCalendar() {
                 if(Object.keys(self.sofList).length){
                     if (self.sofList['Personal Instruction'].length > 0 || self.sofList['Group Instruction'].length > 0 || self.sofList['Group Facilitation'].length > 0) {
                         self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
-                        self.openSofPane();
+                        var currentView = self.calendar.fullCalendar('getView');
+                        if(currentView.name != "agendaWeek"){
+                            self.openSofPane();
+                        }
                     }
                 }
             }, 800);
@@ -3423,7 +3426,10 @@ function SylvanCalendar() {
             setTimeout(function () {
                 if (self.sofList['Personal Instruction'].length > 0 || self.sofList['Group Instruction'].length > 0 || self.sofList['Group Facilitation'].length > 0) {
                     self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
-                    self.openSofPane();
+                    var currentView = self.calendar.fullCalendar('getView');
+                    if(currentView.name != "agendaWeek"){
+                        self.openSofPane();
+                    }
                 }
             }, 800);
         } 
@@ -4257,7 +4263,10 @@ function SylvanCalendar() {
         setTimeout(function () {
             if (self.sofList['Personal Instruction'].length > 0 || self.sofList['Group Instruction'].length > 0 || self.sofList['Group Facilitation'].length > 0) {
                 self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
-                self.openSofPane();
+                var currentView = self.calendar.fullCalendar('getView');
+                if(currentView.name != "agendaWeek"){
+                    self.openSofPane();
+                }
             }
         }, 300);
     }
@@ -4351,7 +4360,10 @@ function SylvanCalendar() {
         setTimeout(function () {
             if (self.sofList['Personal Instruction'].length > 0 || self.sofList['Group Instruction'].length > 0 || self.sofList['Group Facilitation'].length > 0) {
                 self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
-                self.openSofPane();
+                var currentView = self.calendar.fullCalendar('getView');
+                if(currentView.name != "agendaWeek"){
+                    self.openSofPane();
+                }
             }
         }, 300);
     }
@@ -8406,8 +8418,10 @@ function SylvanCalendar() {
         var dropableEvent = [];
         if(sessionDrag){
             dropableEvent = self.calendar.fullCalendar('clientEvents',function(el){
-                el.end = new Date(el.start);
-                el.end = new Date(el.end.setHours(el.end.getHours() + numHour))
+                // if(el.end == null || el.start == undefined){
+                //     el.end = new Date(el.start);
+                //     el.end = new Date(el.end.setHours(el.end.getHours() + numHour))
+                // }
                 return  el.end != null &&
                         prevEvent.resourceId+prevEvent.start != el.id &&
                         el.hasOwnProperty("teachers") &&
@@ -8428,8 +8442,10 @@ function SylvanCalendar() {
             });
         }else{
             dropableEvent = self.calendar.fullCalendar('clientEvents',function(el){
-                el.end = new Date(el.start);
-                el.end = new Date(el.end.setHours(el.end.getHours() + numHour));
+                // if(el.end == null || el.start == undefined){
+                //     el.end = new Date(el.start);
+                //     el.end = new Date(el.end.setHours(el.end.getHours() + numHour));
+                // }
                 return  el.end != null &&
                         el.hasOwnProperty("teachers") &&
                         (
@@ -8875,7 +8891,8 @@ function SylvanCalendar() {
                             }
                             wjQuery(".loading").hide();
                         }else{
-                           self.floatTeacherCnfmPopup(teacherObj, idArry, "Teacher is not available. Do you wish to continue?"); 
+                            wjQuery(".loading").hide();
+                            self.floatTeacherCnfmPopup(teacherObj, idArry, "Teacher is not available. Do you wish to continue?"); 
                             wjQuery("#makeup").dialog("close");
                         }
                     }else{
