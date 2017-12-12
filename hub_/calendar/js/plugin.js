@@ -2420,7 +2420,6 @@ function SylvanCalendar() {
         self.clearEvents();
         var currentCalendarDate = moment(date).format("YYYY-MM-DD");
         self.refreshCalendarEvent(this.locationId, true);
-        self.calendarFixedWidth(this.locationId, 1);
     }
 
     this.next = function (locationId) {
@@ -2444,7 +2443,7 @@ function SylvanCalendar() {
         currentCalendarDate = moment(currentCalendarDate).format("YYYY-MM-DD");
         this.refreshCalendarEvent(this.locationId, true);
     }
-    this.calendarFixedWidth = function(location, id){
+    this.calendarFixedWidth = function(){
         var self = this;
         // Table Fixed column code +scroll  Start
         var scwidth = (wjQuery(window).width()-118);
@@ -2476,14 +2475,11 @@ function SylvanCalendar() {
             if (wjQuery(window).width()<1100) {
                 wjQuery('#calendar div.fc-content').addClass('fc-scroll-content');
             }
-            // if (id == 1) {
-            //     self.refreshCalendarEvent(location, true);
-            // }
-            
     }
     this.refreshCalendarEvent = function (locationId, isFetch) {
         var self = this;
         setTimeout(function () {
+            self.calendarFixedWidth();
             self.buildCalfirstCol();
             
             //table Fixed column code End
