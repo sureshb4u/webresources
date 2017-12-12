@@ -141,6 +141,11 @@ setTimeout(function () {
             }               
         }
         var resources = [];
+        var groupI = false;
+        var pi1 = [];
+        var gi1 = [];
+        var gf1 = [];
+        var groupPI = false;
         function fetchResources(locationId, selectedDeliveryType, fetchData) {
             wjQuery(".loading").show();
             var locationChanged  = false;
@@ -162,12 +167,15 @@ setTimeout(function () {
                         switch (resources[i]['adeliverytype_x002e_hub_code']) {
                             case personalInstruction:
                                 pi.push(resources[i]);
+                                pi1.push(resources[i]);
                                 break;
                             case groupFacilitation:
                                 gf.push(resources[i]);
+                                gf1.push(resources[i]);
                                 break;
                             case groupInstruction:
                                 gi.push(resources[i]);
+                                gi1.push(resources[i]);
                                 break;
                         }
                     }
@@ -180,6 +188,12 @@ setTimeout(function () {
             }
             if (selectedDeliveryType.length == deliveryType.length) {
                 resourceList = resources;
+                if(groupI){
+                    sylvanCalendar.prompt("The selected center doesn't have the GI Resource. Please change the filter to see the Personal Instruction Resources.");
+                }
+                if(groupPI){
+                    sylvanCalendar.prompt("The selected center doesn't have the PI Resource. Please change the filter to see the Group Resources.");
+                }
             }
             else {
                 for (var i = 0; i < selectedDeliveryType.length; i++) {
@@ -303,6 +317,31 @@ setTimeout(function () {
         }
         wjQuery('#pi-btn input').attr('checked', 'checked');
         wjQuery('.dtBtn').click(function () {
+            var parentId = wjQuery(this).parents("div").attr("id");
+            
+            if (parentId=='pi-btn') {
+                if (pi1.length !=0 && (gi1.length == 0 || gf1.length == 0)) {
+                    groupPI = false;
+                    groupI = false;
+                }
+                if(pi1.length ==0 && (gi1.length != 0 || gf1.length != 0)){
+                    groupPI = true;
+                    groupI = false;
+                }
+                
+            }
+            else{
+                if ((gi1.length == 0 || gf1.length == 0) && pi1.length>0) {
+                    groupI = true;
+                    groupPI = false;
+                }
+                if((gi1.length != 0 || gf1.length != 0) && pi1.length==0){
+                    groupPI = false;
+                    groupI = false;
+                }
+            }
+            
+            // var clickedType = wjQuery('.dtBtn').attr('bname');
             deliveryTypeList = [];
             wjQuery('.student-overflow').remove();
             wjQuery('.teacher-availability').remove();
@@ -312,12 +351,15 @@ setTimeout(function () {
                     for (var i = 0; i < deliveryType.length; i++) {
                         if (deliveryType[i]['hub_deliverytypeid'] == wjQuery(elm).val() &&
                           deliveryType[i]['hub_code'] == groupInstruction) {
+                            
                             for (var j = 0; j < deliveryType.length; j++) {
                                 if (deliveryType[j]['hub_code'] == groupFacilitation) {
+                                    
                                     deliveryTypeList.push(deliveryType[j]['hub_deliverytypeid']);
                                 }
                             }
                         }
+                        
                     }
                 }
             });
