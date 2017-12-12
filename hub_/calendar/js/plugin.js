@@ -1658,13 +1658,21 @@ function SylvanCalendar() {
                 }
                 if(allowToDropTeacher){
                   if (newEvent.length == 0) {
-                      this.teacherSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
+                        if (wjQuery(elm).attr("pinnedid")) {
+                            this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This teacher will be temporarily un pinned. Do you wish to continue?");
+                        }else{
+                            this.teacherSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
+                        }
                   } else if (newEvent.length == 1) {
                       var isNonPreferred = self.checkNonPreferredStudentForTeacher(teacherId, newEvent[0]);
                       if(!isNonPreferred){
                         if (!(newEvent[0].hasOwnProperty('teachers')) || (newEvent[0].hasOwnProperty('teachers') && newEvent[0]['teachers'].length == 0)) {
                             if (!newEvent[0].hasOwnProperty('students')) {
-                                this.teacherSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
+                                if (wjQuery(elm).attr("pinnedid")) {
+                                    this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This teacher will be temporarily un pinned. Do you wish to continue?");
+                                }else{
+                                    this.teacherSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
+                                }
                             } else {
                                 var showPopup = false;
                                 wjQuery.each(newEvent[0]['students'], function (k, v) {
@@ -1677,9 +1685,17 @@ function SylvanCalendar() {
                                     }
                                 });
                                 if (showPopup) {
-                                    this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher program is not matching. Do you wish to continue?");
+                                    if (wjQuery(elm).attr("pinnedid")) {
+                                        this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher program is not matching and this teacher will be temporarily un pinned. Do you wish to continue?");
+                                    }else{
+                                        this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher program is not matching. Do you wish to continue?");
+                                    }
                                 } else {
-                                    this.teacherSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
+                                    if (wjQuery(elm).attr("pinnedid")) {
+                                        this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This teacher will be temporarily un pinned. Do you wish to continue?");
+                                    }else{
+                                        this.teacherSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
+                                    }
                                 }
                             }
                         }
@@ -1687,7 +1703,11 @@ function SylvanCalendar() {
                         // Non preffred teacher case
                         if (!(newEvent[0].hasOwnProperty('teachers')) || (newEvent[0].hasOwnProperty('teachers') && newEvent[0]['teachers'].length == 0)) {
                           if (!newEvent[0].hasOwnProperty('students')) {
-                              this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher. Do you wish to continue?");
+                                if (wjQuery(elm).attr("pinnedid")) {
+                                    this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and this teacher will be temporarily un pinned. Do you wish to continue?");
+                                }else{
+                                    this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher. Do you wish to continue?");
+                                }
                           } else {
                               var showPopup = false;
                               wjQuery.each(newEvent[0]['students'], function (k, v) {
@@ -1700,9 +1720,17 @@ function SylvanCalendar() {
                                   }
                               });
                               if (showPopup) {
-                                  this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and Teacher program is not matching. Do you wish to continue?");
+                                    if (wjQuery(elm).attr("pinnedid")) {
+                                        this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher, Teacher program is not matching and this teacher will be temporarily un pinned. Do you wish to continue?");
+                                    }else{
+                                        this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and Teacher program is not matching. Do you wish to continue?");
+                                    }
                               } else {
-                                  this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher. Do you wish to continue?");
+                                    if (wjQuery(elm).attr("pinnedid")) {
+                                        this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and this teacher will be temporarily un pinned. Do you wish to continue?");
+                                    }else{
+                                        this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher. Do you wish to continue?");
+                                    }
                               }
                           }
                         }
@@ -5748,7 +5776,7 @@ function SylvanCalendar() {
             if (deliveryType == personalInstruction) {
                 var resourceObj = self.getResourceObj(uniqueId.split("_")[1]);
                 if(resourceObj.deliveryTypeCode == deliveryType && (sessionStatus == SCHEDULE_STATUS 
-                    || sessionStatus == undefined) && sessionType != FLOAT_TYPE ){
+                    || sessionStatus == undefined) && sessionType != FLOAT_TYPE && sessionType != MAKEUP_TYPE){
                     obj.unpin = { name: "Unpin", disabled: isAttended};
                     obj.unpin.visible = true;
                     obj.unpin.callback = function (key, options) {
