@@ -1373,8 +1373,8 @@ function SylvanCalendar() {
                     break;
                 }
             }
-            var prevStudObj = t.convertedStudentObj[index];
             if (index != -1) {
+              var prevStudObj = t.convertedStudentObj[index];
               if (newResourceObj.deliveryType != "Group Instruction") {
                 var allowToDropStudent = true;
                 if(startHour.getTime() != prevEvent[0].start.getTime()){
@@ -1389,88 +1389,64 @@ function SylvanCalendar() {
                             t.prompt("Student slot timings are mismatching.Cannot be placed.");
                         }
                     }
-                    /*else if(newEvent.length == 0){
-                        var checkForNextEvent = this.calendar.fullCalendar('clientEvents', resource.id + new Date(new Date(date).setHours(new Date(date).getHours() + 1)));
-                        var checkForPrevEvent = this.calendar.fullCalendar('clientEvents', resource.id + new Date(new Date(date).setHours(new Date(date).getHours() - 1)));
-                        if(checkForNextEvent.length){
-                            var prevStudentDuration = (new Date(prevStudObj.start).getTime() - new Date(prevStudObj.end).getTime())/(1000*60);
-                            var prevStudentEndTime = new Date(new Date(date).setMinutes(Math.abs(prevStudentDuration)));
-                            if(prevStudentEndTime.getTime() > checkForNextEvent[0].start.getTime()){
-                                minuteflag = false;
-                                t.prompt("Slot timings are getting Overlapped.Cannot be placed.");
-                            }
-                        }
-                        if(checkForPrevEvent.length){
-                            if(checkForPrevEvent[0].end != null){
-                                if(checkForPrevEvent[0].end.getTime() <= new Date(date).getTime())
-                                {
-                                    var prevStudentDuration = (new Date(prevStudObj.start).getTime() - new Date(prevStudObj.end).getTime())/(1000*60);
-                                    var prevStudentEndTime = new Date(new Date(date).setMinutes(Math.abs(prevStudentDuration)));
-                                    if(prevStudentEndTime.getTime() < checkForPrevEvent[0].end.getTime()){
-                                        minuteflag = false;
-                                        t.prompt("Slot timings are getting Overlapped.Cannot be placed.");
-                                    }
-                                }    
-                            }
-                        }
-                    }*/
+                    
                     if(minuteflag){
                         if (newEvent.length == 0) {
-                            if (wjQuery(elm).attr("pinnedId")) {
-                                t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This student will be temporarily un pinned. Do you wish to continue?");
-                            } else {
+                            // if (wjQuery(elm).attr("pinnedId")) {
+                            //     t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This student will be temporarily un pinned. Do you wish to continue?");
+                            // } else {
                                 if (newResourceObj.deliveryType == prevStudObj.deliveryType) {
                                   t.studentSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
                                 } else {
                                     t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "DeliveryType is different. Do you wish to continue?");
                                 }
-                          }
+                          // }
                       }
                       else if (newEvent.length == 1) {
                       var teacherIsPrefered = t.checkNonPreferredTeacher(prevStudObj, newEvent[0]);
                       if(!teacherIsPrefered){
                         if (newEvent[0]['students'] == undefined) {
-                            if (wjQuery(elm).attr("pinnedId")) {
-                              if (newEvent[0]['is1to1']) {
-                                // OneToOne Conflict
-                                var msgIndex = newEvent[0].conflictMsg.map(function (x) {
-                                    return x;
-                                }).indexOf(2);
-                                if (msgIndex == -1) {
-                                    newEvent[0].conflictMsg.push(2);
-                                    self.updateConflictMsg(newEvent[0]);
-                                }
-                                t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This student will be temporarily un pinned and Session is 'OneToOne' Type . Do you wish to continue?");
-                              }else{
-                                t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This student will be temporarily un pinned. Do you wish to continue?");
-                              }
-                            } else {
+                            // if (wjQuery(elm).attr("pinnedId")) {
+                            //   if (newEvent[0]['is1to1']) {
+                            //     // OneToOne Conflict
+                            //     var msgIndex = newEvent[0].conflictMsg.map(function (x) {
+                            //         return x;
+                            //     }).indexOf(2);
+                            //     if (msgIndex == -1) {
+                            //         newEvent[0].conflictMsg.push(2);
+                            //         self.updateConflictMsg(newEvent[0]);
+                            //     }
+                            //     t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This student will be temporarily un pinned and Session is 'OneToOne' Type . Do you wish to continue?");
+                            //   }else{
+                            //     t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This student will be temporarily un pinned. Do you wish to continue?");
+                            //   }
+                            // } else {
                                 if (newResourceObj.deliveryType == prevStudObj.deliveryType) {
                                     t.studentSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
                                 } else {
                                     t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "DeliveryType is different. Do you wish to continue?");
                                 }
-                            }
+                            // }
                         } else {
                           var studentIndex = newEvent[0]['students'].map(function (x) {
                               return x.id;
                           }).indexOf(stuId);
                           if (studentIndex == -1) {
-                            if (wjQuery(elm).attr("pinnedId")) {
-                              if (newEvent[0]['is1to1']) {
-                                // OneToOne Conflict
-                                var msgIndex = newEvent[0].conflictMsg.map(function (x) {
-                                    return x;
-                                }).indexOf(2);
-                                if (msgIndex == -1) {
-                                    newEvent[0].conflictMsg.push(2);
-                                    self.updateConflictMsg(newEvent[0]);
-                                }
-                                t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This student will be temporarily un pinned and Session is 'OneToOne' Type . Do you wish to continue?");
-                              }else{
-                                t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This student will be temporarily un pinned. Do you wish to continue?");
-                              }
-                            } else {
+                            // if (wjQuery(elm).attr("pinnedId")) {
+                            //   if (newEvent[0]['is1to1']) {
+                            //     // OneToOne Conflict
+                            //     var msgIndex = newEvent[0].conflictMsg.map(function (x) {
+                            //         return x;
+                            //     }).indexOf(2);
+                            //     if (msgIndex == -1) {
+                            //         newEvent[0].conflictMsg.push(2);
+                            //         self.updateConflictMsg(newEvent[0]);
+                            //     }
+                            //     t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This student will be temporarily un pinned and Session is 'OneToOne' Type . Do you wish to continue?");
+                            //   }else{
+                            //     t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This student will be temporarily un pinned. Do you wish to continue?");
+                            //   }
+                            // } else {
                               if (newResourceObj.deliveryType == prevStudObj.deliveryType) {
                                 if (newResourceObj.deliveryTypeCode == personalInstruction) {
                                   //  Validation for oneToOne check
@@ -1550,53 +1526,53 @@ function SylvanCalendar() {
                                   }
                                 }
                               }
-                            }
+                            // }
                           }
                         }
                       }else{
                         // No prefered teacher case
                         if (newEvent[0]['students'] == undefined) {
-                            if (wjQuery(elm).attr("pinnedId")) {
-                              if (newEvent[0]['is1to1']) {
-                                // OneToOne Conflict
-                                var msgIndex = newEvent[0].conflictMsg.map(function (x) {
-                                    return x;
-                                }).indexOf(2);
-                                if (msgIndex == -1) {
-                                    newEvent[0].conflictMsg.push(2);
-                                    self.updateConflictMsg(newEvent[0]);
-                                }
-                                t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and This student will be temporarily un pinned and Session is 'OneToOne' Type . Do you wish to continue?");
-                              }else{
-                                t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and This student will be temporarily un pinned. Do you wish to continue?");
-                              }
-                            } else {
+                            // if (wjQuery(elm).attr("pinnedId")) {
+                            //   if (newEvent[0]['is1to1']) {
+                            //     // OneToOne Conflict
+                            //     var msgIndex = newEvent[0].conflictMsg.map(function (x) {
+                            //         return x;
+                            //     }).indexOf(2);
+                            //     if (msgIndex == -1) {
+                            //         newEvent[0].conflictMsg.push(2);
+                            //         self.updateConflictMsg(newEvent[0]);
+                            //     }
+                            //     t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and This student will be temporarily un pinned and Session is 'OneToOne' Type . Do you wish to continue?");
+                            //   }else{
+                            //     t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and This student will be temporarily un pinned. Do you wish to continue?");
+                            //   }
+                            // } else {
                                 if (newResourceObj.deliveryType == prevStudObj.deliveryType) {
                                     t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher. Do you wish to continue?");
                                 } else {
                                     t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and DeliveryType is different. Do you wish to continue?");
                                 }
-                            }
+                            // }
                         } else {
                           var studentIndex = newEvent[0]['students'].map(function (x) {
                               return x.id;
                           }).indexOf(stuId);
                           if (studentIndex == -1) {
-                            if (wjQuery(elm).attr("pinnedId")) {
-                              if (newEvent[0]['is1to1']) {
-                                // OneToOne Conflict
-                                var msgIndex = newEvent[0].conflictMsg.map(function (x) {
-                                    return x;
-                                }).indexOf(2);
-                                if (msgIndex == -1) {
-                                    newEvent[0].conflictMsg.push(2);
-                                    self.updateConflictMsg(newEvent[0]);
-                                }
-                                t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and This student will be temporarily un pinned and Session is 'OneToOne' Type . Do you wish to continue?");
-                              }else{
-                                t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and This student will be temporarily un pinned. Do you wish to continue?");
-                              }
-                            } else {
+                            // if (wjQuery(elm).attr("pinnedId")) {
+                            //   if (newEvent[0]['is1to1']) {
+                            //     // OneToOne Conflict
+                            //     var msgIndex = newEvent[0].conflictMsg.map(function (x) {
+                            //         return x;
+                            //     }).indexOf(2);
+                            //     if (msgIndex == -1) {
+                            //         newEvent[0].conflictMsg.push(2);
+                            //         self.updateConflictMsg(newEvent[0]);
+                            //     }
+                            //     t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and This student will be temporarily un pinned and Session is 'OneToOne' Type . Do you wish to continue?");
+                            //   }else{
+                            //     t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and This student will be temporarily un pinned. Do you wish to continue?");
+                            //   }
+                            // } else {
                               if (newResourceObj.deliveryType == prevStudObj.deliveryType) {
                                 if (newResourceObj.deliveryTypeCode == personalInstruction) {
                                   //  Validation for oneToOne check
@@ -1676,7 +1652,7 @@ function SylvanCalendar() {
                                   }
                                 }
                               }
-                            }
+                            // }
                           }
                         }
                       }
@@ -1705,21 +1681,13 @@ function SylvanCalendar() {
                 }
                 if(allowToDropTeacher){
                   if (newEvent.length == 0) {
-                        // if (wjQuery(elm).attr("pinnedid")) {
-                        //     this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This teacher will be temporarily un pinned. Do you wish to continue?");
-                        // }else{
-                            this.teacherSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
-                        // }
+                        this.teacherSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
                   } else if (newEvent.length == 1) {
                       var isNonPreferred = self.checkNonPreferredStudentForTeacher(teacherId, newEvent[0]);
                       if(!isNonPreferred){
                         if (!(newEvent[0].hasOwnProperty('teachers')) || (newEvent[0].hasOwnProperty('teachers') && newEvent[0]['teachers'].length == 0)) {
                             if (!newEvent[0].hasOwnProperty('students')) {
-                                // if (wjQuery(elm).attr("pinnedid")) {
-                                //     this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This teacher will be temporarily un pinned. Do you wish to continue?");
-                                // }else{
-                                    this.teacherSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
-                                // }
+                                this.teacherSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
                             } else {
                                 var showPopup = false;
                                 wjQuery.each(newEvent[0]['students'], function (k, v) {
@@ -1732,17 +1700,9 @@ function SylvanCalendar() {
                                     }
                                 });
                                 if (showPopup) {
-                                    // if (wjQuery(elm).attr("pinnedid")) {
-                                    //     this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher program is not matching and this teacher will be temporarily un pinned. Do you wish to continue?");
-                                    // }else{
-                                        this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher program is not matching. Do you wish to continue?");
-                                    // }
+                                    this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher program is not matching. Do you wish to continue?");
                                 } else {
-                                    // if (wjQuery(elm).attr("pinnedid")) {
-                                    //     this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This teacher will be temporarily un pinned. Do you wish to continue?");
-                                    // }else{
-                                        this.teacherSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
-                                    // }
+                                    this.teacherSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
                                 }
                             }
                         }
@@ -1750,11 +1710,7 @@ function SylvanCalendar() {
                         // Non preffred teacher case
                         if (!(newEvent[0].hasOwnProperty('teachers')) || (newEvent[0].hasOwnProperty('teachers') && newEvent[0]['teachers'].length == 0)) {
                           if (!newEvent[0].hasOwnProperty('students')) {
-                                // if (wjQuery(elm).attr("pinnedid")) {
-                                //     this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and this teacher will be temporarily un pinned. Do you wish to continue?");
-                                // }else{
-                                    this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher. Do you wish to continue?");
-                                // }
+                                this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher. Do you wish to continue?");
                           } else {
                               var showPopup = false;
                               wjQuery.each(newEvent[0]['students'], function (k, v) {
@@ -1767,17 +1723,9 @@ function SylvanCalendar() {
                                   }
                               });
                               if (showPopup) {
-                                    // if (wjQuery(elm).attr("pinnedid")) {
-                                    //     this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher, Teacher program is not matching and this teacher will be temporarily un pinned. Do you wish to continue?");
-                                    // }else{
-                                        this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and Teacher program is not matching. Do you wish to continue?");
-                                    // }
+                                    this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and Teacher program is not matching. Do you wish to continue?");
                               } else {
-                                    // if (wjQuery(elm).attr("pinnedid")) {
-                                    //     this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and this teacher will be temporarily un pinned. Do you wish to continue?");
-                                    // }else{
-                                        this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher. Do you wish to continue?");
-                                    // }
+                                this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher. Do you wish to continue?");
                               }
                           }
                         }
