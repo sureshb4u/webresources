@@ -1658,21 +1658,21 @@ function SylvanCalendar() {
                 }
                 if(allowToDropTeacher){
                   if (newEvent.length == 0) {
-                        if (wjQuery(elm).attr("pinnedid")) {
-                            this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This teacher will be temporarily un pinned. Do you wish to continue?");
-                        }else{
+                        // if (wjQuery(elm).attr("pinnedid")) {
+                        //     this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This teacher will be temporarily un pinned. Do you wish to continue?");
+                        // }else{
                             this.teacherSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
-                        }
+                        // }
                   } else if (newEvent.length == 1) {
                       var isNonPreferred = self.checkNonPreferredStudentForTeacher(teacherId, newEvent[0]);
                       if(!isNonPreferred){
                         if (!(newEvent[0].hasOwnProperty('teachers')) || (newEvent[0].hasOwnProperty('teachers') && newEvent[0]['teachers'].length == 0)) {
                             if (!newEvent[0].hasOwnProperty('students')) {
-                                if (wjQuery(elm).attr("pinnedid")) {
-                                    this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This teacher will be temporarily un pinned. Do you wish to continue?");
-                                }else{
+                                // if (wjQuery(elm).attr("pinnedid")) {
+                                //     this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This teacher will be temporarily un pinned. Do you wish to continue?");
+                                // }else{
                                     this.teacherSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
-                                }
+                                // }
                             } else {
                                 var showPopup = false;
                                 wjQuery.each(newEvent[0]['students'], function (k, v) {
@@ -1685,17 +1685,17 @@ function SylvanCalendar() {
                                     }
                                 });
                                 if (showPopup) {
-                                    if (wjQuery(elm).attr("pinnedid")) {
-                                        this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher program is not matching and this teacher will be temporarily un pinned. Do you wish to continue?");
-                                    }else{
+                                    // if (wjQuery(elm).attr("pinnedid")) {
+                                    //     this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher program is not matching and this teacher will be temporarily un pinned. Do you wish to continue?");
+                                    // }else{
                                         this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher program is not matching. Do you wish to continue?");
-                                    }
+                                    // }
                                 } else {
-                                    if (wjQuery(elm).attr("pinnedid")) {
-                                        this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This teacher will be temporarily un pinned. Do you wish to continue?");
-                                    }else{
+                                    // if (wjQuery(elm).attr("pinnedid")) {
+                                    //     this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This teacher will be temporarily un pinned. Do you wish to continue?");
+                                    // }else{
                                         this.teacherSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
-                                    }
+                                    // }
                                 }
                             }
                         }
@@ -1703,11 +1703,11 @@ function SylvanCalendar() {
                         // Non preffred teacher case
                         if (!(newEvent[0].hasOwnProperty('teachers')) || (newEvent[0].hasOwnProperty('teachers') && newEvent[0]['teachers'].length == 0)) {
                           if (!newEvent[0].hasOwnProperty('students')) {
-                                if (wjQuery(elm).attr("pinnedid")) {
-                                    this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and this teacher will be temporarily un pinned. Do you wish to continue?");
-                                }else{
+                                // if (wjQuery(elm).attr("pinnedid")) {
+                                //     this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and this teacher will be temporarily un pinned. Do you wish to continue?");
+                                // }else{
                                     this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher. Do you wish to continue?");
-                                }
+                                // }
                           } else {
                               var showPopup = false;
                               wjQuery.each(newEvent[0]['students'], function (k, v) {
@@ -1720,17 +1720,17 @@ function SylvanCalendar() {
                                   }
                               });
                               if (showPopup) {
-                                    if (wjQuery(elm).attr("pinnedid")) {
-                                        this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher, Teacher program is not matching and this teacher will be temporarily un pinned. Do you wish to continue?");
-                                    }else{
+                                    // if (wjQuery(elm).attr("pinnedid")) {
+                                    //     this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher, Teacher program is not matching and this teacher will be temporarily un pinned. Do you wish to continue?");
+                                    // }else{
                                         this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and Teacher program is not matching. Do you wish to continue?");
-                                    }
+                                    // }
                               } else {
-                                    if (wjQuery(elm).attr("pinnedid")) {
-                                        this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and this teacher will be temporarily un pinned. Do you wish to continue?");
-                                    }else{
+                                    // if (wjQuery(elm).attr("pinnedid")) {
+                                    //     this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and this teacher will be temporarily un pinned. Do you wish to continue?");
+                                    // }else{
                                         this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher. Do you wish to continue?");
-                                    }
+                                    // }
                               }
                           }
                         }
