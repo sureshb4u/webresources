@@ -3165,6 +3165,8 @@ function SylvanCalendar() {
             var serviceGI = {};
             wjQuery.each(args, function (ke, val) {
                 var effStartDate = new Date(val['hub_effectivestartdate']);
+                effStartDate = new Date(effStartDate).setHours(00);
+                effStartDate = new Date(new Date(effStartDate).setMinutes(00));
                 var allowStudentFlag = false;
                 if(currentView.name == 'resourceDay'){
                     // Effective end date logic
