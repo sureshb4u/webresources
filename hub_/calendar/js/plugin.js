@@ -6547,6 +6547,7 @@ function SylvanCalendar() {
                     if (index != -1) {
                         self.convertedTeacherObj[index] = teacher;
                         self.populateTeacherEvent([teacher], true);
+                        self.populateTAPane(self.taList);
                     }
                 }
             }
