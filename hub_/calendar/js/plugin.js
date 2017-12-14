@@ -6,7 +6,7 @@ var deliveryType = data.getDeliveryType();
 var currentCalendarDate = moment(new Date()).format("YYYY-MM-DD");
 
 // 4 Weeks to get master schedule data.
-var numOfDays = 28;
+var numOfDays = 35;
 
 /*
  * Student Session Status
