@@ -901,28 +901,75 @@ function SylvanCalendar() {
         for (var i = 0; i < teacherData.length; i++) {
             var teacherStartHour = teacherData[i].startHour;
             var teacherStart = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + ' ' + teacherStartHour + ":00");
+            var teacherEnd = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + ' ' + (teacherStartHour+1) + ":00");
             var addTeacherToTA = true;
-            for (var l = 0; l < this.resourceList.length; l++) {
-                var event = this.calendar.fullCalendar('clientEvents', this.resourceList[l].id + teacherStart);
-                if (event.length != 0) {
-                    for (var j = 0; j < event.length; j++) {
-                        if (event[j].hasOwnProperty('teachers') && event[j].teachers.length != 0) {
-                            for (var k = 0; k < event[j].teachers.length; k++) {
-                                if (event[j].teachers[k].id == teacherData[i].id) {
-                                    addTeacherToTA = false;
-                                    break;
-                                }
-                            }
-                        }
-                        if (!addTeacherToTA) {
+
+            var allEvent1 = self.calendar.fullCalendar('clientEvents',function(el){
+                return  el.end != null &&
+                        el.hasOwnProperty("teachers") &&
+                        el['teachers'].length &&
+                        (
+                            (
+                                teacherStart.getTime() <= el.start.getTime() && 
+                                teacherEnd.getTime() >= el.end.getTime()
+                            ) ||
+                            (
+                                el.start.getTime() <= teacherStart.getTime() && 
+                                el.end.getTime() >= teacherEnd.getTime()
+                            ) ||
+                            (
+                                teacherEnd.getTime() > el.start.getTime() &&
+                                el.end.getTime() > teacherStart.getTime() 
+                            )
+                        )
+            });
+
+            if(allEvent1.length){
+                for (var a = 0; a < allEvent1.length; a++) {
+                    for (var n = 0; n < allEvent1[a].teachers.length; n++) {
+                        if (allEvent1[a].teachers[n].id == teacherData[i].id) {
+                            addTeacherToTA = false;
                             break;
                         }
                     }
                 }
-                if (!addTeacherToTA) {
-                    break;
-                }
             }
+
+            // var addTeacherToTA1 = true;
+            // var allEvent = self.calendar.fullCalendar('clientEvents',function(el){
+            //     if(el.hasOwnProperty('teachers') && el.teachers.length != 0){
+            //         if (new Date(el.start).getHours() >= teacherStartHour && new Date(el.start).getHours() <= teacherStartHour+1){
+            //             for (var n = 0; n < el.teachers.length; n++) {
+            //                 if (el.teachers[n].id == teacherData[n].id) {
+            //                     addTeacherToTA1 = false;
+            //                     break;
+            //                 }
+            //             }
+            //         }
+            //     }
+                
+            // });
+            // for (var l = 0; l < this.resourceList.length; l++) {
+            //     var event = this.calendar.fullCalendar('clientEvents', this.resourceList[l].id + teacherStart);
+            //     if (event.length != 0) {
+            //         for (var j = 0; j < event.length; j++) {
+            //             if (event[j].hasOwnProperty('teachers') && event[j].teachers.length != 0) {
+            //                 for (var k = 0; k < event[j].teachers.length; k++) {
+            //                     if (event[j].teachers[k].id == teacherData[i].id) {
+            //                         addTeacherToTA = false;
+            //                         break;
+            //                     }
+            //                 }
+            //             }
+            //             if (!addTeacherToTA) {
+            //                 break;
+            //             }
+            //         }
+            //     }
+            //     if (!addTeacherToTA) {
+            //         break;
+            //     }
+            // }
             if (addTeacherToTA) {
                 if (teacherStartHour >= this.calendarOptions.minTime && teacherStartHour <= this.calendarOptions.maxTime) {
                     var teacherPosition = teacherStartHour - this.calendarOptions.minTime;
