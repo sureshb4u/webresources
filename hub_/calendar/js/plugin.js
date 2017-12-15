@@ -6973,8 +6973,8 @@ function SylvanCalendar() {
         var teacherId = wjQuery(event).attr("uniqueid").split("_")[0];
         var index = -1;
         for (var a = 0; a < this.convertedTeacherObj.length; a++) {
-            if( this.convertedTeacherObj[a].startHour == undefined &&
-                this.convertedTeacherObj[a].resourceId == undefined &&
+            if( this.convertedTeacherObj[a].startHour != undefined &&
+                this.convertedTeacherObj[a].resourceId != undefined &&
                 this.convertedTeacherObj[a].id == teacherId && 
                 this.convertedTeacherObj[a].resourceId  == uniqueIds[1] &&
                 this.convertedTeacherObj[a].startHour.getTime() == new Date(startTime).getTime()){
