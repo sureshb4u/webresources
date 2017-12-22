@@ -687,7 +687,7 @@ function Appointment() {
                 break;
             }
         }*/
-         for (var i = currentView.start.getTime(); i < currentView.end.getTime(); i=i+(24*60*60*1000)) {
+         for (var i = currentView.start.getTime(); i <= currentView.end.getTime(); i=i+(24*60*60*1000)) {
             var date = new Date(i);
             if (date.getDay() === day) {
                 returnDate = date;
