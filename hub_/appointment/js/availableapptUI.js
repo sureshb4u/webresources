@@ -459,6 +459,13 @@ function Appointment() {
                 if (eventPopulated.length) {
                     eventPopulated[0].occupied += 1;
                     eventPopulated[0].title = eventPopulated[0].occupied + "/" + eventPopulated[0].capacity;
+                    var isexception = self.appointmentHourException.filter(function(x) {
+                       return x.eventId == eventId;
+                    });
+                    if(isexception.length){
+                        eventPopulated[0].title = "";
+                    }
+                    self.appointment.fullCalendar('updateEvent', eventPopulated);
                 } else {
                     // var eventObj = {};
                     // eventObj = {
