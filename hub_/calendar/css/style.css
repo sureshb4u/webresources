@@ -416,7 +416,7 @@ button{
     text-align: left;
 }
 .context-menu-list{
-    z-index: 110 !important;
+    z-index: 10 !important;
 }
 .onetoone{
     position: absolute;
@@ -550,11 +550,4 @@ ul{
 
 .fc-agenda-allday{
     display: none;
-}
-
-/**IE SPECIFIC STYLES**/
-@media screen and (-ms-high-contrast: none) {
-    .fc-event-inner {
-        height:99% !important;
-    }
 }
