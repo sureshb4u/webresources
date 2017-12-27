@@ -28,6 +28,7 @@ var personalInstruction = 1;
 var groupFacilitation = 2;
 var groupInstruction = 3;
 var disableddates = [];
+var isIE = /*@cc_on!@*/false || !!document.documentMode;
 
 setTimeout(function () {
     var deliveryTypeList = [];
@@ -900,8 +901,8 @@ function SylvanCalendar() {
         var currentCalendarDate = this.calendar.fullCalendar('getDate');
         for (var i = 0; i < teacherData.length; i++) {
             var teacherStartHour = teacherData[i].startHour;
-            var teacherStart = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + ' ' + teacherStartHour + ":00");
-            var teacherEnd = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + ' ' + (teacherStartHour+1) + ":00");
+            var teacherStart = new Date(moment(currentCalendarDate).format('MM-DD-YYYY') + ' ' + teacherStartHour + ":00");
+            var teacherEnd = new Date(moment(currentCalendarDate).format('MM-DD-YYYY') + ' ' + (teacherStartHour + 1) + ":00");
             var addTeacherToTA = true;
 
             var allEvent1 = self.calendar.fullCalendar('clientEvents',function(el){
@@ -1392,61 +1393,26 @@ function SylvanCalendar() {
                     
                     if(minuteflag){
                         if (newEvent.length == 0) {
-                            // if (wjQuery(elm).attr("pinnedId")) {
-                            //     t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This student will be temporarily un pinned. Do you wish to continue?");
-                            // } else {
                                 if (newResourceObj.deliveryType == prevStudObj.deliveryType) {
                                   t.studentSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
                                 } else {
                                     t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "DeliveryType is different. Do you wish to continue?");
                                 }
-                          // }
                       }
                       else if (newEvent.length == 1) {
                       var teacherIsPrefered = t.checkNonPreferredTeacher(prevStudObj, newEvent[0]);
                       if(!teacherIsPrefered){
                         if (newEvent[0]['students'] == undefined) {
-                            // if (wjQuery(elm).attr("pinnedId")) {
-                            //   if (newEvent[0]['is1to1']) {
-                            //     // OneToOne Conflict
-                            //     var msgIndex = newEvent[0].conflictMsg.map(function (x) {
-                            //         return x;
-                            //     }).indexOf(2);
-                            //     if (msgIndex == -1) {
-                            //         newEvent[0].conflictMsg.push(2);
-                            //         self.updateConflictMsg(newEvent[0]);
-                            //     }
-                            //     t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This student will be temporarily un pinned and Session is 'OneToOne' Type . Do you wish to continue?");
-                            //   }else{
-                            //     t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This student will be temporarily un pinned. Do you wish to continue?");
-                            //   }
-                            // } else {
                                 if (newResourceObj.deliveryType == prevStudObj.deliveryType) {
                                     t.studentSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
                                 } else {
                                     t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "DeliveryType is different. Do you wish to continue?");
                                 }
-                            // }
                         } else {
                           var studentIndex = newEvent[0]['students'].map(function (x) {
                               return x.id;
                           }).indexOf(stuId);
                           if (studentIndex == -1) {
-                            // if (wjQuery(elm).attr("pinnedId")) {
-                            //   if (newEvent[0]['is1to1']) {
-                            //     // OneToOne Conflict
-                            //     var msgIndex = newEvent[0].conflictMsg.map(function (x) {
-                            //         return x;
-                            //     }).indexOf(2);
-                            //     if (msgIndex == -1) {
-                            //         newEvent[0].conflictMsg.push(2);
-                            //         self.updateConflictMsg(newEvent[0]);
-                            //     }
-                            //     t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This student will be temporarily un pinned and Session is 'OneToOne' Type . Do you wish to continue?");
-                            //   }else{
-                            //     t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "This student will be temporarily un pinned. Do you wish to continue?");
-                            //   }
-                            // } else {
                               if (newResourceObj.deliveryType == prevStudObj.deliveryType) {
                                 if (newResourceObj.deliveryTypeCode == personalInstruction) {
                                   //  Validation for oneToOne check
@@ -1526,53 +1492,22 @@ function SylvanCalendar() {
                                   }
                                 }
                               }
-                            // }
                           }
                         }
                       }else{
                         // No prefered teacher case
                         if (newEvent[0]['students'] == undefined) {
-                            // if (wjQuery(elm).attr("pinnedId")) {
-                            //   if (newEvent[0]['is1to1']) {
-                            //     // OneToOne Conflict
-                            //     var msgIndex = newEvent[0].conflictMsg.map(function (x) {
-                            //         return x;
-                            //     }).indexOf(2);
-                            //     if (msgIndex == -1) {
-                            //         newEvent[0].conflictMsg.push(2);
-                            //         self.updateConflictMsg(newEvent[0]);
-                            //     }
-                            //     t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and This student will be temporarily un pinned and Session is 'OneToOne' Type . Do you wish to continue?");
-                            //   }else{
-                            //     t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and This student will be temporarily un pinned. Do you wish to continue?");
-                            //   }
-                            // } else {
+
                                 if (newResourceObj.deliveryType == prevStudObj.deliveryType) {
                                     t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher. Do you wish to continue?");
                                 } else {
                                     t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and DeliveryType is different. Do you wish to continue?");
                                 }
-                            // }
                         } else {
                           var studentIndex = newEvent[0]['students'].map(function (x) {
                               return x.id;
                           }).indexOf(stuId);
                           if (studentIndex == -1) {
-                            // if (wjQuery(elm).attr("pinnedId")) {
-                            //   if (newEvent[0]['is1to1']) {
-                            //     // OneToOne Conflict
-                            //     var msgIndex = newEvent[0].conflictMsg.map(function (x) {
-                            //         return x;
-                            //     }).indexOf(2);
-                            //     if (msgIndex == -1) {
-                            //         newEvent[0].conflictMsg.push(2);
-                            //         self.updateConflictMsg(newEvent[0]);
-                            //     }
-                            //     t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and This student will be temporarily un pinned and Session is 'OneToOne' Type . Do you wish to continue?");
-                            //   }else{
-                            //     t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and This student will be temporarily un pinned. Do you wish to continue?");
-                            //   }
-                            // } else {
                               if (newResourceObj.deliveryType == prevStudObj.deliveryType) {
                                 if (newResourceObj.deliveryTypeCode == personalInstruction) {
                                   //  Validation for oneToOne check
@@ -1652,7 +1587,6 @@ function SylvanCalendar() {
                                   }
                                 }
                               }
-                            // }
                           }
                         }
                       }
@@ -1751,7 +1685,7 @@ function SylvanCalendar() {
             return x.id;
         }).indexOf(teacherId);
         if (teacher) {
-            elm.remove();
+                elm.remove();
             // t.taList.splice(index, 1);
             var teacherObj = {
                 id: teacher[0].id,
@@ -1765,7 +1699,7 @@ function SylvanCalendar() {
                 locationId: teacher[0].locationId,
             };
             var responseObj = this.saveTAtoSession(teacherObj);
-            if(responseObj != undefined &&responseObj != null){
+            if(responseObj != undefined && responseObj != null){
                 teacherObj.scheduleId = responseObj['hub_staff_scheduleid'];
             }
             if (self.convertedPinnedList.length) {
@@ -2610,7 +2544,7 @@ function SylvanCalendar() {
                     var dayofMonth = moment(currentCalendarDate).format('M/D');
                     wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').html(dayOfWeek + " <br/> " + dayofMonth);
 
-                }, 500);
+                }, 800);
                 if (filterElement != undefined) {
                     wjQuery(".fc-agenda-divider.fc-widget-header:visible").after(filterElement);
                 }
@@ -2922,9 +2856,9 @@ function SylvanCalendar() {
                     }
                     if(teacherAvailableFlag){
                         if (val['startTime'] != undefined && val['endTime'] != undefined) {
-                            sDate = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['startTime']);
-                            eDate = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['endTime']);
-                            startHour = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['startTime']);
+                            sDate = new Date(moment(currentCalendarDate).format('MM-DD-YYYY') + " " + val['startTime']);
+                            eDate = new Date(moment(currentCalendarDate).format('MM-DD-YYYY') + " " + val['endTime']);
+                            startHour = new Date(moment(currentCalendarDate).format('MM-DD-YYYY') + " " + val['startTime']);
                         }
                         var teacher = {
                             id: val['teacherId'],
@@ -3253,10 +3187,10 @@ function SylvanCalendar() {
                               // newObj.pinId = undefined;
                               newObj.pinId = pinnedStudent[i].id;
                               newObj.enrollmentId = pinnedStudent[i].enrollmentId;
-                              newObj.start = new Date(moment(sDate).format('YYYY-MM-DD') + " " + pinnedStudent[i].startTime);
-                              newObj.end = new Date(moment(sDate).format('YYYY-MM-DD') + " " + pinnedStudent[i].endTime);
-                              var startHour = new Date(moment(sDate).format('YYYY-MM-DD') + " " + pinnedStudent[i].startTime);
-                              var studentStart = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+                              newObj.start = new Date(moment(sDate).format('MM-DD-YYYY') + " " + pinnedStudent[i].startTime);
+                              newObj.end = new Date(moment(sDate).format('MM-DD-YYYY') + " " + pinnedStudent[i].endTime);
+                              var startHour = new Date(moment(sDate).format('MM-DD-YYYY') + " " + pinnedStudent[i].startTime);
+                              var studentStart = new Date(moment(sDate).format('MM-DD-YYYY') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
                               newObj.startHour = startHour;
                               if(studentStart.getTime() == newObj.start.getTime()){
                                   if (pinnedStudent[i].hasOwnProperty('resourceId')) {
@@ -3288,9 +3222,9 @@ function SylvanCalendar() {
                                       }
                                   }
                               }else{
-                                  newObj.start = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
-                                  newObj.end = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
-                                  var startHour = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+                                  newObj.start = new Date(moment(sDate).format('MM-DD-YYYY') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+                                  newObj.end = new Date(moment(sDate).format('MM-DD-YYYY') + " " + val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
+                                  var startHour = new Date(moment(sDate).format('MM-DD-YYYY') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
                                   newObj.startHour = startHour;
 
                                   var findex = -1;
@@ -3308,9 +3242,9 @@ function SylvanCalendar() {
                             }
                         }
                         if(pinnedStudent.length == 0){
-                          obj.start = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
-                          obj.end = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
-                          var startHour = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+                          obj.start = new Date(moment(sDate).format('MM-DD-YYYY') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+                          obj.end = new Date(moment(sDate).format('MM-DD-YYYY') + " " + val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
+                          var startHour = new Date(moment(sDate).format('MM-DD-YYYY') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
                           obj.startHour = startHour;
                           var index = -1;
                           for (var i = 0; i < noResourceList.length; i++) {
@@ -3325,9 +3259,9 @@ function SylvanCalendar() {
                           }
                         }
                     }else {
-                        obj.start = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
-                        obj.end = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
-                        var startHour = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+                        obj.start = new Date(moment(sDate).format('MM-DD-YYYY') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+                        obj.end = new Date(moment(sDate).format('MM-DD-YYYY') + " " + val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
+                        var startHour = new Date(moment(sDate).format('MM-DD-YYYY') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
                         obj.startHour = startHour;
                         if (val.hasOwnProperty('aproductservice_x002e_hub_resource')) {
                             obj.resourceId = val['aproductservice_x002e_hub_resource'];
@@ -7220,7 +7154,7 @@ function SylvanCalendar() {
                             if(j >= taObject.startDate.getTime() && j <= taObject.endDate.getTime()){
                                 switch (moment(j).format('dddd').toLowerCase()) {
                                 case 'monday':
-                                    taObject.startTime = new Date(moment(j).format('YYYY-MM-DD')+" "+arrayList[i]['hub_monstarttime@OData.Community.Display.V1.FormattedValue']);
+                                    taObject.startTime = new Date(moment(j).format('MM-DD-YYYY') + " " + arrayList[i]['hub_monstarttime@OData.Community.Display.V1.FormattedValue']);
                                     if (arrayList[i]['hub_monendtime@OData.Community.Display.V1.FormattedValue'] == undefined) {
                                         taObject.endTime = new Date(taObject.startTime.setHours(taObject.startTime.getHours() + 1));
                                         taObject.startHour = taObject.startTime;
@@ -7228,7 +7162,7 @@ function SylvanCalendar() {
                                         this.taList.push(taObject);
                                     }
                                     else {
-                                        taObject.endTime = new Date(moment(j).format('YYYY-MM-DD')+" "+arrayList[i]['hub_monendtime@OData.Community.Display.V1.FormattedValue']);
+                                        taObject.endTime = new Date(moment(j).format('MM-DD-YYYY') + " " + arrayList[i]['hub_monendtime@OData.Community.Display.V1.FormattedValue']);
                                         var staffStartHour = taObject.startTime;
                                         staffStartHour = new Date(staffStartHour.setMinutes(0));
                                         do {
@@ -7242,7 +7176,7 @@ function SylvanCalendar() {
                                     }
                                     break;
                                 case 'tuesday':
-                                    taObject.startTime = new Date(moment(j).format('YYYY-MM-DD')+" "+arrayList[i]['hub_tuestarttime@OData.Community.Display.V1.FormattedValue']);
+                                    taObject.startTime = new Date(moment(j).format('MM-DD-YYYY') + " " + arrayList[i]['hub_tuestarttime@OData.Community.Display.V1.FormattedValue']);
                                     if (arrayList[i]['hub_tueendtime@OData.Community.Display.V1.FormattedValue'] == undefined) {
                                         taObject.endTime = new Date(taObject.startTime.setHours(taObject.startTime.getHours() + 1));
                                         taObject.startHour = taObject.startTime;
@@ -7250,7 +7184,7 @@ function SylvanCalendar() {
                                         this.taList.push(taObject);
                                     }
                                     else {
-                                        taObject.endTime = new Date(moment(j).format('YYYY-MM-DD')+" "+arrayList[i]['hub_tueendtime@OData.Community.Display.V1.FormattedValue']);
+                                        taObject.endTime = new Date(moment(j).format('MM-DD-YYYY') + " " + arrayList[i]['hub_tueendtime@OData.Community.Display.V1.FormattedValue']);
                                         var staffStartHour = taObject.startTime;
                                         staffStartHour = new Date(staffStartHour.setMinutes(0));
                                         do {
@@ -7264,7 +7198,7 @@ function SylvanCalendar() {
                                     }
                                     break;
                                 case 'wednesday':
-                                        taObject.startTime = new Date(moment(j).format('YYYY-MM-DD')+" "+arrayList[i]['hub_wedstarttime@OData.Community.Display.V1.FormattedValue']);
+                                    taObject.startTime = new Date(moment(j).format('MM-DD-YYYY') + " " + arrayList[i]['hub_wedstarttime@OData.Community.Display.V1.FormattedValue']);
                                         if (arrayList[i]['hub_wedendtime@OData.Community.Display.V1.FormattedValue'] == undefined) {
                                             taObject.endTime = new Date(taObject.startTime.setHours(taObject.startTime.getHours() + 1));
                                             taObject.startHour = taObject.startTime;
@@ -7272,7 +7206,7 @@ function SylvanCalendar() {
                                             this.taList.push(taObject);
                                         }
                                         else {
-                                            taObject.endTime = new Date(moment(j).format('YYYY-MM-DD')+" "+arrayList[i]['hub_wedendtime@OData.Community.Display.V1.FormattedValue']);
+                                            taObject.endTime = new Date(moment(j).format('MM-DD-YYYY') + " " + arrayList[i]['hub_wedendtime@OData.Community.Display.V1.FormattedValue']);
                                             var staffStartHour = taObject.startTime;
                                             staffStartHour = new Date(staffStartHour.setMinutes(0));
                                             do {
@@ -7286,7 +7220,7 @@ function SylvanCalendar() {
                                         }
                                     break;
                                 case 'thursday':
-                                        taObject.startTime = new Date(moment(j).format('YYYY-MM-DD')+" "+arrayList[i]['hub_thurstarttime@OData.Community.Display.V1.FormattedValue']);
+                                    taObject.startTime = new Date(moment(j).format('MM-DD-YYYY') + " " + arrayList[i]['hub_thurstarttime@OData.Community.Display.V1.FormattedValue']);
                                         if (arrayList[i]['hub_thurendtime@OData.Community.Display.V1.FormattedValue'] == undefined) {
                                             taObject.endTime = new Date(taObject.startTime.setHours(taObject.startTime.getHours() + 1));
                                             taObject.startHour = taObject.startTime;
@@ -7294,7 +7228,7 @@ function SylvanCalendar() {
                                             this.taList.push(taObject);
                                         }
                                         else {
-                                            taObject.endTime = new Date(moment(j).format('YYYY-MM-DD')+" "+arrayList[i]['hub_thurendtime@OData.Community.Display.V1.FormattedValue']);
+                                            taObject.endTime = new Date(moment(j).format('MM-DD-YYYY') + " " + arrayList[i]['hub_thurendtime@OData.Community.Display.V1.FormattedValue']);
                                             var staffStartHour = taObject.startTime;
                                             staffStartHour = new Date(staffStartHour.setMinutes(0));
                                             do {
@@ -7308,7 +7242,7 @@ function SylvanCalendar() {
                                         }
                                     break;
                                 case 'friday':
-                                        taObject.startTime = new Date(moment(j).format('YYYY-MM-DD')+" "+arrayList[i]['hub_fristarttime@OData.Community.Display.V1.FormattedValue']);
+                                    taObject.startTime = new Date(moment(j).format('MM-DD-YYYY') + " " + arrayList[i]['hub_fristarttime@OData.Community.Display.V1.FormattedValue']);
                                         if (arrayList[i]['hub_friendtime@OData.Community.Display.V1.FormattedValue'] == undefined) {
                                             taObject.endTime = new Date(taObject.startTime.setHours(taObject.startTime.getHours() + 1));
                                             taObject.startHour = taObject.startTime;
@@ -7316,7 +7250,7 @@ function SylvanCalendar() {
                                             this.taList.push(taObject);
                                         }
                                         else {
-                                            taObject.endTime = new Date(moment(j).format('YYYY-MM-DD')+" "+arrayList[i]['hub_friendtime@OData.Community.Display.V1.FormattedValue']);
+                                            taObject.endTime = new Date(moment(j).format('MM-DD-YYYY') + " " + arrayList[i]['hub_friendtime@OData.Community.Display.V1.FormattedValue']);
                                             var staffStartHour = taObject.startTime;
                                             staffStartHour = new Date(staffStartHour.setMinutes(0));
                                             do {
@@ -7330,7 +7264,7 @@ function SylvanCalendar() {
                                         }
                                     break;
                                 case 'saturday':
-                                        taObject.startTime = new Date(moment(j).format('YYYY-MM-DD')+" "+arrayList[i]['hub_satstarttime@OData.Community.Display.V1.FormattedValue']);
+                                    taObject.startTime = new Date(moment(j).format('MM-DD-YYYY') + " " + arrayList[i]['hub_satstarttime@OData.Community.Display.V1.FormattedValue']);
                                         if (arrayList[i]['hub_satendtime@OData.Community.Display.V1.FormattedValue'] == undefined) {
                                             taObject.endTime = new Date(taObject.startTime.setHours(taObject.startTime.getHours() + 1));
                                             taObject.startHour = taObject.startTime;
@@ -7338,7 +7272,7 @@ function SylvanCalendar() {
                                             this.taList.push(taObject);
                                         }
                                         else {
-                                            taObject.endTime = new Date(moment(j).format('YYYY-MM-DD')+" "+arrayList[i]['hub_satendtime@OData.Community.Display.V1.FormattedValue']);
+                                            taObject.endTime = new Date(moment(j).format('MM-DD-YYYY') + " " + arrayList[i]['hub_satendtime@OData.Community.Display.V1.FormattedValue']);
                                             var staffStartHour = taObject.startTime;
                                             staffStartHour = new Date(staffStartHour.setMinutes(0));
                                             do {
@@ -7352,7 +7286,7 @@ function SylvanCalendar() {
                                         }
                                     break;
                                 case 'sunday':
-                                        taObject.startTime = new Date(moment(j).format('YYYY-MM-DD')+" "+arrayList[i]['hub_sunstarttime@OData.Community.Display.V1.FormattedValue']);
+                                    taObject.startTime = new Date(moment(j).format('MM-DD-YYYY') + " " + arrayList[i]['hub_sunstarttime@OData.Community.Display.V1.FormattedValue']);
                                         if (arrayList[i]['hub_sunendtime@OData.Community.Display.V1.FormattedValue'] == undefined) {
                                             taObject.endTime = new Date(taObject.startTime.setHours(taObject.startTime.getHours() + 1));
                                             taObject.startHour = taObject.startTime;
@@ -7360,7 +7294,7 @@ function SylvanCalendar() {
                                             this.taList.push(taObject);
                                         }
                                         else {
-                                            taObject.endTime = new Date(moment(j).format('YYYY-MM-DD')+" "+arrayList[i]['hub_sunendtime@OData.Community.Display.V1.FormattedValue']);
+                                            taObject.endTime = new Date(moment(j).format('MM-DD-YYYY') + " " + arrayList[i]['hub_sunendtime@OData.Community.Display.V1.FormattedValue']);
                                             var staffStartHour = taObject.startTime;
                                             staffStartHour = new Date(staffStartHour.setMinutes(0));
                                             do {
@@ -8537,6 +8471,114 @@ function SylvanCalendar() {
         return allowToDropTeacher;
     }
 
+    this.validateOverlapingEvent = function (startHour, resourceId, prevEvent, sessionDrag) {
+        var self = this;
+        var allowToDropStudent = true;
+        startHour = new Date(startHour);
+
+        if (prevEvent['duration'] == undefined) {
+            prevEvent['duration'] = 60;
+        }
+        var numHour;
+        var numMinite;
+        var endHour;
+        if (prevEvent['duration'] % 60 == 0) {
+            numHour = prevEvent['duration'] / 60;
+            numMinite = 0;
+        } else {
+            numHour = Math.floor(prevEvent['duration'] / 60);
+            numMinite = prevEvent['duration'] % 60;
+        }
+        var startHour1 = new Date(startHour);
+        if ((startHour1.getMinutes() + numMinite) < 60) {
+            endHour = new Date(startHour1.setHours(startHour1.getHours() + numHour));
+            endHour = new Date(startHour1.setMinutes(startHour1.getMinutes() + numMinite));
+        }
+        if ((startHour1.getMinutes() + numMinite) >= 60) {
+            numHour += Math.floor((startHour1.getMinutes() + numMinite) / 60);
+            numMinite += (startHour1.getMinutes() + numMinite) % 60;
+            endHour = new Date(startHour1.setHours(startHour1.getHours() + numHour));
+            endHour = new Date(startHour1.setMinutes(startHour1.getMinutes() + numMinite));
+        }
+        var dropableEvent = [];
+        var dropableEvent = [];
+        if (sessionDrag) {
+            var prevEventObj = self.calendar.fullCalendar('clientEvents', prevEvent.resourceId + prevEvent.startHour);
+            var eventTitleHTML = wjQuery(prevEventObj[0].title);
+            if (prevEventObj[0].hasOwnProperty("students") && prevEventObj[0]['students'].length > 1 ||
+                prevEventObj[0].hasOwnProperty("teachers") && prevEventObj[0]['teachers'].length > 1 ||
+                prevEventObj[0].hasOwnProperty("students") && prevEventObj[0]['students'].length >= 1 &&
+                prevEventObj[0].hasOwnProperty("teachers") && prevEventObj[0]['teachers'].length >= 1
+              ) {
+                dropableEvent = self.calendar.fullCalendar('clientEvents', function (el) {
+                    return el.end != null &&
+                            resourceId == el.resourceId &&
+                            // prevEvent.resourceId+prevEvent.startHour == el.id &&
+                            resourceId + startHour != el.id &&
+                            (
+                                (
+                                    startHour.getTime() <= el.start.getTime() &&
+                                    endHour.getTime() >= el.end.getTime()
+                                ) ||
+                                (
+                                    el.start.getTime() <= startHour.getTime() &&
+                                    el.end.getTime() >= endHour.getTime()
+                                ) ||
+                                (
+                                    endHour.getTime() > el.start.getTime() &&
+                                    el.end.getTime() > startHour.getTime()
+                                )
+                            )
+                });
+            } else {
+                dropableEvent = self.calendar.fullCalendar('clientEvents', function (el) {
+                    return el.end != null &&
+                            resourceId == el.resourceId &&
+                            prevEvent.resourceId + prevEvent.startHour != el.id &&
+                            resourceId + startHour != el.id &&
+                            (
+                                (
+                                    startHour.getTime() <= el.start.getTime() &&
+                                    endHour.getTime() >= el.end.getTime()
+                                ) ||
+                                (
+                                    el.start.getTime() <= startHour.getTime() &&
+                                    el.end.getTime() >= endHour.getTime()
+                                ) ||
+                                (
+                                    endHour.getTime() > el.start.getTime() &&
+                                    el.end.getTime() > startHour.getTime()
+                                )
+                            )
+                });
+            }
+        } else {
+            dropableEvent = self.calendar.fullCalendar('clientEvents', function (el) {
+                return el.end != null &&
+                        resourceId == el.resourceId &&
+                        resourceId + startHour != el.id &&
+                        (
+                            (
+                                startHour.getTime() <= el.start.getTime() &&
+                                endHour.getTime() >= el.end.getTime()
+                            ) ||
+                            (
+                                el.start.getTime() <= startHour.getTime() &&
+                                el.end.getTime() >= endHour.getTime()
+                            ) ||
+                            (
+                                endHour.getTime() > el.start.getTime() &&
+                                el.end.getTime() > startHour.getTime()
+                            )
+                        )
+            });
+        }
+        if (dropableEvent.length) {
+            allowToDropStudent = false;
+        }
+        return allowToDropStudent;
+    }
+
     this.checkEventIsOneToOne = function(studentList){
       var self = this;
       var is1to1 = false;
@@ -8972,5 +9014,13 @@ function SylvanCalendar() {
             self.calendar.fullCalendar('updateEvent', eventObj);
             self.draggable('draggable');
         }
+    }
+
+    if (!('remove' in Element.prototype)) {
+        Element.prototype.remove = function () {
+            if (this.parentNode) {
+                this.parentNode.removeChild(this);
+            }
+            };
     }
 }
