@@ -1093,6 +1093,7 @@ function SylvanCalendar() {
         }
     };
 
+
     this.createEventOnDrop = function (t, date, allDay, ev, ui, resource, elm) {
         var self = t;
         if (wjQuery(elm).attr("type") == 'student') {
@@ -1614,13 +1615,21 @@ function SylvanCalendar() {
                 }
                 if(allowToDropTeacher){
                   if (newEvent.length == 0) {
-                        this.teacherSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
+                    if(self.checkForStaffAvailability(teacherId, startHour)){
+                        self.teacherSessionConflictCheck(t, date, allDay, ev, ui, resource, elm, false);
+                    }else{
+                        self.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher is not available. Do you wish to continue?", true);
+                    }
                   } else if (newEvent.length == 1) {
                       var isNonPreferred = self.checkNonPreferredStudentForTeacher(teacherId, newEvent[0]);
                       if(!isNonPreferred){
                         if (!(newEvent[0].hasOwnProperty('teachers')) || (newEvent[0].hasOwnProperty('teachers') && newEvent[0]['teachers'].length == 0)) {
                             if (!newEvent[0].hasOwnProperty('students')) {
-                                this.teacherSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
+                                if(self.checkForStaffAvailability(teacherId, startHour)){
+                                    self.teacherSessionConflictCheck(t, date, allDay, ev, ui, resource, elm, false);
+                                }else{
+                                    self.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher is not available. Do you wish to continue?", true);
+                                }
                             } else {
                                 var showPopup = false;
                                 wjQuery.each(newEvent[0]['students'], function (k, v) {
@@ -1633,9 +1642,17 @@ function SylvanCalendar() {
                                     }
                                 });
                                 if (showPopup) {
-                                    this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher program is not matching. Do you wish to continue?");
+                                    if(self.checkForStaffAvailability(teacherId, startHour)){
+                                        this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher program is not matching. Do you wish to continue?", false);
+                                    }else{
+                                        self.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher program is not matching and teacher is not available. Do you wish to continue?", true);
+                                    }
                                 } else {
-                                    this.teacherSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
+                                    if(self.checkForStaffAvailability(teacherId, startHour)){
+                                        this.teacherSessionConflictCheck(t, date, allDay, ev, ui, resource, elm, false);
+                                    }else{
+                                        self.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher is not available. Do you wish to continue?", true);
+                                    }
                                 }
                             }
                         }
@@ -1643,7 +1660,11 @@ function SylvanCalendar() {
                         // Non preffred teacher case
                         if (!(newEvent[0].hasOwnProperty('teachers')) || (newEvent[0].hasOwnProperty('teachers') && newEvent[0]['teachers'].length == 0)) {
                           if (!newEvent[0].hasOwnProperty('students')) {
-                                this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher. Do you wish to continue?");
+                                if(self.checkForStaffAvailability(teacherId, startHour)){
+                                    this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher. Do you wish to continue?", false);
+                                }else{
+                                    self.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and teacher is not available. Do you wish to continue?", true);
+                                }
                           } else {
                               var showPopup = false;
                               wjQuery.each(newEvent[0]['students'], function (k, v) {
@@ -1656,9 +1677,17 @@ function SylvanCalendar() {
                                   }
                               });
                               if (showPopup) {
-                                    this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and Teacher program is not matching. Do you wish to continue?");
+                                if(self.checkForStaffAvailability(teacherId, startHour)){
+                                    this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and Teacher program is not matching. Do you wish to continue?", false);
+                                }else{
+                                    self.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and teacher is not available. Do you wish to continue?", true);
+                                }
                               } else {
-                                this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher. Do you wish to continue?");
+                                if(self.checkForStaffAvailability(teacherId, startHour)){
+                                    this.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher. Do you wish to continue?");
+                                }else{
+                                    self.teacherSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Non preferred teacher and teacher is not available. Do you wish to continue?", true);
+                                }
                               }
                           }
                         }
@@ -1722,7 +1751,7 @@ function SylvanCalendar() {
         }
     }
 
-    this.teacherSessionConflictCheck = function (t, date, allDay, ev, ui, resource, elm) {
+    this.teacherSessionConflictCheck = function (t, date, allDay, ev, ui, resource, elm, notAvailable) {
         var self = this;
         var endDate = new Date(date);
         var startHour = new Date(date);
@@ -1842,6 +1871,9 @@ function SylvanCalendar() {
                 if (isPinned[0] != undefined) {
                     newTeacherSession.pinId = isPinned[0].id;
                 }
+            }
+            if(notAvailable){
+                newTeacherSession['scheduleType'] = FLOAT_TEACHER_TYPE;
             }
             t.saveTeacherToSession(newTeacherSession, t.convertedTeacherObj[index]);
         }
@@ -6420,7 +6452,7 @@ function SylvanCalendar() {
         });
     }
 
-    this.teacherSessionCnfmPopup = function (t, date, allDay, ev, ui, resource, elm, message) {
+    this.teacherSessionCnfmPopup = function (t, date, allDay, ev, ui, resource, elm, message, notAvailable) {
         var self = this;
         wjQuery("#dialog > .dialog-msg").text(message);
         wjQuery("#dialog").dialog({
@@ -6430,7 +6462,7 @@ function SylvanCalendar() {
             modal: true,
             buttons: {
                 Yes: function () {
-                    t.teacherSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
+                    t.teacherSessionConflictCheck(t, date, allDay, ev, ui, resource, elm, notAvailable);
                     wjQuery(this).dialog("close");
                 },
                 No: function () {
