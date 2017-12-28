@@ -1872,10 +1872,7 @@ function SylvanCalendar() {
                     newTeacherSession.pinId = isPinned[0].id;
                 }
             }
-            if(notAvailable){
-                newTeacherSession['scheduleType'] = FLOAT_TEACHER_TYPE;
-            }
-            t.saveTeacherToSession(newTeacherSession, t.convertedTeacherObj[index]);
+            t.saveTeacherToSession(newTeacherSession, t.convertedTeacherObj[index], notAvailable);
         }
         this.openSofPane();
         this.showConflictMsg();
@@ -6341,7 +6338,7 @@ function SylvanCalendar() {
         }
     }
 
-    this.saveTeacherToSession = function (teacher, prevTeacher) {
+    this.saveTeacherToSession = function (teacher, prevTeacher, notAvailable) {
         var self = this; 
         var objPrevSession = {};
         var objNewSession = {};
@@ -6368,7 +6365,12 @@ function SylvanCalendar() {
             }else{
                 objNewSession['hub_end_time'] = this.convertToMinutes(moment(teacher.end).format("h:mm A"));
             }
-            objNewSession['hub_schedule_type'] = 3;
+
+            if(notAvailable){
+                newTeacherSession['scheduleType'] = FLOAT_TEACHER_TYPE;
+            }else{
+                objNewSession['hub_schedule_type'] = SCHEDULE_STATUS;
+            }
 
             // Get location Object
             var locationObj = self.getLocationObject(self.locationId);
