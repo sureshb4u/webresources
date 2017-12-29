@@ -1070,7 +1070,7 @@ function SylvanCalendar() {
             objNewSession.hub_date = moment(teacher.start).format("YYYY-MM-DD");
             objNewSession.hub_start_time = this.convertToMinutes(moment(teacher.start).format("h:mm A"));
             objNewSession.hub_end_time = this.convertToMinutes(moment(teacher.end).format("h:mm A"));
-            objNewSession.hub_schedule_type = 1;
+            objNewSession.hub_schedule_type = teacher.scheduleType;
             // Get Location Obj 
             var locationObj = self.getLocationObject(self.locationId);
             objNewSession['ownerObj'] = locationObj['ownerObj'];
@@ -1246,13 +1246,13 @@ function SylvanCalendar() {
           if(allowToDropTeacher){
             if(self.checkForStaffAvailability(teacherId, startHour)){
               if (newEvent.length == 0) {
-                this.tapaneConflictCheck(t, date, allDay, ev, ui, resource, elm);
+                this.tapaneConflictCheck(t, date, allDay, ev, ui, resource, elm,false);
               } else if (newEvent.length == 1) {
                 var isNonPreferred = self.checkNonPreferredStudentForTeacher(teacherId, newEvent[0]);
                 if(!isNonPreferred){
                   if (!(newEvent[0].hasOwnProperty('teachers')) || (newEvent[0].hasOwnProperty('teachers') && newEvent[0]['teachers'].length == 0)) {
                     if (!newEvent[0].hasOwnProperty('students')) {
-                      this.tapaneConflictCheck(t, date, allDay, ev, ui, resource, elm);
+                      this.tapaneConflictCheck(t, date, allDay, ev, ui, resource, elm, false);
                     } else {
                       var showPopup = false;
                       wjQuery.each(newEvent[0]['students'], function (k, v) {
@@ -1267,7 +1267,7 @@ function SylvanCalendar() {
                       if (showPopup) {
                           this.taPaneCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Teacher program is not matching. Do you wish to continue?", false);
                       } else {
-                          this.tapaneConflictCheck(t, date, allDay, ev, ui, resource, elm);
+                          this.tapaneConflictCheck(t, date, allDay, ev, ui, resource, elm, false);
                       }
                     }
                   }
@@ -1728,6 +1728,8 @@ function SylvanCalendar() {
             };
             if(notAvailable){
                teacherObj['scheduleType'] = FLOAT_TEACHER_TYPE; 
+            }else{
+               teacherObj['scheduleType'] = SCHEDULE_STATUS; 
             }
             var responseObj = this.saveTAtoSession(teacherObj);
             if(responseObj != undefined &&responseObj != null){
@@ -4862,52 +4864,6 @@ function SylvanCalendar() {
         wjQuery('.loading').hide();
     };
 
-    // this.pinTeacher = function (element, pinFor) {
-    //     var self = this;
-    //     var id = wjQuery(element).attr('value');
-    //     var eventId = wjQuery(element).attr('eventid');
-    //     var uniqueId = wjQuery(element).attr('uniqueId');
-    //     var uniqueIds = wjQuery(element).attr('uniqueId').split('_');
-    //     var startTime = uniqueId.split('_')[2];
-    //     var today = this.calendar.fullCalendar('getDate');
-    //     var teacher = this.convertedTeacherObj.filter(function (x) {
-    //         return x.id == uniqueIds[0] &&
-    //                x.resourceId == uniqueIds[1] &&
-    //                x.startHour.getTime() == new Date(uniqueIds[2]).getTime();
-    //     });
-    //     var objPinnedStaff = {};
-    //     if (teacher != undefined) {
-    //         objPinnedStaff['hub_center@odata.bind'] = teacher[0].locationId;
-    //         objPinnedStaff['hub_teacher@odata.bind'] = id;
-    //         objPinnedStaff.hub_day = this.getDayValue(today);
-    //         objPinnedStaff.hub_date = moment(today).format("YYYY-MM-DD");
-    //         if (pinFor == 'time') {
-    //             objPinnedStaff['hub_resourceid@odata.bind'] = null;
-    //             objPinnedStaff.hub_start_time = this.convertToMinutes(moment(startTime).format("h:mm A"));
-    //             objPinnedStaff.hub_end_time = objPinnedStaff.hub_start_time + 60;
-    //         }
-    //         else {
-    //             objPinnedStaff['hub_resourceid@odata.bind'] = teacher[0].resourceId;
-    //             objPinnedStaff.hub_start_time = null;
-    //             objPinnedStaff.hub_end_time = null;
-    //         }
-    //         var locationObj = self.getLocationObject(self.locationId);
-    //         objPinnedStaff['ownerObj'] = locationObj['ownerObj'];
-
-    //         var responseObj = data.savePinTeacher(objPinnedStaff);
-    //         if (responseObj != undefined) {
-    //             var eventObj = self.calendar.fullCalendar('clientEvents', eventId);
-    //             var txt = wjQuery(element).text();
-    //             wjQuery(element).html("<img src='/webresources/hub_/calendar/images/pin.png'/>" + txt);
-    //             wjQuery(element).attr('pinnedId', responseObj['hub_pinned_student_teacher_id']);
-    //             self.updateEventTitle(eventObj, element);
-    //         }else{
-    //             wjQuery('.loading').hide();
-    //         }
-    //     }
-    //     wjQuery('.loading').hide();
-    // };
-
     this.pinTeacher = function (element){
         var self = this;
         var id = wjQuery(element).attr('value');
@@ -4941,6 +4897,15 @@ function SylvanCalendar() {
                 wjQuery(element).html("<img src='/webresources/hub_/calendar/images/pin.png'/>" + txt);
                 wjQuery(element).attr('pinnedId', responseObj['hub_pinned_student_teacher_id']);
                 self.updateEventTitle(eventObj, element);
+                var teacherPinRec = {
+                    id:responseObj['hub_pinned_student_teacher_id'],
+                    dayId:responseObj['hub_day'],
+                    dayValue:objPinnedStaff.hub_day,
+                    startTime:moment(startTime).format("h:mm A"),
+                    resourceId:responseObj['hub_resourceid@odata.bind'],
+                    teacherId:id
+                }
+                self.convertedPinnedList.push(teacherPinRec);
             }else{
                 wjQuery('.loading').hide();
             }
@@ -4950,6 +4915,7 @@ function SylvanCalendar() {
 
     this.unPinTeacher = function (element) {
         var self = this;
+        var currentCalendarDate = self.calendar.fullCalendar('getDate');
         var id = wjQuery(element).attr('value');
         var eventId = wjQuery(element).attr('eventid');
         var uniqueId = wjQuery(element).attr('uniqueId');
@@ -4978,6 +4944,23 @@ function SylvanCalendar() {
                 wjQuery(element).removeAttr('pinnedId');
                 wjQuery(element).find("img").remove();
                 self.updateEventTitle(eventObj, element);
+                if (self.convertedPinnedList.length) {
+                    index = -1;
+                    for(var i=0;i<self.convertedPinnedList.length;i++){
+                        var obj = self.convertedPinnedList[i];
+                        if(obj.startTime != undefined && obj.resourceId != undefined && 
+                                obj.teacherId == id &&
+                                obj.resourceId == uniqueIds[1] &&
+                                obj.startTime == moment(new Date(uniqueIds[2])).format("h:mm A") &&
+                                obj.dayId == self.getDayValue(currentCalendarDate)){
+                            index = i;
+                            break;
+                        }
+                    }
+                    if(index != -1){
+                        self.convertedPinnedList.splice(index, 1);
+                    }
+                }
                 wjQuery('.loading').hide();
             }else{
                 wjQuery('.loading').hide();
@@ -5820,7 +5803,11 @@ function SylvanCalendar() {
                         wjQuery(".loading").show();
                         options = wjQuery.extend(true, {}, options);
                         setTimeout(function(){
-                            self.pinTeacher(options.$trigger[0]);
+                            if(obj.pin.visible){
+                                obj.unpin.visible = true;
+                                obj.pin.visible = false;
+                                self.pinTeacher(options.$trigger[0]);
+                            }
                         },300);
                     }
                 };
@@ -6367,9 +6354,8 @@ function SylvanCalendar() {
             }
 
             if(notAvailable){
-                newTeacherSession['scheduleType'] = FLOAT_TEACHER_TYPE;
-            }else{
-                objNewSession['hub_schedule_type'] = SCHEDULE_STATUS;
+                objNewSession['hub_schedule_type'] = FLOAT_TEACHER_TYPE;
+                teacher['scheduleType'] = FLOAT_TEACHER_TYPE;
             }
 
             // Get location Object
