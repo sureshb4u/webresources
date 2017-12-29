@@ -1735,7 +1735,7 @@ function SylvanCalendar() {
             if(responseObj != undefined &&responseObj != null){
                 teacherObj.scheduleId = responseObj['hub_staff_scheduleid'];
             }
-            if (self.convertedPinnedList.length) {
+            if (self.convertedPinnedList.length && teacherObj.scheduleType != FLOAT_TEACHER_TYPE) {
                 var isPinned = self.convertedPinnedList.filter(function (obj) {
                     return (obj.startTime != undefined && obj.resourceId != undefined && 
                             obj.teacherId == teacherObj.id &&
@@ -1862,7 +1862,7 @@ function SylvanCalendar() {
             newTeacherSession.deliveryTypeId = t.getResourceObj(resource.id).deliveryTypeId;
             newTeacherSession.deliveryType = t.getResourceObj(resource.id).deliveryType;
             newTeacherSession.pinId = undefined;
-            if (self.convertedPinnedList.length) {
+            if (self.convertedPinnedList.length && newTeacherSession.scheduleType != FLOAT_TEACHER_TYPE) {
                 var isPinned = self.convertedPinnedList.filter(function (obj) {
                     return (obj.startTime != undefined && obj.resourceId != undefined && 
                             obj.teacherId == newTeacherSession.id &&
@@ -2962,7 +2962,7 @@ function SylvanCalendar() {
                     serviceId : val['_hub_product_service_value'],
                     scheduleType:val['hub_schedule_type']
                 };
-                if (self.convertedPinnedList.length) {
+                if (self.convertedPinnedList.length && teacher.scheduleType != FLOAT_TEACHER_TYPE) {
                     var isPinned = self.convertedPinnedList.filter(function (obj) {
                         return (    obj.startTime != undefined && obj.resourceId != undefined &&
                                     obj.teacherId == teacher.id &&
