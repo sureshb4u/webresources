@@ -6356,6 +6356,9 @@ function SylvanCalendar() {
             if(notAvailable){
                 objNewSession['hub_schedule_type'] = FLOAT_TEACHER_TYPE;
                 teacher['scheduleType'] = FLOAT_TEACHER_TYPE;
+            }else{
+                teacher['scheduleType'] = teacher['scheduleType'] == undefined ? SCHEDULE_STATUS : teacher['scheduleType'];
+                objNewSession['hub_schedule_type'] = teacher['scheduleType'];
             }
 
             // Get location Object
