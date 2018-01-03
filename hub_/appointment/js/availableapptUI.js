@@ -245,12 +245,6 @@ function Appointment() {
             this.calendarOptions.date = args.getDate();
         }
         self.appointment = wjQuery('#appointment').fullCalendar(this.calendarOptions);
-        // var today = new Date().getDay();
-        // var currnetDay = new Date(moment(new Date()).format('MM/DD/YYYY'));
-        // var thDate = new Date(wjQuery(".headerDate").text());
-        // if(currnetDay.getMonth() == thDate.getMonth() && currnetDay.getDay() == thDate.getDay()){
-        //     // wjQuery("th.fc-col"+today).css("backgroundColor","#cecece");
-        // }
     }
 
     this.clearBusinessClosure = function(){
@@ -641,7 +635,33 @@ function Appointment() {
                     var isException = false;
                     if (!fromEvent || event.capacity === event.occupied) {
                         isException = true;
+                        self.exceptionaConfirm(newDate, startTime, endTime, isException);
+                    }else{
+                        window.selectedSlot = { date: newDate, start: startTime, end: endTime, isException: isException };
+                        window.close();
                     }
+                },
+                No: function () {
+                    wjQuery(this).dialog("close");
+                }
+            }
+        });
+    }
+
+    this.exceptionaConfirm = function(newDate, startTime, endTime, isException){
+        var self = this;
+        var dateString = moment(event.start).format('LL');
+        var slotStart = moment(event.start).format('hh:mm A');
+        var slotEnd = moment(event.end).format('hh:mm A');
+        var msg = "<p>Appointment is exception. Do you wish to continue?</p>";
+        wjQuery("#dialog > .dialog-msg").html(msg);
+        wjQuery("#dialog").dialog({
+            resizable: false,
+            height: "auto",
+            width: 400,
+            modal: true,
+            buttons: {
+                Yes: function () {
                     window.selectedSlot = { date: newDate, start: startTime, end: endTime, isException: isException };
                     window.close();
                 },
@@ -683,17 +703,7 @@ function Appointment() {
         currentView.end = new Date(currentView.end).setHours(0);
         currentView.end = new Date(new Date(currentView.end).setMinutes(0));
         currentView.end = new Date(new Date(currentView.end).setSeconds(0));
-       /* var curr = currentView.start;
-        var first = curr.getDate() - curr.getDay();
-        var firstday = (new Date(curr.setDate(first + 1))).toString();
-        for (var i = 0; i < 7; i++) {
-            var next = first + i;
-            var nextday = new Date(curr.setDate(next));
-            if (nextday.getDay() === day) {
-                returnDate = nextday;
-                break;
-            }
-        }*/
+       
          for (var i = currentView.start.getTime(); i <= currentView.end.getTime(); i=i+(24*60*60*1000)) {
             var date = new Date(i);
             if (date.getDay() === day) {
@@ -719,15 +729,6 @@ function Appointment() {
         }
         return returnDate;
     }
-
-    // this.getWeek = function(fromDate){
-    //     var sunday = new Date(fromDate.setDate(fromDate.getDate()-fromDate.getDay()));
-    //     var result = [new Date(sunday)];
-    //     while (sunday.setDate(sunday.getDate()+1) && sunday.getDay()!==0) {
-    //       result.push(new Date(sunday));
-    //     }
-    //     return result;
-    // }
 
 
     this.getDayValue = function (date) {
