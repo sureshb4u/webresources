@@ -332,9 +332,11 @@ function Appointment() {
             var currentCalendarDate = self.appointment.fullCalendar('getDate');
             var currentView = self.appointment.fullCalendar('getView');
             if (currentView.name == 'agendaWeek') {
-                var weekInfo = self.getCurrentWeekInfo(currentCalendarDate);
-                var startDate = moment(weekInfo.firstDay).format('YYYY-MM-DD');
-                var endDate = moment(weekInfo.lastDay).format('YYYY-MM-DD');
+                // var weekInfo = self.getCurrentWeekInfo(currentCalendarDate);
+                // var startDate = moment(weekInfo.firstDay).format('YYYY-MM-DD');
+                // var endDate = moment(weekInfo.lastDay).format('YYYY-MM-DD');
+                var startDate = moment(currentView.start).format('YYYY-MM-DD');
+                var endDate = moment(currentView.end).format('YYYY-MM-DD');
                 self.businessClosure = self.formatObjects(data.getBusinessClosure(startDate, endDate), "businessClosure");
                 if (self.businessClosure == null) {
                     self.businessClosure = [];
