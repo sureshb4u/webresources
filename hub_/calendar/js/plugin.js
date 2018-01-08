@@ -4795,43 +4795,27 @@ function SylvanCalendar() {
 
         var responseObj = data.savePinStudent(objPinnedStudent);
         var eventObj = self.calendar.fullCalendar('clientEvents', eventId);
-        if (typeof (responseObj) == 'boolean' && responseObj) {
-            if (self.convertedPinnedList.length) {
-                    index = -1;
-                    for(var i=0;i<self.convertedPinnedList.length;i++){
-                        var obj = self.convertedPinnedList[i];
-                        if(obj.startTime != undefined && obj.resourceId != undefined && 
-                                obj.studentId == id &&
-                                obj.startTime == moment(new Date(uniqueId.split('_')[2])).format("h:mm A") &&
-                                obj.dayId == self.getDayValue(currentCalendarDate)){
-                            index = i;
-                            break;
-                        }
-                    }
-                    if(index != -1){
-                        self.convertedPinnedList[index].resourceId = uniqueId.split('_')[1];
-                        var eventObj = self.calendar.fullCalendar('clientEvents', eventId);
-                        var txt = wjQuery(element).text();
-                        wjQuery(element).html("<img src='/webresources/hub_/calendar/images/pin.png'/>" + txt);
-                        wjQuery(element).attr('pinnedId', objPinnedStudent.hub_sch_pinned_students_teachersid);
-                        self.updateEventTitle(eventObj, element);
-                    }
+        if (typeof (responseObj) == 'boolean') {
+            if (responseObj) {
+                var txt = wjQuery(element)[0].innerHTML;
+                if(txt.indexOf('<img style="transform:rotate(45deg);" src="/webresources/hub_/calendar/images/pin.png">') != 1){
+                    txt = txt.replace('<img style="transform:rotate(45deg);" src="/webresources/hub_/calendar/images/pin.png">', '');
                 }
+                wjQuery(element).html("<img src='/webresources/hub_/calendar/images/pin.png'/>" + txt);
+                wjQuery(element).attr('pinnedId', objPinnedStudent.hub_sch_pinned_students_teachersid);
+                self.updateEventTitle(eventObj, element);
+            }
         }
         else if (typeof (responseObj) == 'object') {
             if (responseObj != undefined) {
+                //self.convertPinnedData(responseObj, true);
                 var txt = wjQuery(element)[0].innerHTML;
+                if(txt.indexOf('<img style="transform:rotate(45deg);" src="/webresources/hub_/calendar/images/pin.png">') != 1){
+                    txt = txt.replace('<img style="transform:rotate(45deg);" src="/webresources/hub_/calendar/images/pin.png">', '');
+                }
                 wjQuery(element).html("<img src='/webresources/hub_/calendar/images/pin.png'/>" + txt);
                 wjQuery(element).attr('pinnedId', responseObj['hub_pinned_student_teacher_id']);
                 self.updateEventTitle(eventObj, element);
-                var studentPinRec = {
-                    id:responseObj['hub_pinned_student_teacher_id'],
-                    dayId:responseObj['hub_day'],
-                    startTime:moment(startTime).format("h:mm A"),
-                    resourceId:responseObj['hub_resourceid@odata.bind'],
-                    studentId:id
-                }
-                self.convertedPinnedList.push(studentPinRec);
             }
         }
         wjQuery('.loading').hide();
