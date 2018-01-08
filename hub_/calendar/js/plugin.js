@@ -4803,6 +4803,17 @@ function SylvanCalendar() {
                 }
                 wjQuery(element).html("<img src='/webresources/hub_/calendar/images/pin.png'/>" + txt);
                 wjQuery(element).attr('pinnedId', objPinnedStudent.hub_sch_pinned_students_teachersid);
+                stdIndex = -1;
+                for (var ij = 0; ij < eventObj[0].students.length; ij++) {
+                    var st = eventObj[0].students[ij];
+                    if (st.id==student[0].id) {
+                        stdIndex = ij;
+                        break;
+                    }
+                }
+                if(stdIndex != -1){
+                    eventObj[0].students[stdIndex]['pinId'] = objPinnedStudent.hub_sch_pinned_students_teachersid;
+                }
                 self.updateEventTitle(eventObj, element);
             }
         }
@@ -4815,6 +4826,17 @@ function SylvanCalendar() {
                 }
                 wjQuery(element).html("<img src='/webresources/hub_/calendar/images/pin.png'/>" + txt);
                 wjQuery(element).attr('pinnedId', responseObj['hub_pinned_student_teacher_id']);
+                stdIndex = -1;
+                for (var ij = 0; ij < eventObj[0].students.length; ij++) {
+                    var st = eventObj[0].students[ij];
+                    if (st.id==student[0].id) {
+                        stdIndex = ij;
+                        break;
+                    }
+                }
+                if(stdIndex != -1){
+                    eventObj[0].students[stdIndex]['pinId'] = responseObj['hub_pinned_student_teacher_id'];
+                }
                 self.updateEventTitle(eventObj, element);
             }
         }
