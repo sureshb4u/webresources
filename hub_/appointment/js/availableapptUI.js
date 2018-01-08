@@ -708,7 +708,9 @@ function Appointment() {
        
          for (var i = currentView.start.getTime(); i <= currentView.end.getTime(); i=i+(24*60*60*1000)) {
             var date = new Date(i);
-            if (date.getDay() === day) {
+            var dayNum = date.getDay();
+            dayNum = dayNum == 0 ? 7 : dayNum;
+            if (dayNum === day) {
                 returnDate = date;
                 break;
             }
