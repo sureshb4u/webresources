@@ -1832,7 +1832,7 @@ function SylvanCalendar() {
             }
         }
     };
-
+}
     this.tapaneConflictCheck = function (t, date, allDay, ev, ui, resource, elm, notAvailable) {
         var self = this;
         var endDate = new Date(date);
@@ -2505,7 +2505,7 @@ function SylvanCalendar() {
             }
             if (wjQuery(window).width()<1100) {
                 wjQuery('#calendar div.fc-content').addClass('fc-scroll-content');
-                wjQuery('.fc-scroll-content').css('height',wjQuery('.fc-view').height() -10 +'px');
+                wjQuery('.fc-scroll-content').css('height',wjQuery('.fc-view').height() -20 +'px');
             }
     }
     this.refreshCalendarEvent = function (locationId, isFetch) {
@@ -9191,4 +9191,5 @@ function SylvanCalendar() {
             self.draggable('draggable');
         }
     }
+
 }
