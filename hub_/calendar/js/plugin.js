@@ -1823,6 +1823,7 @@ function SylvanCalendar() {
                               }
                             }
                           }
+                      }
                   }
                 }
                   
@@ -1832,7 +1833,7 @@ function SylvanCalendar() {
             }
         }
     };
-}
+
     this.tapaneConflictCheck = function (t, date, allDay, ev, ui, resource, elm, notAvailable) {
         var self = this;
         var endDate = new Date(date);
