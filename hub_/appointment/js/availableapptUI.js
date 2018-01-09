@@ -53,15 +53,18 @@ function Appointment() {
     this.appointmentHours = [];
     this.businessClosure = [];
     this.appointmentHourException = [];
+    this.leaveDays = [];
 
     this.clearEvents = function () {
-        this.appointment.fullCalendar('removeEvents');
-        this.appointment.fullCalendar('removeEventSource');
         this.eventList = [];
         this.appointmentList = [];
         this.appointmentHours = [];
         this.businessClosure = [];
         this.appointmentHourException = [];
+        this.leaveDays = [];
+        this.appointment.fullCalendar('removeEvents');
+        this.appointment.fullCalendar('removeEventSource');
+        this.appointment.fullCalendar('refetchEvents');
     }
 
     this.getCalendarEventDuraion = function (args) {
@@ -242,12 +245,19 @@ function Appointment() {
             this.calendarOptions.date = args.getDate();
         }
         self.appointment = wjQuery('#appointment').fullCalendar(this.calendarOptions);
-        // var today = new Date().getDay();
-        // var currnetDay = new Date(moment(new Date()).format('MM/DD/YYYY'));
-        // var thDate = new Date(wjQuery(".headerDate").text());
-        // if(currnetDay.getMonth() == thDate.getMonth() && currnetDay.getDay() == thDate.getDay()){
-        //     // wjQuery("th.fc-col"+today).css("backgroundColor","#cecece");
-        // }
+    }
+
+    this.clearBusinessClosure = function(){
+        var self = this;
+        this.clearEvents();
+        // wjQuery('table.fc-agenda-slots td div').css('backgroundColor', '#ddd');
+        wjQuery('.fc-col' + 0).not('.fc-widget-header').css('background-color', '#fff');
+        wjQuery('.fc-col' + 1).not('.fc-widget-header').css('background-color', '#fff');
+        wjQuery('.fc-col' + 2).not('.fc-widget-header').css('background-color', '#fff');
+        wjQuery('.fc-col' + 3).not('.fc-widget-header').css('background-color', '#fff');
+        wjQuery('.fc-col' + 4).not('.fc-widget-header').css('background-color', '#fff');
+        wjQuery('.fc-col' + 5).not('.fc-widget-header').css('background-color', '#fff');
+        wjQuery('.fc-col' + 6).not('.fc-widget-header').css('background-color', '#fff');
     }
 
     this.next = function () {
@@ -317,14 +327,21 @@ function Appointment() {
 
     this.refreshCalendarEvent = function (fetchData) {
         var self = this;
+        self.clearBusinessClosure()
         setTimeout(function () {
             var currentCalendarDate = self.appointment.fullCalendar('getDate');
             var currentView = self.appointment.fullCalendar('getView');
             if (currentView.name == 'agendaWeek') {
-                var weekInfo = self.getCurrentWeekInfo(currentCalendarDate);
-                var startDate = moment(weekInfo.firstDay).format('YYYY-MM-DD');
-                var endDate = moment(weekInfo.lastDay).format('YYYY-MM-DD');
+                // var weekInfo = self.getCurrentWeekInfo(currentCalendarDate);
+                // var startDate = moment(weekInfo.firstDay).format('YYYY-MM-DD');
+                // var endDate = moment(weekInfo.lastDay).format('YYYY-MM-DD');
+                var startDate = moment(currentView.start).format('YYYY-MM-DD');
+                var endDate = moment(currentView.end).format('YYYY-MM-DD');
                 self.businessClosure = self.formatObjects(data.getBusinessClosure(startDate, endDate), "businessClosure");
+                if (self.businessClosure == null) {
+                    self.businessClosure = [];
+                }
+                self.findLeaveDays();
                 var appointmentException = self.formatObjects(data.getappointmentExceptions(startDate, endDate), "appointmentException");
                 if (fetchData) {
                     self.appointmentHours = self.formatObjects(data.getAppointmentHours(startDate, endDate, false), "appointmentHours");
@@ -369,6 +386,13 @@ function Appointment() {
                                 if (eventPopulated.length) {
                                     eventPopulated[0].capacity += appointmentHrObj['capacity'];
                                     eventPopulated[0].title = "0/" + eventPopulated[0].capacity;
+                                    var isexception = self.appointmentHourException.filter(function(x) {
+                                       return x.eventId == eventId;
+                                    });
+                                    if(isexception.length){
+                                        eventPopulated[0].title = "";
+                                    }
+                                    self.appointment.fullCalendar('updateEvent', eventPopulated);
                                 } else {
                                     var eventObj = {};
                                     eventObj = {
@@ -431,6 +455,13 @@ function Appointment() {
                 if (eventPopulated.length) {
                     eventPopulated[0].occupied += 1;
                     eventPopulated[0].title = eventPopulated[0].occupied + "/" + eventPopulated[0].capacity;
+                    var isexception = self.appointmentHourException.filter(function(x) {
+                       return x.eventId == eventId;
+                    });
+                    if(isexception.length){
+                        eventPopulated[0].title = "";
+                    }
+                    self.appointment.fullCalendar('updateEvent', eventPopulated);
                 } else {
                     // var eventObj = {};
                     // eventObj = {
@@ -466,33 +497,55 @@ function Appointment() {
         }
     }
 
-    this.populateBusinessClosure = function (startDate) {
+    this.findLeaveDays = function(){
         var self = this;
+        this.leaveDays = [];
         var currentView = self.appointment.fullCalendar('getView');
-        for (var j = currentView.start.getTime() ; j < currentView.end.getTime() ; j = j + (24 * 60 * 60 * 1000)) {
-            for (var b = 0; b < self.businessClosure.length; b++) {
-                if (moment(self.businessClosure[b]['startDate']).format('YYYY-MM-DD') == moment(j).format('YYYY-MM-DD')) {
-                    var eventObj = {
-                        start: new Date(j),
-                        allDay: true,
-                        className: "leave-day-class",
-                        title: '',
-                    };
-                    self.eventList.push(eventObj);
-                    self.appointment.fullCalendar('removeEvents');
-                    self.appointment.fullCalendar('removeEventSource');
-                    self.appointment.fullCalendar('addEventSource', { events: self.eventList });
+        for(var j = currentView.start.getTime();j<=currentView.end.getTime();j=j+(24*60*60*1000)){
+            for (var i = 0; i < self.businessClosure.length; i++) {
+                var businessStartDate = moment(self.businessClosure[i]['startDate']).format("MM-DD-YYYY");
+                var businessEndDate = moment(self.businessClosure[i]['endDate']).format("MM-DD-YYYY");
+                businessStartDate = new Date(businessStartDate + ' ' + '00:00').getTime();
+                businessEndDate = new Date(businessEndDate + ' ' + '00:00').getTime();
+                if (j >= businessStartDate && j <= businessEndDate) {
+                    this.leaveDays.push(new Date(j));
                 }
             }
         }
-        wjQuery(".loading").hide();
+    };
+
+
+    this.populateBusinessClosure = function(){
+        var self = this;
+        var currentView = self.appointment.fullCalendar('getView');
+        currentView.end = moment(moment(currentView.start).add(6, 'd'))._d;
+        for(var j = currentView.start.getTime();j<=currentView.end.getTime();j=j+(24*60*60*1000)){
+            var sample = -1;
+            for (var b = 0; b < self.leaveDays.length; b++) {
+                if(moment(self.leaveDays[b]).format('YYYY-MM-DD') == moment(j).format('YYYY-MM-DD')){
+                    sample = b;
+                    var obj = {
+                        start: new Date(j),
+                        allDay: true,
+                        className: "leave-day-class",
+                        title:'',
+                    };
+                    self.eventList.push(obj);
+                }
+            }
+        }
+        self.appointment.fullCalendar('removeEvents');
+        self.appointment.fullCalendar('removeEventSource');
+        self.appointment.fullCalendar('addEventSource', { events: self.eventList });
+        self.appointment.fullCalendar('refetchEvents');
     }
+
 
     this.checkBusinessClosure = function (startDate) {
         var self = this;
         var populateEvent = false;
-        for (var i = 0; i < self.businessClosure.length; i++) {
-            if (moment(self.businessClosure[i]['startDate']).format("YYYY-MM-DD") == moment(startDate).format("YYYY-MM-DD")) {
+        for (var i = 0; i < self.leaveDays.length; i++) {
+            if (moment(self.leaveDays[i]).format("YYYY-MM-DD") == moment(startDate).format("YYYY-MM-DD")) {
                 populateEvent = true;
                 break;
             }
@@ -584,7 +637,33 @@ function Appointment() {
                     var isException = false;
                     if (!fromEvent || event.capacity === event.occupied) {
                         isException = true;
+                        self.exceptionaConfirm(newDate, startTime, endTime, isException);
+                    }else{
+                        window.selectedSlot = { date: newDate, start: startTime, end: endTime, isException: isException };
+                        window.close();
                     }
+                },
+                No: function () {
+                    wjQuery(this).dialog("close");
+                }
+            }
+        });
+    }
+
+    this.exceptionaConfirm = function(newDate, startTime, endTime, isException){
+        var self = this;
+        var dateString = moment(event.start).format('LL');
+        var slotStart = moment(event.start).format('hh:mm A');
+        var slotEnd = moment(event.end).format('hh:mm A');
+        var msg = "<p>Appointment is exception. Do you wish to continue?</p>";
+        wjQuery("#dialog > .dialog-msg").html(msg);
+        wjQuery("#dialog").dialog({
+            resizable: false,
+            height: "auto",
+            width: 400,
+            modal: true,
+            buttons: {
+                Yes: function () {
                     window.selectedSlot = { date: newDate, start: startTime, end: endTime, isException: isException };
                     window.close();
                 },
@@ -626,20 +705,12 @@ function Appointment() {
         currentView.end = new Date(currentView.end).setHours(0);
         currentView.end = new Date(new Date(currentView.end).setMinutes(0));
         currentView.end = new Date(new Date(currentView.end).setSeconds(0));
-       /* var curr = currentView.start;
-        var first = curr.getDate() - curr.getDay();
-        var firstday = (new Date(curr.setDate(first + 1))).toString();
-        for (var i = 0; i < 7; i++) {
-            var next = first + i;
-            var nextday = new Date(curr.setDate(next));
-            if (nextday.getDay() === day) {
-                returnDate = nextday;
-                break;
-            }
-        }*/
-         for (var i = currentView.start.getTime(); i < currentView.end.getTime(); i=i+(24*60*60*1000)) {
+       
+         for (var i = currentView.start.getTime(); i <= currentView.end.getTime(); i=i+(24*60*60*1000)) {
             var date = new Date(i);
-            if (date.getDay() === day) {
+            var dayNum = date.getDay();
+            dayNum = dayNum == 0 ? 7 : dayNum;
+            if (dayNum === day) {
                 returnDate = date;
                 break;
             }
@@ -662,15 +733,6 @@ function Appointment() {
         }
         return returnDate;
     }
-
-    // this.getWeek = function(fromDate){
-    //     var sunday = new Date(fromDate.setDate(fromDate.getDate()-fromDate.getDay()));
-    //     var result = [new Date(sunday)];
-    //     while (sunday.setDate(sunday.getDate()+1) && sunday.getDay()!==0) {
-    //       result.push(new Date(sunday));
-    //     }
-    //     return result;
-    // }
 
 
     this.getDayValue = function (date) {
