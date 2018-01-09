@@ -2468,12 +2468,13 @@ function SylvanCalendar() {
                 if (self.resourceList.length>6) {
                     wjQuery('#calendar div.fc-content').addClass('fc-scroll-content');
                 }
-                if (self.resourceList.length<6) {
+                if (self.resourceList.length<=6) {
                     wjQuery('#calendar div.fc-content').removeClass('fc-scroll-content');
                 }
             }
             if (wjQuery(window).width()<1100) {
                 wjQuery('#calendar div.fc-content').addClass('fc-scroll-content');
+                wjQuery('.fc-scroll-content').css('height',wjQuery('.fc-view').height() -10 +'px');
             }
     }
     this.refreshCalendarEvent = function (locationId, isFetch) {
