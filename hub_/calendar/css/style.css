@@ -666,5 +666,6 @@ i.material-icons.cursor.float-right {
     overflow:hidden;
     /*right: 160px;*/
 }
+.fc-agenda .fc-agenda-axis,.fc-widget-header{background: #fff !important}
 
 /*=============Header Codes=========================*/
