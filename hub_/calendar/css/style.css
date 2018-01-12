@@ -597,9 +597,9 @@ table.fc-border-separate{table-layout: fixed;}
 .fc-header{
     position: fixed;
 }
-/*.fc-agenda-gutter{
+.fc-agenda-gutter{
     width: 20px !important;
-}*/
+}
 
 .fc-scroll-content {
     width: 100%;
