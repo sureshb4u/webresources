@@ -2250,7 +2250,7 @@ function SylvanCalendar() {
                 t.createEventOnDrop(t, date, allDay, ev, ui, resource, this);
             },
             handleWindowResize: true,
-            height: window.innerHeight - 60,
+            height: window.innerHeight - 50,
             slotMinutes: slotS,
             selectable: false,
             slotEventOverlap: true,
@@ -2512,14 +2512,13 @@ function SylvanCalendar() {
     this.refreshCalendarEvent = function (locationId, isFetch) {
         var self = this;
         setTimeout(function () {
-            self.calendarFixedWidth();
-            self.buildCalfirstCol();
-            
             //table Fixed column code End
             var currentCalendarDate = self.calendar.fullCalendar('getDate');
             var currentView = self.calendar.fullCalendar('getView');
             var studentDataSource = self.findDataSource(currentCalendarDate,currentView);
             if (currentView.name == 'resourceDay') {
+                self.buildCalfirstCol();
+                self.calendarFixedWidth();
                 startDate = endDate = moment(currentCalendarDate).format("YYYY-MM-DD");
                 // staff program fetching
                 var businessClosure1 = data.getBusinessClosure(locationId, startDate, endDate);
@@ -2726,11 +2725,12 @@ function SylvanCalendar() {
                     this.calendarFilter();
                 }
                 this.filterSlide(wjQuery, isFilterOpen == '0px');
+                wjQuery('.fc-view-agendaWeek table tbody tr td').addClass('fc-state-highlight');
             }
             this.weekEventObject = {};
             this.calendar.fullCalendar('removeEvents');
             this.refreshCalendarEvent(this.locationId,true);
-            this.buildCalfirstCol();
+            //this.buildCalfirstCol();
         }
         else{
          wjQuery('.loading').hide();
