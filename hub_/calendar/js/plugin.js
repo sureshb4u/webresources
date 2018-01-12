@@ -2250,7 +2250,7 @@ function SylvanCalendar() {
                 t.createEventOnDrop(t, date, allDay, ev, ui, resource, this);
             },
             handleWindowResize: true,
-            height: window.innerHeight - 50,
+            height: window.innerHeight - 48,
             slotMinutes: slotS,
             selectable: false,
             slotEventOverlap: true,
