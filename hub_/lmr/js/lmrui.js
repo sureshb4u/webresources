@@ -117,7 +117,7 @@ function LmrUI() {
                     skeleton += '<span id="coreval">$' + el.CoreAmount + '</span>';
                 }
                 if (el.hasOwnProperty("CorePecent")) {
-                    skeleton += '<span>' + el.CorePecent + '</span>';
+                    skeleton += '<span>' + (el.CorePecent*100) + '</span>';
                 }
                 if (el.hasOwnProperty("CoreTotal")) {
                     skeleton += '<span id="coreTotal" >$' + el.CoreTotal + '</span>';
@@ -129,7 +129,7 @@ function LmrUI() {
                     skeleton += '<span id="edgeval" >$' + el.EdgeAmount + '</span>';
                 }
                 if (el.hasOwnProperty("EdgePercent")) {
-                    skeleton += '<span>' + el.EdgePercent + '</span>';
+                    skeleton += '<span>' + (el.EdgePercent*100) + '</span>';
                 }
                 if (el.hasOwnProperty("EdgeTotal")) {
                     skeleton += '<span id="edgeTotal" >$' + el.EdgeTotal + '</span>';
@@ -140,7 +140,7 @@ function LmrUI() {
                             '            <span class="first-colm">Credit Card Fees:</span>';
                 skeleton += '<span class="input-field">$<input type="text" class="form-control table-input" id="creditval" name="creditval" value="' + el.creditval + '" '+isClosedText+'></span>';
                 if (el.hasOwnProperty("CorePecent")) {
-                    skeleton += '<span id="creditPercent" >' + el.CorePecent + '</span>';
+                    skeleton += '<span id="creditPercent" >' + (el.CorePecent*100) + '</span>';
                 }
                     skeleton += '<span id="creditTotal" >($' + el.creditTotal + ')</span>';
 
@@ -181,7 +181,7 @@ function LmrUI() {
                     skeleton += ' <span>$' + el.NAFAmount + '</span>';
                 }
                 if (el.hasOwnProperty("NAFRate")) {
-                    skeleton += ' <span>' + el.NAFRate + '</span>';
+                    skeleton += ' <span>' + (el.NAFRate*100) + '</span>';
                 }
                 if (el.hasOwnProperty("NAFPayment")) {
                     skeleton += ' <span>$' + el.NAFPayment + '</span>';
@@ -193,7 +193,7 @@ function LmrUI() {
                     skeleton += ' <span>$' + el.NACAmount + '</span>';
                 }
                 if (el.hasOwnProperty("NACRate")) {
-                    skeleton += ' <span>' + el.NACRate + '</span>';
+                    skeleton += ' <span>' + (el.NACRate*100) + '</span>';
                 }
                 if (el.hasOwnProperty("NACPayment")) {
                     skeleton += ' <span>$' + el.NACPayment + '</span>';
