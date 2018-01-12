@@ -379,7 +379,7 @@ function LmrUI() {
             }
             var creditval = parseFloat(val);
             var creditPercent = parseFloat(wjQuery("#creditPercent").text());
-            var creditTotal = ((creditval*creditPercent)/100).toFixed(2)
+            var creditTotal = ((creditval*creditPercent)).toFixed(2);
             wjQuery("#creditTotal").text("($"+creditTotal+")");
             creditTotal = parseFloat(wjQuery("#creditTotal").text().replace("($",""));
             var coreVal = parseFloat(wjQuery("#coreval").text().replace("$",""));
@@ -605,4 +605,4 @@ function LmrUI() {
         });
         wjQuery(".loading").hide();
     }
-}
+}sa
