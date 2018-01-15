@@ -900,8 +900,8 @@ function SylvanCalendar() {
         var currentCalendarDate = this.calendar.fullCalendar('getDate');
         for (var i = 0; i < teacherData.length; i++) {
             var teacherStartHour = teacherData[i].startHour;
-            var teacherStart = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + ' ' + teacherStartHour + ":00");
-            var teacherEnd = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + ' ' + (teacherStartHour+1) + ":00");
+            var teacherStart = new Date(moment(currentCalendarDate).format('MM-DD-YYYY') + ' ' + teacherStartHour + ":00");
+            var teacherEnd = new Date(moment(currentCalendarDate).format('MM-DD-YYYY') + ' ' + (teacherStartHour+1) + ":00");
             var addTeacherToTA = true;
 
             var allEvent1 = self.calendar.fullCalendar('clientEvents',function(el){
@@ -2889,9 +2889,9 @@ function SylvanCalendar() {
                     }
                     if(teacherAvailableFlag){
                         if (val['startTime'] != undefined && val['endTime'] != undefined) {
-                            sDate = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['startTime']);
-                            eDate = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['endTime']);
-                            startHour = new Date(moment(currentCalendarDate).format('YYYY-MM-DD') + " " + val['startTime']);
+                            sDate = new Date(moment(currentCalendarDate).format('MM-DD-YYYY') + " " + val['startTime']);
+                            eDate = new Date(moment(currentCalendarDate).format('MM-DD-YYYY') + " " + val['endTime']);
+                            startHour = new Date(moment(currentCalendarDate).format('MM-DD-YYYY') + " " + val['startTime']);
                         }
                         var teacher = {
                             id: val['teacherId'],
@@ -3220,10 +3220,10 @@ function SylvanCalendar() {
                               // newObj.pinId = undefined;
                               newObj.pinId = pinnedStudent[i].id;
                               newObj.enrollmentId = pinnedStudent[i].enrollmentId;
-                              newObj.start = new Date(moment(sDate).format('YYYY-MM-DD') + " " + pinnedStudent[i].startTime);
-                              newObj.end = new Date(moment(sDate).format('YYYY-MM-DD') + " " + pinnedStudent[i].endTime);
-                              var startHour = new Date(moment(sDate).format('YYYY-MM-DD') + " " + pinnedStudent[i].startTime);
-                              var studentStart = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+                              newObj.start = new Date(moment(sDate).format('MM-DD-YYYY') + " " + pinnedStudent[i].startTime);
+                              newObj.end = new Date(moment(sDate).format('MM-DD-YYYY') + " " + pinnedStudent[i].endTime);
+                              var startHour = new Date(moment(sDate).format('MM-DD-YYYY') + " " + pinnedStudent[i].startTime);
+                              var studentStart = new Date(moment(sDate).format('MM-DD-YYYY') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
                               newObj.startHour = startHour;
                               if(studentStart.getTime() == newObj.start.getTime()){
                                   if (pinnedStudent[i].hasOwnProperty('resourceId')) {
@@ -3255,9 +3255,9 @@ function SylvanCalendar() {
                                       }
                                   }
                               }else{
-                                  newObj.start = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
-                                  newObj.end = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
-                                  var startHour = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+                                  newObj.start = new Date(moment(sDate).format('MM-DD-YYYY') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+                                  newObj.end = new Date(moment(sDate).format('MM-DD-YYYY') + " " + val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
+                                  var startHour = new Date(moment(sDate).format('MM-DD-YYYY') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
                                   newObj.startHour = startHour;
 
                                   var findex = -1;
@@ -3275,9 +3275,9 @@ function SylvanCalendar() {
                             }
                         }
                         if(pinnedStudent.length == 0){
-                          obj.start = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
-                          obj.end = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
-                          var startHour = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+                          obj.start = new Date(moment(sDate).format('MM-DD-YYYY') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+                          obj.end = new Date(moment(sDate).format('MM-DD-YYYY') + " " + val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
+                          var startHour = new Date(moment(sDate).format('MM-DD-YYYY') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
                           obj.startHour = startHour;
                           var index = -1;
                           for (var i = 0; i < noResourceList.length; i++) {
@@ -3292,9 +3292,9 @@ function SylvanCalendar() {
                           }
                         }
                     }else {
-                        obj.start = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
-                        obj.end = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
-                        var startHour = new Date(moment(sDate).format('YYYY-MM-DD') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+                        obj.start = new Date(moment(sDate).format('MM-DD-YYYY') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+                        obj.end = new Date(moment(sDate).format('MM-DD-YYYY') + " " + val['hub_endtime@OData.Community.Display.V1.FormattedValue']);
+                        var startHour = new Date(moment(sDate).format('MM-DD-YYYY') + " " + val['hub_starttime@OData.Community.Display.V1.FormattedValue']);
                         obj.startHour = startHour;
                         if (val.hasOwnProperty('aproductservice_x002e_hub_resource')) {
                             obj.resourceId = val['aproductservice_x002e_hub_resource'];
@@ -7110,7 +7110,7 @@ function SylvanCalendar() {
                             if(j >= taObject.startDate.getTime() && j <= taObject.endDate.getTime()){
                                 switch (moment(j).format('dddd').toLowerCase()) {
                                 case 'monday':
-                                    taObject.startTime = new Date(moment(j).format('YYYY-MM-DD')+" "+arrayList[i]['hub_monstarttime@OData.Community.Display.V1.FormattedValue']);
+                                    taObject.startTime = new Date(moment(j).format('MM-DD-YYYY')+" "+arrayList[i]['hub_monstarttime@OData.Community.Display.V1.FormattedValue']);
                                     if (arrayList[i]['hub_monendtime@OData.Community.Display.V1.FormattedValue'] == undefined) {
                                         taObject.endTime = new Date(taObject.startTime.setHours(taObject.startTime.getHours() + 1));
                                         taObject.startHour = taObject.startTime;
@@ -7118,7 +7118,7 @@ function SylvanCalendar() {
                                         this.taList.push(taObject);
                                     }
                                     else {
-                                        taObject.endTime = new Date(moment(j).format('YYYY-MM-DD')+" "+arrayList[i]['hub_monendtime@OData.Community.Display.V1.FormattedValue']);
+                                        taObject.endTime = new Date(moment(j).format('MM-DD-YYYY')+" "+arrayList[i]['hub_monendtime@OData.Community.Display.V1.FormattedValue']);
                                         var staffStartHour = taObject.startTime;
                                         staffStartHour = new Date(staffStartHour.setMinutes(0));
                                         do {
@@ -7132,7 +7132,7 @@ function SylvanCalendar() {
                                     }
                                     break;
                                 case 'tuesday':
-                                    taObject.startTime = new Date(moment(j).format('YYYY-MM-DD')+" "+arrayList[i]['hub_tuestarttime@OData.Community.Display.V1.FormattedValue']);
+                                    taObject.startTime = new Date(moment(j).format('MM-DD-YYYY')+" "+arrayList[i]['hub_tuestarttime@OData.Community.Display.V1.FormattedValue']);
                                     if (arrayList[i]['hub_tueendtime@OData.Community.Display.V1.FormattedValue'] == undefined) {
                                         taObject.endTime = new Date(taObject.startTime.setHours(taObject.startTime.getHours() + 1));
                                         taObject.startHour = taObject.startTime;
@@ -7140,7 +7140,7 @@ function SylvanCalendar() {
                                         this.taList.push(taObject);
                                     }
                                     else {
-                                        taObject.endTime = new Date(moment(j).format('YYYY-MM-DD')+" "+arrayList[i]['hub_tueendtime@OData.Community.Display.V1.FormattedValue']);
+                                        taObject.endTime = new Date(moment(j).format('MM-DD-YYYY')+" "+arrayList[i]['hub_tueendtime@OData.Community.Display.V1.FormattedValue']);
                                         var staffStartHour = taObject.startTime;
                                         staffStartHour = new Date(staffStartHour.setMinutes(0));
                                         do {
@@ -7154,7 +7154,7 @@ function SylvanCalendar() {
                                     }
                                     break;
                                 case 'wednesday':
-                                        taObject.startTime = new Date(moment(j).format('YYYY-MM-DD')+" "+arrayList[i]['hub_wedstarttime@OData.Community.Display.V1.FormattedValue']);
+                                        taObject.startTime = new Date(moment(j).format('MM-DD-YYYY')+" "+arrayList[i]['hub_wedstarttime@OData.Community.Display.V1.FormattedValue']);
                                         if (arrayList[i]['hub_wedendtime@OData.Community.Display.V1.FormattedValue'] == undefined) {
                                             taObject.endTime = new Date(taObject.startTime.setHours(taObject.startTime.getHours() + 1));
                                             taObject.startHour = taObject.startTime;
@@ -7162,7 +7162,7 @@ function SylvanCalendar() {
                                             this.taList.push(taObject);
                                         }
                                         else {
-                                            taObject.endTime = new Date(moment(j).format('YYYY-MM-DD')+" "+arrayList[i]['hub_wedendtime@OData.Community.Display.V1.FormattedValue']);
+                                            taObject.endTime = new Date(moment(j).format('MM-DD-YYYY')+" "+arrayList[i]['hub_wedendtime@OData.Community.Display.V1.FormattedValue']);
                                             var staffStartHour = taObject.startTime;
                                             staffStartHour = new Date(staffStartHour.setMinutes(0));
                                             do {
@@ -7176,7 +7176,7 @@ function SylvanCalendar() {
                                         }
                                     break;
                                 case 'thursday':
-                                        taObject.startTime = new Date(moment(j).format('YYYY-MM-DD')+" "+arrayList[i]['hub_thurstarttime@OData.Community.Display.V1.FormattedValue']);
+                                        taObject.startTime = new Date(moment(j).format('MM-DD-YYYY')+" "+arrayList[i]['hub_thurstarttime@OData.Community.Display.V1.FormattedValue']);
                                         if (arrayList[i]['hub_thurendtime@OData.Community.Display.V1.FormattedValue'] == undefined) {
                                             taObject.endTime = new Date(taObject.startTime.setHours(taObject.startTime.getHours() + 1));
                                             taObject.startHour = taObject.startTime;
@@ -7184,7 +7184,7 @@ function SylvanCalendar() {
                                             this.taList.push(taObject);
                                         }
                                         else {
-                                            taObject.endTime = new Date(moment(j).format('YYYY-MM-DD')+" "+arrayList[i]['hub_thurendtime@OData.Community.Display.V1.FormattedValue']);
+                                            taObject.endTime = new Date(moment(j).format('MM-DD-YYYY')+" "+arrayList[i]['hub_thurendtime@OData.Community.Display.V1.FormattedValue']);
                                             var staffStartHour = taObject.startTime;
                                             staffStartHour = new Date(staffStartHour.setMinutes(0));
                                             do {
@@ -7198,7 +7198,7 @@ function SylvanCalendar() {
                                         }
                                     break;
                                 case 'friday':
-                                        taObject.startTime = new Date(moment(j).format('YYYY-MM-DD')+" "+arrayList[i]['hub_fristarttime@OData.Community.Display.V1.FormattedValue']);
+                                        taObject.startTime = new Date(moment(j).format('MM-DD-YYYY')+" "+arrayList[i]['hub_fristarttime@OData.Community.Display.V1.FormattedValue']);
                                         if (arrayList[i]['hub_friendtime@OData.Community.Display.V1.FormattedValue'] == undefined) {
                                             taObject.endTime = new Date(taObject.startTime.setHours(taObject.startTime.getHours() + 1));
                                             taObject.startHour = taObject.startTime;
@@ -7206,7 +7206,7 @@ function SylvanCalendar() {
                                             this.taList.push(taObject);
                                         }
                                         else {
-                                            taObject.endTime = new Date(moment(j).format('YYYY-MM-DD')+" "+arrayList[i]['hub_friendtime@OData.Community.Display.V1.FormattedValue']);
+                                            taObject.endTime = new Date(moment(j).format('MM-DD-YYYY')+" "+arrayList[i]['hub_friendtime@OData.Community.Display.V1.FormattedValue']);
                                             var staffStartHour = taObject.startTime;
                                             staffStartHour = new Date(staffStartHour.setMinutes(0));
                                             do {
@@ -7220,7 +7220,7 @@ function SylvanCalendar() {
                                         }
                                     break;
                                 case 'saturday':
-                                        taObject.startTime = new Date(moment(j).format('YYYY-MM-DD')+" "+arrayList[i]['hub_satstarttime@OData.Community.Display.V1.FormattedValue']);
+                                        taObject.startTime = new Date(moment(j).format('MM-DD-YYYY')+" "+arrayList[i]['hub_satstarttime@OData.Community.Display.V1.FormattedValue']);
                                         if (arrayList[i]['hub_satendtime@OData.Community.Display.V1.FormattedValue'] == undefined) {
                                             taObject.endTime = new Date(taObject.startTime.setHours(taObject.startTime.getHours() + 1));
                                             taObject.startHour = taObject.startTime;
@@ -7228,7 +7228,7 @@ function SylvanCalendar() {
                                             this.taList.push(taObject);
                                         }
                                         else {
-                                            taObject.endTime = new Date(moment(j).format('YYYY-MM-DD')+" "+arrayList[i]['hub_satendtime@OData.Community.Display.V1.FormattedValue']);
+                                            taObject.endTime = new Date(moment(j).format('MM-DD-YYYY')+" "+arrayList[i]['hub_satendtime@OData.Community.Display.V1.FormattedValue']);
                                             var staffStartHour = taObject.startTime;
                                             staffStartHour = new Date(staffStartHour.setMinutes(0));
                                             do {
@@ -7242,7 +7242,7 @@ function SylvanCalendar() {
                                         }
                                     break;
                                 case 'sunday':
-                                        taObject.startTime = new Date(moment(j).format('YYYY-MM-DD')+" "+arrayList[i]['hub_sunstarttime@OData.Community.Display.V1.FormattedValue']);
+                                        taObject.startTime = new Date(moment(j).format('MM-DD-YYYY')+" "+arrayList[i]['hub_sunstarttime@OData.Community.Display.V1.FormattedValue']);
                                         if (arrayList[i]['hub_sunendtime@OData.Community.Display.V1.FormattedValue'] == undefined) {
                                             taObject.endTime = new Date(taObject.startTime.setHours(taObject.startTime.getHours() + 1));
                                             taObject.startHour = taObject.startTime;
@@ -7250,7 +7250,7 @@ function SylvanCalendar() {
                                             this.taList.push(taObject);
                                         }
                                         else {
-                                            taObject.endTime = new Date(moment(j).format('YYYY-MM-DD')+" "+arrayList[i]['hub_sunendtime@OData.Community.Display.V1.FormattedValue']);
+                                            taObject.endTime = new Date(moment(j).format('MM-DD-YYYY')+" "+arrayList[i]['hub_sunendtime@OData.Community.Display.V1.FormattedValue']);
                                             var staffStartHour = taObject.startTime;
                                             staffStartHour = new Date(staffStartHour.setMinutes(0));
                                             do {
