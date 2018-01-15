@@ -117,7 +117,7 @@ function LmrUI() {
                     skeleton += '<span id="coreval">$' + el.CoreAmount + '</span>';
                 }
                 if (el.hasOwnProperty("CorePecent")) {
-                    skeleton += '<span>' + el.CorePecent + '</span>';
+                    skeleton += '<span>' + (el.CorePecent*100) + '</span>';
                 }
                 if (el.hasOwnProperty("CoreTotal")) {
                     skeleton += '<span id="coreTotal" >$' + el.CoreTotal + '</span>';
@@ -129,7 +129,7 @@ function LmrUI() {
                     skeleton += '<span id="edgeval" >$' + el.EdgeAmount + '</span>';
                 }
                 if (el.hasOwnProperty("EdgePercent")) {
-                    skeleton += '<span>' + el.EdgePercent + '</span>';
+                    skeleton += '<span>' + (el.EdgePercent*100) + '</span>';
                 }
                 if (el.hasOwnProperty("EdgeTotal")) {
                     skeleton += '<span id="edgeTotal" >$' + el.EdgeTotal + '</span>';
@@ -140,7 +140,7 @@ function LmrUI() {
                             '            <span class="first-colm">Credit Card Fees:</span>';
                 skeleton += '<span class="input-field">$<input type="text" class="form-control table-input" id="creditval" name="creditval" value="' + el.creditval + '" '+isClosedText+'></span>';
                 if (el.hasOwnProperty("CorePecent")) {
-                    skeleton += '<span id="creditPercent" >' + el.CorePecent + '</span>';
+                    skeleton += '<span id="creditPercent" >' + (el.CorePecent*100) + '</span>';
                 }
                     skeleton += '<span id="creditTotal" >($' + el.creditTotal + ')</span>';
 
@@ -181,7 +181,7 @@ function LmrUI() {
                     skeleton += ' <span>$' + el.NAFAmount + '</span>';
                 }
                 if (el.hasOwnProperty("NAFRate")) {
-                    skeleton += ' <span>' + el.NAFRate + '</span>';
+                    skeleton += ' <span>' + (el.NAFRate*100) + '</span>';
                 }
                 if (el.hasOwnProperty("NAFPayment")) {
                     skeleton += ' <span>$' + el.NAFPayment + '</span>';
@@ -193,7 +193,7 @@ function LmrUI() {
                     skeleton += ' <span>$' + el.NACAmount + '</span>';
                 }
                 if (el.hasOwnProperty("NACRate")) {
-                    skeleton += ' <span>' + el.NACRate + '</span>';
+                    skeleton += ' <span>' + (el.NACRate*100) + '</span>';
                 }
                 if (el.hasOwnProperty("NACPayment")) {
                     skeleton += ' <span>$' + el.NACPayment + '</span>';
@@ -378,8 +378,8 @@ function LmrUI() {
                 wjQuery("#miscval").val(0);
             }
             var creditval = parseFloat(val);
-            var creditPercent = parseFloat(wjQuery("#creditPercent").text());
-            var creditTotal = ((creditval*creditPercent)/100).toFixed(2)
+            var creditPercent = parseFloat(wjQuery("#creditPercent").text())/100;
+            var creditTotal = ((creditval*creditPercent)).toFixed(2);
             wjQuery("#creditTotal").text("($"+creditTotal+")");
             creditTotal = parseFloat(wjQuery("#creditTotal").text().replace("($",""));
             var coreVal = parseFloat(wjQuery("#coreval").text().replace("$",""));
@@ -388,8 +388,8 @@ function LmrUI() {
             var edgeTotal = parseFloat(wjQuery("#edgeTotal").text().replace("$",""));
             var miscVal = parseFloat(wjQuery("#miscval").val());
             var miscTotal = parseFloat(wjQuery("#miscTotal").text().replace("$",""));
-            var rTotal = (coreTotal+miscTotal+edgeTotal) - creditTotal;
-            var r1Total = coreVal+edgeVal+miscVal;
+            var rTotal = parseFloat((coreTotal+miscTotal+edgeTotal) - creditTotal).toFixed(2);
+            var r1Total = parseFloat(coreVal+edgeVal+miscVal).toFixed(2);
             if (rTotal > 0) {
                 wjQuery("#rTotal").text("$"+rTotal);
             }else{
@@ -415,8 +415,8 @@ function LmrUI() {
             var creditVal1 = parseFloat(wjQuery("#creditval").val());
             var creditTotal = parseFloat(wjQuery("#creditTotal").text().replace("($",""));
             wjQuery("#miscTotal").text("$"+miscVal);
-            var rTotal = (coreTotal+miscVal+edgeTotal) - creditTotal;
-            var r1Total = coreVal+edgeVal+miscVal;
+            var rTotal = parseFloat((coreTotal+miscVal+edgeTotal) - creditTotal).toFixed(2);
+            var r1Total = parseFloat(coreVal+edgeVal+miscVal).toFixed(2);
             if (rTotal > 0) {
                 wjQuery("#rTotal").text("$"+rTotal);
             }else{
