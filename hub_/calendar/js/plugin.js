@@ -2627,7 +2627,7 @@ function SylvanCalendar() {
                     self.populateTAPane(self.generateEventObject(self.teacherAvailability == null ? [] : self.teacherAvailability, "teacherAvailability"));
                     self.showConflictMsg();
                     self.scrollToEvent();
-                    self.buildCalfirstCol();
+                    // self.buildCalfirstCol();
                 }
                 else {
                     wjQuery('.loading').hide();
