@@ -166,7 +166,7 @@ function Appointment() {
         } else if(label == "appointmentException"){
             tempList = [];
             wjQuery.each(args, function(index, appException) {
-                appException['hub_date'] = moment(new Date(appException['hub_date'])).format("YYYY-MM-DD");
+                appException['hub_date'] = appException['hub_date@OData.Community.Display.V1.FormattedValue'];
                 var startObj = new Date(appException['hub_date']+" "+self.convertMinsNumToTime(appException['hub_start_time']));
                 var endObj = new Date(appException['hub_date']+" "+self.convertMinsNumToTime(appException['hub_end_time']));
                 var eventId = appException['aa_x002e_hub_type']+"_"+startObj;
