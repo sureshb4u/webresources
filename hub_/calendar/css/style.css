@@ -334,6 +334,7 @@ button{
     width: 200px;
     height: 22px;
     background-color: #f4f4f4;
+    z-index: 5
 }
 .teacher-block{
     padding: 10px 10px 0px;
@@ -552,9 +553,128 @@ ul{
     display: none;
 }
 
+
+/*=============tablescroll Css start=====================*/
+table.fc-border-separate{table-layout: fixed;}
+.fc-agenda .fc-agenda-axis{
+    width: 91px !important;
+}
+/*.fc-widget-header{
+    background: #1e88e5;
+    color: #fff;
+}*/
+.filter-section{z-index: 999 !important;position: fixed !important;}
+.calendar-firstCol{width: 100px;
+    position: fixed;
+    z-index: 99;
+    background: #fff;
+    /* padding-right: 10px; */
+    border-right:1px solid #ccc;
+    /*height: 510px;*/
+    overflow: hidden;}
+.firstcolContainer{height: inherit;
+    overflow-y: scroll;width: 115px;}
+.coldata{
+    border-top: 1px solid #ccc;
+    padding: 0 10px;
+    text-align: right;
+    height: 40px;
+    border-width: 1px 0 0;
+    /*background: #1e88e5;
+    color: #fff;*/
+}
+.col_0{border-top-width: 0;}    
+.slotdata{
+    /*background: #1e88e5;*/
+    /*color: #fff;*/
+    height: 40px;
+    border-top: 1px dotted #ccc;
+    }
+.tablebody1{
+    height: 530px !important;
+    overflow: hidden !important;
+    z-index: 99;
+}
+.fc-header{
+    position: fixed;
+}
+.fc-agenda-gutter{
+    width: 20px !important;
+}
+
+.fc-scroll-content {
+    width: 100%;
+    overflow-x: scroll !important;
+    overflow-y: hidden;
+    height: 555px;
+}
+#calendar .fc-content{
+    background: #ccc;
+}
+/*.filter-label-outer {
+    background: darkgreen;
+    color: #fff;
+}*/
+#teacher_block_0 {
+    margin-top: 44px !important;
+}
+
+/*@media(max-width: 768px){
+    .fc-content .fc-view  {
+    width: 300% !important;
+}
+}*/
+/*=============tablescroll css End=====================*/
+
+/*=============Header Codes=========================*/
+.header-container{
+   display: inline-block; 
+   width: 100%;
+}
+.display-inline-custom{float: left !important}
+.view-change-container{top: 0 !important}
+.delivery-type-container{top: 0 !important}
+i.material-icons.cursor.float-right {
+    margin: 7px 5px !important;
+}
+.float-right{float: right !important;}
+.info_custom{position: relative;}
+.info_custom .custom_title{
+    right: 0;
+}
+.service-info-custom{position: relative; text-decoration: none;display: initial;}
+.custom_title{
+    position: absolute;
+    z-index: 99;
+    background: #fff;
+    /*right: 0px;*/
+    border: 1px solid #ccc;
+    max-width: 250px;
+    min-width: 250px;
+    padding: 10px;
+    font-family: sans-serif;
+    font-size: 15px;
+    border-radius: 3px;
+    box-shadow: 0 0px 5px 0 #ccc;
+}
+.service-info-custom .custom_title {
+    display:none;
+}
+.service-info-custom .custom_title .subject-detail{line-height: 20px;}
+.service-info-custom:hover .custom_title {
+    display:block;
+    position:fixed;
+    overflow:hidden;
+    /*right: 160px;*/
+}
+.fc-agenda .fc-agenda-axis,.fc-widget-header{background: #fff !important}
+
+/*=============Header Codes=========================*/
+
 /**IE SPECIFIC STYLES**/
 @media screen and (-ms-high-contrast: none) {
     .fc-event-inner {
         height:99% !important;
     }
 }
+
