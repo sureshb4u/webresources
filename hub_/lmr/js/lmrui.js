@@ -378,7 +378,7 @@ function LmrUI() {
                 wjQuery("#miscval").val(0);
             }
             var creditval = parseFloat(val);
-            var creditPercent = parseFloat(wjQuery("#creditPercent").text());
+            var creditPercent = parseFloat(wjQuery("#creditPercent").text())/100;
             var creditTotal = ((creditval*creditPercent)).toFixed(2);
             wjQuery("#creditTotal").text("($"+creditTotal+")");
             creditTotal = parseFloat(wjQuery("#creditTotal").text().replace("($",""));
@@ -388,8 +388,8 @@ function LmrUI() {
             var edgeTotal = parseFloat(wjQuery("#edgeTotal").text().replace("$",""));
             var miscVal = parseFloat(wjQuery("#miscval").val());
             var miscTotal = parseFloat(wjQuery("#miscTotal").text().replace("$",""));
-            var rTotal = (coreTotal+miscTotal+edgeTotal) - creditTotal;
-            var r1Total = coreVal+edgeVal+miscVal;
+            var rTotal = parseFloat((coreTotal+miscTotal+edgeTotal) - creditTotal).toFixed(2);
+            var r1Total = parseFloat(coreVal+edgeVal+miscVal).toFixed(2);
             if (rTotal > 0) {
                 wjQuery("#rTotal").text("$"+rTotal);
             }else{
@@ -415,8 +415,8 @@ function LmrUI() {
             var creditVal1 = parseFloat(wjQuery("#creditval").val());
             var creditTotal = parseFloat(wjQuery("#creditTotal").text().replace("($",""));
             wjQuery("#miscTotal").text("$"+miscVal);
-            var rTotal = (coreTotal+miscVal+edgeTotal) - creditTotal;
-            var r1Total = coreVal+edgeVal+miscVal;
+            var rTotal = parseFloat((coreTotal+miscVal+edgeTotal) - creditTotal).toFixed(2);
+            var r1Total = parseFloat(coreVal+edgeVal+miscVal).toFixed(2);
             if (rTotal > 0) {
                 wjQuery("#rTotal").text("$"+rTotal);
             }else{
@@ -605,4 +605,4 @@ function LmrUI() {
         });
         wjQuery(".loading").hide();
     }
-}sa
+}
