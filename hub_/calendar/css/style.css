@@ -417,7 +417,7 @@ button{
     text-align: left;
 }
 .context-menu-list{
-    z-index: 10 !important;
+    z-index: 110 !important;
 }
 .onetoone{
     position: absolute;
@@ -553,6 +553,7 @@ ul{
     display: none;
 }
 
+
 /*=============tablescroll Css start=====================*/
 table.fc-border-separate{table-layout: fixed;}
 .fc-agenda .fc-agenda-axis{
@@ -669,3 +670,11 @@ i.material-icons.cursor.float-right {
 .fc-agenda .fc-agenda-axis,.fc-widget-header{background: #fff !important}
 
 /*=============Header Codes=========================*/
+
+/**IE SPECIFIC STYLES**/
+@media screen and (-ms-high-contrast: none) {
+    .fc-event-inner {
+        height:99% !important;
+    }
+}
+
