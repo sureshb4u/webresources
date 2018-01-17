@@ -788,13 +788,13 @@ function SylvanCalendar() {
             for (var j = 0; j < Math.floor(60/slotS); j++) {
                 if (j==0 && i<=12) {
                     wjQuery('.firstcolContainer').append(
-                    '<div class="coldata col_'+(i-min)+'" style="margin-top:-0.'+(i-min)+'px">' + i +'am'+ '</div>'
+                    '<div class="coldata col_'+(i-min)+'" >' + i +'am'+ '</div>'
                     
                     );
                 }
                 else if(j==0 && i>12){
                      wjQuery('.firstcolContainer').append(
-                    '<div class="coldata col_'+(i-min)+'" style="margin-top:-0.'+((i-min)-3)+'px">' + (i-12) +'pm'+ '</div>'
+                    '<div class="coldata col_'+(i-min)+'" >' + (i-12) +'pm'+ '</div>'
                     
                     );
                 }
@@ -1000,11 +1000,11 @@ function SylvanCalendar() {
                 wjQuery('.ta-pane').append(elm);
             }
             else if(i>=2 && i<=7){
-                var elm = '<div class="teacher-availability" id="teacher_block_' + i + '" style="margin-top:-0.'+(i+1)+'px; overflow-y:auto;height:' + ((wjQuery(".fc-agenda-slots td div").height()*4)+3) + 'px"></div>';
+                var elm = '<div class="teacher-availability" id="teacher_block_' + i + '" style="overflow-y:auto;height:' + ((wjQuery(".fc-agenda-slots td div").height()*4)+3) + 'px"></div>';
                 wjQuery('.ta-pane').append(elm);
             }
             else if(i>7){
-                var elm = '<div class="teacher-availability" id="teacher_block_' + i + '" style="margin-top:-0.'+(i-(i-1))+'px; overflow-y:auto;height:' + ((wjQuery(".fc-agenda-slots td div").height()*4)+3) + 'px"></div>';
+                var elm = '<div class="teacher-availability" id="teacher_block_' + i + '" style="overflow-y:auto;height:' + ((wjQuery(".fc-agenda-slots td div").height()*4)+3) + 'px"></div>';
                 wjQuery('.ta-pane').append(elm);
             }
         }
