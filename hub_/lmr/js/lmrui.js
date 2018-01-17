@@ -390,12 +390,12 @@ function LmrUI() {
             var miscTotal = parseFloat(wjQuery("#miscTotal").text().replace("$",""));
             var rTotal = parseFloat((coreTotal+miscTotal+edgeTotal) - creditTotal).toFixed(2);
             var r1Total = parseFloat(coreVal+edgeVal+miscVal).toFixed(2);
-            var nafAmount = self.lmrList[0].NAFAmount-creditval;
-            var nacAmount = self.lmrList[0].NACAmount-creditval;
-            var nafPayment = self.lmrList[0].NAFRate*nafAmount;
-            var nacPayment = self.lmrList[0].NACRate*nacAmount;
-            var totalAdvertisingPayment = nafPayment + nacPayment;
-            wjQuery("#nafAmount").text("$"+nafAmount); 
+            var nafAmount = parseFloat(self.lmrList[0].NAFAmount-creditval).toFixed(2);
+            var nacAmount = parseFloat(self.lmrList[0].NACAmount-creditval).toFixed(2);
+            var nafPayment = parseFloat(self.lmrList[0].NAFRate*nafAmount).toFixed(2);
+            var nacPayment = parseFloat(self.lmrList[0].NACRate*nacAmount).toFixed(2);
+            var totalAdvertisingPayment = parseFloat(nafPayment + nacPayment).toFixed(2);
+            wjQuery("#nafAmount").text("$"+nafAmount);
             wjQuery("#nacAmount").text("$"+nacAmount);
             wjQuery("#nafPayment").text("$"+nafPayment);
             wjQuery("#nacPayment").text("$"+nacPayment);
