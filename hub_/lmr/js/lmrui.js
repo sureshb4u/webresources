@@ -178,25 +178,25 @@ function LmrUI() {
                             '        <article>' +
                             '           <span class="first-colm">National Advertising Fund</span>';
                 if (el.hasOwnProperty("NAFAmount")) {
-                    skeleton += ' <span>$' + el.NAFAmount + '</span>';
+                    skeleton += ' <span id="nafAmount">$' + el.NAFAmount + '</span>';
                 }
                 if (el.hasOwnProperty("NAFRate")) {
                     skeleton += ' <span>' + (el.NAFRate*100) + '</span>';
                 }
                 if (el.hasOwnProperty("NAFPayment")) {
-                    skeleton += ' <span>$' + el.NAFPayment + '</span>';
+                    skeleton += ' <span id="nafPayment">$' + el.NAFPayment + '</span>';
                 }
                 skeleton += '        </article>' +
                             '        <article>' +
                             '           <span class="first-colm">National Advertising Campaign</span>';
                 if (el.hasOwnProperty("NACAmount")) {
-                    skeleton += ' <span>$' + el.NACAmount + '</span>';
+                    skeleton += ' <span id="nacAmount">$' + el.NACAmount + '</span>';
                 }
                 if (el.hasOwnProperty("NACRate")) {
                     skeleton += ' <span>' + (el.NACRate*100) + '</span>';
                 }
                 if (el.hasOwnProperty("NACPayment")) {
-                    skeleton += ' <span>$' + el.NACPayment + '</span>';
+                    skeleton += ' <span id="nacPayment">$' + el.NACPayment + '</span>';
                 }
                 skeleton += '        </article>' +
                             '        <article class="btm-brdr">' +
@@ -204,7 +204,7 @@ function LmrUI() {
                             '            <span>&nbsp;</span>' +
                             '            <span><b>Total National Advertising due:</b></span>';
                 if (el.hasOwnProperty("TotalAdvertisingPayment")) {
-                    skeleton += ' <span>$' + el.TotalAdvertisingPayment + '</span>';
+                    skeleton += ' <span id="totalAdvertisingPayment">$' + el.TotalAdvertisingPayment + '</span>';
                 }
 
                 skeleton += '</article>' +
@@ -390,6 +390,16 @@ function LmrUI() {
             var miscTotal = parseFloat(wjQuery("#miscTotal").text().replace("$",""));
             var rTotal = parseFloat((coreTotal+miscTotal+edgeTotal) - creditTotal).toFixed(2);
             var r1Total = parseFloat(coreVal+edgeVal+miscVal).toFixed(2);
+            var nafAmount = self.lmrList[0].NAFAmount-creditval;
+            var nacAmount = self.lmrList[0].NACAmount-creditval;
+            var nafPayment = self.lmrList[0].NAFRate*nafAmount;
+            var nacPayment = self.lmrList[0].NACRate*nacAmount;
+            var totalAdvertisingPayment = nafPayment + nacPayment;
+            wjQuery("#nafAmount").text("$"+nafAmount); 
+            wjQuery("#nacAmount").text("$"+nacAmount);
+            wjQuery("#nafPayment").text("$"+nafPayment);
+            wjQuery("#nacPayment").text("$"+nacPayment);
+            wjQuery("#totalAdvertisingPayment").text("$"+totalAdvertisingPayment);
             if (rTotal > 0) {
                 wjQuery("#rTotal").text("$"+rTotal);
             }else{
@@ -490,7 +500,11 @@ function LmrUI() {
         self.lmrList[0]['localTotal'] = wjQuery("#localTotal").text().replace("$","");
         self.lmrList[0]['advTotal'] = wjQuery("#advTotal").text().replace("$","");
         self.lmrList[0]['Comments'] = wjQuery("#comment").val();
-
+        self.lmrList[0]['NAFAmount'] = wjQuery('#nafAmount').text().replace("$","");
+        self.lmrList[0]['NACAmount'] = wjQuery('#nacAmount').text().replace("$","");
+        self.lmrList[0]['NAFPayment'] = wjQuery('#nafPayment').text().replace("$","");
+        self.lmrList[0]['NACPayment'] = wjQuery('#nacPayment').text().replace("$","");
+        self.lmrList[0]['TotalAdvertisingPayment'] = wjQuery('#totalAdvertisingPayment').text().replace("$","");
         this.lmrList = self.lmrList;
         var response = OnSubmitLMR(result.recordid, self.selectedMonth, self.selectedYear, self.lmrList[0]);
         if (response)
