@@ -573,7 +573,7 @@ table.fc-border-separate{table-layout: fixed;}
     /*height: 510px;*/
     overflow: hidden;}
 .firstcolContainer{height: inherit;
-    overflow-y: scroll;width: 115px;}
+    overflow-y: hidden;width: 100px;}
 .coldata{
     border-top: 1px solid #ccc;
     padding: 0 10px;
@@ -606,7 +606,7 @@ table.fc-border-separate{table-layout: fixed;}
     width: 100%;
     overflow-x: scroll !important;
     overflow-y: hidden;
-    height: 555px;
+    height:  calc(100% - 60px);
 }
 #calendar .fc-content{
     background: #ccc;
