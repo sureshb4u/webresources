@@ -355,7 +355,7 @@ function LmrUI() {
 
         wjQuery(".table-input").keydown(function (e) {
             // validation
-            var alllowKeys = [8, 13, 9, 110, 37, 39, 47, 48, 49, 50, 51, 52, 53, 54, 56, 57];
+            var alllowKeys = [8, 13, 9, 110, 37, 39, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57];
             var index = alllowKeys.indexOf(e.keyCode);
             var allow = false;
             // console.log(e.keyCode);
