@@ -2496,7 +2496,7 @@ function SylvanCalendar() {
             var contentWidth = (((self.resourceList.length+1)*cwidth)+91)-cwidth+27;
             //alert(contentWidth);
             wjQuery('.fc-content div.fc-view').css({'width': +contentWidth+'px','background':'#fff'});
-            if(wjQuery(window).width()>=800){
+            if(wjQuery(window).width()>=1100){
                 if (self.resourceList.length>6) {
                     wjQuery('#calendar div.fc-content').addClass('fc-scroll-content');
                     if (wjQuery('.firstColTable').length == 0) {
