@@ -355,10 +355,17 @@ function LmrUI() {
 
         wjQuery(".table-input").keydown(function (e) {
             // validation
-            var alllowKeys = [8, 13, 9, 110, 37, 39, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57];
+            var alllowKeys = [8, 13, 9, 110,190, 37, 39, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57];
             var index = alllowKeys.indexOf(e.keyCode);
             var allow = false;
             // console.log(e.keyCode);
+            if (e.shiftKey) {
+                allow = false;
+                e.preventDefault();
+            }
+            if (e.key === "." && this.value.split('.').length === 2) {
+                e.preventDefault();
+            }
             if(e.keyCode >= 96 && e.keyCode <= 105){
                 allow = true;
             }else{
