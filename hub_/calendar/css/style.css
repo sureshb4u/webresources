@@ -606,7 +606,7 @@ table.fc-border-separate{table-layout: fixed;}
     width: 100%;
     overflow-x: scroll !important;
     overflow-y: hidden;
-    height:  calc(100% - 60px);
+    height: calc(100% - 60px);
 }
 #calendar .fc-content{
     background: #ccc;
@@ -668,6 +668,9 @@ i.material-icons.cursor.float-right {
     /*right: 160px;*/
 }
 .fc-agenda .fc-agenda-axis,.fc-widget-header{background: #fff !important}
+.fc-view table:first-child + div {
+    top:42px !important;
+}
 
 /*=============Header Codes=========================*/
 
