@@ -811,8 +811,10 @@ function SylvanCalendar() {
             if(wjQuery('.calendar-firstCol').length == 0) 
                 wjQuery(".fc-agenda-divider").after("<div class='calendar-firstCol'></div>");
         }
-        if(self.resourceList.length<6)
+        if(self.resourceList.length<6){
             wjQuery('.calendar-firstCol').css('display','none');
+            wjQuery('.firstColTable').css('display','none');
+        }
         wjQuery('#scrollarea').scroll(function(e){
             wjQuery('.firstcolContainer').scrollTop(wjQuery(this).scrollTop());
         })
@@ -2472,6 +2474,10 @@ function SylvanCalendar() {
     this.calendarFixedWidth = function(){
         var self = this;
         // Table Fixed column code +scroll  Start
+        var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        var d = new Date(wjQuery('.headerDate').text());
+        var calDate = moment(d).format("MM/DD");
+        var dayName = days[d.getDay()];
         var scwidth = (wjQuery(window).width()-118);
         var cwidth;
         if(self.resourceList.length==6){
@@ -2493,6 +2499,9 @@ function SylvanCalendar() {
             if(wjQuery(window).width()>=1100){
                 if (self.resourceList.length>6) {
                     wjQuery('#calendar div.fc-content').addClass('fc-scroll-content');
+                    if (wjQuery('.firstColTable').length == 0) {
+                        wjQuery(".fc-view-resourceDay table thead tr").append("<div class='firstColTable'>"+dayName+"<br><span>"+calDate+"</span></div>");
+                    }
                 }
                 if (self.resourceList.length<=6) {
                     wjQuery('#calendar div.fc-content').removeClass('fc-scroll-content');

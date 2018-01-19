@@ -671,7 +671,15 @@ i.material-icons.cursor.float-right {
 .fc-view table:first-child + div {
     top:42px !important;
 }
-
+.firstColTable{width: 91px;
+    width: 91px;
+    padding: 4px;
+    position: fixed;
+    text-align: center;
+    border: 1px solid #ccc;
+    background: #fff;
+    left: 0;
+}
 /*=============Header Codes=========================*/
 
 /**IE SPECIFIC STYLES**/
