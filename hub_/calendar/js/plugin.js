@@ -5743,7 +5743,7 @@ function SylvanCalendar() {
                 objNewSession['ownerObj'] = locationObj['ownerObj'];
 
                 var responseObj = data.rescheduleStudentSession(objPrevSession, objNewSession);
-                if(typeof(responseObj) == 'boolean'){
+                if(typeof(responseObj) == 'boolean' || typeof (responseObj) == 'object'){
                     if(responseObj && flag) {
                         wjQuery(".excuseSave").removeClass('reschedule');
                         var index = -1;
@@ -5759,7 +5759,10 @@ function SylvanCalendar() {
                             delete self.convertedStudentObj[index].resourceId;
                             self.convertedStudentObj[index].start =  new Date(objNewSession.hub_session_date+" "+wjQuery(".timing-dropdown-btn").val());
                             self.convertedStudentObj[index].end =  new Date(objNewSession.hub_session_date+" "+wjQuery(".excuse-to-timepicker-input").text());
-                            self.convertedStudentObj[index].startHour =  self.convertedStudentObj[index].start;
+                            self.convertedStudentObj[index].startHour = self.convertedStudentObj[index].start;
+                            if (responseObj.hub_studentsessionid) {
+                                self.convertedStudentObj[index].sessionId = responseObj.hub_studentsessionid;
+                            }
                             setTimeout(function() {
                               self.pushStudentToSOF(self.convertedStudentObj[index]);
                               self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
