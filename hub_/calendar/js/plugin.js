@@ -5763,6 +5763,12 @@ function SylvanCalendar() {
                             if (responseObj.hub_studentsessionid) {
                                 self.convertedStudentObj[index].sessionId = responseObj.hub_studentsessionid;
                             }
+                            if (responseObj.hub_sessiontype) { 
+                                self.convertedStudentObj[index].sessiontype = responseObj.hub_sessiontype; 
+                            } 
+                            if (responseObj.hub_session_status) { 
+                                self.convertedStudentObj[index].sessionStatus = responseObj.hub_session_status; 
+                            }
                             setTimeout(function() {
                               self.pushStudentToSOF(self.convertedStudentObj[index]);
                               self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
