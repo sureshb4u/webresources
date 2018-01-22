@@ -2393,7 +2393,7 @@ function SylvanCalendar() {
 
     this.getStartOfWeek = function(date) {
         // Copy date if provided, or use current date if not
-        date = date? new Date(+date) : new Date();
+        date = date? new Date(date) : new Date();
         date.setHours(0,0,0,0);
         // Set date to previous Sunday
         date.setDate(date.getDate() - date.getDay());
@@ -2532,8 +2532,10 @@ function SylvanCalendar() {
                 var findingLeaveFlag = true;
                 if (self.businessClosure.length) {
                     for (var i = 0; i < self.businessClosure.length; i++) {
-                        var businessStartDate = moment(self.businessClosure[i]['hub_startdatetime']).format("YYYY-MM-DD");
-                        var businessEndDate = moment(self.businessClosure[i]['hub_enddatetime']).format("YYYY-MM-DD");
+                        var businessStartDate = self.businessClosure[i]['hub_startdatetime@OData.Community.Display.V1.FormattedValue'];
+                        var businessEndDate = self.businessClosure[i]['hub_enddatetime@OData.Community.Display.V1.FormattedValue'];
+                        // var businessStartDate = moment(self.businessClosure[i]['hub_startdatetime']).format("YYYY-MM-DD");
+                        // var businessEndDate = moment(self.businessClosure[i]['hub_enddatetime']).format("YYYY-MM-DD");
                         businessStartDate = new Date(businessStartDate + ' ' + '00:00').getTime();
                         businessEndDate = new Date(businessEndDate + ' ' + '00:00').getTime();
                         var calendarStartDate = new Date(startDate + ' ' + '00:00').getTime();
@@ -2693,8 +2695,10 @@ function SylvanCalendar() {
         var currentView = self.calendar.fullCalendar('getView');
         for(var j = currentView.start.getTime();j<currentView.end.getTime();j=j+(24*60*60*1000)){
             for (var i = 0; i < self.businessClosure.length; i++) {
-                var businessStartDate = moment(self.businessClosure[i]['hub_startdatetime']).format("YYYY-MM-DD");
-                var businessEndDate = moment(self.businessClosure[i]['hub_enddatetime']).format("YYYY-MM-DD");
+                var businessStartDate = self.businessClosure[i]['hub_startdatetime@OData.Community.Display.V1.FormattedValue'];
+                var businessEndDate = self.businessClosure[i]['hub_enddatetime@OData.Community.Display.V1.FormattedValue'];
+                // var businessStartDate = moment(self.businessClosure[i]['hub_startdatetime']).format("YYYY-MM-DD");
+                // var businessEndDate = moment(self.businessClosure[i]['hub_enddatetime']).format("YYYY-MM-DD");
                 businessStartDate = new Date(businessStartDate + ' ' + '00:00').getTime();
                 businessEndDate = new Date(businessEndDate + ' ' + '00:00').getTime();
                 if (j >= businessStartDate && j <= businessEndDate) {
@@ -3004,13 +3008,16 @@ function SylvanCalendar() {
     this.getEffectiveEndDate = function(val){
         var self = this;
         var currentCalendarDate = self.calendar.fullCalendar('getDate');        
-        var effEndDate1 = val['hub_effectiveenddate'];
-        var effEndDate2 = val['aenrollment_x002e_hub_enrollmentenddate'];
-        var effEndDate3 = undefined;
+        var effEndDate1 = val['hub_effectiveenddate@OData.Community.Display.V1.FormattedValue'];
+        var effEndDate2 = val['aenrollment_x002e_hub_enrollmentenddate@OData.Community.Display.V1.FormattedValue'];
+
+        // var effEndDate1 = val['hub_effectiveenddate'];
+        // var effEndDate2 = val['aenrollment_x002e_hub_enrollmentenddate'];
+        var effEndDate3 = val['aenrollment_x002e_hub_committedsessionenddate@OData.Community.Display.V1.FormattedValue'];
         var effEndDate = currentCalendarDate;
-        if(val['aenrollment_x002e_hub_committedsessionenddate'] != undefined){
-            var dateArry =  val['aenrollment_x002e_hub_committedsessionenddate'].split("-");
-            effEndDate3 = new Date(parseInt(dateArry[0]), parseInt(dateArry[1])-1, parseInt(dateArry[2]));
+        if(val['aenrollment_x002e_hub_committedsessionenddate@OData.Community.Display.V1.FormattedValue'] != undefined){
+            // var dateArry =  val['aenrollment_x002e_hub_committedsessionenddate'].split("-");
+            // effEndDate3 = new Date(parseInt(dateArry[0]), parseInt(dateArry[1])-1, parseInt(dateArry[2]));
         }
 
         if(effEndDate1 == undefined && effEndDate2 == undefined && effEndDate3 == undefined){
@@ -3172,7 +3179,7 @@ function SylvanCalendar() {
                 if(self.staffExceptions.length){
                     for(var k=0; k< self.staffExceptions.length ; k++){
                         if(teacher.id == self.staffExceptions[k]['astaff_x002e_hub_staffid']){
-                            var exceptionStartDate = new Date(self.staffExceptions[k]['hub_startdate']);
+                            var exceptionStartDate = new Date(self.staffExceptions[k]['hub_startdate@OData.Community.Display.V1.FormattedValue']);
                             // Set time for start date
                             exceptionStartDate = new Date(exceptionStartDate).setHours(0);
                             exceptionStartDate = new Date(new Date(exceptionStartDate).setMinutes(0));
@@ -3241,7 +3248,7 @@ function SylvanCalendar() {
                     sessionStatus: val['hub_session_status'],
                     duration: val['aproductservice_x002e_hub_duration'],
                     timeSlotType: val['aproductservice_x002e_hub_timeslottype'],
-                    makeupExpiryDate: val['hub_makeup_expiry_date'],
+                    makeupExpiryDate: val['hub_makeup_expiry_date@OData.Community.Display.V1.FormattedValue'],
                     isAttended:val['hub_isattended'],
                     enrolStartDate:val['aenrollment_x002e_hub_enrollmentstartdate@OData.Community.Display.V1.FormattedValue'],
                     enrolEndDate:val['aenrollment_x002e_hub_enrollmentenddate@OData.Community.Display.V1.FormattedValue'],
@@ -3332,7 +3339,7 @@ function SylvanCalendar() {
             var serviceGF = {};
             var serviceGI = {};
             wjQuery.each(args, function (ke, val) {
-                var effStartDate = new Date(val['hub_effectivestartdate']);
+                var effStartDate = new Date(val['hub_effectivestartdate@OData.Community.Display.V1.FormattedValue']);
                 effStartDate = new Date(effStartDate).setHours(00);
                 effStartDate = new Date(new Date(effStartDate).setMinutes(00));
                 var allowStudentFlag = false;
@@ -3643,7 +3650,7 @@ function SylvanCalendar() {
                 if(self.staffExceptions.length){
                     for(var k=0; k< self.staffExceptions.length ; k++){
                         if(args[i]['_hub_staffid_value'] == self.staffExceptions[k]['astaff_x002e_hub_staffid']){
-                            var exceptionStartDate = new Date(self.staffExceptions[k]['hub_startdate']);
+                            var exceptionStartDate = new Date(self.staffExceptions[k]['hub_startdate@OData.Community.Display.V1.FormattedValue']);
                             // Set time for start date
                             exceptionStartDate = new Date(exceptionStartDate).setHours(0);
                             exceptionStartDate = new Date(new Date(exceptionStartDate).setMinutes(0));
@@ -5497,8 +5504,9 @@ function SylvanCalendar() {
                     }
                     if (index != -1) {
                       delete self.convertedStudentObj[index].resourceId;
-                      self.convertedStudentObj[index].start =  new Date(objSession.hub_makeup_date +" "+wjQuery(".timing-dropdown-btn").val());
-                      self.convertedStudentObj[index].end =  new Date(objSession.hub_makeup_date +" "+wjQuery(".excuse-to-timepicker-input").text());
+                      var makeupDate = moment(objSession.hub_makeup_date).format("MM-DD-YYYY");
+                      self.convertedStudentObj[index].start =  new Date(makeupDate +" "+wjQuery(".timing-dropdown-btn").val());
+                      self.convertedStudentObj[index].end =  new Date(makeupDate +" "+wjQuery(".excuse-to-timepicker-input").text());
                       self.convertedStudentObj[index].startHour =  self.convertedStudentObj[index].start;
                       setTimeout(function() {
                           self.pushStudentToSOF(self.convertedStudentObj[index]);
@@ -5580,10 +5588,14 @@ function SylvanCalendar() {
             for (var i = 0; i < businessClosures.length; i++) {
                 var startDate = businessClosures[i]['hub_startdatetime@OData.Community.Display.V1.FormattedValue'];
                 var endDate =businessClosures[i]['hub_enddatetime@OData.Community.Display.V1.FormattedValue'];
-                startDate = startDate.split('/');
-                endDate = endDate.split('/');
-                var businessClosureStartDate = new Date(startDate[2],startDate[0]-1,startDate[1]);
-                var businessClosureEndDate = new Date(endDate[2],endDate[0]-1,endDate[1]);
+                // startDate = startDate.split('/');
+                // endDate = endDate.split('/');
+                // var businessClosureStartDate = new Date(startDate[2],startDate[0]-1,startDate[1]);
+                // var businessClosureEndDate = new Date(endDate[2],endDate[0]-1,endDate[1]);
+                
+                var businessClosureStartDate = new Date(startDate);
+                var businessClosureEndDate = new Date(endDate);
+
                 if(businessClosureStartDate.getTime() == businessClosureEndDate.getTime()){
                     disableddates.push(moment(businessClosureStartDate).format('MM/DD/YYYY'));
                 }else{
@@ -5633,17 +5645,20 @@ function SylvanCalendar() {
             var maxDate1 = moment(self.calendar.fullCalendar('getDate')).add(30, 'days')._d;
             var minDate1 = moment(self.calendar.fullCalendar('getDate')).subtract(30, 'days')._d;
             if(objStudent[0]['enrolEndDate'] != undefined){
-                var dateArry = objStudent[0]['enrolEndDate'].split("/");
+                // var dateArry = objStudent[0]['enrolEndDate'].split("/");
                 // maxDate = new Date(objStudent[0]['enrolEndDate']);
-                maxDate1 = new Date(parseInt(dateArry[2]),parseInt(dateArry[0])-1,parseInt(dateArry[1]));
+                // maxDate1 = new Date(parseInt(dateArry[2]),parseInt(dateArry[0])-1,parseInt(dateArry[1]));
+                var maxDate1 = new Date(moment(objStudent[0]['enrolEndDate']).format("MM-DD-YYYY"));
                 maxDate2 = moment(self.calendar.fullCalendar('getDate')).add(30, 'days')._d;
                 if(maxDate2.getTime() <= maxDate1.getTime()){
                     maxDate1 = maxDate2;
                 }
             }
             if(objStudent[0]['enrolStartDate'] != undefined){
-                var dateArry = objStudent[0]['enrolStartDate'].split("/");
-                minDate1 = new Date(parseInt(dateArry[2]),parseInt(dateArry[0])-1,parseInt(dateArry[1]));
+                var minDate1 = new Date(moment(objStudent[0]['enrolStartDate']).format("MM-DD-YYYY"));
+
+                // var dateArry = objStudent[0]['enrolStartDate'].split("/");
+                // minDate1 = new Date(parseInt(dateArry[2]),parseInt(dateArry[0])-1,parseInt(dateArry[1]));
                 minDate2 = moment(self.calendar.fullCalendar('getDate')).subtract(30, 'days')._d;
                 if(minDate2.getTime() >= minDate1.getTime()){
                     minDate1 = minDate2;
@@ -5757,18 +5772,22 @@ function SylvanCalendar() {
                         }
                         if (index != -1) {
                             delete self.convertedStudentObj[index].resourceId;
-                            self.convertedStudentObj[index].start =  new Date(objNewSession.hub_session_date+" "+wjQuery(".timing-dropdown-btn").val());
-                            self.convertedStudentObj[index].end =  new Date(objNewSession.hub_session_date+" "+wjQuery(".excuse-to-timepicker-input").text());
+                            var sessionDate = moment(objNewSession.hub_session_date).format("MM-DD-YYYY");
+                            self.convertedStudentObj[index].start =  new Date(sessionDate+" "+wjQuery(".timing-dropdown-btn").val());
+                            self.convertedStudentObj[index].end =  new Date(sessionDate+" "+wjQuery(".excuse-to-timepicker-input").text());
+                            
+                            // self.convertedStudentObj[index].start =  new Date(objNewSession.hub_session_date+" "+wjQuery(".timing-dropdown-btn").val());
+                            // self.convertedStudentObj[index].end =  new Date(objNewSession.hub_session_date+" "+wjQuery(".excuse-to-timepicker-input").text());
                             self.convertedStudentObj[index].startHour = self.convertedStudentObj[index].start;
                             if (responseObj.hub_studentsessionid) {
                                 self.convertedStudentObj[index].sessionId = responseObj.hub_studentsessionid;
                             }
-                            if (responseObj.hub_sessiontype) { 
-                                self.convertedStudentObj[index].sessiontype = responseObj.hub_sessiontype; 
-                            } 
-                            if (responseObj.hub_session_status) { 
-                                self.convertedStudentObj[index].sessionStatus = responseObj.hub_session_status; 
-                            }
+                            if (responseObj['hub_sessiontype']) {
+                                self.convertedStudentObj[index].sessiontype = responseObj['hub_sessiontype']; 
+                            }
+                            if (responseObj['hub_session_status']) {
+                                self.convertedStudentObj[index].sessionStatus = responseObj['hub_session_status']; 
+                            }
                             setTimeout(function() {
                               self.pushStudentToSOF(self.convertedStudentObj[index]);
                               self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
@@ -7007,7 +7026,7 @@ function SylvanCalendar() {
                 timeSlotType: val['aproductservice_x002e_hub_timeslottype'],
                 namedHoursId: val['aproductservice_x002e_hub_namedgfhoursid'],
                 isAttended:val['hub_isattended'],
-                makeupExpiryDate: val['hub_makeup_expiry_date'],
+                makeupExpiryDate: val['hub_makeup_expiry_date@OData.Community.Display.V1.FormattedValue'],
                 namedHoursId: val['aproductservice_x002e_hub_namedgfhoursid']
             }
 
@@ -7275,13 +7294,13 @@ function SylvanCalendar() {
                             isTeacher: true
                         };
                     if(arrayList[i]['hub_startdate'] != undefined){
-                        obj.startDate = new Date(arrayList[i]['hub_startdate']);
+                        obj.startDate = new Date(arrayList[i]['hub_startdate@OData.Community.Display.V1.FormattedValue']);
                         obj.startDate = new Date(obj.startDate).setHours(0);
                         obj.startDate = new Date(new Date(obj.startDate).setMinutes(0));
                         obj.startDate = new Date(new Date(obj.startDate).setSeconds(0));
                     }
                     if(arrayList[i]['hub_enddate'] != undefined){
-                        obj.endDate = new Date(arrayList[i]['hub_enddate']);
+                        obj.endDate = new Date(arrayList[i]['hub_enddate@OData.Community.Display.V1.FormattedValue']);
                         obj.endDate = new Date(obj.endDate).setHours(0);
                         obj.endDate = new Date(new Date(obj.endDate).setMinutes(0));
                         obj.endDate = new Date(new Date(obj.endDate).setSeconds(0));
@@ -8920,12 +8939,12 @@ function SylvanCalendar() {
 
     this.scrollToEvent = function(){
         var self = this;
-        var currentCalendarDate = moment(this.calendar.fullCalendar('getDate')).format("YYYY-MM-DD");
+        var currentCalendarDate = moment(this.calendar.fullCalendar('getDate')).format("MM-DD-YYYY");
         var dateObj = new Date(currentCalendarDate+" "+"08:00 AM");
         var first = true;
         if(this.eventList.length){
             for(var i=0; i< this.eventList.length; i++){
-                var tempDate = moment(this.eventList[i]['start']).format("YYYY-MM-DD");
+                var tempDate = moment(this.eventList[i]['start']).format("MM-DD-YYYY");
                 var resourceObj = this.getResourceObj(this.eventList[i]['resourceId']);
                 var index = this.selectedDeliveryType.map(function (y) {
                     return y;
@@ -8970,16 +8989,18 @@ function SylvanCalendar() {
         var currentView = new Date(currentCalendarDate).setHours(0);
             currentView = new Date(new Date(currentView).setMinutes(0));
             currentView = new Date(new Date(currentView).setSeconds(0));
-        currentCalendarDate = moment(currentCalendarDate).format("YYYY-MM-DD");
+        currentCalendarDate = moment(currentCalendarDate).format("MM-DD-YYYY");
+        // currentCalendarDate = moment(currentCalendarDate).format("YYYY-MM-DD");
         var showPinicon = false;
         if(self.convertedPinnedList.length){
             for(var i=0; i<self.convertedPinnedList.length;i++){
                 if(self.convertedPinnedList[i]['studentId'] != undefined){
                     if(self.convertedPinnedList[i]['studentId'] == studentObj['id']){
                         if(currentView.getDay() == self.convertedPinnedList[i]['dayId']){
-                            var currDateArry = currentCalendarDate.split("-");
-                            var currTimeArry = self.convertMinsNumToTime(self.convertToMinutes(self.convertedPinnedList[i]["startTime"])).split(":");
-                            var comapreDate = new Date(currDateArry[0],currDateArry[1]-1,currDateArry[2],currTimeArry[0],currTimeArry[1]);
+                            // var currDateArry = currentCalendarDate.split("-");
+                            // var currTimeArry = self.convertMinsNumToTime(self.convertToMinutes(self.convertedPinnedList[i]["startTime"])).split(":");
+                            // var comapreDate = new Date(currDateArry[0],currDateArry[1]-1,currDateArry[2],currTimeArry[0],currTimeArry[1]);
+                            var comapreDate = new Date(currentCalendarDate+" "+self.convertedPinnedList[i]["startTime"]);
                             if(comapreDate.getTime() == studentObj["startHour"].getTime()){
                                 showPinicon = true;
                                 break; 
