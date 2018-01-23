@@ -2538,8 +2538,8 @@ function SylvanCalendar() {
                         // var businessEndDate = moment(self.businessClosure[i]['hub_enddatetime']).format("YYYY-MM-DD");
                         businessStartDate = new Date(businessStartDate + ' ' + '00:00').getTime();
                         businessEndDate = new Date(businessEndDate + ' ' + '00:00').getTime();
-                        var calendarStartDate = new Date(startDate + ' ' + '00:00').getTime();
-                        var calendarEndDate = new Date(endDate + ' ' + '00:00').getTime();
+                        var calendarStartDate = new Date(moment(startDate).format("MM-DD-YYYY") + ' ' + '00:00').getTime();
+                        var calendarEndDate = new Date(moment(endDate).format("MM-DD-YYYY") + ' ' + '00:00').getTime();
                         if (calendarStartDate >= businessStartDate && calendarEndDate <= businessEndDate) {
                             findingLeaveFlag = false;
                         }
@@ -5035,9 +5035,6 @@ function SylvanCalendar() {
         if(wjQuery(element).attr('pinnedId') != undefined){
             objUnPinnedStudent.hub_sch_pinned_students_teachersid = wjQuery(element).attr('pinnedId');
         }
-        // else{
-            // objUnPinnedStudent.hub_sch_pinned_students_teachersid = wjQuery(element).attr('temppinid');
-        // }
         var locationObj = self.getLocationObject(self.locationId);
         objUnPinnedStudent['ownerObj'] = locationObj['ownerObj'];
         var unPinResponse = data.saveUnPinStudent(objUnPinnedStudent);
@@ -7293,13 +7290,13 @@ function SylvanCalendar() {
                             subjects: this.getTeacherSubjects(arrayList[i]),
                             isTeacher: true
                         };
-                    if(arrayList[i]['hub_startdate'] != undefined){
+                    if(arrayList[i]['hub_startdate@OData.Community.Display.V1.FormattedValue'] != undefined){
                         obj.startDate = new Date(arrayList[i]['hub_startdate@OData.Community.Display.V1.FormattedValue']);
                         obj.startDate = new Date(obj.startDate).setHours(0);
                         obj.startDate = new Date(new Date(obj.startDate).setMinutes(0));
                         obj.startDate = new Date(new Date(obj.startDate).setSeconds(0));
                     }
-                    if(arrayList[i]['hub_enddate'] != undefined){
+                    if(arrayList[i]['hub_enddate@OData.Community.Display.V1.FormattedValue'] != undefined){
                         obj.endDate = new Date(arrayList[i]['hub_enddate@OData.Community.Display.V1.FormattedValue']);
                         obj.endDate = new Date(obj.endDate).setHours(0);
                         obj.endDate = new Date(new Date(obj.endDate).setMinutes(0));
