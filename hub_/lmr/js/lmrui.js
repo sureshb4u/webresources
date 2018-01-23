@@ -33,6 +33,51 @@ function LmrUI() {
         return result;
     }
 
+    this.printElem = function(elem){
+        // var mywindow = window.open('', 'PRINT', 'height=400,width=600');
+        // mywindow.document.write('<html><head><title>' + document.title  + '</title>');
+        // //Append the external CSS file.
+        // // mywindow.document.write('<link rel="stylesheet" type="text/css" href="lmr.css">');
+        // mywindow.document.write('body header {background-color: #039be5;width: 100%;height: 50px;color: white;text-align: center;');
+        // mywindow.document.write('</head><body >');
+        // mywindow.document.write('<header><span>License Marketing Royalties</span></header>');
+        // mywindow.document.write(document.getElementById(elem).innerHTML);
+        // mywindow.document.write('</body></html>');
+        // setTimeout(function () {
+        //     mywindow.document.close(); // necessary for IE >= 10
+        //     mywindow.focus(); // necessary for IE >= 10*/
+        //     mywindow.print();
+        //     mywindow.close();
+        //     return true;
+        // }, 500);
+
+        var contents = wjQuery("#lmr").html();
+        var frame1 = wjQuery('<iframe />');
+        frame1[0].name = "frame1";
+        frame1.css({ "position": "absolute", "top": "-1000000px" });
+        wjQuery("body").append(frame1);
+        var frameDoc = frame1[0].contentWindow ? frame1[0].contentWindow : frame1[0].contentDocument.document ? frame1[0].contentDocument.document : frame1[0].contentDocument;
+        frameDoc.document.open();
+        //Create a new HTML document.
+        frameDoc.document.write('<html><head><title>License Marketing Royalties</title>');
+        frameDoc.document.write('</head><body>');
+        //Append the external CSS file.
+        frameDoc.document.write('<link href="/webresources/hub_/lmr/css/lmr.css" rel="stylesheet" type="text/css" />');
+        //Append the DIV contents.
+        frameDoc.document.write("<header><span>License Marketing Royalties</span></header>"+contents);
+        frameDoc.document.write('</body></html>');
+        frameDoc.document.close();
+        setTimeout(function () {
+            window.frames["frame1"].focus();
+            window.frames["frame1"].print();
+            frame1.remove();
+        }, 500);
+
+
+
+
+    }
+
     this.callOnLoad = function () {
         var self = this;
         wjQuery(".loading").show();
@@ -346,11 +391,12 @@ function LmrUI() {
 
         wjQuery(".lmr-submit").off();
         wjQuery(".lmr-submit").click(function (event) {
-            wjQuery(".loading").show();
-            self.centerId = wjQuery("#center-id").text();
-            self.selectedYear = wjQuery("#yearSelected").val();
-            self.selectedMonth = wjQuery("#monthSelected").val();
-            self.confirmPopup("Are you sure to submit?");
+            // wjQuery(".loading").show();
+            self.printElem("lmr");
+            // self.centerId = wjQuery("#center-id").text();
+            // self.selectedYear = wjQuery("#yearSelected").val();
+            // self.selectedMonth = wjQuery("#monthSelected").val();
+            // self.confirmPopup("Are you sure to submit?");
         });
 
         wjQuery(".table-input").keydown(function (e) {

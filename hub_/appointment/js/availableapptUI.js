@@ -360,74 +360,77 @@ function Appointment() {
         appointmentHours = appointmentHours == null ? [] : appointmentHours;
         if (appointmentHours.length) {
             wjQuery.each(appointmentHours, function (index, appointmentHrObj) {
-                var response = self.checkDateRage(appointmentHrObj['startDate'], appointmentHrObj['endDate'], appointmentHrObj['day']);
-                if (response != false) {
-                    if (!self.checkBusinessClosure(response)) {
-                        var timingArry = self.splitTimeBySlotMin(appointmentHrObj['startTime'], appointmentHrObj['endTime'], appointmentHrObj['duration']);
-                        if (timingArry.length) {
-                            for (var d = 0; d < timingArry.length; d++) {
-                                // var stDateArry = moment(response).format("YYYY-MM-DD").split("-");
-                                // var stTimeArry = self.convertMinsNumToTime(self.convertToMinutes(timingArry[d]['start'])).split(":");
-                                // appointmentHrObj['startObj'] = new Date(stDateArry[0], stDateArry[1] - 1, stDateArry[2], stTimeArry[0], stTimeArry[1]);
-                                // var endTimeArry = self.convertMinsNumToTime(self.convertToMinutes(timingArry[d]['end'])).split(":");
-                                // appointmentHrObj['endObj'] = new Date(stDateArry[0], stDateArry[1] - 1, stDateArry[2], endTimeArry[0], endTimeArry[1]);
-                                
-                                appointmentHrObj['startObj'] = new Date(moment(response).format("MM-DD-YYYY")+" "+timingArry[d]['start']);
-                                appointmentHrObj['endObj'] = new Date(moment(response).format("MM-DD-YYYY")+" "+timingArry[d]['end']);
+                if(appointmentHrObj['capacity'] != undefined){
+                    var response = self.checkDateRage(appointmentHrObj['startDate'], appointmentHrObj['endDate'], appointmentHrObj['day']);
+                    if (response != false) {
+                        if (!self.checkBusinessClosure(response)) {
+                            var timingArry = self.splitTimeBySlotMin(appointmentHrObj['startTime'], appointmentHrObj['endTime'], appointmentHrObj['duration']);
+                            if (timingArry.length) {
+                                for (var d = 0; d < timingArry.length; d++) {
+                                    // var stDateArry = moment(response).format("YYYY-MM-DD").split("-");
+                                    // var stTimeArry = self.convertMinsNumToTime(self.convertToMinutes(timingArry[d]['start'])).split(":");
+                                    // appointmentHrObj['startObj'] = new Date(stDateArry[0], stDateArry[1] - 1, stDateArry[2], stTimeArry[0], stTimeArry[1]);
+                                    // var endTimeArry = self.convertMinsNumToTime(self.convertToMinutes(timingArry[d]['end'])).split(":");
+                                    // appointmentHrObj['endObj'] = new Date(stDateArry[0], stDateArry[1] - 1, stDateArry[2], endTimeArry[0], endTimeArry[1]);
+                                    
+                                    appointmentHrObj['startObj'] = new Date(moment(response).format("MM-DD-YYYY")+" "+timingArry[d]['start']);
+                                    appointmentHrObj['endObj'] = new Date(moment(response).format("MM-DD-YYYY")+" "+timingArry[d]['end']);
 
-                                var eventColorObj = self.getEventColor(appointmentHrObj["type"]);
-                                var eventId = appointmentHrObj["type"] + "_" + appointmentHrObj['startObj'];
-                                var eventPopulated = self.appointment.fullCalendar('clientEvents', eventId);
-                                if (eventPopulated.length) {
-                                    eventPopulated[0].capacity += appointmentHrObj['capacity'];
-                                    eventPopulated[0].title = "0/" + eventPopulated[0].capacity;
-                                    var isexception = self.appointmentHourException.filter(function(x) {
-                                       return x.eventId == eventId;
-                                    });
-                                    if(isexception.length){
-                                        eventPopulated[0].title = "";
+                                    var eventColorObj = self.getEventColor(appointmentHrObj["type"]);
+                                    var eventId = appointmentHrObj["type"] + "_" + appointmentHrObj['startObj'];
+                                    var eventPopulated = self.appointment.fullCalendar('clientEvents', eventId);
+                                    if (eventPopulated.length) {
+                                        eventPopulated[0].capacity += appointmentHrObj['capacity'];
+                                        eventPopulated[0].title = "0/" + eventPopulated[0].capacity;
+                                        var isexception = self.appointmentHourException.filter(function(x) {
+                                           return x.eventId == eventId;
+                                        });
+                                        if(isexception.length){
+                                            eventPopulated[0].title = "";
+                                        }
+                                        self.appointment.fullCalendar('updateEvent', eventPopulated);
+                                    } else {
+                                        var eventObj = {};
+                                        eventObj = {
+                                            id: eventId,
+                                            start: appointmentHrObj['startObj'],
+                                            end: appointmentHrObj['endObj'],
+                                            allDay: false,
+                                            type: appointmentHrObj['type'],
+                                            typeValue: appointmentHrObj['typeValue'],
+                                            color: "#333",
+                                            title: "0/" + appointmentHrObj['capacity'],
+                                            studentList: [],
+                                            parentList: [],
+                                            occupied: 0,
+                                            capacity: appointmentHrObj['capacity']
+                                        }
+
+                                        var isexception = self.appointmentHourException.filter(function(x) {
+                                           return x.eventId == eventId;
+                                        });
+                                        if(isexception.length == 0){
+                                            // if(new Date().getTime() < appointmentHrObj['startObj'].getTime()){
+                                            eventObj["backgroundColor"] = eventColorObj.backgroundColor;
+                                            eventObj["borderColor"] = eventColorObj.borderColor;
+                                            eventObj["isHourException"] = false;
+                                            // }else{
+                                            //     eventObj["backgroundColor"] = "#ddd";
+                                            //     eventObj["borderColor"] = "#ddd";
+                                            // }
+                                        }else{
+                                            eventObj['title'] = "";
+                                            eventObj["isHourException"] = true;
+                                            eventObj["backgroundColor"] = "#999";
+                                            eventObj["borderColor"] = "#999";
+                                        }
+                                        self.eventList.push(eventObj);
+                                        self.appointment.fullCalendar('removeEvents');
+                                        self.appointment.fullCalendar('removeEventSource');
+                                        self.appointment.fullCalendar('addEventSource', { events: self.eventList });
                                     }
-                                    self.appointment.fullCalendar('updateEvent', eventPopulated);
-                                } else {
-                                    var eventObj = {};
-                                    eventObj = {
-                                        id: eventId,
-                                        start: appointmentHrObj['startObj'],
-                                        end: appointmentHrObj['endObj'],
-                                        allDay: false,
-                                        type: appointmentHrObj['type'],
-                                        typeValue: appointmentHrObj['typeValue'],
-                                        color: "#333",
-                                        title: "0/" + appointmentHrObj['capacity'],
-                                        studentList: [],
-                                        parentList: [],
-                                        occupied: 0,
-                                        capacity: appointmentHrObj['capacity']
-                                    }
-                                    var isexception = self.appointmentHourException.filter(function(x) {
-                                       return x.eventId == eventId;
-                                    });
-                                    if(isexception.length == 0){
-                                        // if(new Date().getTime() < appointmentHrObj['startObj'].getTime()){
-                                        eventObj["backgroundColor"] = eventColorObj.backgroundColor;
-                                        eventObj["borderColor"] = eventColorObj.borderColor;
-                                        eventObj["isHourException"] = false;
-                                        // }else{
-                                        //     eventObj["backgroundColor"] = "#ddd";
-                                        //     eventObj["borderColor"] = "#ddd";
-                                        // }
-                                    }else{
-                                        eventObj['title'] = "";
-                                        eventObj["isHourException"] = true;
-                                        eventObj["backgroundColor"] = "#999";
-                                        eventObj["borderColor"] = "#999";
-                                    }
-                                    self.eventList.push(eventObj);
-                                    self.appointment.fullCalendar('removeEvents');
-                                    self.appointment.fullCalendar('removeEventSource');
-                                    self.appointment.fullCalendar('addEventSource', { events: self.eventList });
+                                    self.appointment.fullCalendar('refetchEvents');
                                 }
-                                self.appointment.fullCalendar('refetchEvents');
                             }
                         }
                     }
