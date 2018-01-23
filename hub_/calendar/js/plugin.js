@@ -6340,7 +6340,12 @@ function SylvanCalendar() {
             }
             var elm = ui.helper;
             setTimeout(function(){
-                var name = wjQuery(event.currentTarget).text().replace("location_on","");
+                var name;
+                 if (wjQuery(event.currentTarget).hasClass("teacher-container") && wjQuery(event.currentTarget).children()[0]) {
+                    name = wjQuery(event.currentTarget).children()[0].innerHTML;
+                } else {
+                    name = wjQuery(event.currentTarget).text().replace("location_on", "");
+                }
                 // wjQuery(elm).text("Starting at "+self.helperStartTime);
                 wjQuery(elm).text(name+" (Starting at "+self.helperStartTime+")");
             },30);
@@ -9222,11 +9227,12 @@ function SylvanCalendar() {
         var scollArea = wjQuery('.fc-scroll-content');
         var scrollWidth = scollArea.scrollLeft();
         draggedEl = draggedEl[0];
+        var distance = draggedEl.offsetLeft - scrollWidth;
         if (draggedEl.offsetLeft) {
             if (draggedEl.offsetLeft > minScrollingCoord && draggedEl.offsetLeft <= maxScrollingCoord) {
             scrollWidth = scrollWidth + 250;
             scollArea.animate({ scrollLeft: scrollWidth } ,"fast");
-            } else if (draggedEl.offsetLeft <= 250 && scrollWidth != 0) {
+            } else if (distance <= 250 && scrollWidth != 0) {
             scrollWidth = scrollWidth - 250;
             scollArea.animate({ scrollLeft: scrollWidth }, "fast");
         }
