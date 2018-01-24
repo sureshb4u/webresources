@@ -34,29 +34,40 @@ function LmrUI() {
     }
 
     this.printElem = function(elem){
-        
-        var contents = wjQuery(elem).html();
-        var frame1 = wjQuery('<iframe />');
-        frame1[0].name = "frame1";
-        frame1.css({ "position": "absolute", "top": "-1000000px", "width" : "200px", "height" : "200px"});
-        wjQuery("body").append(frame1);
-        var frameDoc = frame1[0].contentWindow ? frame1[0].contentWindow : frame1[0].contentDocument.document ? frame1[0].contentDocument.document : frame1[0].contentDocument;
-        frameDoc.document.open();
-        //Create a new HTML document.
-        frameDoc.document.write('<html><head><title>License Marketing Royalties</title>');
-        frameDoc.document.write('</head><body>');
-        //Append the external CSS file.
-        frameDoc.document.write('<link href="/webresources/hub_/lmr/css/lmr.css" rel="stylesheet" type="text/css" />');
-        //Append the DIV contents.
-        frameDoc.document.write("<header><span>License Marketing Royalties</span></header>"+contents);
-        frameDoc.document.write('</body></html>');
-        frameDoc.document.close();
+        wjQuery("#print").hide();
+        wjQuery(".lmr-submit").hide();
+        wjQuery(".getLmr").hide();
         setTimeout(function () {
-            window.frames["frame1"].focus();
-            window.frames["frame1"].print();
-            frame1.remove();
-        }, 500);
+            window.print();
+            wjQuery("#print").show();
+            wjQuery(".lmr-submit").show();
+            wjQuery(".getLmr").show();
+        }, 200);
 
+        // var contents = wjQuery(elem).html();
+        // var frame1 = wjQuery('<iframe />');
+        // frame1[0].name = "frame1";
+        // frame1.css({ "position": "absolute", "top": "-1000000px", "width" : "200px", "height" : "200px"});
+        // wjQuery("body").append(frame1);
+        // var frameDoc = frame1[0].contentWindow ? frame1[0].contentWindow : frame1[0].contentDocument.document ? frame1[0].contentDocument.document : frame1[0].contentDocument;
+        // frameDoc.document.open();
+        // //Create a new HTML document.
+        // frameDoc.document.write('<html><head><title>License Marketing Royalties</title>');
+        // frameDoc.document.write('</head><body>');
+        // //Append the external CSS file.
+        // frameDoc.document.write('<link href="/webresources/hub_/lmr/css/lmr.css" rel="stylesheet" type="text/css" />');
+        // //Append the DIV contents.
+        // frameDoc.document.write("<header><span>License Marketing Royalties</span></header>"+contents);
+        // frameDoc.document.write('</body></html>');
+        // frameDoc.document.close();
+        // setTimeout(function () {
+        //     window.frames["frame1"].focus();
+        //     window.frames["frame1"].print();
+        //     frame1.remove();
+        //     wjQuery("#print").show();
+        //     wjQuery(".lmr-submit").show();
+        //     wjQuery(".getLmr").show();
+        // }, 500);
     }
 
     this.callOnLoad = function () {
@@ -552,7 +563,7 @@ function LmrUI() {
         }
         yearSkeleton += "</selction>";
         wjQuery("#dropdown > .year").html(yearSkeleton);
-        wjQuery("#dropdown").append('<button class="getLmr">View LMR</button>');
+        wjQuery("#dropdown").append('<button class="getLmr">View LMR</button><button id="print">Print</button>');
         this.selectedYear = wjQuery("#yearSelected").val();
     }
 

@@ -4,9 +4,9 @@ body {
   color: #444444;
   font-size: 14px; }
   body header {
-    background-color: #039be5;
+    background-color: #5C2985;
     width: 100%;
-    height: 50px;
+    height: 40px;
     color: white;
     text-align: center; }
     body header span {
@@ -37,10 +37,10 @@ body {
 
 h1 {
   font-size: 15px;
-  margin: 20px 0px 5px; }
+  margin: 0px 0px 5px; }
 
 .heading {
-  width: calc(45% - 0px);
+  width: calc(40% - 0px);
   margin: 10px 0px;
   float: left; }
 
@@ -60,7 +60,7 @@ h1 {
     width: 32px; }
 
 button {
-  background-color: #5384bd;
+  background-color: #65635d;
   font-weight: bold;
   border: none;
   outline: none;
@@ -69,17 +69,19 @@ button {
   width: calc(100% - 30%);
   margin: 0 15%;
   color: white;
-  border-radius: 10px; }
+  border-radius: 10px;
+  width: 85px;
+  margin: 0px 5px; }
 
 .getLmr {
-  width: 100px;
-  margin: 0px; }
+  width: 85px;
+  margin: 0px 5px; }
 
 .btm-brdr {
   border-bottom: 1px solid #ababab; }
 
 .btn-article {
-  padding: 10px 0px;
+  padding: 5px 0px;
   text-align: right; }
   .btn-article button {
     width: 150px;
@@ -87,7 +89,7 @@ button {
 
 [class^=by] {
   overflow: auto;
-  width: 95%;
+  width: 97%;
   margin: 0 auto; }
 
 [class^=by] > article {
@@ -97,7 +99,7 @@ button {
   border-top: 1px solid #ababab;
   border-right: 1px solid #ababab;
   border-left: 1px solid #ababab;
-  height: 40px; }
+  height: 35px; }
 
 [class^=by] span {
   display: block;
@@ -107,7 +109,7 @@ button {
   border-right: 1px solid #ababab;
   height: calc(100% - 20px);
   font-family: Segoe\000020UI,Arial,sans\00002Dserif;
-  font-size: 13px; }
+  font-size: 12px; }
 
 [class^=by] > article > span:last-of-type {
   border-right: 0px; }
@@ -125,7 +127,7 @@ button {
   width: calc(40% - 11px); }
 
 section .dark {
-  background: #71c472;
+  background: #E8AD38;
   font-weight: bold;
   color: white; }
 
@@ -140,7 +142,7 @@ section .dark {
 
 #dropdown {
   text-align: left;
-  width: calc(55% - 0px);
+  width: calc(60% - 0px);
   display: inline-block;
   float: right;
   margin: 10px 0px; }
@@ -184,28 +186,29 @@ section .dark {
     background-image: none;
     border: 1px solid #ccc;
     border-radius: 4px;
-    margin-top: -5px; }
+    margin-top: -10px; }
 
 .form-area {
   display: table;
-  width: calc(95% - 2px);
-  margin: 10px auto;
+  width: calc(97% - 2px);
+  margin: 5px auto;
   border: 1px solid #ababab;
   padding: 0px;
-  font-size: 13px; }
+  font-size: 12px; }
   .form-area aside:nth-of-type(2) {
     border-left: 1px solid #ababab; }
   .form-area .form-aside {
     display: table-cell;
     width: calc(50% - 7px);
     margin: 5px;
-    padding: 15px; }
+    padding: 5px; }
     .form-area .form-aside h1 {
       margin: 0px;
       color: #cd0a0a; }
     .form-area .form-aside .form-row {
       width: 100%;
-      display: block; }
+      display: block;
+      margin: 5px; }
       .form-area .form-aside .form-row label {
         display: inline-block;
         width: 200px;
