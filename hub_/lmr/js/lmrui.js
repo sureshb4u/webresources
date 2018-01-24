@@ -34,27 +34,11 @@ function LmrUI() {
     }
 
     this.printElem = function(elem){
-        // var mywindow = window.open('', 'PRINT', 'height=400,width=600');
-        // mywindow.document.write('<html><head><title>' + document.title  + '</title>');
-        // //Append the external CSS file.
-        // // mywindow.document.write('<link rel="stylesheet" type="text/css" href="lmr.css">');
-        // mywindow.document.write('body header {background-color: #039be5;width: 100%;height: 50px;color: white;text-align: center;');
-        // mywindow.document.write('</head><body >');
-        // mywindow.document.write('<header><span>License Marketing Royalties</span></header>');
-        // mywindow.document.write(document.getElementById(elem).innerHTML);
-        // mywindow.document.write('</body></html>');
-        // setTimeout(function () {
-        //     mywindow.document.close(); // necessary for IE >= 10
-        //     mywindow.focus(); // necessary for IE >= 10*/
-        //     mywindow.print();
-        //     mywindow.close();
-        //     return true;
-        // }, 500);
-
-        var contents = wjQuery("#lmr").html();
+        
+        var contents = wjQuery(elem).html();
         var frame1 = wjQuery('<iframe />');
         frame1[0].name = "frame1";
-        frame1.css({ "position": "absolute", "top": "-1000000px" });
+        frame1.css({ "position": "absolute", "top": "-1000000px", "width" : "200px", "height" : "200px"});
         wjQuery("body").append(frame1);
         var frameDoc = frame1[0].contentWindow ? frame1[0].contentWindow : frame1[0].contentDocument.document ? frame1[0].contentDocument.document : frame1[0].contentDocument;
         frameDoc.document.open();
@@ -72,9 +56,6 @@ function LmrUI() {
             window.frames["frame1"].print();
             frame1.remove();
         }, 500);
-
-
-
 
     }
 
@@ -391,13 +372,20 @@ function LmrUI() {
 
         wjQuery(".lmr-submit").off();
         wjQuery(".lmr-submit").click(function (event) {
-            // wjQuery(".loading").show();
-            self.printElem("lmr");
-            // self.centerId = wjQuery("#center-id").text();
-            // self.selectedYear = wjQuery("#yearSelected").val();
-            // self.selectedMonth = wjQuery("#monthSelected").val();
-            // self.confirmPopup("Are you sure to submit?");
+            wjQuery(".loading").show();
+            self.centerId = wjQuery("#center-id").text();
+            self.selectedYear = wjQuery("#yearSelected").val();
+            self.selectedMonth = wjQuery("#monthSelected").val();
+            self.confirmPopup("Are you sure to submit?");
         });
+
+
+
+        wjQuery("#print").off();
+        wjQuery("#print").click(function (event) {
+            self.printElem("#lmr");           
+        });
+
 
         wjQuery(".table-input").keydown(function (e) {
             // validation
