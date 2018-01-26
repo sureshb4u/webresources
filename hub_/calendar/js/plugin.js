@@ -2282,6 +2282,8 @@ function SylvanCalendar() {
         self.calendar.fullCalendar('removeEventSource');
     }
 
+    var timeout;
+
     this.loadCalendar = function (args,view) {
         var self = this;
         // assign filter object to local scope filter to avoid this conflict
@@ -2293,6 +2295,7 @@ function SylvanCalendar() {
         var m = date.getMonth();
         var y = date.getFullYear();
 
+
         this.calendarOptions = {
             header: false,
             defaultView: view,
@@ -2303,16 +2306,19 @@ function SylvanCalendar() {
             allDaySlot:true,
             droppable: true,
             onDrag: function(date){
-                self.helperStartTime = moment(date).format('hh:mm A');
-                if (self.resourceList.length >= 6) {
-                    if (wjQuery(window).width() > 1100) {
-                        self.bindMouseMovement();
-                        self.scrollVertically();
+               self.helperStartTime = moment(date).format('hh:mm A');
+                    if (self.resourceList.length >= 6) {
+                        if (wjQuery(window).width() > 1100) {
+                            self.bindMouseMovement();
+                            self.scrollVertically();
+                        }
                     }
-                }
             },
             drop: function (date, allDay, ev, ui, resource) {
-                t.createEventOnDrop(t, date, allDay, ev, ui, resource, this);
+                clearTimeout(timeout);
+                timeout = setTimeout(function() {
+                    t.createEventOnDrop(t, date, allDay, ev, ui, resource, ui.helper.context);
+                }, 100);
             },
             handleWindowResize: true,
             height: window.innerHeight - 48,
