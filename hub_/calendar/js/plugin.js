@@ -786,11 +786,16 @@ function SylvanCalendar() {
         wjQuery('.calendar-firstCol').html('<div class="firstcolContainer"></div');
         for(var i = min; i<max; i++){
             for (var j = 0; j < Math.floor(60/slotS); j++) {
-                if (j==0 && i<=12) {
+                if (j==0 && i<12) {
                     wjQuery('.firstcolContainer').append(
                     '<div class="coldata col_'+(i-min)+'" >' + i +'am'+ '</div>'
                     
                     );
+                }else if (j == 0 && i == 12) {
+                    wjQuery('.firstcolContainer').append(
+                   '<div class="coldata col_' + (i - min) + '" >' + i + 'pm' + '</div>'
+
+                   );
                 }
                 else if(j==0 && i>12){
                      wjQuery('.firstcolContainer').append(
