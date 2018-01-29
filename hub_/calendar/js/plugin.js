@@ -2661,11 +2661,11 @@ function SylvanCalendar() {
                     }
                     
                     var locationObj = self.getLocationObject(self.locationId);
-                    self.staffExceptions = isFetch || (self.staffExceptions.length == 0) ? data.getStaffException(locationId, startDate, endDate, locationObj['_hub_parentcenter_value']) : self.staffExceptions;
+                    self.staffExceptions = isFetch || (self.staffExceptions.length == 0) ? data.getStaffException(locationId, startDate, endDate) : self.staffExceptions;
                     if (self.staffExceptions == null) {
                         self.staffExceptions = [];
                     }
-                    self.teacherSchedule = isFetch || (self.teacherSchedule.length == 0) ? data.getTeacherSchedule(locationId, startDate, endDate) : self.teacherSchedule;
+                    self.teacherSchedule = isFetch || (self.teacherSchedule.length == 0) ? data.getTeacherSchedule(locationId, startDate, endDate, locationObj['_hub_parentcenter_value']) : self.teacherSchedule;
                     if (self.teacherSchedule == null) {
                         self.teacherSchedule = [];
                     }
