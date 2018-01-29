@@ -2664,7 +2664,7 @@ function SylvanCalendar() {
                     if (self.staffExceptions == null) {
                         self.staffExceptions = [];
                     }
-                    self.teacherSchedule = isFetch || (self.teacherSchedule.length == 0) ? data.getTeacherSchedule(locationId, startDate, endDate) : self.teacherSchedule;
+                    self.teacherSchedule = isFetch || (self.teacherSchedule.length == 0) ? data.getTeacherSchedule(locationId, startDate, endDate, locationObj['_hub_parentcenter_value']) : self.teacherSchedule;
                     if (self.teacherSchedule == null) {
                         self.teacherSchedule = [];
                     }
