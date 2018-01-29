@@ -2659,9 +2659,9 @@ function SylvanCalendar() {
                             wjQuery('.info_custom .custom_title' ).hide();
                           });
                     }
-                        
-
-                    self.staffExceptions = isFetch || (self.staffExceptions.length == 0) ? data.getStaffException(locationId, startDate, endDate) : self.staffExceptions;
+                    
+                    var locationObj = self.getLocationObject(self.locationId);
+                    self.staffExceptions = isFetch || (self.staffExceptions.length == 0) ? data.getStaffException(locationId, startDate, endDate, locationObj['_hub_parentcenter_value']) : self.staffExceptions;
                     if (self.staffExceptions == null) {
                         self.staffExceptions = [];
                     }
@@ -6249,7 +6249,8 @@ function SylvanCalendar() {
                     var locationObj = self.getLocationObject(self.locationId);
                     options = wjQuery.extend(true, {}, options);
                     setTimeout(function(){
-                        var teacherFloatResp = data.getFLoatTeacher(self.locationId,startDate, startDate);
+                        var locationObj = self.getLocationObject(self.locationId);
+                        var teacherFloatResp = data.getFLoatTeacher(self.locationId,startDate, startDate, locationObj['_hub_parentcenter_value']);
                         self.floatTeacher(teacherFloatResp, options.$trigger[0]);
                     }, 500)
                 }

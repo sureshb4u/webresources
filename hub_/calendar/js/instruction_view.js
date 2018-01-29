@@ -9110,7 +9110,7 @@ function Data(){
      //done
   }
 
-  this.getStaffException = function(locationId,startDate,endDate){
+  this.getStaffException = function(locationId, startDate, endDate, parentCenterId){
     return staffExceptions;
   }
 
@@ -9185,7 +9185,7 @@ function Data(){
     //done
   }
 
-  this.getFLoatTeacher = function(locationId, startDate, endDate){
+  this.getFLoatTeacher = function(locationId, startDate, endDate, parentCenterId){
     return FloatTeacherList;
   }
 
