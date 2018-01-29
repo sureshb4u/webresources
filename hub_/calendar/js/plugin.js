@@ -1202,9 +1202,8 @@ function SylvanCalendar() {
             var locationObj = self.getLocationObject(self.locationId);
             objNewSession['ownerObj'] = locationObj['ownerObj'];
             objStaff['ownerObj'] = locationObj['ownerObj'];
-
+            objStaff['_hub_parentcenter_value'] = locationObj['_hub_parentcenter_value'];
             var responseObj = data.saveTAtoSession(objStaff, objNewSession);
-           
             var newScheduleObj = {};
             newScheduleObj.hub_staff_scheduleid = responseObj['hub_staff_scheduleid'];
             newScheduleObj.hub_center = teacher.locationId;
@@ -2665,7 +2664,7 @@ function SylvanCalendar() {
                     if (self.staffExceptions == null) {
                         self.staffExceptions = [];
                     }
-                    self.teacherSchedule = isFetch || (self.teacherSchedule.length == 0) ? data.getTeacherSchedule(locationId, startDate, endDate, locationObj['_hub_parentcenter_value']) : self.teacherSchedule;
+                    self.teacherSchedule = isFetch || (self.teacherSchedule.length == 0) ? data.getTeacherSchedule(locationId, startDate, endDate) : self.teacherSchedule;
                     if (self.teacherSchedule == null) {
                         self.teacherSchedule = [];
                     }
@@ -5154,6 +5153,7 @@ function SylvanCalendar() {
 
             var locationObj = self.getLocationObject(self.locationId);
             objPinnedStaff['ownerObj'] = locationObj['ownerObj'];
+            objPinnedStaff['_hub_parentcenter_value'] = locationObj['_hub_parentcenter_value'];
             var responseObj = data.savePinTeacher(objPinnedStaff);
             if(typeof(responseObj) == 'boolean'){
                 if (self.convertedPinnedList.length) {
@@ -5225,6 +5225,7 @@ function SylvanCalendar() {
             objUnPinnedStaff['hub_resourceid@odata.bind'] = teacher[0].resourceId;
             var locationObj = self.getLocationObject(self.locationId);
             objUnPinnedStaff['ownerObj'] = locationObj['ownerObj'];
+            objUnPinnedStaff['_hub_parentcenter_value'] = locationObj['_hub_parentcenter_value'];
             if (data.saveUnPinTeacher(objUnPinnedStaff)) {
                 var eventObj = self.calendar.fullCalendar('clientEvents', eventId);
                 wjQuery(element).removeAttr('pinnedId');
@@ -6677,8 +6678,9 @@ function SylvanCalendar() {
             // Get location Object
             var locationObj = self.getLocationObject(self.locationId);
             objNewSession['ownerObj'] = locationObj['ownerObj']; 
+            objNewSession['_hub_parentcenter_value'] = locationObj['_hub_parentcenter_value']; 
             objPrevSession['ownerObj'] = locationObj['ownerObj']; 
-
+            objPrevSession['_hub_parentcenter_value'] = locationObj['_hub_parentcenter_value']; 
             var responseObj = data.saveTeachertoSession(objPrevSession, objNewSession);
             if (typeof responseObj == 'boolean') {
                 if (responseObj) {
@@ -7181,6 +7183,7 @@ function SylvanCalendar() {
             else{
                 var locationObj = self.getLocationObject(self.locationId);
                 removeTeacherObj['ownerObj'] = locationObj['ownerObj'];
+                removeTeacherObj['_hub_parentcenter_value'] = locationObj['_hub_parentcenter_value'];
                 responseObj = data.removeTeacher(removeTeacherObj);
             }
             if (typeof(responseObj) == 'boolean' || typeof(responseObj) == 'object') {
