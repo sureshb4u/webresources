@@ -3235,6 +3235,8 @@ function SylvanCalendar() {
                     deliveryTypeId: val['aproductservice_x002e_hub_deliverytype'],
                     deliveryType: val['aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue'],
                     locationId: val['astaff_x002e_hub_center'],
+                    centerId:val['_hub_centerid_value'],
+                    centerName:val['_hub_centerid_value@OData.Community.Display.V1.FormattedValue'],
                     locationName: val['astaff_x002e_hub_center@OData.Community.Display.V1.FormattedValue'],
                     subjectId: val['subjectId'],
                     scheduleId: val['hub_staff_scheduleid'],
@@ -3940,248 +3942,250 @@ function SylvanCalendar() {
         wjQuery(".loading").show();
         if (teacherObject.length) {
             wjQuery.each(teacherObject, function (key, value) {
-                var id = value['id'];
-                var name = value['name'];
-                var eventId = value['resourceId'] + value['startHour'];
-                var uniqueId = id + "_" + value['resourceId'] + "_" + value['startHour'];
-                var event = self.calendar.fullCalendar('clientEvents', eventId);
-                var resourceObj = self.getResourceObj(value['resourceId']);
-                if (event.length == 1) {
-                    wjQuery.each(event, function (k, v) {
-                        if (event[k].hasOwnProperty("teachers") && event[k]['teachers'].length != 0) {
-                            index = event[k].teachers.map(function (x) {
-                                return x.id;
-                            }).indexOf(id);
-                            if (index == -1) {
-                                event[k].title = "";
-                                if (event[k].title.indexOf("<img class='onetoone' title='1:1 Session' src='/webresources/hub_/calendar/images/lock.png'>") != -1) {
-                                    event[k].title = event[k].title.replace("<img class='onetoone' title='1:1 Session' src='/webresources/hub_/calendar/images/lock.png'>", "");
-                                }
-                                // Conflict update
-                                // More than one teacher conflict 
-                                var msgIndex = event[k].conflictMsg.map(function (x) {
-                                    return x;
-                                }).indexOf(0);
-                                if (msgIndex == -1) {
-                                    event[k].conflictMsg.push(0);
-                                }
-                                self.updateConflictMsg(event[k]);
-
-                                event[k].teachers.push({ id: id, name: name, pinId: value['pinId'] });
-                                wjQuery.each(event[k].teachers, function (ka, teacherObj) {
-                                    var uniqueId = teacherObj.id + "_" + value['resourceId'] + "_" + value['startHour'];
-                                    if (teacherObj['pinId'] != undefined) {
-                                        event[k].title += "<span class='draggable drag-teacher' pinnedId='" + value['pinId'] + "' eventid='" + eventId + "' uniqueId='" + uniqueId + "' id='" + teacherObj.id + value['resourceId'] + "' type='teacherSession' value='" + teacherObj.id + "'><img src='/webresources/hub_/calendar/images/pin.png'/>" + teacherObj.name + "</span>";
-                                        self.addContext(uniqueId, 'teacher', true, "", teacherObj['scheduleType']);
-                                    } else {
-                                        event[k].title += "<span class='draggable drag-teacher' eventid='" + eventId + "' uniqueId='" + uniqueId + "' id='" + teacherObj.id + value['resourceId'] + "' type='teacherSession' value='" + teacherObj.id + "'>" + teacherObj.name + "</span>";
-                                        self.addContext(uniqueId, 'teacher', false, "", teacherObj['scheduleType']);
+                if(value['centerId'] == self.locationId){
+                    var id = value['id'];
+                    var name = value['name'];
+                    var eventId = value['resourceId'] + value['startHour'];
+                    var uniqueId = id + "_" + value['resourceId'] + "_" + value['startHour'];
+                    var event = self.calendar.fullCalendar('clientEvents', eventId);
+                    var resourceObj = self.getResourceObj(value['resourceId']);
+                    if (event.length == 1) {
+                        wjQuery.each(event, function (k, v) {
+                            if (event[k].hasOwnProperty("teachers") && event[k]['teachers'].length != 0) {
+                                index = event[k].teachers.map(function (x) {
+                                    return x.id;
+                                }).indexOf(id);
+                                if (index == -1) {
+                                    event[k].title = "";
+                                    if (event[k].title.indexOf("<img class='onetoone' title='1:1 Session' src='/webresources/hub_/calendar/images/lock.png'>") != -1) {
+                                        event[k].title = event[k].title.replace("<img class='onetoone' title='1:1 Session' src='/webresources/hub_/calendar/images/lock.png'>", "");
                                     }
-                                    event[k].isConflict = true;
-                                });
-                                if (event[k].hasOwnProperty("students")) {
-                                    wjQuery.each(event[k].students, function (ke, val) {
-                                        if (resourceObj.deliveryTypeCode == groupInstruction) {
-                                            event[k].title += "<span class='drag-student' eventid='" + eventId + "' uniqueId='" + val.id + "_" + value['resourceId'] + "_" + value['startHour'] + "' id='" + val.id + value['resourceId'] + "' type='studentSession' value='" + val.id + "'>" + val.name + ", " + val.grade + "<i class='material-icons' title='"+val['serviceValue']+"' style='color:" + val['subjectColorCode'] + "'>location_on</i></span>";
+                                    // Conflict update
+                                    // More than one teacher conflict 
+                                    var msgIndex = event[k].conflictMsg.map(function (x) {
+                                        return x;
+                                    }).indexOf(0);
+                                    if (msgIndex == -1) {
+                                        event[k].conflictMsg.push(0);
+                                    }
+                                    self.updateConflictMsg(event[k]);
+
+                                    event[k].teachers.push({ id: id, name: name, pinId: value['pinId'] });
+                                    wjQuery.each(event[k].teachers, function (ka, teacherObj) {
+                                        var uniqueId = teacherObj.id + "_" + value['resourceId'] + "_" + value['startHour'];
+                                        if (teacherObj['pinId'] != undefined) {
+                                            event[k].title += "<span class='draggable drag-teacher' pinnedId='" + value['pinId'] + "' eventid='" + eventId + "' uniqueId='" + uniqueId + "' id='" + teacherObj.id + value['resourceId'] + "' type='teacherSession' value='" + teacherObj.id + "'><img src='/webresources/hub_/calendar/images/pin.png'/>" + teacherObj.name + "</span>";
+                                            self.addContext(uniqueId, 'teacher', true, "", teacherObj['scheduleType']);
                                         } else {
-                                            if (val['pinId'] != undefined) {
-                                                event[k].title += "<span class='draggable drag-student' pinnedId='" + val['pinId'] + "' eventid='" + eventId + "' uniqueId='" + val.id + "_" + value['resourceId'] + "_" + value['startHour'] + "' id='" + val.id + value['resourceId'] + "' type='studentSession' value='" + val.id + "'><img src='/webresources/hub_/calendar/images/pin.png'/>" + val.name + ", " + val.grade + "<i class='material-icons' style='color:" + val['subjectColorCode'] + "'>location_on</i></span>";
+                                            event[k].title += "<span class='draggable drag-teacher' eventid='" + eventId + "' uniqueId='" + uniqueId + "' id='" + teacherObj.id + value['resourceId'] + "' type='teacherSession' value='" + teacherObj.id + "'>" + teacherObj.name + "</span>";
+                                            self.addContext(uniqueId, 'teacher', false, "", teacherObj['scheduleType']);
+                                        }
+                                        event[k].isConflict = true;
+                                    });
+                                    if (event[k].hasOwnProperty("students")) {
+                                        wjQuery.each(event[k].students, function (ke, val) {
+                                            if (resourceObj.deliveryTypeCode == groupInstruction) {
+                                                event[k].title += "<span class='drag-student' eventid='" + eventId + "' uniqueId='" + val.id + "_" + value['resourceId'] + "_" + value['startHour'] + "' id='" + val.id + value['resourceId'] + "' type='studentSession' value='" + val.id + "'>" + val.name + ", " + val.grade + "<i class='material-icons' title='"+val['serviceValue']+"' style='color:" + val['subjectColorCode'] + "'>location_on</i></span>";
                                             } else {
-                                                event[k].title += "<span class='draggable drag-student' eventid='" + eventId + "' uniqueId='" + val.id + "_" + value['resourceId'] + "_" + value['startHour'] + "' id='" + val.id + value['resourceId'] + "' type='studentSession' value='" + val.id + "'>" + val.name + ", " + val.grade + "<i class='material-icons' title='"+val['serviceValue']+"' style='color:" + val['subjectColorCode'] + "'>location_on</i></span>";
+                                                if (val['pinId'] != undefined) {
+                                                    event[k].title += "<span class='draggable drag-student' pinnedId='" + val['pinId'] + "' eventid='" + eventId + "' uniqueId='" + val.id + "_" + value['resourceId'] + "_" + value['startHour'] + "' id='" + val.id + value['resourceId'] + "' type='studentSession' value='" + val.id + "'><img src='/webresources/hub_/calendar/images/pin.png'/>" + val.name + ", " + val.grade + "<i class='material-icons' style='color:" + val['subjectColorCode'] + "'>location_on</i></span>";
+                                                } else {
+                                                    event[k].title += "<span class='draggable drag-student' eventid='" + eventId + "' uniqueId='" + val.id + "_" + value['resourceId'] + "_" + value['startHour'] + "' id='" + val.id + value['resourceId'] + "' type='studentSession' value='" + val.id + "'>" + val.name + ", " + val.grade + "<i class='material-icons' title='"+val['serviceValue']+"' style='color:" + val['subjectColorCode'] + "'>location_on</i></span>";
+                                                }
+                                            }
+                                        });
+                                    }
+                                    // capacity check for students place holder
+                                    if (event[k].hasOwnProperty("students")) {
+                                        if (resourceObj['capacity'] > event[k].students.length) {
+                                            if (event[k].title.indexOf('<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>') == -1) {
+                                                event[k].title += '<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>';
+                                                self.addContext("", 'studentPlaceholder', true, event[k].deliveryTypeCode);
                                             }
                                         }
-                                    });
-                                }
-                                // capacity check for students place holder
-                                if (event[k].hasOwnProperty("students")) {
-                                    if (resourceObj['capacity'] > event[k].students.length) {
+                                    } else {
                                         if (event[k].title.indexOf('<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>') == -1) {
                                             event[k].title += '<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>';
                                             self.addContext("", 'studentPlaceholder', true, event[k].deliveryTypeCode);
                                         }
                                     }
+                                }
+                            } else {
+                                var uniqueId = id + "_" + value['resourceId'] + "_" + value['startHour'];
+                                if (event[k].title.indexOf("<img class='onetoone' title='1:1 Session' src='/webresources/hub_/calendar/images/lock.png'>") != -1) {
+                                    event[k].title = "<img class='onetoone' title='1:1 Session' src='/webresources/hub_/calendar/images/lock.png'>";
+                                    if (value['pinId'] != undefined) {
+                                        event[k].title += "<span class='draggable drag-teacher' pinnedId='" + value['pinId'] + "' eventid='" + eventId + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='teacherSession' value='" + id + "'><img src='/webresources/hub_/calendar/images/pin.png'/>" + value.name + "</span>";
+                                    } else {
+                                        event[k].title += "<span class='draggable drag-teacher' eventid='" + eventId + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='teacherSession' value='" + id + "'>" + value.name + "</span>";
+                                    }
                                 } else {
+                                    if (value['pinId'] != undefined) {
+                                        event[k].title = "<span class='draggable drag-teacher' pinnedId='" + value['pinId'] + "' eventid='" + eventId + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='teacherSession' value='" + id + "'><img src='/webresources/hub_/calendar/images/pin.png'/>" + value.name + "</span>";
+                                    } else {
+                                        event[k].title = "<span class='draggable drag-teacher' eventid='" + eventId + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='teacherSession' value='" + id + "'>" + value.name + "</span>";
+                                    }
+                                }
+                                var studentList = event[k].students;
+                                event[k].teachers = [{ id: id, name: name }];
+                                wjQuery.each(studentList, function (ke, val) {
+                                    if (resourceObj.deliveryTypeCode == groupInstruction) {
+                                        event[k].title += "<span class='drag-student' eventid='" + eventId + "' uniqueId='" + val.id + "_" + value['resourceId'] + "_" + value['startHour'] + "' id='" + val.id + value['resourceId'] + "' type='studentSession' value='" + val.id + "'>" + val.name + ", " + val.grade + "<i class='material-icons' title='"+val['serviceValue']+"' style='color:" + val['subjectColorCode'] + "'>location_on</i></span>";
+                                    } else {
+                                        if (val['pinId']) {
+                                            event[k].title += "<span class='draggable drag-student' pinnedId='" + val['pinId'] + "' eventid='" + eventId + "' uniqueId='" + val.id + "_" + value['resourceId'] + "_" + value['startHour'] + "' id='" + val.id + value['resourceId'] + "' type='studentSession' value='" + val.id + "'><img src='/webresources/hub_/calendar/images/pin.png'/>" + val.name + ", " + val.grade + "<i class='material-icons' title='"+val['serviceValue']+"' style='color:" + val['subjectColorCode'] + "'>location_on</i></span>";
+                                        } else {
+                                            event[k].title += "<span class='draggable drag-student' eventid='" + eventId + "' uniqueId='" + val.id + "_" + value['resourceId'] + "_" + value['startHour'] + "' id='" + val.id + value['resourceId'] + "' type='studentSession' value='" + val.id + "'>" + val.name + ", " + val.grade + "<i class='material-icons' title='"+val['serviceValue']+"' style='color:" + val['subjectColorCode'] + "'>location_on</i></span>";
+                                        }
+                                    }
+                                });
+                            }
+                            if (event[k].students != undefined) {
+                                if (event[k].students.length < resourceObj["capacity"] || resourceObj["capacity"] == undefined) {
+                                    if (event[k].title.indexOf('<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>') == -1){
+                                      event[k].title += '<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>';
+                                      self.addContext("", 'studentPlaceholder', true, event[k].deliveryTypeCode);
+                                    }
+                                    // Conflict removal 
+                                    // Capacity conflict reamoval
+                                    var msgIndex = event[k].conflictMsg.map(function (y) {
+                                        return y;
+                                    }).indexOf(1);
+                                    if (msgIndex > -1) {
+                                        event[k].conflictMsg.splice(msgIndex, 1);
+                                    }
+                                    self.updateConflictMsg(event[k]);
+                                } else if (event[k].students.length > resourceObj["capacity"]) {
+                                    var msgIndex = event[k].conflictMsg.map(function (z) {
+                                        return z;
+                                    }).indexOf(1);
+                                    if (msgIndex == -1) {
+                                        event[k].conflictMsg.push(1);
+                                    }
+                                    self.updateConflictMsg(event[k]);
+                                }
+                            }
+                            if (event[k].title.indexOf('<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>') != -1) {
+                                event[k].title = event[k].title.replace('<span class="student-placeholder-'+event[k].deliveryType+'"-'+event[k].deliveryType+'>Student name</span>', "");
+                            }
+                            if (event[k].hasOwnProperty("students")) {
+                                if (resourceObj['capacity'] > event[k].students.length) {
                                     if (event[k].title.indexOf('<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>') == -1) {
                                         event[k].title += '<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>';
                                         self.addContext("", 'studentPlaceholder', true, event[k].deliveryTypeCode);
                                     }
                                 }
-                            }
-                        } else {
-                            var uniqueId = id + "_" + value['resourceId'] + "_" + value['startHour'];
-                            if (event[k].title.indexOf("<img class='onetoone' title='1:1 Session' src='/webresources/hub_/calendar/images/lock.png'>") != -1) {
-                                event[k].title = "<img class='onetoone' title='1:1 Session' src='/webresources/hub_/calendar/images/lock.png'>";
-                                if (value['pinId'] != undefined) {
-                                    event[k].title += "<span class='draggable drag-teacher' pinnedId='" + value['pinId'] + "' eventid='" + eventId + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='teacherSession' value='" + id + "'><img src='/webresources/hub_/calendar/images/pin.png'/>" + value.name + "</span>";
-                                } else {
-                                    event[k].title += "<span class='draggable drag-teacher' eventid='" + eventId + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='teacherSession' value='" + id + "'>" + value.name + "</span>";
-                                }
                             } else {
-                                if (value['pinId'] != undefined) {
-                                    event[k].title = "<span class='draggable drag-teacher' pinnedId='" + value['pinId'] + "' eventid='" + eventId + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='teacherSession' value='" + id + "'><img src='/webresources/hub_/calendar/images/pin.png'/>" + value.name + "</span>";
-                                } else {
-                                    event[k].title = "<span class='draggable drag-teacher' eventid='" + eventId + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='teacherSession' value='" + id + "'>" + value.name + "</span>";
-                                }
-                            }
-                            var studentList = event[k].students;
-                            event[k].teachers = [{ id: id, name: name }];
-                            wjQuery.each(studentList, function (ke, val) {
-                                if (resourceObj.deliveryTypeCode == groupInstruction) {
-                                    event[k].title += "<span class='drag-student' eventid='" + eventId + "' uniqueId='" + val.id + "_" + value['resourceId'] + "_" + value['startHour'] + "' id='" + val.id + value['resourceId'] + "' type='studentSession' value='" + val.id + "'>" + val.name + ", " + val.grade + "<i class='material-icons' title='"+val['serviceValue']+"' style='color:" + val['subjectColorCode'] + "'>location_on</i></span>";
-                                } else {
-                                    if (val['pinId']) {
-                                        event[k].title += "<span class='draggable drag-student' pinnedId='" + val['pinId'] + "' eventid='" + eventId + "' uniqueId='" + val.id + "_" + value['resourceId'] + "_" + value['startHour'] + "' id='" + val.id + value['resourceId'] + "' type='studentSession' value='" + val.id + "'><img src='/webresources/hub_/calendar/images/pin.png'/>" + val.name + ", " + val.grade + "<i class='material-icons' title='"+val['serviceValue']+"' style='color:" + val['subjectColorCode'] + "'>location_on</i></span>";
-                                    } else {
-                                        event[k].title += "<span class='draggable drag-student' eventid='" + eventId + "' uniqueId='" + val.id + "_" + value['resourceId'] + "_" + value['startHour'] + "' id='" + val.id + value['resourceId'] + "' type='studentSession' value='" + val.id + "'>" + val.name + ", " + val.grade + "<i class='material-icons' title='"+val['serviceValue']+"' style='color:" + val['subjectColorCode'] + "'>location_on</i></span>";
-                                    }
-                                }
-                            });
-                        }
-                        if (event[k].students != undefined) {
-                            if (event[k].students.length < resourceObj["capacity"] || resourceObj["capacity"] == undefined) {
-                                if (event[k].title.indexOf('<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>') == -1){
-                                  event[k].title += '<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>';
-                                  self.addContext("", 'studentPlaceholder', true, event[k].deliveryTypeCode);
-                                }
-                                // Conflict removal 
-                                // Capacity conflict reamoval
-                                var msgIndex = event[k].conflictMsg.map(function (y) {
-                                    return y;
-                                }).indexOf(1);
-                                if (msgIndex > -1) {
-                                    event[k].conflictMsg.splice(msgIndex, 1);
-                                }
-                                self.updateConflictMsg(event[k]);
-                            } else if (event[k].students.length > resourceObj["capacity"]) {
-                                var msgIndex = event[k].conflictMsg.map(function (z) {
-                                    return z;
-                                }).indexOf(1);
-                                if (msgIndex == -1) {
-                                    event[k].conflictMsg.push(1);
-                                }
-                                self.updateConflictMsg(event[k]);
-                            }
-                        }
-                        if (event[k].title.indexOf('<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>') != -1) {
-                            event[k].title = event[k].title.replace('<span class="student-placeholder-'+event[k].deliveryType+'"-'+event[k].deliveryType+'>Student name</span>', "");
-                        }
-                        if (event[k].hasOwnProperty("students")) {
-                            if (resourceObj['capacity'] > event[k].students.length) {
                                 if (event[k].title.indexOf('<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>') == -1) {
                                     event[k].title += '<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>';
                                     self.addContext("", 'studentPlaceholder', true, event[k].deliveryTypeCode);
                                 }
                             }
-                        } else {
-                            if (event[k].title.indexOf('<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>') == -1) {
-                                event[k].title += '<span class="student-placeholder-'+event[k].deliveryType+'">Student name</span>';
-                                self.addContext("", 'studentPlaceholder', true, event[k].deliveryTypeCode);
+
+
+                          if(resourceObj['deliveryTypeCode'] == personalInstruction){
+                            var eventIs1to1 = self.checkEventIsOneToOne(event[k]['students']); 
+                            if(eventIs1to1){
+                              event[k].is1to1 = true;
                             }
-                        }
 
+                            if(event[k].is1to1){
+                              if(event[k].title.indexOf('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">') == -1){
+                                event[k].title += '<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">';
+                              }
+                            }
 
-                      if(resourceObj['deliveryTypeCode'] == personalInstruction){
-                        var eventIs1to1 = self.checkEventIsOneToOne(event[k]['students']); 
-                        if(eventIs1to1){
-                          event[k].is1to1 = true;
-                        }
-
-                        if(event[k].is1to1){
-                          if(event[k].title.indexOf('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">') == -1){
-                            event[k].title += '<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">';
+                            // Update one to one conflict check
+                            if(event[k].is1to1 && event[k].hasOwnProperty('students') && event[k]['students'].length > 1){
+                              var msgIndex = event[k].conflictMsg.map(function (x) {
+                                  return x;
+                              }).indexOf(2);
+                              if (msgIndex == -1) {
+                                  event[k].conflictMsg.push(2);
+                              }
+                              self.updateConflictMsg(event[k]);
+                            }
                           }
-                        }
-
-                        // Update one to one conflict check
-                        if(event[k].is1to1 && event[k].hasOwnProperty('students') && event[k]['students'].length > 1){
-                          var msgIndex = event[k].conflictMsg.map(function (x) {
+                          
+                          var isNonPreferred = self.checkNonPreferredTeacherConflict(event[k]);
+                          if(isNonPreferred){
+                            // non preferred teacher conflict check
+                            var msgIndex = event[k].conflictMsg.map(function (x) {
                               return x;
-                          }).indexOf(2);
-                          if (msgIndex == -1) {
-                              event[k].conflictMsg.push(2);
+                            }).indexOf(3);
+                            if (msgIndex == -1) {
+                              event[k].conflictMsg.push(3);
+                            }                      
+                            self.updateConflictMsg(event[k]);
                           }
-                          self.updateConflictMsg(event[k]);
+
+
+                        });
+                        if (value['pinId'] != undefined) {
+                            self.addContext(uniqueId, 'teacher', true, "", value['scheduleType']);
                         }
-                      }
-                      
-                      var isNonPreferred = self.checkNonPreferredTeacherConflict(event[k]);
-                      if(isNonPreferred){
-                        // non preferred teacher conflict check
-                        var msgIndex = event[k].conflictMsg.map(function (x) {
-                          return x;
-                        }).indexOf(3);
-                        if (msgIndex == -1) {
-                          event[k].conflictMsg.push(3);
-                        }                      
-                        self.updateConflictMsg(event[k]);
-                      }
-
-
-                    });
-                    if (value['pinId'] != undefined) {
-                        self.addContext(uniqueId, 'teacher', true, "", value['scheduleType']);
-                    }
-                    else {
-                        self.addContext(uniqueId, 'teacher', false, "", value['scheduleType']);
-                    }
-                    self.calendar.fullCalendar('updateEvent', event);
-                } else {
-                    var obj = {
-                        id: value['resourceId']+value['startHour'],
-                        teachers:[{id:id, name:name, pinId: value['pinId']}],
-                        start:value['startHour'],
-                        end:value['end'],
-                        allDay: false,
-                        resourceId: value['resourceId'],
-                        isTeacher: true,
-                        isConflict: false,
-                        deliveryTypeId: resourceObj.deliveryTypeId,
-                        deliveryType : resourceObj.deliveryType,
-                        deliveryTypeCode: resourceObj.deliveryTypeCode,
-                        deliveryTypeCodeVal: resourceObj.deliveryTypeCodeVal,
-                        textColor:"#333333",
-                        conflictMsg: []
-                    }
-                    if (value['pinId'] != undefined) {
-                        obj.title = "<span class='draggable drag-teacher' pinnedId='" + value['pinId'] + "' eventid='" + eventId + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='teacherSession' value='" + id + "'><img src='/webresources/hub_/calendar/images/pin.png'/>" + name + "</span>";
+                        else {
+                            self.addContext(uniqueId, 'teacher', false, "", value['scheduleType']);
+                        }
+                        self.calendar.fullCalendar('updateEvent', event);
                     } else {
-                        obj.title = "<span class='draggable drag-teacher' eventid='" + eventId + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='teacherSession' value='" + id + "'>" + name + "</span>";
-                    }
+                        var obj = {
+                            id: value['resourceId']+value['startHour'],
+                            teachers:[{id:id, name:name, pinId: value['pinId']}],
+                            start:value['startHour'],
+                            end:value['end'],
+                            allDay: false,
+                            resourceId: value['resourceId'],
+                            isTeacher: true,
+                            isConflict: false,
+                            deliveryTypeId: resourceObj.deliveryTypeId,
+                            deliveryType : resourceObj.deliveryType,
+                            deliveryTypeCode: resourceObj.deliveryTypeCode,
+                            deliveryTypeCodeVal: resourceObj.deliveryTypeCodeVal,
+                            textColor:"#333333",
+                            conflictMsg: []
+                        }
+                        if (value['pinId'] != undefined) {
+                            obj.title = "<span class='draggable drag-teacher' pinnedId='" + value['pinId'] + "' eventid='" + eventId + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='teacherSession' value='" + id + "'><img src='/webresources/hub_/calendar/images/pin.png'/>" + name + "</span>";
+                        } else {
+                            obj.title = "<span class='draggable drag-teacher' eventid='" + eventId + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='teacherSession' value='" + id + "'>" + name + "</span>";
+                        }
 
-                    if (obj.deliveryTypeCode == groupFacilitation) {
-                        obj.backgroundColor = "#dff0d5";
-                        obj.borderColor = "#7bc143";
-                        obj.deliveryType = "Group-Facilitation";
-                    } else if (obj.deliveryTypeCode == groupInstruction) {
-                        obj.backgroundColor = "#fedeb7";
-                        obj.borderColor = "#f88e50";
-                        obj.deliveryType = "Group-Instruction";
-                    } else if (obj.deliveryTypeCode == personalInstruction) {
-                        obj.backgroundColor = "#ebf5fb";
-                        obj.borderColor = "#9acaea";
-                        obj.deliveryType = "Personal-Instruction";
-                    }
+                        if (obj.deliveryTypeCode == groupFacilitation) {
+                            obj.backgroundColor = "#dff0d5";
+                            obj.borderColor = "#7bc143";
+                            obj.deliveryType = "Group-Facilitation";
+                        } else if (obj.deliveryTypeCode == groupInstruction) {
+                            obj.backgroundColor = "#fedeb7";
+                            obj.borderColor = "#f88e50";
+                            obj.deliveryType = "Group-Instruction";
+                        } else if (obj.deliveryTypeCode == personalInstruction) {
+                            obj.backgroundColor = "#ebf5fb";
+                            obj.borderColor = "#9acaea";
+                            obj.deliveryType = "Personal-Instruction";
+                        }
 
-                    if(obj.deliveryType != undefined){
-                      obj.title += '<span class="student-placeholder-'+obj.deliveryType+'">Student name</span>';
-                      self.addContext("",'studentPlaceholder',true, obj.deliveryTypeCode);
-                    }
+                        if(obj.deliveryType != undefined){
+                          obj.title += '<span class="student-placeholder-'+obj.deliveryType+'">Student name</span>';
+                          self.addContext("",'studentPlaceholder',true, obj.deliveryTypeCode);
+                        }
 
-                    if (value['pinId'] != undefined) {
-                        self.addContext(uniqueId, 'teacher', true, "", value['scheduleType']);
+                        if (value['pinId'] != undefined) {
+                            self.addContext(uniqueId, 'teacher', true, "", value['scheduleType']);
+                        }
+                        else {
+                            self.addContext(uniqueId, 'teacher', false, "", value['scheduleType']);
+                        }
+                        self.eventList.push(obj);
+                        if (isFromFilter) {
+                            self.calendar.fullCalendar('removeEvents');
+                            self.calendar.fullCalendar('removeEventSource');
+                            self.calendar.fullCalendar('addEventSource', { events: self.eventList });
+                            self.calendar.fullCalendar('refetchEvents');
+                        }
                     }
-                    else {
-                        self.addContext(uniqueId, 'teacher', false, "", value['scheduleType']);
-                    }
-                    self.eventList.push(obj);
-                    if (isFromFilter) {
-                        self.calendar.fullCalendar('removeEvents');
-                        self.calendar.fullCalendar('removeEventSource');
-                        self.calendar.fullCalendar('addEventSource', { events: self.eventList });
-                        self.calendar.fullCalendar('refetchEvents');
-                    }
+                    self.draggable('draggable');
                 }
-                self.draggable('draggable');
             });
         }
         wjQuery(".loading").hide();
