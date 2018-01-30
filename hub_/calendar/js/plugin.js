@@ -3177,6 +3177,10 @@ function SylvanCalendar() {
                             name: val["teacherName"],
                             start: sDate,
                             end: eDate,
+                            locationId: val['astaff_x002e_hub_center'],
+                            locationName: val['astaff_x002e_hub_center@OData.Community.Display.V1.FormattedValue'],
+                            centerId:val['centerId'],
+                            centerName:val['centerName'],
                             startHour: startHour,
                             resourceId: val['resourceId'],
                             scheduleType:val['hub_schedule_type'],
@@ -3235,9 +3239,9 @@ function SylvanCalendar() {
                     deliveryTypeId: val['aproductservice_x002e_hub_deliverytype'],
                     deliveryType: val['aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue'],
                     locationId: val['astaff_x002e_hub_center'],
+                    locationName: val['astaff_x002e_hub_center@OData.Community.Display.V1.FormattedValue'],
                     centerId:val['_hub_centerid_value'],
                     centerName:val['_hub_centerid_value@OData.Community.Display.V1.FormattedValue'],
-                    locationName: val['astaff_x002e_hub_center@OData.Community.Display.V1.FormattedValue'],
                     subjectId: val['subjectId'],
                     scheduleId: val['hub_staff_scheduleid'],
                     serviceId : val['_hub_product_service_value'],
@@ -6467,6 +6471,8 @@ function SylvanCalendar() {
                 teacherId: data['_hub_teacher_value'],
                 teacherName: data['_hub_teacher_value@OData.Community.Display.V1.FormattedValue'],
                 dayId: data['hub_day'],
+                centerId:data['_hub_center_value'],
+                centerName:data['_hub_center_value@OData.Community.Display.V1.FormattedValue'],
                 dayValue: data['hub_day@OData.Community.Display.V1.FormattedValue']
             };
             if (data['_hub_resource_value'] != undefined) {
