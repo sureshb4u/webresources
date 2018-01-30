@@ -7304,49 +7304,67 @@ function SylvanCalendar() {
         if(arrayList.length){
             if(label == 'teacherSchedule'){
                 for (var i = 0; i < arrayList.length; i++) {
-                    if(arrayList[i].hasOwnProperty('startHour') && arrayList[i].hasOwnProperty('resourceId')){
-                        var resourceObj = this.getResourceObj(arrayList[i].resourceId);
-                        arrayList[i].isTeacher = true;
-                        arrayList[i].deliveryType = resourceObj.deliveryType;
-                        arrayList[i].deliveryTypeId = resourceObj.deliveryTypeId;
-                        arrayList[i].deliveryTypeCode = resourceObj.deliveryTypeCode;
-                        if(this.weekEventObject.hasOwnProperty(arrayList[i].startHour)){
-                            if(this.weekEventObject[arrayList[i].startHour].hasOwnProperty('teacherSchedule')){
-                                if(arrayList[i].deliveryTypeCode == personalInstruction){
-                                    var index = -1;
-                                    for (var k = 0; k < this.weekEventObject[arrayList[i].startHour].teacherSchedule.pi.length; k++) {
-                                        if(this.weekEventObject[arrayList[i].startHour].teacherSchedule.pi[k].id == arrayList[i].id){
-                                            index = k;
-                                            break;
+                    if(arrayList[i]['centerId'] == self.locationId){
+                        if(arrayList[i].hasOwnProperty('startHour') && arrayList[i].hasOwnProperty('resourceId')){
+                            var resourceObj = this.getResourceObj(arrayList[i].resourceId);
+                            arrayList[i].isTeacher = true;
+                            arrayList[i].deliveryType = resourceObj.deliveryType;
+                            arrayList[i].deliveryTypeId = resourceObj.deliveryTypeId;
+                            arrayList[i].deliveryTypeCode = resourceObj.deliveryTypeCode;
+                            if(this.weekEventObject.hasOwnProperty(arrayList[i].startHour)){
+                                if(this.weekEventObject[arrayList[i].startHour].hasOwnProperty('teacherSchedule')){
+                                    if(arrayList[i].deliveryTypeCode == personalInstruction){
+                                        var index = -1;
+                                        for (var k = 0; k < this.weekEventObject[arrayList[i].startHour].teacherSchedule.pi.length; k++) {
+                                            if(this.weekEventObject[arrayList[i].startHour].teacherSchedule.pi[k].id == arrayList[i].id){
+                                                index = k;
+                                                break;
+                                            }
+                                        }
+                                        if(index == -1){
+                                            this.weekEventObject[arrayList[i].startHour].teacherSchedule.pi.push(arrayList[i]);
                                         }
                                     }
-                                    if(index == -1){
+                                    else if(arrayList[i].deliveryTypeCode == groupInstruction){
+                                        var index = -1;
+                                        for (var k = 0; k < this.weekEventObject[arrayList[i].startHour].teacherSchedule.gi.length; k++) {
+                                            if(this.weekEventObject[arrayList[i].startHour].teacherSchedule.gi[k].id == arrayList[i].id){
+                                                index = k;
+                                                break;
+                                            }
+                                        }
+                                        if(index == -1)
+                                            this.weekEventObject[arrayList[i].startHour].teacherSchedule.gi.push(arrayList[i]);
+                                    }
+                                    else if(arrayList[i].deliveryTypeCode == groupFacilitation){
+                                        var index = -1;
+                                        for (var k = 0; k < this.weekEventObject[arrayList[i].startHour].teacherSchedule.gf.length; k++) {
+                                            if(this.weekEventObject[arrayList[i].startHour].teacherSchedule.gf[k].id == arrayList[i].id){
+                                                index = k;
+                                                break;
+                                            }
+                                        }
+                                        if(index == -1)
+                                            this.weekEventObject[arrayList[i].startHour].teacherSchedule.gf.push(arrayList[i]);
+                                    }
+                                }else{
+                                    this.weekEventObject[arrayList[i].startHour].teacherSchedule = {};
+                                    this.weekEventObject[arrayList[i].startHour].teacherSchedule.pi = [];
+                                    this.weekEventObject[arrayList[i].startHour].teacherSchedule.gi = [];
+                                    this.weekEventObject[arrayList[i].startHour].teacherSchedule.gf = [];
+                                    if(arrayList[i].deliveryTypeCode == personalInstruction){
                                         this.weekEventObject[arrayList[i].startHour].teacherSchedule.pi.push(arrayList[i]);
                                     }
-                                }
-                                else if(arrayList[i].deliveryTypeCode == groupInstruction){
-                                    var index = -1;
-                                    for (var k = 0; k < this.weekEventObject[arrayList[i].startHour].teacherSchedule.gi.length; k++) {
-                                        if(this.weekEventObject[arrayList[i].startHour].teacherSchedule.gi[k].id == arrayList[i].id){
-                                            index = k;
-                                            break;
-                                        }
-                                    }
-                                    if(index == -1)
+                                    else if(arrayList[i].deliveryTypeCode == groupInstruction){
                                         this.weekEventObject[arrayList[i].startHour].teacherSchedule.gi.push(arrayList[i]);
-                                }
-                                else if(arrayList[i].deliveryTypeCode == groupFacilitation){
-                                    var index = -1;
-                                    for (var k = 0; k < this.weekEventObject[arrayList[i].startHour].teacherSchedule.gf.length; k++) {
-                                        if(this.weekEventObject[arrayList[i].startHour].teacherSchedule.gf[k].id == arrayList[i].id){
-                                            index = k;
-                                            break;
-                                        }
                                     }
-                                    if(index == -1)
+                                    else if(arrayList[i].deliveryTypeCode == groupFacilitation){
                                         this.weekEventObject[arrayList[i].startHour].teacherSchedule.gf.push(arrayList[i]);
+                                    }
                                 }
-                            }else{
+                            }
+                            else{
+                                this.weekEventObject[arrayList[i].startHour] = {};
                                 this.weekEventObject[arrayList[i].startHour].teacherSchedule = {};
                                 this.weekEventObject[arrayList[i].startHour].teacherSchedule.pi = [];
                                 this.weekEventObject[arrayList[i].startHour].teacherSchedule.gi = [];
@@ -7360,22 +7378,6 @@ function SylvanCalendar() {
                                 else if(arrayList[i].deliveryTypeCode == groupFacilitation){
                                     this.weekEventObject[arrayList[i].startHour].teacherSchedule.gf.push(arrayList[i]);
                                 }
-                            }
-                        }
-                        else{
-                            this.weekEventObject[arrayList[i].startHour] = {};
-                            this.weekEventObject[arrayList[i].startHour].teacherSchedule = {};
-                            this.weekEventObject[arrayList[i].startHour].teacherSchedule.pi = [];
-                            this.weekEventObject[arrayList[i].startHour].teacherSchedule.gi = [];
-                            this.weekEventObject[arrayList[i].startHour].teacherSchedule.gf = [];
-                            if(arrayList[i].deliveryTypeCode == personalInstruction){
-                                this.weekEventObject[arrayList[i].startHour].teacherSchedule.pi.push(arrayList[i]);
-                            }
-                            else if(arrayList[i].deliveryTypeCode == groupInstruction){
-                                this.weekEventObject[arrayList[i].startHour].teacherSchedule.gi.push(arrayList[i]);
-                            }
-                            else if(arrayList[i].deliveryTypeCode == groupFacilitation){
-                                this.weekEventObject[arrayList[i].startHour].teacherSchedule.gf.push(arrayList[i]);
                             }
                         }
                     }
