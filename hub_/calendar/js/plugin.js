@@ -2672,7 +2672,7 @@ function SylvanCalendar() {
                     if (self.teacherAvailability == null) {
                         self.teacherAvailability = [];
                     }
-                    self.pinnedData = isFetch || (self.pinnedData.length == 0) ? data.getPinnedData(locationId, startDate, endDate) : self.pinnedData;
+                    self.pinnedData = isFetch || (self.pinnedData.length == 0) ? data.getPinnedData(locationId, startDate, endDate, locationObj['_hub_parentcenter_value']) : self.pinnedData;
                     if (self.pinnedData == null) {
                         self.pinnedData = [];
                     }
