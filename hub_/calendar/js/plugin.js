@@ -2606,6 +2606,7 @@ function SylvanCalendar() {
             var currentCalendarDate = self.calendar.fullCalendar('getDate');
             var currentView = self.calendar.fullCalendar('getView');
             var studentDataSource = self.findDataSource(currentCalendarDate,currentView);
+            var locationObj = self.getLocationObject(self.locationId);
             if (currentView.name == 'resourceDay') {
                 self.buildCalfirstCol();
                 self.calendarFixedWidth();
@@ -2668,7 +2669,6 @@ function SylvanCalendar() {
                           });
                     }
                     
-                    var locationObj = self.getLocationObject(self.locationId);
                     self.staffExceptions = isFetch || (self.staffExceptions.length == 0) ? data.getStaffException(locationId, startDate, endDate) : self.staffExceptions;
                     if (self.staffExceptions == null) {
                         self.staffExceptions = [];
@@ -2737,7 +2737,7 @@ function SylvanCalendar() {
                     self.businessClosure = [];
                 }
                 self.findLeaveDays();
-                self.teacherSchedule = isFetch || (self.teacherSchedule.length == 0) ? data.getTeacherSchedule(locationId, startDate, endDate) : self.teacherSchedule;
+                self.teacherSchedule = isFetch || (self.teacherSchedule.length == 0) ? data.getTeacherSchedule(locationId, startDate, endDate, locationObj['_hub_parentcenter_value']) : self.teacherSchedule;
                 if (self.teacherSchedule == null) {
                     self.teacherSchedule = [];
                 }
@@ -6506,6 +6506,8 @@ function SylvanCalendar() {
                         studentName: data[i]['_hub_student_value@OData.Community.Display.V1.FormattedValue'],
                         teacherId: data[i]['_hub_teacher_value'],
                         teacherName: data[i]['_hub_teacher_value@OData.Community.Display.V1.FormattedValue'],
+                        centerId:data[i]['_hub_center_value'],
+                        centerName:data[i]['_hub_center_value@OData.Community.Display.V1.FormattedValue'],
                         dayId: data[i]['hub_day'],
                         dayValue: data[i]['hub_day@OData.Community.Display.V1.FormattedValue']
                     };
@@ -9359,6 +9361,7 @@ function SylvanCalendar() {
             var end = new Date(el.start); 
             end = new Date(end.setHours(end.getHours() + 1));
             if( el['id'] == teacherId && 
+                el['centerId'] != self.locationId &&
                 (
                     (
                         startHour.getTime() <= el.start.getTime() && 
