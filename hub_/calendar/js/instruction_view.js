@@ -9217,6 +9217,10 @@ function Data(){
     return true;
   }
 
+  this.getAccountClosure = function(parentCenterId, month, year){
+  	return null
+  }
+
 }
 
 
