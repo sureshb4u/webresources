@@ -5973,7 +5973,7 @@ function SylvanCalendar() {
                 var resourceObj = self.getResourceObj(uniqueId.split("_")[1]);
                 if(resourceObj.deliveryTypeCode == deliveryType && (sessionStatus == SCHEDULE_STATUS 
                     || sessionStatus == undefined) && sessionType != FLOAT_TYPE && sessionType != MAKEUP_TYPE){
-                    obj.unpin = { name: "Unpin", disabled: self.checkAccountClosure};
+                    obj.unpin = { name: "Unpin", disabled: self.checkAccountClosure()};
                     obj.unpin.visible = true;
                     obj.unpin.callback = function (key, options) {
                         wjQuery(".loading").show();
@@ -5986,7 +5986,7 @@ function SylvanCalendar() {
                             }
                         }, 300);
                     }
-                    obj.pin = { name: "Pin", disabled: self.checkAccountClosure};
+                    obj.pin = { name: "Pin", disabled: self.checkAccountClosure()};
                     obj.pin.visible = true;
                     obj.pin.callback = function (key, options) {
                         wjQuery(".loading").show();
@@ -6012,7 +6012,7 @@ function SylvanCalendar() {
                 }
                 obj.omit = {
                   name: "Omit",
-                  disabled: self.checkAccountClosure,
+                  disabled: self.checkAccountClosure(),
                   callback: function (key, options) {
                     wjQuery(".loading").show();
                     options = wjQuery.extend(true, {}, options);
@@ -6023,7 +6023,7 @@ function SylvanCalendar() {
                 }
                 obj.excuse = {
                     name: "Excuse",
-                    disabled: self.checkAccountClosure,
+                    disabled: self.checkAccountClosure(),
                     // disabled:MAKEUP_TYPE == sessionType,
                     callback: function (key, options) {
                         wjQuery(".loading").show();
@@ -6042,7 +6042,7 @@ function SylvanCalendar() {
                 // }
                 obj.moveToSof = {
                     name: "Move to SOF",
-                    disabled: self.checkAccountClosure,
+                    disabled: self.checkAccountClosure(),
                     callback: function (key, options) {
                         wjQuery(".loading").show();
                         options = wjQuery.extend(true, {}, options);
@@ -9394,11 +9394,13 @@ function SylvanCalendar() {
         return StaffAvailable;
     }
 
-
     this.checkAccountClosure = function(){
+        var self = this;
         var closed = false;
-        if(self.accountClosure != null && self.accountClosure['hub_status'] == 2){
-           closed = true;
+        if(self.accountClosure != null && self.accountClosure.length){
+            if(self.accountClosure[0]['hub_status'] == 2){
+               closed = true;
+            }
         }
         return closed;
     }
