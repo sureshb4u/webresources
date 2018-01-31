@@ -429,6 +429,8 @@ function SylvanCalendar() {
     this.enrollmentPriceList = [];
     this.masterScheduleStudents = [];
     this.locationList = [];
+    this.accountClosure = [];
+
     this.init = function (element) {
     }
 
@@ -2610,6 +2612,11 @@ function SylvanCalendar() {
             if (currentView.name == 'resourceDay') {
                 self.buildCalfirstCol();
                 self.calendarFixedWidth();
+                var parentCenterId = locationObj['_hub_parentcenter_value'];
+                if(parentCenterId == undefined){
+                    parentCenterId = locationObj['hub_centerid'];
+                }
+                self.accountClosure = data.getAccountClosure(parentCenterId, (currentCalendarDate.getMonth()+1), currentCalendarDate.getFullYear());
                 startDate = endDate = moment(currentCalendarDate).format("YYYY-MM-DD");
                 // staff program fetching
                 var businessClosure1 = data.getBusinessClosure(locationId, startDate, endDate);
@@ -8205,6 +8212,7 @@ function SylvanCalendar() {
                         }
                         if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherSchedule')){
                             if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.hasOwnProperty('pi')){
+                                piFlag = true;
                                 piObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherSchedule.pi.length +"/";
                             }
                             else{
@@ -8215,8 +8223,8 @@ function SylvanCalendar() {
                             piObj.title += "0/";
                         }
                         if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].hasOwnProperty('teacherAvailability')){
-                            piObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherAvailability.length +"</div>";
                             if(this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherAvailability.length)
+                                piObj.title += this.weekEventObject[Object.keys(this.weekEventObject)[i]].teacherAvailability.length +"</div>";
                                 piFlag = true;
                         }
                         else{
