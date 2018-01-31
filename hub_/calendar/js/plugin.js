@@ -6452,6 +6452,7 @@ function SylvanCalendar() {
             if (taExpanded) {
                 wjQuery('.ta-pane').css('opacity', '.1');
             }
+            var elm = ui.helper;
             setTimeout(function(){
                 var name;
                  if (wjQuery(event.currentTarget).hasClass("teacher-container") && wjQuery(event.currentTarget).children()[0]) {
