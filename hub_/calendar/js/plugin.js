@@ -6066,6 +6066,7 @@ function SylvanCalendar() {
             else if (deliveryType == groupFacilitation) {
                 obj.reschedule = {
                     name: "Reschedule",
+                    disabled: self.checkAccountClosure(),
                     callback: function (key, options) {
                         wjQuery(".loading").show();
                         options = wjQuery.extend(true, {}, options);
@@ -6076,6 +6077,7 @@ function SylvanCalendar() {
                 }
                 obj.omit = {
                     name: "Omit",
+                    disabled: self.checkAccountClosure(),
                     callback: function (key, options) {
                         wjQuery(".loading").show();
                         options = wjQuery.extend(true, {}, options);
@@ -6086,6 +6088,7 @@ function SylvanCalendar() {
                 }
                 obj.moveToSof = {
                     name: "Move to SOF",
+                    disabled: self.checkAccountClosure(),
                     callback: function (key, options) {
                         wjQuery(".loading").show();
                         options = wjQuery.extend(true, {}, options);
@@ -6107,6 +6110,7 @@ function SylvanCalendar() {
             else if(deliveryType == groupInstruction){
                 obj.omit = {
                     name: "Omit",
+                    disabled: self.checkAccountClosure(),
                     callback: function (key, options) {
                         wjQuery(".loading").show();
                         options = wjQuery.extend(true, {}, options);
@@ -6191,6 +6195,7 @@ function SylvanCalendar() {
             if(deliveryType == personalInstruction){
               obj.makeup = {
                 name: "Makeup",
+                disabled: self.checkAccountClosure(),
                 callback : function(key, options) {
                     wjQuery(".loading").show();
                     options = wjQuery.extend(true, {}, options);
@@ -6209,6 +6214,7 @@ function SylvanCalendar() {
               // float menu
               obj.float = {
                 name: "Float",
+                disabled: self.checkAccountClosure(),
                 callback : function(key, options) {
                     wjQuery(".loading").show();
                     options = wjQuery.extend(true, {}, options);
@@ -6224,7 +6230,7 @@ function SylvanCalendar() {
                     },300);
                 }
               }
-              wjQuery.contextMenu( 'destroy', 'span[uniqueId="' + uniqueId + '"]');
+              wjQuery.contextMenu( 'destroy', '.student-placeholder-Personal-Instruction');
                 wjQuery.contextMenu({
                     selector: '.student-placeholder-Personal-Instruction', 
                     build: function($trigger, e) {
@@ -6237,6 +6243,7 @@ function SylvanCalendar() {
               // float menu Only For GF
                 obj.float = {
                     name: "Float",
+                    disabled: self.checkAccountClosure(),
                     callback : function(key, options) {
                         wjQuery(".loading").show();
                         options = wjQuery.extend(true, {}, options);
@@ -6252,7 +6259,7 @@ function SylvanCalendar() {
                         });
                     }
                 }
-                wjQuery.contextMenu( 'destroy', 'span[uniqueId="' + uniqueId + '"]');
+                wjQuery.contextMenu( 'destroy', '.student-placeholder-Group-Facilitation');
                 wjQuery.contextMenu({
                     selector: '.student-placeholder-Group-Facilitation', 
                     build: function($trigger, e) {
