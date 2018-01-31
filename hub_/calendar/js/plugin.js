@@ -6444,13 +6444,14 @@ function SylvanCalendar() {
             }
         });
         wjQuery('.' + selector).bind("drag", function(event, ui) {
+            wjQuery(ui.helper).css("margin-left", 0);
+            wjQuery(ui.helper).css("margin-top", 0);
             if (sofExpanded) {
                 wjQuery('.sof-pane').css('opacity', '.1');
             }
             if (taExpanded) {
                 wjQuery('.ta-pane').css('opacity', '.1');
             }
-            var elm = ui.helper;
             setTimeout(function(){
                 var name;
                  if (wjQuery(event.currentTarget).hasClass("teacher-container") && wjQuery(event.currentTarget).children()[0]) {
