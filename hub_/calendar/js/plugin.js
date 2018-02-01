@@ -1013,72 +1013,41 @@ function SylvanCalendar() {
             var teacherEnd = new Date(moment(currentCalendarDate).format('MM-DD-YYYY') + ' ' + (teacherStartHour+1) + ":00");
             var addTeacherToTA = true;
 
-            var allEvent1 = self.calendar.fullCalendar('clientEvents',function(el){
-                return  el.end != null &&
-                        el.hasOwnProperty("teachers") &&
-                        el['teachers'].length &&
-                        (
-                            (
-                                teacherStart.getTime() <= el.start.getTime() && 
-                                teacherEnd.getTime() >= el.end.getTime()
-                            ) ||
-                            (
-                                el.start.getTime() <= teacherStart.getTime() && 
-                                el.end.getTime() >= teacherEnd.getTime()
-                            ) ||
-                            (
-                                teacherEnd.getTime() > el.start.getTime() &&
-                                el.end.getTime() > teacherStart.getTime() 
-                            )
-                        )
-            });
-
-            if(allEvent1.length){
-                for (var a = 0; a < allEvent1.length; a++) {
-                    for (var n = 0; n < allEvent1[a].teachers.length; n++) {
-                        if (allEvent1[a].teachers[n].id == teacherData[i].id) {
-                            addTeacherToTA = false;
-                            break;
-                        }
-                    }
-                }
+            if(self.checkTeacherScheduleInDiffCenter(teacherData[i].id, teacherStart)){
+                addTeacherToTA = false;
             }
 
-            // var addTeacherToTA1 = true;
-            // var allEvent = self.calendar.fullCalendar('clientEvents',function(el){
-            //     if(el.hasOwnProperty('teachers') && el.teachers.length != 0){
-            //         if (new Date(el.start).getHours() >= teacherStartHour && new Date(el.start).getHours() <= teacherStartHour+1){
-            //             for (var n = 0; n < el.teachers.length; n++) {
-            //                 if (el.teachers[n].id == teacherData[n].id) {
-            //                     addTeacherToTA1 = false;
-            //                     break;
-            //                 }
-            //             }
-            //         }
-            //     }
-                
+            // var allEvent1 = self.calendar.fullCalendar('clientEvents',function(el){
+            //     return  el.end != null &&
+            //             el.hasOwnProperty("teachers") &&
+            //             el['teachers'].length &&
+            //             (
+            //                 (
+            //                     teacherStart.getTime() <= el.start.getTime() && 
+            //                     teacherEnd.getTime() >= el.end.getTime()
+            //                 ) ||
+            //                 (
+            //                     el.start.getTime() <= teacherStart.getTime() && 
+            //                     el.end.getTime() >= teacherEnd.getTime()
+            //                 ) ||
+            //                 (
+            //                     teacherEnd.getTime() > el.start.getTime() &&
+            //                     el.end.getTime() > teacherStart.getTime() 
+            //                 )
+            //             )
             // });
-            // for (var l = 0; l < this.resourceList.length; l++) {
-            //     var event = this.calendar.fullCalendar('clientEvents', this.resourceList[l].id + teacherStart);
-            //     if (event.length != 0) {
-            //         for (var j = 0; j < event.length; j++) {
-            //             if (event[j].hasOwnProperty('teachers') && event[j].teachers.length != 0) {
-            //                 for (var k = 0; k < event[j].teachers.length; k++) {
-            //                     if (event[j].teachers[k].id == teacherData[i].id) {
-            //                         addTeacherToTA = false;
-            //                         break;
-            //                     }
-            //                 }
-            //             }
-            //             if (!addTeacherToTA) {
+
+            // if(allEvent1.length){
+            //     for (var a = 0; a < allEvent1.length; a++) {
+            //         for (var n = 0; n < allEvent1[a].teachers.length; n++) {
+            //             if (allEvent1[a].teachers[n].id == teacherData[i].id) {
+            //                 addTeacherToTA = false;
             //                 break;
             //             }
             //         }
             //     }
-            //     if (!addTeacherToTA) {
-            //         break;
-            //     }
             // }
+
             if (addTeacherToTA) {
                 if (teacherStartHour >= this.calendarOptions.minTime && teacherStartHour <= this.calendarOptions.maxTime) {
                     var teacherPosition = teacherStartHour - this.calendarOptions.minTime;
@@ -1394,7 +1363,7 @@ function SylvanCalendar() {
           var allowToDropTeacher = self.validateTeacherOnSameRow(teacherId, startHour, teacher[0], false);
           if(allowToDropTeacher){
                 if(self.checkTeacherScheduleInDiffCenter(teacherId, startHour)){
-                    t.prompt("The selected staff is already scheduled for the respective timeslot in different center.");
+                    self.prompt("The selected staff is already scheduled for the respective timeslot in different center.");
                 }else{
                     if(self.checkForStaffAvailability(teacherId, startHour)){
                       if (newEvent.length == 0) {
@@ -2320,14 +2289,14 @@ function SylvanCalendar() {
             allDayText: '',
             allDaySlot:true,
             droppable: true,
-            onDrag: function(date){
+            onDrag: function(date, allDay, ev, ui, resource){
                self.helperStartTime = moment(date).format('hh:mm A');
-                    if (self.resourceList.length >= 6) {
-                        if (wjQuery(window).width() > 1100) {
-                            self.bindMouseMovement();
-                            self.scrollVertically();
-                        }
+                if (self.resourceList.length >= 6) {
+                    if (wjQuery(window).width() > 1100) {
+                        self.bindMouseMovement();
+                        self.scrollVertically();
                     }
+                }
             },
             drop: function (date, allDay, ev, ui, resource) {
                 clearTimeout(timeout);
@@ -3276,39 +3245,39 @@ function SylvanCalendar() {
                     }
                 }
                 var index = -1;
-                if(self.staffExceptions.length){
-                    for(var k=0; k< self.staffExceptions.length ; k++){
-                        if(teacher.id == self.staffExceptions[k]['astaff_x002e_hub_staffid']){
-                            var exceptionStartDate = new Date(self.staffExceptions[k]['hub_startdate@OData.Community.Display.V1.FormattedValue']);
-                            // Set time for start date
-                            exceptionStartDate = new Date(exceptionStartDate).setHours(0);
-                            exceptionStartDate = new Date(new Date(exceptionStartDate).setMinutes(0));
+                // if(self.staffExceptions.length){
+                //     for(var k=0; k< self.staffExceptions.length ; k++){
+                //         if(teacher.id == self.staffExceptions[k]['astaff_x002e_hub_staffid']){
+                //             var exceptionStartDate = new Date(self.staffExceptions[k]['hub_startdate@OData.Community.Display.V1.FormattedValue']);
+                //             // Set time for start date
+                //             exceptionStartDate = new Date(exceptionStartDate).setHours(0);
+                //             exceptionStartDate = new Date(new Date(exceptionStartDate).setMinutes(0));
 
-                            var exceptionEndDate = self.staffExceptions[k]['hub_enddate'];
-                            exceptionEndDate = exceptionEndDate == undefined ? exceptionStartDate : new Date(exceptionEndDate);
-                            // Set time for end date
-                            exceptionEndDate = new Date(exceptionEndDate).setHours(23);
-                            exceptionEndDate = new Date(new Date(exceptionEndDate).setMinutes(59));
-                            if(currentCalendarDate != undefined){
-                                if(currentCalendarDate.getTime() >= exceptionStartDate.getTime() && currentCalendarDate.getTime() <= exceptionEndDate.getTime()){
-                                    if(self.staffExceptions[k]['hub_entireday']){
-                                        index = 1;
-                                        break;
-                                    }
-                                    else{
-                                        exceptionStartHour = self.staffExceptions[k]['hub_starttime'] / 60;
-                                        exceptionEndHour = self.staffExceptions[k]['hub_endtime'] / 60;
-                                        if(moment(currentCalendarDate).format('h') >= exceptionStartHour && moment(currentCalendarDate).format('h') < exceptionEndHour){
-                                            index = 1;
-                                            break;
-                                        }
-                                    }
+                //             var exceptionEndDate = self.staffExceptions[k]['hub_enddate'];
+                //             exceptionEndDate = exceptionEndDate == undefined ? exceptionStartDate : new Date(exceptionEndDate);
+                //             // Set time for end date
+                //             exceptionEndDate = new Date(exceptionEndDate).setHours(23);
+                //             exceptionEndDate = new Date(new Date(exceptionEndDate).setMinutes(59));
+                //             if(currentCalendarDate != undefined){
+                //                 if(currentCalendarDate.getTime() >= exceptionStartDate.getTime() && currentCalendarDate.getTime() <= exceptionEndDate.getTime()){
+                //                     if(self.staffExceptions[k]['hub_entireday']){
+                //                         index = 1;
+                //                         break;
+                //                     }
+                //                     else{
+                //                         exceptionStartHour = self.staffExceptions[k]['hub_starttime'] / 60;
+                //                         exceptionEndHour = self.staffExceptions[k]['hub_endtime'] / 60;
+                //                         if(moment(currentCalendarDate).format('h') >= exceptionStartHour && moment(currentCalendarDate).format('h') < exceptionEndHour){
+                //                             index = 1;
+                //                             break;
+                //                         }
+                //                     }
 
-                                }
-                            }
-                        }
-                    }
-                }
+                //                 }
+                //             }
+                //         }
+                //     }
+                // }
                 if (index == -1) {
                     eventObjList.push(teacher);
                 }
@@ -6450,23 +6419,23 @@ function SylvanCalendar() {
             if (taExpanded) {
                 wjQuery('.ta-pane').css('opacity', '.1');
             }
-            var elm = ui.helper;
-            setTimeout(function(){
-                // wjQuery(elm).css("margin-left", 0);
-                // if (self.resourceList.length <= 6) {
-                //     wjQuery(elm).css("margin-top", "80px");
-                // }else{
-                //     wjQuery(elm).css("margin-top", 0);
-                // }
-                var name;
-                 if (wjQuery(event.currentTarget).hasClass("teacher-container") && wjQuery(event.currentTarget).children()[0]) {
-                    name = wjQuery(event.currentTarget).children()[0].innerHTML;
-                } else {
-                    name = wjQuery(event.currentTarget).text().replace("location_on", "");
-                }
-                // wjQuery(elm).text("Starting at "+self.helperStartTime);
-                wjQuery(elm).text(name+" (Starting at "+self.helperStartTime+")");
-            },30);
+            // var elm = ui.helper;
+            // setTimeout(function(){
+            //     // wjQuery(elm).css("margin-left", 0);
+            //     // if (self.resourceList.length <= 6) {
+            //     //     wjQuery(elm).css("margin-top", "80px");
+            //     // }else{
+            //     //     wjQuery(elm).css("margin-top", 0);
+            //     // }
+            //     var name;
+            //      if (wjQuery(event.currentTarget).hasClass("teacher-container") && wjQuery(event.currentTarget).children()[0]) {
+            //         name = wjQuery(event.currentTarget).children()[0].innerHTML;
+            //     } else {
+            //         name = wjQuery(event.currentTarget).text().replace("location_on", "");
+            //     }
+            //     // wjQuery(elm).text("Starting at "+self.helperStartTime);
+            //     wjQuery(elm).text(name+" (Starting at "+self.helperStartTime+")");
+            // },30);
         });
         wjQuery('.drag-student').off('dblclick').on('dblclick',function (e) {
             self.findStudentEnrollment(this);    
@@ -9200,49 +9169,55 @@ function SylvanCalendar() {
                     }
                     var allowToDropTeacher = self.validateTeacherOnSameRow(teacherId, idArry[2], teacherObj[0], false);
                     if(allowToDropTeacher){
-                        var isStaffAvailable = self.checkForStaffAvailability(teacherId, idArry[2]);
-                        if(isStaffAvailable){
-                            var objStaffSch = {};
-                            if(teacherObj.length){
-                                teacherObj = teacherObj[0];
-                                var startTime =  moment(idArry[2]).format("hh:mm A");
-                                var startObj = new Date(idArry[2]);
-                                objStaffSch["hub_resourceid@odata.bind"] = idArry[1];
-                                objStaffSch['hub_date'] = startDate;
-                                objStaffSch["hub_start_time"] = self.convertToMinutes(startTime);
-                                objStaffSch["hub_end_time"] = self.convertToMinutes(startTime)+60;
-                                objStaffSch["hub_schedule_type"] = FLOAT_TEACHER_TYPE;
-                                objStaffSch["hub_staff@odata.bind"] = teacherObj['hub_staffid']; 
-                                var locationObj = self.getLocationObject(self.locationId);
-                                objStaffSch['ownerObj'] = locationObj['ownerObj'];
-                                
-                                var responseObj = data.saveTeacherFloat(objStaffSch);
-                                if(typeof(responseObj) == "object"){
-                                    var teacherObj = {
-                                        id: teacherObj['hub_staffid'],
-                                        name: teacherObj['hub_name'],
-                                        start: new Date(idArry[2]),
-                                        startHour: new Date(idArry[2]),
-                                        end: new Date(startObj.setHours(startObj.getHours() + 1)),
-                                        resourceId: idArry[1],
-                                        locationId: self.locationId,
-                                        scheduleType:FLOAT_TEACHER_TYPE,
-                                        scheduleId:responseObj["hub_staff_scheduleid"]
-                                        
-                                    };
-                                    self.convertedTeacherObj.push(teacherObj);
-                                    self.populateTeacherEvent([teacherObj], true);
-                                    self.populateTAPane(self.taList);
+                        if(self.checkTeacherScheduleInDiffCenter(teacherId, idArry[2])){
+                            wjQuery(".loading").hide();
+                            wjQuery("#makeup").dialog("close");
+                            self.prompt("The selected staff is already scheduled for the respective timeslot in different center.");
+                        }else{
+                            var isStaffAvailable = self.checkForStaffAvailability(teacherId, idArry[2]);
+                            if(isStaffAvailable){
+                                var objStaffSch = {};
+                                if(teacherObj.length){
+                                    teacherObj = teacherObj[0];
+                                    var startTime =  moment(idArry[2]).format("hh:mm A");
+                                    var startObj = new Date(idArry[2]);
+                                    objStaffSch["hub_resourceid@odata.bind"] = idArry[1];
+                                    objStaffSch['hub_date'] = startDate;
+                                    objStaffSch["hub_start_time"] = self.convertToMinutes(startTime);
+                                    objStaffSch["hub_end_time"] = self.convertToMinutes(startTime)+60;
+                                    objStaffSch["hub_schedule_type"] = FLOAT_TEACHER_TYPE;
+                                    objStaffSch["hub_staff@odata.bind"] = teacherObj['hub_staffid']; 
+                                    var locationObj = self.getLocationObject(self.locationId);
+                                    objStaffSch['ownerObj'] = locationObj['ownerObj'];
+                                    objStaffSch['hub_centerid'] = locationObj['hub_centerid'];
+                                    var responseObj = data.saveTeacherFloat(objStaffSch);
+                                    if(typeof(responseObj) == "object"){
+                                        var teacherObj = {
+                                            id: teacherObj['hub_staffid'],
+                                            name: teacherObj['hub_name'],
+                                            start: new Date(idArry[2]),
+                                            startHour: new Date(idArry[2]),
+                                            end: new Date(startObj.setHours(startObj.getHours() + 1)),
+                                            resourceId: idArry[1],
+                                            locationId: self.locationId,
+                                            scheduleType:FLOAT_TEACHER_TYPE,
+                                            scheduleId:responseObj["hub_staff_scheduleid"],
+                                            centerId:self.locationId
+                                        };
+                                        self.convertedTeacherObj.push(teacherObj);
+                                        self.populateTeacherEvent([teacherObj], true);
+                                        self.populateTAPane(self.taList);
+                                    }
+                                    wjQuery("#makeup").dialog("close");
+                                }else{
+                                    wjQuery("#makeup").dialog("close");
                                 }
-                                wjQuery("#makeup").dialog("close");
+                                wjQuery(".loading").hide();
                             }else{
+                                wjQuery(".loading").hide();
+                                self.floatTeacherCnfmPopup(teacherObj, idArry, "Teacher is not available. Do you wish to continue?"); 
                                 wjQuery("#makeup").dialog("close");
                             }
-                            wjQuery(".loading").hide();
-                        }else{
-                            wjQuery(".loading").hide();
-                            self.floatTeacherCnfmPopup(teacherObj, idArry, "Teacher is not available. Do you wish to continue?"); 
-                            wjQuery("#makeup").dialog("close");
                         }
                     }else{
                         wjQuery(".loading").hide();
@@ -9291,6 +9266,7 @@ function SylvanCalendar() {
             objStaffSch["hub_staff@odata.bind"] = teacherObj['hub_staffid'];
             var locationObj = self.getLocationObject(self.locationId);
             objStaffSch['ownerObj'] = locationObj['ownerObj']; 
+            objStaffSch['hub_centerid'] = locationObj['hub_centerid'];
             var responseObj = data.saveTeacherFloat(objStaffSch);
             if(typeof(responseObj) == "object"){
                 var teacherObj = {
@@ -9302,7 +9278,8 @@ function SylvanCalendar() {
                     resourceId: idArry[1],
                     locationId: self.locationId,
                     scheduleType:FLOAT_TEACHER_TYPE,
-                    scheduleId:responseObj["hub_staff_scheduleid"]
+                    scheduleId:responseObj["hub_staff_scheduleid"],
+                    centerId:self.locationId
                 };
                 self.convertedTeacherObj.push(teacherObj);
                 self.populateTeacherEvent([teacherObj], true);
@@ -9379,24 +9356,24 @@ function SylvanCalendar() {
         // Set end hour to start hour + 1
         endHour = new Date(startHour);
         endHour = new Date(endHour.setHours(endHour.getHours() + 1));
-        for(var ab=0;ab<self.convertedTeacherObj.length;ab++){
-            var el = self.convertedTeacherObj[ab];
-            var end = new Date(el.start); 
-            end = new Date(end.setHours(end.getHours() + 1));
-            if( el['id'] == teacherId && 
-                el['centerId'] != self.locationId &&
+        for(var ab=0;ab<self.teacherSchedule.length;ab++){
+            var el = self.teacherSchedule[ab];
+            var elStart = new Date(el['hub_date@OData.Community.Display.V1.FormattedValue']+" "+ el['hub_start_time@OData.Community.Display.V1.FormattedValue']);
+            var elEnd = new Date(el['hub_date@OData.Community.Display.V1.FormattedValue']+" "+ el["hub_end_time@OData.Community.Display.V1.FormattedValue"]);
+            if( el['_hub_staff_value'] == teacherId && 
+                el['_hub_centerid_value'] != self.locationId &&
                 (
                     (
-                        startHour.getTime() <= el.start.getTime() && 
-                        endHour.getTime() >= end.getTime()
+                        startHour.getTime() <= elStart.getTime() && 
+                        endHour.getTime() >= elEnd.getTime()
                     ) ||
                     (
-                        el.start.getTime() <= startHour.getTime() && 
-                        end.getTime() >= endHour.getTime()
+                        elStart.getTime() <= startHour.getTime() && 
+                        elEnd.getTime() >= endHour.getTime()
                     ) ||
                     (
-                        endHour.getTime() > el.start.getTime() &&
-                        end.getTime() > startHour.getTime() 
+                        endHour.getTime() > elStart.getTime() &&
+                        elEnd.getTime() > startHour.getTime() 
                     )
                 ) 
             ){
