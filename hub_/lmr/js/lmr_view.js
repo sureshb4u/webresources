@@ -41,6 +41,7 @@ var lmrList =
         "advTotal":0,
         "miscval":0,
         "miscTotal":0,
+        "ManualAdjustment":true,
         "promotional":0
     }
 ];

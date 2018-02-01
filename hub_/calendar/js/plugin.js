@@ -6444,8 +6444,6 @@ function SylvanCalendar() {
             }
         });
         wjQuery('.' + selector).bind("drag", function(event, ui) {
-            wjQuery(ui.helper).css("margin-left", 0);
-            wjQuery(ui.helper).css("margin-top", 0);
             if (sofExpanded) {
                 wjQuery('.sof-pane').css('opacity', '.1');
             }
@@ -6454,6 +6452,8 @@ function SylvanCalendar() {
             }
             var elm = ui.helper;
             setTimeout(function(){
+                wjQuery(elm).css("margin-left", 0);
+                wjQuery(elm).css("margin-top", 0);
                 var name;
                  if (wjQuery(event.currentTarget).hasClass("teacher-container") && wjQuery(event.currentTarget).children()[0]) {
                     name = wjQuery(event.currentTarget).children()[0].innerHTML;

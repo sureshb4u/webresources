@@ -181,15 +181,16 @@ function LmrUI() {
                 }
                     skeleton += '<span id="creditTotal" >($' + el.creditTotal + ')</span>';
 
-                skeleton += '        </article>' +
-                            '        <article>' +
-                            '            <span class="first-colm">Misc Royalty Reduction</span>';
-                    skeleton += '<span class="input-field">$<input type="text" class="form-control table-input" id="miscval" name="miscval" value="' + el.miscval + '" '+isClosedText+' ></span>';
-                    skeleton += '<span >-</span>';
-                    skeleton += '<span id="miscTotal" >$' + el.miscTotal + '</span>';
-
-                skeleton += '        </article>' +
-                            '        <article>' +
+                skeleton += '        </article>';
+                if(el.ManualAdjustment){
+                   skeleton +=  '<article>' +
+                                    '<span class="first-colm">Misc Royalty Reduction</span>'+
+                                    '<span class="input-field">$<input type="number" class="form-control table-input" id="miscval" name="miscval" value="' + el.miscval + '" '+isClosedText+' ></span>'+
+                                    '<span >-</span>'+
+                                    '<span id="miscTotal" >($' + el.miscTotal + ')</span>'+
+                                '</article>';
+                }
+                skeleton += '        <article>' +
                             '            <span class="first-colm"><b>Total Cash subject to Royalty</b></span>';
                 if (el.hasOwnProperty("TotalRoyaltyAmount")) {
                     skeleton += '<span id="r1Total" >$' + el.TotalRoyaltyAmount + '</span>' +
@@ -400,10 +401,10 @@ function LmrUI() {
 
         wjQuery(".table-input").keydown(function (e) {
             // validation
-            var alllowKeys = [8, 13, 9, 110, 37, 39, 47, 48, 49, 50, 51, 52, 53, 54, 56, 57];
+            var alllowKeys = [8, 13, 9, 110, 37, 39, 47, 48, 49, 50, 51, 52, 53, 54, 56, 57, 109, 189];
             var index = alllowKeys.indexOf(e.keyCode);
             var allow = false;
-            // console.log(e.keyCode);
+            console.log(e.keyCode);
             if(e.keyCode >= 96 && e.keyCode <= 105){
                 allow = true;
             }else{
@@ -432,7 +433,9 @@ function LmrUI() {
             var edgeVal = parseFloat(wjQuery("#edgeval").text().replace("$",""));
             var edgeTotal = parseFloat(wjQuery("#edgeTotal").text().replace("$",""));
             var miscVal = parseFloat(wjQuery("#miscval").val());
+            miscVal = isNaN(miscVal) ? 0 : miscVal; 
             var miscTotal = parseFloat(wjQuery("#miscTotal").text().replace("$",""));
+            miscTotal = isNaN(miscTotal) ? 0 : miscTotal; 
             var rTotal = parseFloat((coreTotal+miscTotal+edgeTotal) - creditTotal).toFixed(2);
             var r1Total = parseFloat(coreVal+edgeVal+miscVal).toFixed(2);
             if (rTotal > 0) {
@@ -453,14 +456,20 @@ function LmrUI() {
                 wjQuery("#creditval").val(0);
             }
             var miscVal = parseFloat(val);
+            if(miscVal>=0){
+                wjQuery("#miscTotal").text("($"+miscVal+")");
+            }else{
+                wjQuery("#miscTotal").text("$"+Math.abs(miscVal));
+            }
+
             var coreVal = parseFloat(wjQuery("#coreval").text().replace("$",""));
             var coreTotal = parseFloat(wjQuery("#coreTotal").text().replace("$",""));
             var edgeVal = parseFloat(wjQuery("#edgeval").text().replace("$",""));
             var edgeTotal = parseFloat(wjQuery("#edgeTotal").text().replace("$",""));
             var creditVal1 = parseFloat(wjQuery("#creditval").val());
             var creditTotal = parseFloat(wjQuery("#creditTotal").text().replace("($",""));
-            wjQuery("#miscTotal").text("$"+miscVal);
-            var rTotal = parseFloat((coreTotal+miscVal+edgeTotal) - creditTotal).toFixed(2);
+
+            var rTotal = parseFloat((coreTotal+edgeTotal+miscVal) - (creditTotal)).toFixed(2);
             var r1Total = parseFloat(coreVal+edgeVal+miscVal).toFixed(2);
             if (rTotal > 0) {
                 wjQuery("#rTotal").text("$"+rTotal);
@@ -563,7 +572,7 @@ function LmrUI() {
         }
         yearSkeleton += "</selction>";
         wjQuery("#dropdown > .year").html(yearSkeleton);
-        wjQuery("#dropdown").append('<button class="getLmr">View LMR</button><button id="print">Print</button>');
+        wjQuery("#dropdown").append('<button class="getLmr">View LMR</button><img id="print" src="/webresources/hub_/lmr/print.png">');
         this.selectedYear = wjQuery("#yearSelected").val();
     }
 
