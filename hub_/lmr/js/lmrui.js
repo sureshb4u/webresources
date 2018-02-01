@@ -175,17 +175,17 @@ function LmrUI() {
                 skeleton += '        </article>' +
                             '        <article>' +
                             '            <span class="first-colm">Credit Card Fees:</span>';
-                skeleton += '<span class="input-field">$<input type="text" class="form-control table-input" id="creditval" name="creditval" value="' + el.creditval + '" '+isClosedText+'></span>';
+                skeleton += '<span class="input-field"><b>$</b><input type="text" class="form-control table-input" id="creditval" name="creditval" value="' + el.creditval + '" '+isClosedText+'></span>';
                 if (el.hasOwnProperty("CorePecent")) {
                     skeleton += '<span id="creditPercent" >' + (el.CorePecent*100) + '</span>';
                 }
                     skeleton += '<span id="creditTotal" >($' + el.creditTotal + ')</span>';
 
                 skeleton += '        </article>';
-                if(el.ManualAdjustment){
+                if(el.ManualAdjustment != undefined && el.ManualAdjustment){
                    skeleton +=  '<article>' +
                                     '<span class="first-colm">Misc Royalty Reduction</span>'+
-                                    '<span class="input-field">$<input type="number" class="form-control table-input" id="miscval" name="miscval" value="' + el.miscval + '" '+isClosedText+' ></span>'+
+                                    '<span class="input-field"><b>$</b><input type="number" class="form-control table-input" id="miscval" name="miscval" value="' + el.miscval + '" '+isClosedText+' ></span>'+
                                     '<span >-</span>'+
                                     '<span id="miscTotal" >($' + el.miscTotal + ')</span>'+
                                 '</article>';
@@ -404,7 +404,7 @@ function LmrUI() {
             var alllowKeys = [8, 13, 9, 110, 37, 39, 47, 48, 49, 50, 51, 52, 53, 54, 56, 57, 109, 189];
             var index = alllowKeys.indexOf(e.keyCode);
             var allow = false;
-            console.log(e.keyCode);
+            // console.log(e.keyCode);
             if(e.keyCode >= 96 && e.keyCode <= 105){
                 allow = true;
             }else{
@@ -572,7 +572,7 @@ function LmrUI() {
         }
         yearSkeleton += "</selction>";
         wjQuery("#dropdown > .year").html(yearSkeleton);
-        wjQuery("#dropdown").append('<button class="getLmr">View LMR</button><img id="print" src="/webresources/hub_/lmr/print.png">');
+        wjQuery("#dropdown").append('<button class="getLmr">View LMR</button><img id="print" src="/webresources/hub_/images/print.png">');
         this.selectedYear = wjQuery("#yearSelected").val();
     }
 

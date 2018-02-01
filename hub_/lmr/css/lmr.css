@@ -99,15 +99,15 @@ button {
   border-top: 1px solid #ababab;
   border-right: 1px solid #ababab;
   border-left: 1px solid #ababab;
-  height: 35px; }
+  height: 40px; }
 
 [class^=by] span {
   display: block;
   float: left;
-  padding: 10px 5px;
+  padding: 5px;
   text-align: left;
   border-right: 1px solid #ababab;
-  height: calc(100% - 20px);
+  height: calc(100% - 10px);
   font-family: Segoe\000020UI,Arial,sans\00002Dserif;
   font-size: 12px; }
 
@@ -175,9 +175,13 @@ section .dark {
   width: 100px; }
 
 .input-field {
+  position: relative;
   text-align: right !important; }
   .input-field .form-control {
-    width: 95%;
+    position: absolute;
+    left: 10px;
+    top: 2px;
+    width: calc(100% - 12px);
     padding: 6px 12px;
     font-size: 14px;
     line-height: 1.42857143;
@@ -186,8 +190,12 @@ section .dark {
     background-image: none;
     border: 1px solid #ccc;
     border-radius: 4px;
-    margin-top: -10px; }
-
+     }
+  .input-field b{
+    position: absolute;
+    left: 2px;
+    top:30%;
+  }
 .form-area {
   display: table;
   width: calc(97% - 2px);

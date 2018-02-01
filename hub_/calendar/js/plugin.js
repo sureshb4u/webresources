@@ -6452,8 +6452,12 @@ function SylvanCalendar() {
             }
             var elm = ui.helper;
             setTimeout(function(){
-                wjQuery(elm).css("margin-left", 0);
-                wjQuery(elm).css("margin-top", 0);
+                // wjQuery(elm).css("margin-left", 0);
+                // if (self.resourceList.length <= 6) {
+                //     wjQuery(elm).css("margin-top", "80px");
+                // }else{
+                //     wjQuery(elm).css("margin-top", 0);
+                // }
                 var name;
                  if (wjQuery(event.currentTarget).hasClass("teacher-container") && wjQuery(event.currentTarget).children()[0]) {
                     name = wjQuery(event.currentTarget).children()[0].innerHTML;
