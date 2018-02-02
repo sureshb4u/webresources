@@ -14,7 +14,7 @@ var lmrList =
         "CoreTotal":"80",
         "EdgeTotal":"40",
         "TotalDue":"120",
-        "TotalRoyaltyAmount":"120",
+        "TotalRoyaltyAmount":"750",
         "NACRate":5,
         "NAFRate":6,
         "NACPayment":"1225",

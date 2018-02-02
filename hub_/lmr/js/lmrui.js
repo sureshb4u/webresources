@@ -184,10 +184,10 @@ function LmrUI() {
                 skeleton += '        </article>';
                 if(el.ManualAdjustment != undefined && el.ManualAdjustment){
                    skeleton +=  '<article>' +
-                                    '<span class="first-colm">Misc Royalty Reduction</span>'+
-                                    '<span class="input-field"><b>$</b><input type="number" class="form-control table-input" id="miscval" name="miscval" value="' + el.miscval + '" '+isClosedText+' ></span>'+
+                                    '<span class="first-colm">Misc Royalty Adjustment</span>'+
+                                    '<span class="input-field"><b>$</b><input type="text" class="form-control table-input" id="miscval" name="miscval" value="' + el.miscval + '" '+isClosedText+' ></span>'+
                                     '<span >-</span>'+
-                                    '<span id="miscTotal" >($' + el.miscTotal + ')</span>'+
+                                    '<span id="miscTotal" >$' + el.miscTotal + '</span>'+
                                 '</article>';
                 }
                 skeleton += '        <article>' +
@@ -401,10 +401,22 @@ function LmrUI() {
 
         wjQuery(".table-input").keydown(function (e) {
             // validation
-            var alllowKeys = [8, 13, 9, 110, 37, 39, 47, 48, 49, 50, 51, 52, 53, 54, 56, 57, 109, 189];
+            var alllowKeys = [8, 13, 9, 110,190, 37, 39, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 109, 189];
             var index = alllowKeys.indexOf(e.keyCode);
             var allow = false;
             // console.log(e.keyCode);
+            if (e.shiftKey) {
+                allow = false;
+                e.preventDefault();
+            }
+            if ((e.keyCode === 190 || e.keyCode === 110) && (this.value.split('.').length === 2 || this.value.length == 0)) {
+                allow = false;
+                e.preventDefault();
+            }
+            if ((e.keyCode === 189 || e.keyCode === 109) && this.value.length >= 1) {
+                allow = false;
+                e.preventDefault();
+            }
             if(e.keyCode >= 96 && e.keyCode <= 105){
                 allow = true;
             }else{
@@ -438,13 +450,21 @@ function LmrUI() {
             miscTotal = isNaN(miscTotal) ? 0 : miscTotal; 
             var rTotal = parseFloat((coreTotal+miscTotal+edgeTotal) - creditTotal).toFixed(2);
             var r1Total = parseFloat(coreVal+edgeVal+miscVal).toFixed(2);
-            if (rTotal > 0) {
+
+            var rTotal = parseFloat((coreTotal+edgeTotal+miscVal) - (creditTotal)).toFixed(2);
+            var r1Total = parseFloat(coreVal+edgeVal- miscVal).toFixed(2);
+
+            if (rTotal >= 0) {
                 wjQuery("#rTotal").text("$"+rTotal);
             }else{
-                rTotal = rTotal.toString().replace("-","");
-                wjQuery("#rTotal").text("($"+rTotal+")");
+                wjQuery("#rTotal").text("($"+Math.abs(rTotal)+")");
             }
-            wjQuery("#r1Total").text("$"+r1Total);
+
+            if(r1Total >= 0){
+                wjQuery("#r1Total").text("$"+r1Total);
+            }else{
+                wjQuery("#r1Total").text("($"+Math.abs(r1Total)+")");
+            }
         });
 
         wjQuery("#miscval").on("input", function(e) {
@@ -457,9 +477,9 @@ function LmrUI() {
             }
             var miscVal = parseFloat(val);
             if(miscVal>=0){
-                wjQuery("#miscTotal").text("($"+miscVal+")");
+                wjQuery("#miscTotal").text("$"+miscVal);
             }else{
-                wjQuery("#miscTotal").text("$"+Math.abs(miscVal));
+                wjQuery("#miscTotal").text("($"+Math.abs(miscVal)+")");
             }
 
             var coreVal = parseFloat(wjQuery("#coreval").text().replace("$",""));
@@ -471,13 +491,17 @@ function LmrUI() {
 
             var rTotal = parseFloat((coreTotal+edgeTotal+miscVal) - (creditTotal)).toFixed(2);
             var r1Total = parseFloat(coreVal+edgeVal+miscVal).toFixed(2);
-            if (rTotal > 0) {
+            if (rTotal >= 0) {
                 wjQuery("#rTotal").text("$"+rTotal);
             }else{
                 rTotal = rTotal.toString().replace("-","");
                 wjQuery("#rTotal").text("($"+rTotal+")");
             }
-            wjQuery("#r1Total").text("$"+r1Total);
+            if(r1Total >= 0){
+                wjQuery("#r1Total").text("$"+r1Total);
+            }else{
+                wjQuery("#r1Total").text("($"+Math.abs(r1Total)+")");
+            }
         });
 
         wjQuery(".localVal").on("input", function(e) {
