@@ -2026,88 +2026,55 @@ function SylvanCalendar() {
         var startHour = new Date(date);
         var stuId = wjQuery(elm).attr("value");
         var uniqueVal = wjQuery(elm).attr("uniqueValue").split("_");
-
         var parentElement = elm.parentElement;
-
-
         var student = [];
-        // var index = t.sofList['Personal Instruction'].map(function (x) {
-        //     return x.id;
-        // }).indexOf(stuId);
-        // if (index != -1) {
-        //     student.push(t.sofList['Personal Instruction'][index]);
-        //     t.sofList['Personal Instruction'].splice(index, 1);
-
-        // }
-        // if (student[0] == undefined) {
-        //     student = [];
-        //     index = t.sofList['Group Facilitation'].map(function (x) {
-        //         return x.id;
-        //     }).indexOf(stuId);
-        //     if (index != -1) {
-        //         student.push(t.sofList['Group Facilitation'][index]);
-        //         t.sofList['Group Facilitation'].splice(index, 1);
-        //     }
-        //     if (student[0] == undefined) {
-        //         student = [];
-        //         index = t.sofList['Group Instruction'].map(function (x) {
-        //             return x.id;
-        //         }).indexOf(stuId);
-        //         if (index != -1) {
-        //             student.push(t.sofList['Group Instruction'][index]);
-        //             t.sofList['Group Instruction'].splice(index, 1);
-        //         }
-        //     }
-        // }
-
         var stdIndex = -1;
+        var sofType = "";
         for (var sw = 0; sw < t.sofList['Personal Instruction'].length; sw++) {
             if (t.sofList['Personal Instruction'][sw].id == uniqueVal[0] &&
                 t.sofList['Personal Instruction'][sw].start.getTime() == new Date(uniqueVal[1]).getTime()) {
+                sofType = "Personal Instruction";
                 stdIndex = sw;
                 break;
             }
         }
         if (stdIndex != -1) {
             student.push(t.sofList['Personal Instruction'][stdIndex]);
-            t.sofList['Personal Instruction'].splice(stdIndex, 1);
+            // t.sofList['Personal Instruction'].splice(stdIndex, 1);
         }
         if (student[0] == undefined) {
             student = [];
             for (var sw = 0; sw < t.sofList['Group Facilitation'].length; sw++) {
                 if (t.sofList['Group Facilitation'][sw].id == uniqueVal[0] &&
                     t.sofList['Group Facilitation'][sw].start.getTime() == new Date(uniqueVal[1]).getTime()) {
+                    sofType = "Group Facilitation";
                     stdIndex = sw;
                     break;
                 }
             }
             if (stdIndex != -1) {
                 student.push(t.sofList['Group Facilitation'][stdIndex]);
-                t.sofList['Group Facilitation'].splice(stdIndex, 1);
+                // t.sofList['Group Facilitation'].splice(stdIndex, 1);
             }
             if (student[0] == undefined) {
                 student = [];
                 for (var sw = 0; sw < t.sofList['Group Instruction'].length; sw++) {
                     if (t.sofList['Group Instruction'][sw].id == uniqueVal[0] &&
                         t.sofList['Group Instruction'][sw].start.getTime() == new Date(uniqueVal[1]).getTime()) {
+                        sofType = "Group Instruction";
                         stdIndex = sw;
                         break;
                     }
                 }
                 if (stdIndex != -1) {
                     student.push(t.sofList['Group Instruction'][stdIndex]);
-                    t.sofList['Group Instruction'].splice(stdIndex, 1);
+                    // t.sofList['Group Instruction'].splice(stdIndex, 1);
                 }
             }
         }
 
         if (student[0] != undefined) {
-            elm.remove();
-            t.sofWidthCalc();
             var prevStudent = wjQuery.extend(true, {}, student[0]);
-            if (wjQuery(parentElement).html() == '') {
-                parentElement.remove();
-            }
             student[0].start = date;
             student[0].startHour = startHour;
             student[0].end = this.setEnd(prevStudent, student[0]);
@@ -2117,14 +2084,23 @@ function SylvanCalendar() {
             var responseObj = this.saveSOFtoSession(student, prevStudent);
             if (typeof (responseObj) == 'boolean') {
                 if (responseObj) {
+                    elm.remove();
+                    t.sofList[sofType].splice(stdIndex, 1);
+                    t.sofWidthCalc();
+                    if (wjQuery(parentElement).html() == '') {
+                        parentElement.remove();
+                    }
                     this.convertedStudentObj.push(student[0]);
                     t.populateStudentEvent(student, true);
-                    // var txt = wjQuery(element)[0].innerHTML;
-                    // wjQuery(element).html("<img src='/webresources/hub_/calendar/images/pin.png'/>" + txt);
-                    // wjQuery(element).attr('pinnedId', objPinnedStudent.hub_sch_pinned_students_teachersid);
                 }
             } else if (typeof (responseObj) == 'object') {
                 if (responseObj != undefined) {
+                    t.sofList[sofType].splice(stdIndex, 1);
+                    elm.remove();
+                    t.sofWidthCalc();
+                    if (wjQuery(parentElement).html() == '') {
+                        parentElement.remove();
+                    }
                     student[0].sessionId = responseObj['hub_studentsessionid'];
                     student[0]['sessiontype'] = responseObj['hub_sessiontype'];
                     student[0]['sessionStatus'] = responseObj['hub_session_status'];
@@ -2134,6 +2110,8 @@ function SylvanCalendar() {
                     this.convertedStudentObj.push(student[0]);
                     t.populateStudentEvent(student, true);
                 }
+            }else if(typeof responseObj == 'string'){
+                self.prompt(responseObj);
             }
         }
     }
@@ -2159,7 +2137,73 @@ function SylvanCalendar() {
             }
         }
         if (resource.id + date != prevEventId) {
-            if (prevEvent) {
+            self.updatePrevEvent(prevEvent, stuId, prevEventId);
+            if (t.convertedStudentObj[index]) {
+                var newStudentObj = wjQuery.extend(true, {}, t.convertedStudentObj[index]);
+                newStudentObj.start = date;
+                newStudentObj.startHour = startHour;
+                newStudentObj.end = this.setEnd(t.convertedStudentObj[index], newStudentObj);
+                newStudentObj.resourceId = resource.id;
+                var prevStudent = t.convertedStudentObj[index];
+                var newStudent = newStudentObj;
+                var responseObj = t.saveStudentToSession(t.convertedStudentObj[index], newStudentObj);
+                if (typeof responseObj == 'boolean') {
+                    if (responseObj) {
+                        delete newStudentObj.pinId;
+                        elm.remove();
+                        var index = -1;
+                        for (var i = 0; i < this.convertedStudentObj.length; i++) {
+                            if (this.convertedStudentObj[i].id == prevStudent.id &&
+                                this.convertedStudentObj[i].resourceId == prevStudent.resourceId &&
+                                this.convertedStudentObj[i].startHour.getTime() == prevStudent.startHour.getTime()) {
+                                index = i;
+                                break;
+                            }
+                        }
+                        if (index != -1) {
+                            this.convertedStudentObj[index] = newStudentObj;
+                            this.populateStudentEvent([newStudentObj], true);
+                        }
+                    }
+                }
+                else if (typeof responseObj == 'object' && responseObj != null) {
+                    if (responseObj.hasOwnProperty('hub_studentsessionid')) {
+                        elm.remove();
+                        delete newStudentObj.pinId;
+                        delete newStudentObj.isFromMasterSchedule;
+                        newStudentObj['sessionId'] = responseObj['hub_studentsessionid'];
+                        newStudentObj['start'] = newStudentObj.start;
+                        newStudentObj['end'] = newStudentObj.end;
+                        newStudentObj['resourceId'] = responseObj['hub_resourceid@odata.bind'];
+                        newStudentObj['sessiontype'] = responseObj['hub_sessiontype'];
+                        newStudentObj['sessionStatus'] = responseObj['hub_session_status'];
+                        var index = -1;
+                        for (var i = 0; i < this.convertedStudentObj.length; i++) {
+                            if (this.convertedStudentObj[i].id == prevStudent.id &&
+                                this.convertedStudentObj[i].resourceId == prevStudent.resourceId &&
+                                this.convertedStudentObj[i].startHour.getTime() == prevStudent.startHour.getTime()) {
+                                index = i;
+                                break;
+                            }
+                        }
+                        if (index != -1) {
+                            this.convertedStudentObj[index] = newStudentObj;
+                            this.populateStudentEvent([newStudentObj], true);
+                        }
+                    }
+                }else if(typeof responseObj == 'string'){
+                    self.prompt(responseObj);
+                }
+            }
+        }
+        this.openSofPane();
+        this.showConflictMsg();
+        this.draggable('draggable');
+    }
+
+    this.updatePrevEvent = function(prevEvent, stuId, prevEventId){
+        var self = this;
+        if (prevEvent != undefined && prevEvent.length) {
                 var eventTitleHTML = wjQuery(prevEvent[0].title);
                 for (var i = 0; i < eventTitleHTML.length; i++) {
                     if (wjQuery(eventTitleHTML[i]).attr('value') == stuId) {
@@ -2188,16 +2232,15 @@ function SylvanCalendar() {
                     }
 
                     // remove all conflicts By passing prevEvent Object 
-
                     var checkForNearbyPrevEventBefore = this.calendar.fullCalendar('clientEvents', prevEvent[0].resourceId + new Date(new Date(prevEvent[0].start).setHours(new Date(prevEvent[0].start).getHours() + 1)));
                     var checkForNearbyPrevEventAfter = this.calendar.fullCalendar('clientEvents', prevEvent[0].resourceId + new Date(new Date(prevEvent[0].start).setHours(new Date(prevEvent[0].start).getHours() - 1)));
                     if (checkForNearbyPrevEventBefore.length) {
-                        t.removeAllConflictsFromPrevEvent(checkForNearbyPrevEventBefore[0]);
+                        self.removeAllConflictsFromPrevEvent(checkForNearbyPrevEventBefore[0]);
                     }
                     if (checkForNearbyPrevEventAfter.length) {
-                        t.removeAllConflictsFromPrevEvent(checkForNearbyPrevEventAfter[0]);
+                        self.removeAllConflictsFromPrevEvent(checkForNearbyPrevEventAfter[0]);
                     }
-                    t.removeAllConflictsFromPrevEvent(prevEvent[0]);
+                    self.removeAllConflictsFromPrevEvent(prevEvent[0]);
                     eventTitleHTML = wjQuery(prevEvent[0].title);
                     if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder teacher-placeholder" || eventTitleHTML[0].className == "student-placeholder-" + prevEvent[0].deliveryType)) ||
                       (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder teacher-placeholder" && eventTitleHTML[1].className == "student-placeholder-" + prevEvent[0].deliveryType) ||
@@ -2217,27 +2260,7 @@ function SylvanCalendar() {
                     }
                     this.calendar.fullCalendar('removeEvents', prevEventId);
                 }
-
-            }
-            if (t.convertedStudentObj[index]) {
-                var newStudentObj = wjQuery.extend(true, {}, t.convertedStudentObj[index]);
-                elm.remove();
-                newStudentObj.start = date;
-                newStudentObj.startHour = startHour;
-                newStudentObj.end = this.setEnd(t.convertedStudentObj[index], newStudentObj);
-                newStudentObj.resourceId = resource.id;
-                // if (wjQuery(elm).attr("tempPinId")) {
-                // newStudentObj.tempPinId = wjQuery(elm).attr("tempPinId");
-                delete newStudentObj.pinId;
-                // }
-                // t.convertedStudentObj[index].deliveryTypeId = t.getResourceObj(resource.id).deliveryTypeId;
-                // t.convertedStudentObj[index].deliveryType = t.getResourceObj(resource.id).deliveryType;
-                t.saveStudentToSession(t.convertedStudentObj[index], newStudentObj);
-            }
         }
-        this.openSofPane();
-        this.showConflictMsg();
-        this.draggable('draggable');
     }
 
     this.clearEvents = function () {
@@ -5118,7 +5141,6 @@ function SylvanCalendar() {
         wjQuery('.loading').hide();
     };
 
-
     this.pinTeacher = function (element) {
         var self = this;
         var currentCalendarDate = self.calendar.fullCalendar('getDate');
@@ -5292,54 +5314,54 @@ function SylvanCalendar() {
                 }
                 var prevEventId = wjQuery(element).attr("eventid");
                 var prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
-                if (prevEvent) {
-                    var eventTitleHTML = wjQuery(prevEvent[0].title);
-                    for (var i = 0; i < eventTitleHTML.length; i++) {
-                        if (wjQuery(eventTitleHTML[i]).attr('value') == wjQuery(element).attr('value')) {
-                            eventTitleHTML.splice(i, 1);
-                        }
-                    }
-                    if (eventTitleHTML.prop('outerHTML') != undefined) {
-                        if (eventTitleHTML.length == 1) {
-                            prevEvent[0].title = eventTitleHTML.prop('outerHTML');
-                        } else {
-                            prevEvent[0].title = "";
-                            for (var i = 0; i < eventTitleHTML.length; i++) {
-                                prevEvent[0].title += eventTitleHTML[i].outerHTML;
-                            }
-                        }
-                        var removeStudentIndex = prevEvent[0].students.map(function (x) {
-                            return x.id;
-                        }).indexOf(wjQuery(element).attr('value'));
-                        prevEvent[0].students.splice(removeStudentIndex, 1);
+                self.updatePrevEvent(prevEvent, uniqueIds[0], prevEventId);
+                // if (prevEvent) {
+                //     var eventTitleHTML = wjQuery(prevEvent[0].title);
+                //     for (var i = 0; i < eventTitleHTML.length; i++) {
+                //         if (wjQuery(eventTitleHTML[i]).attr('value') == wjQuery(element).attr('value')) {
+                //             eventTitleHTML.splice(i, 1);
+                //         }
+                //     }
+                //     if (eventTitleHTML.prop('outerHTML') != undefined) {
+                //         if (eventTitleHTML.length == 1) {
+                //             prevEvent[0].title = eventTitleHTML.prop('outerHTML');
+                //         } else {
+                //             prevEvent[0].title = "";
+                //             for (var i = 0; i < eventTitleHTML.length; i++) {
+                //                 prevEvent[0].title += eventTitleHTML[i].outerHTML;
+                //             }
+                //         }
+                //         var removeStudentIndex = prevEvent[0].students.map(function (x) {
+                //             return x.id;
+                //         }).indexOf(wjQuery(element).attr('value'));
+                //         prevEvent[0].students.splice(removeStudentIndex, 1);
 
-                        self.removeAllConflictsFromPrevEvent(prevEvent[0]);
-                        if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder teacher-placeholder" || eventTitleHTML[0].className == "student-placeholder-" + prevEvent[0].deliveryType)) ||
-                          (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder teacher-placeholder" && eventTitleHTML[1].className == "student-placeholder-" + prevEvent[0].deliveryType) ||
-                          (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder teacher-placeholder" && eventTitleHTML[2].className == "student-placeholder-" + prevEvent[0].deliveryType)) {
-                            for (var i = 0; i < this.eventList.length; i++) {
-                                if (this.eventList[i].id == prevEventId)
-                                    this.eventList.splice(i, 1);
-                            }
-                            this.calendar.fullCalendar('removeEvents', prevEventId);
-                        }
-                        this.calendar.fullCalendar('updateEvent', prevEvent);
-                    }
-                    else {
-                        for (var i = 0; i < this.eventList.length; i++) {
-                            if (this.eventList[i].id == prevEventId)
-                                this.eventList.splice(i, 1);
-                        }
-                        this.calendar.fullCalendar('removeEvents', prevEventId);
-                    }
-                }
+                //         self.removeAllConflictsFromPrevEvent(prevEvent[0]);
+                //         if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder teacher-placeholder" || eventTitleHTML[0].className == "student-placeholder-" + prevEvent[0].deliveryType)) ||
+                //           (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder teacher-placeholder" && eventTitleHTML[1].className == "student-placeholder-" + prevEvent[0].deliveryType) ||
+                //           (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder teacher-placeholder" && eventTitleHTML[2].className == "student-placeholder-" + prevEvent[0].deliveryType)) {
+                //             for (var i = 0; i < this.eventList.length; i++) {
+                //                 if (this.eventList[i].id == prevEventId)
+                //                     this.eventList.splice(i, 1);
+                //             }
+                //             this.calendar.fullCalendar('removeEvents', prevEventId);
+                //         }
+                //         this.calendar.fullCalendar('updateEvent', prevEvent);
+                //     }
+                //     else {
+                //         for (var i = 0; i < this.eventList.length; i++) {
+                //             if (this.eventList[i].id == prevEventId)
+                //                 this.eventList.splice(i, 1);
+                //         }
+                //         this.calendar.fullCalendar('removeEvents', prevEventId);
+                //     }
+                // }
             }
         }
         this.openSofPane();
         this.showConflictMsg();
         this.draggable('draggable');
         wjQuery('.loading').hide();
-
     };
 
     this.excuseStudentFromSession = function (element) {
@@ -5396,47 +5418,48 @@ function SylvanCalendar() {
                 }
                 var prevEventId = wjQuery(element).attr("eventid");
                 var prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
-                if (prevEvent) {
-                    var eventTitleHTML = wjQuery(prevEvent[0].title);
-                    for (var i = 0; i < eventTitleHTML.length; i++) {
-                        if (wjQuery(eventTitleHTML[i]).attr('value') == wjQuery(element).attr('value')) {
-                            eventTitleHTML.splice(i, 1);
-                        }
-                    }
-                    if (eventTitleHTML.prop('outerHTML') != undefined) {
-                        if (eventTitleHTML.length == 1) {
-                            prevEvent[0].title = eventTitleHTML.prop('outerHTML');
-                        } else {
-                            prevEvent[0].title = "";
-                            for (var i = 0; i < eventTitleHTML.length; i++) {
-                                prevEvent[0].title += eventTitleHTML[i].outerHTML;
-                            }
-                        }
-                        var removeStudentIndex = prevEvent[0].students.map(function (x) {
-                            return x.id;
-                        }).indexOf(wjQuery(element).attr('value'));
-                        prevEvent[0].students.splice(removeStudentIndex, 1);
+                self.updatePrevEvent(prevEvent, uniqueIds[0], prevEventId);
+                // if (prevEvent) {
+                //     var eventTitleHTML = wjQuery(prevEvent[0].title);
+                //     for (var i = 0; i < eventTitleHTML.length; i++) {
+                //         if (wjQuery(eventTitleHTML[i]).attr('value') == wjQuery(element).attr('value')) {
+                //             eventTitleHTML.splice(i, 1);
+                //         }
+                //     }
+                //     if (eventTitleHTML.prop('outerHTML') != undefined) {
+                //         if (eventTitleHTML.length == 1) {
+                //             prevEvent[0].title = eventTitleHTML.prop('outerHTML');
+                //         } else {
+                //             prevEvent[0].title = "";
+                //             for (var i = 0; i < eventTitleHTML.length; i++) {
+                //                 prevEvent[0].title += eventTitleHTML[i].outerHTML;
+                //             }
+                //         }
+                //         var removeStudentIndex = prevEvent[0].students.map(function (x) {
+                //             return x.id;
+                //         }).indexOf(wjQuery(element).attr('value'));
+                //         prevEvent[0].students.splice(removeStudentIndex, 1);
 
-                        self.removeAllConflictsFromPrevEvent(prevEvent[0]);
-                        if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder teacher-placeholder" || eventTitleHTML[0].className == "student-placeholder-" + prevEvent[0].deliveryType)) ||
-                          (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder teacher-placeholder" && eventTitleHTML[1].className == "student-placeholder-" + prevEvent[0].deliveryType) ||
-                          (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder teacher-placeholder" && eventTitleHTML[2].className == "student-placeholder-" + prevEvent[0].deliveryType)) {
-                            for (var i = 0; i < this.eventList.length; i++) {
-                                if (this.eventList[i].id == prevEventId)
-                                    this.eventList.splice(i, 1);
-                            }
-                            this.calendar.fullCalendar('removeEvents', prevEventId);
-                        }
-                        this.calendar.fullCalendar('updateEvent', prevEvent);
-                    }
-                    else {
-                        for (var i = 0; i < this.eventList.length; i++) {
-                            if (this.eventList[i].id == prevEventId)
-                                this.eventList.splice(i, 1);
-                        }
-                        this.calendar.fullCalendar('removeEvents', prevEventId);
-                    }
-                }
+                //         self.removeAllConflictsFromPrevEvent(prevEvent[0]);
+                //         if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder teacher-placeholder" || eventTitleHTML[0].className == "student-placeholder-" + prevEvent[0].deliveryType)) ||
+                //           (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder teacher-placeholder" && eventTitleHTML[1].className == "student-placeholder-" + prevEvent[0].deliveryType) ||
+                //           (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder teacher-placeholder" && eventTitleHTML[2].className == "student-placeholder-" + prevEvent[0].deliveryType)) {
+                //             for (var i = 0; i < this.eventList.length; i++) {
+                //                 if (this.eventList[i].id == prevEventId)
+                //                     this.eventList.splice(i, 1);
+                //             }
+                //             this.calendar.fullCalendar('removeEvents', prevEventId);
+                //         }
+                //         this.calendar.fullCalendar('updateEvent', prevEvent);
+                //     }
+                //     else {
+                //         for (var i = 0; i < this.eventList.length; i++) {
+                //             if (this.eventList[i].id == prevEventId)
+                //                 this.eventList.splice(i, 1);
+                //         }
+                //         this.calendar.fullCalendar('removeEvents', prevEventId);
+                //     }
+                // }
             }
         }
         self.openSofPane();
@@ -5444,7 +5467,6 @@ function SylvanCalendar() {
         self.draggable('draggable');
         wjQuery('.loading').hide();
     };
-
 
     this.excuseAndMakeUpStudent = function (element) {
         var self = this;
@@ -5588,47 +5610,48 @@ function SylvanCalendar() {
                     wjQuery("#excuseModal").dialog("close");
                     var prevEventId = wjQuery(element).attr("eventid");
                     var prevEvent = self.calendar.fullCalendar('clientEvents', prevEventId);
-                    if (prevEvent) {
-                        var eventTitleHTML = wjQuery(prevEvent[0].title);
-                        for (var i = 0; i < eventTitleHTML.length; i++) {
-                            if (wjQuery(eventTitleHTML[i]).attr('value') == wjQuery(element).attr('value')) {
-                                eventTitleHTML.splice(i, 1);
-                            }
-                        }
-                        if (eventTitleHTML.prop('outerHTML') != undefined) {
-                            if (eventTitleHTML.length == 1) {
-                                prevEvent[0].title = eventTitleHTML.prop('outerHTML');
-                            } else {
-                                prevEvent[0].title = "";
-                                for (var i = 0; i < eventTitleHTML.length; i++) {
-                                    prevEvent[0].title += eventTitleHTML[i].outerHTML;
-                                }
-                            }
-                            var removeStudentIndex = prevEvent[0].students.map(function (x) {
-                                return x.id;
-                            }).indexOf(wjQuery(element).attr('value'));
-                            prevEvent[0].students.splice(removeStudentIndex, 1);
+                    self.updatePrevEvent(prevEvent, uniqueIds[0], prevEventId);
+                    // if (prevEvent) {
+                    //     var eventTitleHTML = wjQuery(prevEvent[0].title);
+                    //     for (var i = 0; i < eventTitleHTML.length; i++) {
+                    //         if (wjQuery(eventTitleHTML[i]).attr('value') == wjQuery(element).attr('value')) {
+                    //             eventTitleHTML.splice(i, 1);
+                    //         }
+                    //     }
+                    //     if (eventTitleHTML.prop('outerHTML') != undefined) {
+                    //         if (eventTitleHTML.length == 1) {
+                    //             prevEvent[0].title = eventTitleHTML.prop('outerHTML');
+                    //         } else {
+                    //             prevEvent[0].title = "";
+                    //             for (var i = 0; i < eventTitleHTML.length; i++) {
+                    //                 prevEvent[0].title += eventTitleHTML[i].outerHTML;
+                    //             }
+                    //         }
+                    //         var removeStudentIndex = prevEvent[0].students.map(function (x) {
+                    //             return x.id;
+                    //         }).indexOf(wjQuery(element).attr('value'));
+                    //         prevEvent[0].students.splice(removeStudentIndex, 1);
 
-                            self.removeAllConflictsFromPrevEvent(prevEvent[0]);
-                            if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder teacher-placeholder" || eventTitleHTML[0].className == "student-placeholder-" + prevEvent[0].deliveryType)) ||
-                              (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder teacher-placeholder" && eventTitleHTML[1].className == "student-placeholder-" + prevEvent[0].deliveryType) ||
-                              (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder teacher-placeholder" && eventTitleHTML[2].className == "student-placeholder-" + prevEvent[0].deliveryType)) {
-                                for (var i = 0; i < self.eventList.length; i++) {
-                                    if (self.eventList[i].id == prevEventId)
-                                        self.eventList.splice(i, 1);
-                                }
-                                self.calendar.fullCalendar('removeEvents', prevEventId);
-                            }
-                            self.calendar.fullCalendar('updateEvent', prevEvent);
-                        }
-                        else {
-                            for (var i = 0; i < self.eventList.length; i++) {
-                                if (self.eventList[i].id == prevEventId)
-                                    self.eventList.splice(i, 1);
-                            }
-                            self.calendar.fullCalendar('removeEvents', prevEventId);
-                        }
-                    }
+                    //         self.removeAllConflictsFromPrevEvent(prevEvent[0]);
+                    //         if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder teacher-placeholder" || eventTitleHTML[0].className == "student-placeholder-" + prevEvent[0].deliveryType)) ||
+                    //           (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder teacher-placeholder" && eventTitleHTML[1].className == "student-placeholder-" + prevEvent[0].deliveryType) ||
+                    //           (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder teacher-placeholder" && eventTitleHTML[2].className == "student-placeholder-" + prevEvent[0].deliveryType)) {
+                    //             for (var i = 0; i < self.eventList.length; i++) {
+                    //                 if (self.eventList[i].id == prevEventId)
+                    //                     self.eventList.splice(i, 1);
+                    //             }
+                    //             self.calendar.fullCalendar('removeEvents', prevEventId);
+                    //         }
+                    //         self.calendar.fullCalendar('updateEvent', prevEvent);
+                    //     }
+                    //     else {
+                    //         for (var i = 0; i < self.eventList.length; i++) {
+                    //             if (self.eventList[i].id == prevEventId)
+                    //                 self.eventList.splice(i, 1);
+                    //         }
+                    //         self.calendar.fullCalendar('removeEvents', prevEventId);
+                    //     }
+                    // }
                 }
                 else {
                     if (wjQuery('#error_block').text() == '') {
@@ -5870,47 +5893,47 @@ function SylvanCalendar() {
                         wjQuery("#excuseModal").dialog("close");
                         var prevEventId = wjQuery(element).attr("eventid");
                         var prevEvent = self.calendar.fullCalendar('clientEvents', prevEventId);
-                        if (prevEvent) {
-                            var eventTitleHTML = wjQuery(prevEvent[0].title);
-                            for (var i = 0; i < eventTitleHTML.length; i++) {
-                                if (wjQuery(eventTitleHTML[i]).attr('value') == wjQuery(element).attr('value')) {
-                                    eventTitleHTML.splice(i, 1);
-                                }
-                            }
-                            if (eventTitleHTML.prop('outerHTML') != undefined) {
-                                if (eventTitleHTML.length == 1) {
-                                    prevEvent[0].title = eventTitleHTML.prop('outerHTML');
-                                } else {
-                                    prevEvent[0].title = "";
-                                    for (var i = 0; i < eventTitleHTML.length; i++) {
-                                        prevEvent[0].title += eventTitleHTML[i].outerHTML;
-                                    }
-                                }
-                                var removeStudentIndex = prevEvent[0].students.map(function (x) {
-                                    return x.id;
-                                }).indexOf(wjQuery(element).attr('value'));
-                                prevEvent[0].students.splice(removeStudentIndex, 1);
+                        self.updatePrevEvent(prevEvent, uniqueIds[0], prevEventId);
+                        // if (prevEvent) {
+                        //     var eventTitleHTML = wjQuery(prevEvent[0].title);
+                        //     for (var i = 0; i < eventTitleHTML.length; i++) {
+                        //         if (wjQuery(eventTitleHTML[i]).attr('value') == wjQuery(element).attr('value')) {
+                        //             eventTitleHTML.splice(i, 1);
+                        //         }
+                        //     }
+                        //     if (eventTitleHTML.prop('outerHTML') != undefined) {
+                        //         if (eventTitleHTML.length == 1) {
+                        //             prevEvent[0].title = eventTitleHTML.prop('outerHTML');
+                        //         } else {
+                        //             prevEvent[0].title = "";
+                        //             for (var i = 0; i < eventTitleHTML.length; i++) {
+                        //                 prevEvent[0].title += eventTitleHTML[i].outerHTML;
+                        //             }
+                        //         }
+                        //         var removeStudentIndex = prevEvent[0].students.map(function (x) {
+                        //             return x.id;
+                        //         }).indexOf(wjQuery(element).attr('value'));
+                        //         prevEvent[0].students.splice(removeStudentIndex, 1);
 
-                                self.removeAllConflictsFromPrevEvent(prevEvent[0]);
-                                if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder teacher-placeholder" || eventTitleHTML[0].className == "student-placeholder-" + prevEvent[0].deliveryType)) ||
-                                  (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder teacher-placeholder" && eventTitleHTML[1].className == "student-placeholder-" + prevEvent[0].deliveryType) ||
-                                  (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder teacher-placeholder" && eventTitleHTML[2].className == "student-placeholder-" + prevEvent[0].deliveryType)) {
-                                    for (var i = 0; i < self.eventList.length; i++) {
-                                        if (self.eventList[i].id == prevEventId)
-                                            self.eventList.splice(i, 1);
-                                    }
-                                    self.calendar.fullCalendar('removeEvents', prevEventId);
-                                }
-                                self.calendar.fullCalendar('updateEvent', prevEvent);
-                            } else {
-                                for (var i = 0; i < self.eventList.length; i++) {
-                                    if (self.eventList[i].id == prevEventId)
-                                        self.eventList.splice(i, 1);
-                                }
-                                self.calendar.fullCalendar('removeEvents', prevEventId);
-                            }
-
-                        }
+                        //         self.removeAllConflictsFromPrevEvent(prevEvent[0]);
+                        //         if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder teacher-placeholder" || eventTitleHTML[0].className == "student-placeholder-" + prevEvent[0].deliveryType)) ||
+                        //           (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder teacher-placeholder" && eventTitleHTML[1].className == "student-placeholder-" + prevEvent[0].deliveryType) ||
+                        //           (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder teacher-placeholder" && eventTitleHTML[2].className == "student-placeholder-" + prevEvent[0].deliveryType)) {
+                        //             for (var i = 0; i < self.eventList.length; i++) {
+                        //                 if (self.eventList[i].id == prevEventId)
+                        //                     self.eventList.splice(i, 1);
+                        //             }
+                        //             self.calendar.fullCalendar('removeEvents', prevEventId);
+                        //         }
+                        //         self.calendar.fullCalendar('updateEvent', prevEvent);
+                        //     } else {
+                        //         for (var i = 0; i < self.eventList.length; i++) {
+                        //             if (self.eventList[i].id == prevEventId)
+                        //                 self.eventList.splice(i, 1);
+                        //         }
+                        //         self.calendar.fullCalendar('removeEvents', prevEventId);
+                        //     }
+                        // }
                     } else {
                         if (wjQuery('#error_block').text() == '') {
                             wjQuery('#error_block').text('All Fields are mandatory');
@@ -6335,49 +6358,50 @@ function SylvanCalendar() {
                 }, 500);
                 var prevEventId = wjQuery(element).attr("eventid");
                 var prevEvent = self.calendar.fullCalendar('clientEvents', prevEventId);
-                if (prevEvent) {
-                    var eventTitleHTML = wjQuery(prevEvent[0].title);
-                    for (var i = 0; i < eventTitleHTML.length; i++) {
-                        if (wjQuery(eventTitleHTML[i]).attr('value') == wjQuery(element).attr('value')) {
-                            eventTitleHTML.splice(i, 1);
-                        }
-                    }
-                    if (eventTitleHTML.prop('outerHTML') != undefined) {
-                        if (eventTitleHTML.length == 1) {
-                            prevEvent[0].title = eventTitleHTML.prop('outerHTML');
-                        } else {
-                            prevEvent[0].title = "";
-                            for (var i = 0; i < eventTitleHTML.length; i++) {
-                                prevEvent[0].title += eventTitleHTML[i].outerHTML;
-                            }
-                        }
+                self.updatePrevEvent(prevEvent, uniqueIds[0], prevEventId);
+                // if (prevEvent) {
+                //     var eventTitleHTML = wjQuery(prevEvent[0].title);
+                //     for (var i = 0; i < eventTitleHTML.length; i++) {
+                //         if (wjQuery(eventTitleHTML[i]).attr('value') == wjQuery(element).attr('value')) {
+                //             eventTitleHTML.splice(i, 1);
+                //         }
+                //     }
+                //     if (eventTitleHTML.prop('outerHTML') != undefined) {
+                //         if (eventTitleHTML.length == 1) {
+                //             prevEvent[0].title = eventTitleHTML.prop('outerHTML');
+                //         } else {
+                //             prevEvent[0].title = "";
+                //             for (var i = 0; i < eventTitleHTML.length; i++) {
+                //                 prevEvent[0].title += eventTitleHTML[i].outerHTML;
+                //             }
+                //         }
 
-                        var removeStudentIndex = prevEvent[0].students.map(function (x) {
-                            return x.id;
-                        }).indexOf(wjQuery(element).attr('value'));
-                        prevEvent[0].students.splice(removeStudentIndex, 1);
+                //         var removeStudentIndex = prevEvent[0].students.map(function (x) {
+                //             return x.id;
+                //         }).indexOf(wjQuery(element).attr('value'));
+                //         prevEvent[0].students.splice(removeStudentIndex, 1);
 
-                        self.removeAllConflictsFromPrevEvent(prevEvent[0]);
+                //         self.removeAllConflictsFromPrevEvent(prevEvent[0]);
 
-                        if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder teacher-placeholder" || eventTitleHTML[0].className == "student-placeholder-" + prevEvent[0].deliveryType)) ||
-                          (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder teacher-placeholder" && eventTitleHTML[1].className == "student-placeholder-" + prevEvent[0].deliveryType) ||
-                          (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder teacher-placeholder" && eventTitleHTML[2].className == "student-placeholder-" + prevEvent[0].deliveryType)) {
-                            for (var i = 0; i < self.eventList.length; i++) {
-                                if (self.eventList[i].id == prevEventId)
-                                    self.eventList.splice(i, 1);
-                            }
-                            self.calendar.fullCalendar('removeEvents', prevEventId);
-                        }
+                //         if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder teacher-placeholder" || eventTitleHTML[0].className == "student-placeholder-" + prevEvent[0].deliveryType)) ||
+                //           (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder teacher-placeholder" && eventTitleHTML[1].className == "student-placeholder-" + prevEvent[0].deliveryType) ||
+                //           (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder teacher-placeholder" && eventTitleHTML[2].className == "student-placeholder-" + prevEvent[0].deliveryType)) {
+                //             for (var i = 0; i < self.eventList.length; i++) {
+                //                 if (self.eventList[i].id == prevEventId)
+                //                     self.eventList.splice(i, 1);
+                //             }
+                //             self.calendar.fullCalendar('removeEvents', prevEventId);
+                //         }
 
-                        self.calendar.fullCalendar('updateEvent', prevEvent[0]);
-                    } else {
-                        for (var i = 0; i < self.eventList.length; i++) {
-                            if (self.eventList[i].id == prevEventId)
-                                self.eventList.splice(i, 1);
-                        }
-                        self.calendar.fullCalendar('removeEvents', prevEventId);
-                    }
-                }
+                //         self.calendar.fullCalendar('updateEvent', prevEvent[0]);
+                //     } else {
+                //         for (var i = 0; i < self.eventList.length; i++) {
+                //             if (self.eventList[i].id == prevEventId)
+                //                 self.eventList.splice(i, 1);
+                //         }
+                //         self.calendar.fullCalendar('removeEvents', prevEventId);
+                //     }
+                // }
             }
         }
         self.openSofPane();
@@ -6603,50 +6627,8 @@ function SylvanCalendar() {
             var locationObj = self.getLocationObject(self.locationId);
             objNewSession['ownerObj'] = locationObj['ownerObj'];
             objPrevSession['ownerObj'] = locationObj['ownerObj'];
-
-            var responseObj = data.saveStudenttoSession(objPrevSession, objNewSession);
-            if (typeof responseObj == 'boolean') {
-                if (responseObj) {
-
-                    var index = -1;
-                    for (var i = 0; i < this.convertedStudentObj.length; i++) {
-                        if (this.convertedStudentObj[i].id == prevStudent.id &&
-                            this.convertedStudentObj[i].resourceId == prevStudent.resourceId &&
-                            this.convertedStudentObj[i].startHour.getTime() == prevStudent.startHour.getTime()) {
-                            index = i;
-                            break;
-                        }
-                    }
-                    if (index != -1) {
-                        this.convertedStudentObj[index] = newStudent;
-                        this.populateStudentEvent([newStudent], true);
-                    }
-                }
-            }
-            else if (typeof responseObj == 'object' && responseObj != null) {
-                if (responseObj.hasOwnProperty('hub_studentsessionid')) {
-                    newStudent['sessionId'] = responseObj['hub_studentsessionid'];
-                    newStudent['start'] = newStudent.start;
-                    newStudent['end'] = newStudent.end;
-                    newStudent['resourceId'] = responseObj['hub_resourceid@odata.bind'];
-                    newStudent['sessiontype'] = responseObj['hub_sessiontype'];
-                    newStudent['sessionStatus'] = responseObj['hub_session_status'];
-                    delete newStudent.isFromMasterSchedule;
-                    var index = -1;
-                    for (var i = 0; i < this.convertedStudentObj.length; i++) {
-                        if (this.convertedStudentObj[i].id == prevStudent.id &&
-                            this.convertedStudentObj[i].resourceId == prevStudent.resourceId &&
-                            this.convertedStudentObj[i].startHour.getTime() == prevStudent.startHour.getTime()) {
-                            index = i;
-                            break;
-                        }
-                    }
-                    if (index != -1) {
-                        this.convertedStudentObj[index] = newStudent;
-                        this.populateStudentEvent([newStudent], true);
-                    }
-                }
-            }
+            return data.saveStudenttoSession(objPrevSession, objNewSession);
+            
         }
     }
 
@@ -6737,10 +6719,8 @@ function SylvanCalendar() {
             modal: true,
             buttons: {
                 Yes: function () {
-                    // wjQuery(elm).attr("tempPinId", wjQuery(elm).attr("pinnedId"));
-                    // wjQuery(elm).removeAttr("pinnedId");
-                    t.studentSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
                     wjQuery(this).dialog("close");
+                    t.studentSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
                 },
                 No: function () {
                     wjQuery(this).dialog("close");
@@ -6759,8 +6739,8 @@ function SylvanCalendar() {
             modal: true,
             buttons: {
                 Yes: function () {
-                    t.studentSofConflictCheck(t, date, allDay, ev, ui, resource, elm);
                     wjQuery(this).dialog("close");
+                    t.studentSofConflictCheck(t, date, allDay, ev, ui, resource, elm);
                 },
                 No: function () {
                     wjQuery(this).dialog("close");
@@ -6779,8 +6759,8 @@ function SylvanCalendar() {
             modal: true,
             buttons: {
                 Yes: function () {
-                    t.teacherSessionConflictCheck(t, date, allDay, ev, ui, resource, elm, notAvailable);
                     wjQuery(this).dialog("close");
+                    t.teacherSessionConflictCheck(t, date, allDay, ev, ui, resource, elm, notAvailable);
                 },
                 No: function () {
                     wjQuery(this).dialog("close");
@@ -6799,8 +6779,8 @@ function SylvanCalendar() {
             modal: true,
             buttons: {
                 Yes: function () {
-                    t.tapaneConflictCheck(t, date, allDay, ev, ui, resource, elm, notAvailable);
                     wjQuery(this).dialog("close");
+                    t.tapaneConflictCheck(t, date, allDay, ev, ui, resource, elm, notAvailable);
                 },
                 No: function () {
                     wjQuery(this).dialog("close");
@@ -6824,10 +6804,6 @@ function SylvanCalendar() {
                 }
             },
             buttons: {
-                // "Confirm": function() {
-                //   t.tapaneConflictCheck(t,date, allDay,ev,ui,resource,elm);
-                //   wjQuery( this ).dialog( "close" );
-                // },
                 Close: function () {
                     wjQuery(this).dialog("close");
                 }
@@ -6914,8 +6890,8 @@ function SylvanCalendar() {
                 wjQuery.each(makeupList, function (k, v) {
                     list += "<li id='" + v.enrollmentId + "' class='makeup-item' >" + v.fullName + ", " + v.grade + "</li>";
                 });
-
-                wjQuery("#makeup > .makeup-lst").html(list);
+                wjQuery("#makeup > .error_block").html("");
+                wjQuery("#makeup .makeup-lst").html(list);
                 wjQuery("#makeup").dialog({
                     resizable: false,
                     height: 300,
@@ -7001,7 +6977,7 @@ function SylvanCalendar() {
                                 var locationObj = self.getLocationObject(self.locationId);
                                 objSession['ownerObj'] = locationObj['ownerObj'];
                                 var responseObj = data.saveMakeupNFloat(objSession);
-                                if (responseObj != null) {
+                                if (typeof (responseObj) == 'object') {
                                     var uniqueid = studentObj[0].id + "_" + idArry[1] + "_" + idArry[2];
                                     // Update New student Session
                                     studentObj[0]['resourceId'] = idArry[1];
@@ -7020,11 +6996,13 @@ function SylvanCalendar() {
                                     self.convertedStudentObj.push(studentObj[0]);
                                     self.populateStudentEvent([studentObj[0]], true);
                                     self.draggable('draggable');
+                                    wjQuery("#makeup > .error_block").html("");
                                     wjQuery("#makeup").dialog("close");
                                 } else {
-                                    wjQuery("#makeup").dialog("close");
+                                    wjQuery("#makeup > .error_block").html(responseObj);
                                 }
                             } else {
+                                wjQuery("#makeup > .error_block").html("");
                                 wjQuery("#makeup").dialog("close");
                             }
                         } else {

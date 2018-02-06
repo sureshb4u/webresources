@@ -518,6 +518,28 @@ button{
 }
 
 
+#makeup > section{
+    height: 169px;
+    overflow: auto;
+}
+
+
+#makeup > .error_block{
+    display: block;
+    margin: 10px 0px;
+    color: red;   
+    word-wrap: break-word;
+}
+
+
+.ui-dialog .ui-dialog-content{
+    overflow: visible;
+    height: auto !important;
+}
+
+
+
+
 ul{
     list-style-type: none;
 }

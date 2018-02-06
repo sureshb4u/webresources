@@ -1,4 +1,4 @@
-<head>
+<html><head>
   <link rel="stylesheet" type="text/css" href="/webresources/hub_/calendar/css/font.css">
   <link rel="stylesheet" type="text/css" href="/webresources/hub_/calendar/css/fullcalendar.css">
   <link rel="stylesheet" type="text/css" href="/webresources/hub_/calendar/css/SylCalDef.css">
@@ -10,6 +10,7 @@
   <script type="text/javascript" src="/webresources/hub_/calendar/js/jquery_1.9.0.min.js"></script>
   <script type="text/javascript" src="/webresources/hub_/calendar/js/widget.js"></script>
 </head>
+<body>
 <div class="header-container">
   <div id="dialog" style="display: none;">
     <p class="dialog-msg"></p>
@@ -49,11 +50,11 @@
   <div class="margin-left-l display-inline-block display-inline-custom">
     <ul class="view-change-container">
       <li>
-          <input type="radio" id="dayBtn" name="amount" checked=checked/>
+          <input type="radio" id="dayBtn" name="amount" checked="checked/">
           <label class="dayView" for="dayBtn">Day</label>
       </li>
       <li>
-          <input type="radio" id="weekBtn" name="amount" />
+          <input type="radio" id="weekBtn" name="amount">
           <label class="wkView" for="weekBtn">Week</label>
       </li>
     </ul>
@@ -87,42 +88,42 @@
   </div>
 </div>
 <div class="sof-pane">
-	 <div class="sof-header">Student Overflow
-	 <span class="sof-close-icon cursor float-right">X</span>
-	 </div>
+   <div class="sof-header">Student Overflow
+   <span class="sof-close-icon cursor float-right">X</span>
+   </div>
 </div>
 <div class="ta-pane">
    <div class="ta-header">Teacher Availability
     <span class="ta-close-icon cursor float-right">X</span>
    </div>
 </div>
-<div id='calendar'>
-	<div class="loading">
-		<img class="load-img" src="/webresources/hub_/calendar/images/loading.gif">
-	</div>
+<div id="calendar">
+  <div class="loading">
+    <img class="load-img" src="/webresources/hub_/calendar/images/loading.gif">
+  </div>
 </div>
 
 <!-- new appointment modal -->
 <div id="appointmentModal" style="display:none">
-    <form id="form" >
+    <form id="form">
 
         <div>
           From
           <input type="text" class="custom-datepicker from-datepicker-input" id="fromDate" tabindex="-1">
-            <img src="/webresources/hub_/calendar/images/up_arrow.png"  class="from-up-arrow" />
-        <img src="/webresources/hub_/calendar/images/down_arrow.png" class="from-down-arrow" />
+            <img src="/webresources/hub_/calendar/images/up_arrow.png" class="from-up-arrow">
+        <img src="/webresources/hub_/calendar/images/down_arrow.png" class="from-down-arrow">
           <input type="text" class="custom-timepicker from-timepicker-input" id="fromTime" tabindex="-1">
-            <img src="/webresources/hub_/calendar/images/up_arrow.png"  class="up-arrow" />
-        <img src="/webresources/hub_/calendar/images/down_arrow.png" class="down-arrow" />
+            <img src="/webresources/hub_/calendar/images/up_arrow.png" class="up-arrow">
+        <img src="/webresources/hub_/calendar/images/down_arrow.png" class="down-arrow">
         </div>
         <div>
-          <span class=textAlign>To</span>
+          <span class="textAlign">To</span>
           <input type="text" class="custom-datepicker to-datepicker-input" id="toDate" tabindex="-1">
-            <img src="/webresources/hub_/calendar/images/up_arrow.png"  class="to-up-arrow" />
-        <img src="/webresources/hub_/calendar/images/down_arrow.png" class="to-down-arrow" />
+            <img src="/webresources/hub_/calendar/images/up_arrow.png" class="to-up-arrow">
+        <img src="/webresources/hub_/calendar/images/down_arrow.png" class="to-down-arrow">
           <input type="text" class="custom-timepicker to-timepicker-input" id="toTime" tabindex="-1">
-            <img src="/webresources/hub_/calendar/images/up_arrow.png"  class="up-arrow" />
-        <img src="/webresources/hub_/calendar/images/down_arrow.png" class="down-arrow" />
+            <img src="/webresources/hub_/calendar/images/up_arrow.png" class="up-arrow">
+        <img src="/webresources/hub_/calendar/images/down_arrow.png" class="down-arrow">
         </div>
         <div>Type
           <select tabindex="-1" id="type">
@@ -131,7 +132,7 @@
         </div>
         <div>
           Capacity of appoinments in slot
-          <input class="custom-input" type="text"  id="capacity" tabindex="-1"/>
+          <input class="custom-input" type="text" id="capacity" tabindex="-1">
         </div>
         <div>Staff
           <select tabindex="-1" id="staff">
@@ -139,24 +140,24 @@
           </select>
         </div>
          <div>Location
-          <input type="text" id="location" tabindex="-1" />
+          <input type="text" id="location" tabindex="-1">
         </div>
         <div>Notes
         <textarea rows="4" cols="50" id="notes" tabindex="-1"></textarea>
         </div>
-        <button class="btn-modal" id="save" tabindex= "-1">Save</button>
+        <button class="btn-modal" id="save" tabindex="-1">Save</button>
     </form>
 </div>
 <div id="excuseModal" style="display:none">
 	<table style="width: 100%">
-		<tr>
+		<tbody><tr>
 			<td>Name</td>
-			<td id='studentNameofExcuse'></td>
+			<td id="studentNameofExcuse"></td>
 		</tr>
 		<tr>
 			<td>Date</td>
 			<td>
-				<input type="text" class="custom-datepicker excuse-datepicker-input" id="rescheduleDate" required tabindex="-1">
+				<input type="text" class="custom-datepicker excuse-datepicker-input" id="rescheduleDate" required="" tabindex="-1">
 			</td>
 		</tr>
 		<tr id="start-space">
@@ -180,20 +181,20 @@
 		<tr>
 			<td></td>
 			<td>
-				<button class="btn btn-modal excuseSave" tabindex= "-1">Save</button>
+				<button class="btn btn-modal excuseSave" tabindex="-1">Save</button>
 			</td>
 		</tr>
-	</table>
-	<p id='error_block'></p> 
+	</tbody></table>
+	<p id="error_block"></p> 
 </div>
 <div id="weekmodal" style="display:none">
-    <div id='weekStudentsPlaceHolder'></div>
+    <div id="weekStudentsPlaceHolder"></div>
 </div>
 <script type="text/javascript" src="/webresources/hub_/calendar/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="/webresources/hub_/calendar/js/moment.min.js"></script>
 <script type="text/javascript" src="/webresources/hub_/calendar/js/jquery_ui_1.9.2.min.js"></script>
 <script type="text/javascript" src="/webresources/hub_/calendar/js/jquery_timepicker_1.3.5.min.js"></script>
-<script type="text/javascript" src="../../../ClientGlobalContext.js.aspx" ></script>
+<script type="text/javascript" src="../../../ClientGlobalContext.js.aspx"></script>
 <script type="text/javascript" src="/webresources/hub_/calendar/js/fullcalendar.js"></script>
 <script type="text/javascript" src="/webresources/hub_/calendar/js/context_menu.min.js"></script>
 <script type="text/javascript" src="/webresources/hub_/calendar/js/context_menu_position.min.js"></script>
@@ -201,3 +202,4 @@
 <script type="text/javascript" src="/webresources/hub_/calendar/js/calendarInterface.js"></script> 
 <script type="text/javascript" src="/webresources/hub_/calendar/js/instruction_view.js"></script>
 <script type="text/javascript" src="/webresources/hub_/calendar/js/plugin.js"></script>
+</body></html>
