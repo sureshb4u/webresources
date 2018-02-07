@@ -1175,17 +1175,18 @@ function SylvanCalendar() {
             objStaff['ownerObj'] = locationObj['ownerObj'];
             objStaff['hub_centerid'] = locationObj['hub_centerid'];
             var responseObj = data.saveTAtoSession(objStaff, objNewSession);
-            var newScheduleObj = {};
-            newScheduleObj.hub_staff_scheduleid = responseObj['hub_staff_scheduleid'];
-            newScheduleObj.hub_center = teacher.locationId;
-            newScheduleObj.hub_date = moment(teacher.start).format("YYYY-MM-DD");
-            newScheduleObj.hub_start_time = this.convertToMinutes(moment(teacher.start).format("h:mm A"));
-            newScheduleObj.hub_end_time = this.convertToMinutes(moment(teacher.end).format("h:mm A"));
-            newScheduleObj._hub_resourceid_value = teacher.resourceId;
-            newScheduleObj._hub_staff_value = teacher.id;
-
-            // update teacher schedule object
-            this.teacherSchedule.push(newScheduleObj);
+            if(responseObj != null && responseObj != undefined){
+                var newScheduleObj = {};
+                newScheduleObj.hub_staff_scheduleid = responseObj['hub_staff_scheduleid'];
+                newScheduleObj.hub_center = teacher.locationId;
+                newScheduleObj.hub_date = moment(teacher.start).format("YYYY-MM-DD");
+                newScheduleObj.hub_start_time = this.convertToMinutes(moment(teacher.start).format("h:mm A"));
+                newScheduleObj.hub_end_time = this.convertToMinutes(moment(teacher.end).format("h:mm A"));
+                newScheduleObj._hub_resourceid_value = teacher.resourceId;
+                newScheduleObj._hub_staff_value = teacher.id;
+                // update teacher schedule object
+                this.teacherSchedule.push(newScheduleObj);
+            }
             return responseObj;
         }
     };
@@ -1814,6 +1815,8 @@ function SylvanCalendar() {
                 } else {
                     t.prompt("The selected staff is already scheduled for the respective timeslot.");
                 }
+            }else{
+                wjQuery(".loading").hide();
             }
         }
     };
@@ -1831,8 +1834,6 @@ function SylvanCalendar() {
             return x.id;
         }).indexOf(teacherId);
         if (teacher) {
-            elm.remove();
-            // t.taList.splice(index, 1);
             var teacherObj = {
                 id: teacher[0].id,
                 name: teacher[0].name,
@@ -1852,24 +1853,26 @@ function SylvanCalendar() {
             }
             var responseObj = this.saveTAtoSession(teacherObj);
             if (responseObj != undefined && responseObj != null) {
+                elm.remove();
                 teacherObj.scheduleId = responseObj['hub_staff_scheduleid'];
-            }
-            if (self.convertedPinnedList.length && teacherObj.scheduleType != FLOAT_TEACHER_TYPE) {
-                var isPinned = self.convertedPinnedList.filter(function (obj) {
-                    return (obj.startTime != undefined && obj.resourceId != undefined &&
-                            obj.teacherId == teacherObj.id &&
-                            obj.resourceId == teacherObj.resourceId &&
-                            obj.startTime == moment(date).format("h:mm A") &&
-                            obj.dayId == self.getDayValue(currentCalendarDate))
-                });
-                if (isPinned[0] != undefined) {
-                    teacherObj['pinId'] = isPinned[0].id;
+                if (self.convertedPinnedList.length && teacherObj.scheduleType != FLOAT_TEACHER_TYPE) {
+                    var isPinned = self.convertedPinnedList.filter(function (obj) {
+                        return (obj.startTime != undefined && obj.resourceId != undefined &&
+                                obj.teacherId == teacherObj.id &&
+                                obj.resourceId == teacherObj.resourceId &&
+                                obj.startTime == moment(date).format("h:mm A") &&
+                                obj.dayId == self.getDayValue(currentCalendarDate))
+                    });
+                    if (isPinned[0] != undefined) {
+                        teacherObj['pinId'] = isPinned[0].id;
+                    }
                 }
+                this.convertedTeacherObj.push(teacherObj);
+                t.populateTeacherEvent([teacherObj], true);
+                t.populateTAPane(t.taList);
             }
-            this.convertedTeacherObj.push(teacherObj);
-            t.populateTeacherEvent([teacherObj], true);
-            t.populateTAPane(t.taList);
         }
+        wjQuery(".loading").hide();
     }
 
     this.teacherSessionConflictCheck = function (t, date, allDay, ev, ui, resource, elm, notAvailable) {
@@ -2066,34 +2069,30 @@ function SylvanCalendar() {
             newStudent[0].end = this.setEnd(prevStudent, newStudent[0]);
             newStudent[0].resourceId = resource.id;
             var responseObj = this.saveSOFtoSession(newStudent, prevStudent);
-            if (typeof (responseObj) == 'boolean') {
-                if (responseObj) {
-                    elm.remove();
-                    this.sofList[sofType].splice(stdIndex, 1);
-                    t.sofWidthCalc();
-                    if (wjQuery(parentElement).html() == '') {
-                        parentElement.remove();
-                    }
-                    this.convertedStudentObj.push(newStudent[0]);
-                    t.populateStudentEvent(newStudent, true);
+            if (typeof (responseObj) == 'boolean' && responseObj) {
+                elm.remove();
+                this.sofList[sofType].splice(stdIndex, 1);
+                t.sofWidthCalc();
+                if (wjQuery(parentElement).html() == '') {
+                    parentElement.remove();
                 }
-            } else if (typeof (responseObj) == 'object') {
-                if (responseObj != undefined) {
-                    this.sofList[sofType].splice(stdIndex, 1);
-                    elm.remove();
-                    t.sofWidthCalc();
-                    if (wjQuery(parentElement).html() == '') {
-                        parentElement.remove();
-                    }
-                    newStudent[0].sessionId = responseObj['hub_studentsessionid'];
-                    newStudent[0]['sessiontype'] = responseObj['hub_sessiontype'];
-                    newStudent[0]['sessionStatus'] = responseObj['hub_session_status'];
-                    if (newStudent[0].hasOwnProperty('isFromMasterSchedule')) {
-                        delete newStudent[0].isFromMasterSchedule;
-                    }
-                    this.convertedStudentObj.push(newStudent[0]);
-                    t.populateStudentEvent(newStudent, true);
+                this.convertedStudentObj.push(newStudent[0]);
+                t.populateStudentEvent(newStudent, true);
+            } else if (typeof (responseObj) == 'object' && responseObj != null && responseObj != undefined) {
+                this.sofList[sofType].splice(stdIndex, 1);
+                elm.remove();
+                t.sofWidthCalc();
+                if (wjQuery(parentElement).html() == '') {
+                    parentElement.remove();
                 }
+                newStudent[0].sessionId = responseObj['hub_studentsessionid'];
+                newStudent[0]['sessiontype'] = responseObj['hub_sessiontype'];
+                newStudent[0]['sessionStatus'] = responseObj['hub_session_status'];
+                if (newStudent[0].hasOwnProperty('isFromMasterSchedule')) {
+                    delete newStudent[0].isFromMasterSchedule;
+                }
+                this.convertedStudentObj.push(newStudent[0]);
+                t.populateStudentEvent(newStudent, true);
             }else if(typeof responseObj == 'string'){
                 self.prompt(responseObj);
             }
@@ -2130,30 +2129,28 @@ function SylvanCalendar() {
                 var prevStudent = t.convertedStudentObj[index];
                 var newStudent = newStudentObj;
                 var responseObj = t.saveStudentToSession(t.convertedStudentObj[index], newStudentObj);
-                if (typeof responseObj == 'boolean') {
-                    if (responseObj) {
-                        delete newStudentObj.pinId;
-                        elm.remove();
-                        self.updatePrevEvent(prevEvent, stuId, prevEventId);
-                        var index = -1;
-                        for (var i = 0; i < this.convertedStudentObj.length; i++) {
-                            if (this.convertedStudentObj[i].id == prevStudent.id &&
-                                this.convertedStudentObj[i].resourceId == prevStudent.resourceId &&
-                                this.convertedStudentObj[i].startHour.getTime() == prevStudent.startHour.getTime()) {
-                                index = i;
-                                break;
-                            }
-                        }
-                        if (index != -1) {
-                            this.convertedStudentObj[index] = newStudentObj;
-                            this.populateStudentEvent([newStudentObj], true);
+                if (typeof responseObj == 'boolean' && responseObj) {
+                    delete newStudentObj.pinId;
+                    elm.remove();
+                    self.updatePrevStudentEvent(prevEvent, stuId, prevEventId);
+                    var index = -1;
+                    for (var i = 0; i < this.convertedStudentObj.length; i++) {
+                        if (this.convertedStudentObj[i].id == prevStudent.id &&
+                            this.convertedStudentObj[i].resourceId == prevStudent.resourceId &&
+                            this.convertedStudentObj[i].startHour.getTime() == prevStudent.startHour.getTime()) {
+                            index = i;
+                            break;
                         }
                     }
+                    if (index != -1) {
+                        this.convertedStudentObj[index] = newStudentObj;
+                        this.populateStudentEvent([newStudentObj], true);
+                    }
                 }
-                else if (typeof responseObj == 'object' && responseObj != null) {
+                else if (typeof responseObj == 'object' && responseObj != null && responseObj != undefined) {
                     if (responseObj.hasOwnProperty('hub_studentsessionid')) {
                         elm.remove();
-                        self.updatePrevEvent(prevEvent, stuId, prevEventId);
+                        self.updatePrevStudentEvent(prevEvent, stuId, prevEventId);
                         delete newStudentObj.pinId;
                         delete newStudentObj.isFromMasterSchedule;
                         newStudentObj['sessionId'] = responseObj['hub_studentsessionid'];
@@ -2189,7 +2186,7 @@ function SylvanCalendar() {
         this.draggable('draggable');
     }
 
-    this.updatePrevEvent = function(prevEvent, stuId, prevEventId){
+    this.updatePrevStudentEvent = function(prevEvent, stuId, prevEventId){
         var self = this;
         if (prevEvent != undefined && prevEvent.length) {
                 var eventTitleHTML = wjQuery(prevEvent[0].title);
@@ -5288,7 +5285,8 @@ function SylvanCalendar() {
             objCancelSession['ownerObj'] = locationObj['ownerObj'];
 
             var responseObj = data.omitStudentSession(objCancelSession);
-            if (typeof (responseObj) == 'boolean' || typeof (responseObj) == 'object') {
+
+            if ((typeof (responseObj) == 'boolean' && responseObj) || typeof (responseObj) == 'object') {
                 var index = -1;
                 for (var i = 0; i < this.convertedStudentObj.length; i++) {
                     if (this.convertedStudentObj[i].id == uniqueIds[0] &&
@@ -5303,7 +5301,7 @@ function SylvanCalendar() {
                 }
                 var prevEventId = wjQuery(element).attr("eventid");
                 var prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
-                self.updatePrevEvent(prevEvent, uniqueIds[0], prevEventId);
+                self.updatePrevStudentEvent(prevEvent, uniqueIds[0], prevEventId);
                 // if (prevEvent) {
                 //     var eventTitleHTML = wjQuery(prevEvent[0].title);
                 //     for (var i = 0; i < eventTitleHTML.length; i++) {
@@ -5392,7 +5390,7 @@ function SylvanCalendar() {
             objCancelSession['ownerObj'] = locationObj['ownerObj'];
 
             var responseObj = data.excuseStudentFromSession(objCancelSession);
-            if (typeof (responseObj) == 'boolean' || typeof (responseObj) == 'object') {
+            if ((typeof (responseObj) == 'boolean' && responseObj) || typeof (responseObj) == 'object') {
                 var index = -1;
                 for (var i = 0; i < this.convertedStudentObj.length; i++) {
                     if (this.convertedStudentObj[i].id == uniqueIds[0] &&
@@ -5407,7 +5405,7 @@ function SylvanCalendar() {
                 }
                 var prevEventId = wjQuery(element).attr("eventid");
                 var prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
-                self.updatePrevEvent(prevEvent, uniqueIds[0], prevEventId);
+                self.updatePrevStudentEvent(prevEvent, uniqueIds[0], prevEventId);
                 // if (prevEvent) {
                 //     var eventTitleHTML = wjQuery(prevEvent[0].title);
                 //     for (var i = 0; i < eventTitleHTML.length; i++) {
@@ -5599,7 +5597,7 @@ function SylvanCalendar() {
                     wjQuery("#excuseModal").dialog("close");
                     var prevEventId = wjQuery(element).attr("eventid");
                     var prevEvent = self.calendar.fullCalendar('clientEvents', prevEventId);
-                    self.updatePrevEvent(prevEvent, uniqueIds[0], prevEventId);
+                    self.updatePrevStudentEvent(prevEvent, uniqueIds[0], prevEventId);
                     // if (prevEvent) {
                     //     var eventTitleHTML = wjQuery(prevEvent[0].title);
                     //     for (var i = 0; i < eventTitleHTML.length; i++) {
@@ -5882,7 +5880,7 @@ function SylvanCalendar() {
                         wjQuery("#excuseModal").dialog("close");
                         var prevEventId = wjQuery(element).attr("eventid");
                         var prevEvent = self.calendar.fullCalendar('clientEvents', prevEventId);
-                        self.updatePrevEvent(prevEvent, uniqueIds[0], prevEventId);
+                        self.updatePrevStudentEvent(prevEvent, uniqueIds[0], prevEventId);
                         // if (prevEvent) {
                         //     var eventTitleHTML = wjQuery(prevEvent[0].title);
                         //     for (var i = 0; i < eventTitleHTML.length; i++) {
@@ -6347,7 +6345,7 @@ function SylvanCalendar() {
                 }, 500);
                 var prevEventId = wjQuery(element).attr("eventid");
                 var prevEvent = self.calendar.fullCalendar('clientEvents', prevEventId);
-                self.updatePrevEvent(prevEvent, uniqueIds[0], prevEventId);
+                self.updatePrevStudentEvent(prevEvent, uniqueIds[0], prevEventId);
                 // if (prevEvent) {
                 //     var eventTitleHTML = wjQuery(prevEvent[0].title);
                 //     for (var i = 0; i < eventTitleHTML.length; i++) {
