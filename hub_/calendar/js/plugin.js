@@ -2323,6 +2323,7 @@ function SylvanCalendar() {
             },
             drop: function (date, allDay, ev, ui, resource) {
                 clearTimeout(timeout);
+                wjQuery(".loading").show();
                 timeout = setTimeout(function () {
                     t.createEventOnDrop(t, date, allDay, ev, ui, resource, ui.helper.context);
                 }, 100);
