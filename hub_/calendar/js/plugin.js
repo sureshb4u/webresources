@@ -1897,81 +1897,82 @@ function SylvanCalendar() {
             }
         }
 
-        if (prevEvent.length) {
-            var eventTitleHTML = wjQuery(prevEvent[0].title);
-            for (var i = 0; i < eventTitleHTML.length; i++) {
-                if (wjQuery(eventTitleHTML[i]).attr('value') == teacherId) {
-                    eventTitleHTML.splice(i, 1);
-                }
-            }
-            if (eventTitleHTML.prop('outerHTML') != undefined) {
-                if (eventTitleHTML.length == 1) {
-                    if (prevEvent[0].teachers.length == 1) {
-                        prevEvent[0].title = "<span class='placeholder teacher-placeholder'>Teacher name</span>";
-                        self.addContext("", 'teacherPlaceholder', true, true);
-                        prevEvent[0].title += eventTitleHTML.prop('outerHTML');
-                    } else {
-                        prevEvent[0].title = eventTitleHTML.prop('outerHTML');
-                    }
-                } else {
-                    prevEvent[0].title = "";
-                    if (prevEvent[0].teachers.length == 1) {
-                        prevEvent[0].title += "<span class='placeholder teacher-placeholder'>Teacher name</span>";
-                        self.addContext("", 'teacherPlaceholder', true, true);
-                    }
-                    for (var i = 0; i < eventTitleHTML.length; i++) {
-                        prevEvent[0].title += eventTitleHTML[i].outerHTML;
-                    }
 
-                    // Teacher conflict removal               
-                    if (prevEvent[0].teachers.length == 2) {
-                        var msgIndex = prevEvent[0].conflictMsg.map(function (x) {
-                            return x;
-                        }).indexOf(0);
-                        if (msgIndex > -1) {
-                            prevEvent[0].conflictMsg.splice(msgIndex, 1);
-                        }
-                        // self.updateConflictMsg(prevEvent[0]);
-                        if (prevEvent[0].title.indexOf('<span class="student-placeholder-' + prevEvent[0].deliveryType + '">Student name</span>') == -1) {
-                            prevEvent[0].title += '<span class="student-placeholder-' + prevEvent[0].deliveryType + '">Student name</span>';
-                            self.addContext("", 'studentPlaceholder', true, prevEvent[0].deliveryTypeCode);
-                        }
-                    }
-                }
-                // No students remove lock from prev event
-                if (prevEvent[0]['students'] == undefined || prevEvent[0].hasOwnProperty('students') && prevEvent[0]['students'].length == 0) {
-                    if (prevEvent[0].title.indexOf('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">') != -1) {
-                        prevEvent[0].title = prevEvent[0].title.replace('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">', "");
-                        prevEvent[0].is1to1 = false;
-                    }
-                }
-                this.calendar.fullCalendar('updateEvent', prevEvent);
-                var removeTeacherIndex = prevEvent[0].teachers.map(function (x) {
-                    return x.id;
-                }).indexOf(teacherId);
-                prevEvent[0].teachers.splice(removeTeacherIndex, 1);
+        // if (prevEvent.length) {
+        //     var eventTitleHTML = wjQuery(prevEvent[0].title);
+        //     for (var i = 0; i < eventTitleHTML.length; i++) {
+        //         if (wjQuery(eventTitleHTML[i]).attr('value') == teacherId) {
+        //             eventTitleHTML.splice(i, 1);
+        //         }
+        //     }
+        //     if (eventTitleHTML.prop('outerHTML') != undefined) {
+        //         if (eventTitleHTML.length == 1) {
+        //             if (prevEvent[0].teachers.length == 1) {
+        //                 prevEvent[0].title = "<span class='placeholder teacher-placeholder'>Teacher name</span>";
+        //                 self.addContext("", 'teacherPlaceholder', true, true);
+        //                 prevEvent[0].title += eventTitleHTML.prop('outerHTML');
+        //             } else {
+        //                 prevEvent[0].title = eventTitleHTML.prop('outerHTML');
+        //             }
+        //         } else {
+        //             prevEvent[0].title = "";
+        //             if (prevEvent[0].teachers.length == 1) {
+        //                 prevEvent[0].title += "<span class='placeholder teacher-placeholder'>Teacher name</span>";
+        //                 self.addContext("", 'teacherPlaceholder', true, true);
+        //             }
+        //             for (var i = 0; i < eventTitleHTML.length; i++) {
+        //                 prevEvent[0].title += eventTitleHTML[i].outerHTML;
+        //             }
 
-                // remove all conflicts By passing prevEvent Object 
-                t.removeAllConflictsFromPrevEvent(prevEvent[0]);
-                eventTitleHTML = wjQuery(prevEvent[0].title);
-                if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder teacher-placeholder" || eventTitleHTML[0].className == "student-placeholder-" + prevEvent[0].deliveryType)) ||
-                   (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder teacher-placeholder" && eventTitleHTML[1].className == "student-placeholder-" + prevEvent[0].deliveryType) ||
-                   (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder teacher-placeholder" && eventTitleHTML[2].className == "student-placeholder-" + prevEvent[0].deliveryType)) {
-                    for (var i = 0; i < this.eventList.length; i++) {
-                        if (this.eventList[i].id == prevEventId)
-                            this.eventList.splice(i, 1);
-                    }
-                    this.calendar.fullCalendar('removeEvents', prevEventId);
-                }
-                this.calendar.fullCalendar('updateEvent', prevEvent);
-            } else {
-                for (var i = 0; i < this.eventList.length; i++) {
-                    if (this.eventList[i].id == prevEventId)
-                        this.eventList.splice(i, 1);
-                }
-                this.calendar.fullCalendar('removeEvents', prevEventId);
-            }
-        }
+        //             // Teacher conflict removal               
+        //             if (prevEvent[0].teachers.length == 2) {
+        //                 var msgIndex = prevEvent[0].conflictMsg.map(function (x) {
+        //                     return x;
+        //                 }).indexOf(0);
+        //                 if (msgIndex > -1) {
+        //                     prevEvent[0].conflictMsg.splice(msgIndex, 1);
+        //                 }
+        //                 // self.updateConflictMsg(prevEvent[0]);
+        //                 if (prevEvent[0].title.indexOf('<span class="student-placeholder-' + prevEvent[0].deliveryType + '">Student name</span>') == -1) {
+        //                     prevEvent[0].title += '<span class="student-placeholder-' + prevEvent[0].deliveryType + '">Student name</span>';
+        //                     self.addContext("", 'studentPlaceholder', true, prevEvent[0].deliveryTypeCode);
+        //                 }
+        //             }
+        //         }
+        //         // No students remove lock from prev event
+        //         if (prevEvent[0]['students'] == undefined || prevEvent[0].hasOwnProperty('students') && prevEvent[0]['students'].length == 0) {
+        //             if (prevEvent[0].title.indexOf('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">') != -1) {
+        //                 prevEvent[0].title = prevEvent[0].title.replace('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">', "");
+        //                 prevEvent[0].is1to1 = false;
+        //             }
+        //         }
+        //         this.calendar.fullCalendar('updateEvent', prevEvent);
+        //         var removeTeacherIndex = prevEvent[0].teachers.map(function (x) {
+        //             return x.id;
+        //         }).indexOf(teacherId);
+        //         prevEvent[0].teachers.splice(removeTeacherIndex, 1);
+
+        //         // remove all conflicts By passing prevEvent Object 
+        //         t.removeAllConflictsFromPrevEvent(prevEvent[0]);
+        //         eventTitleHTML = wjQuery(prevEvent[0].title);
+        //         if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder teacher-placeholder" || eventTitleHTML[0].className == "student-placeholder-" + prevEvent[0].deliveryType)) ||
+        //            (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder teacher-placeholder" && eventTitleHTML[1].className == "student-placeholder-" + prevEvent[0].deliveryType) ||
+        //            (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder teacher-placeholder" && eventTitleHTML[2].className == "student-placeholder-" + prevEvent[0].deliveryType)) {
+        //             for (var i = 0; i < this.eventList.length; i++) {
+        //                 if (this.eventList[i].id == prevEventId)
+        //                     this.eventList.splice(i, 1);
+        //             }
+        //             this.calendar.fullCalendar('removeEvents', prevEventId);
+        //         }
+        //         this.calendar.fullCalendar('updateEvent', prevEvent);
+        //     } else {
+        //         for (var i = 0; i < this.eventList.length; i++) {
+        //             if (this.eventList[i].id == prevEventId)
+        //                 this.eventList.splice(i, 1);
+        //         }
+        //         this.calendar.fullCalendar('removeEvents', prevEventId);
+        //     }
+        // }
 
 
         if (t.convertedTeacherObj[index]) {
@@ -2006,6 +2007,7 @@ function SylvanCalendar() {
                     teacher['scheduleType'] = teacher['scheduleType'] == undefined ? SCHEDULE_STATUS : teacher['scheduleType'];
                 }
                 self.populateTeacherEvent([teacher], true);
+                self.updatePrevTeacherEvent(prevEvent, teacherId, prevEventId);
             }else if (typeof responseObj == 'object' && responseObj != null) {
                 if (responseObj.hasOwnProperty('hub_staff_scheduleid')) {
                     if (notAvailable) {
@@ -2032,6 +2034,7 @@ function SylvanCalendar() {
                         self.convertedTeacherObj[index] = teacher;
                         self.populateTeacherEvent([teacher], true);
                         self.populateTAPane(self.taList);
+                        self.updatePrevTeacherEvent(prevEvent, teacherId, prevEventId);
                     }
                 }
             }
@@ -2283,6 +2286,85 @@ function SylvanCalendar() {
                     }
                     this.calendar.fullCalendar('removeEvents', prevEventId);
                 }
+        }
+    }
+
+    this.updatePrevTeacherEvent = function(prevEvent, teacherId, prevEventId){
+        var self = this;
+        if (prevEvent.length) {
+            var eventTitleHTML = wjQuery(prevEvent[0].title);
+            for (var i = 0; i < eventTitleHTML.length; i++) {
+                if (wjQuery(eventTitleHTML[i]).attr('value') == teacherId) {
+                    eventTitleHTML.splice(i, 1);
+                }
+            }
+            if (eventTitleHTML.prop('outerHTML') != undefined) {
+                if (eventTitleHTML.length == 1) {
+                    if (prevEvent[0].teachers.length == 1) {
+                        prevEvent[0].title = "<span class='placeholder teacher-placeholder'>Teacher name</span>";
+                        self.addContext("", 'teacherPlaceholder', true, true);
+                        prevEvent[0].title += eventTitleHTML.prop('outerHTML');
+                    } else {
+                        prevEvent[0].title = eventTitleHTML.prop('outerHTML');
+                    }
+                } else {
+                    prevEvent[0].title = "";
+                    if (prevEvent[0].teachers.length == 1) {
+                        prevEvent[0].title += "<span class='placeholder teacher-placeholder'>Teacher name</span>";
+                        self.addContext("", 'teacherPlaceholder', true, true);
+                    }
+                    for (var i = 0; i < eventTitleHTML.length; i++) {
+                        prevEvent[0].title += eventTitleHTML[i].outerHTML;
+                    }
+
+                    // Teacher conflict removal               
+                    if (prevEvent[0].teachers.length == 2) {
+                        var msgIndex = prevEvent[0].conflictMsg.map(function (x) {
+                            return x;
+                        }).indexOf(0);
+                        if (msgIndex > -1) {
+                            prevEvent[0].conflictMsg.splice(msgIndex, 1);
+                        }
+                        // self.updateConflictMsg(prevEvent[0]);
+                        if (prevEvent[0].title.indexOf('<span class="student-placeholder-' + prevEvent[0].deliveryType + '">Student name</span>') == -1) {
+                            prevEvent[0].title += '<span class="student-placeholder-' + prevEvent[0].deliveryType + '">Student name</span>';
+                            self.addContext("", 'studentPlaceholder', true, prevEvent[0].deliveryTypeCode);
+                        }
+                    }
+                }
+                // No students remove lock from prev event
+                if (prevEvent[0]['students'] == undefined || prevEvent[0].hasOwnProperty('students') && prevEvent[0]['students'].length == 0) {
+                    if (prevEvent[0].title.indexOf('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">') != -1) {
+                        prevEvent[0].title = prevEvent[0].title.replace('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">', "");
+                        prevEvent[0].is1to1 = false;
+                    }
+                }
+                this.calendar.fullCalendar('updateEvent', prevEvent);
+                var removeTeacherIndex = prevEvent[0].teachers.map(function (x) {
+                    return x.id;
+                }).indexOf(teacherId);
+                prevEvent[0].teachers.splice(removeTeacherIndex, 1);
+
+                // remove all conflicts By passing prevEvent Object 
+                t.removeAllConflictsFromPrevEvent(prevEvent[0]);
+                eventTitleHTML = wjQuery(prevEvent[0].title);
+                if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder teacher-placeholder" || eventTitleHTML[0].className == "student-placeholder-" + prevEvent[0].deliveryType)) ||
+                   (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder teacher-placeholder" && eventTitleHTML[1].className == "student-placeholder-" + prevEvent[0].deliveryType) ||
+                   (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder teacher-placeholder" && eventTitleHTML[2].className == "student-placeholder-" + prevEvent[0].deliveryType)) {
+                    for (var i = 0; i < this.eventList.length; i++) {
+                        if (this.eventList[i].id == prevEventId)
+                            this.eventList.splice(i, 1);
+                    }
+                    this.calendar.fullCalendar('removeEvents', prevEventId);
+                }
+                this.calendar.fullCalendar('updateEvent', prevEvent);
+            } else {
+                for (var i = 0; i < this.eventList.length; i++) {
+                    if (this.eventList[i].id == prevEventId)
+                        this.eventList.splice(i, 1);
+                }
+                this.calendar.fullCalendar('removeEvents', prevEventId);
+            }
         }
     }
 
