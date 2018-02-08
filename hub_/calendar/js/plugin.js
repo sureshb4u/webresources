@@ -3421,7 +3421,7 @@ function SylvanCalendar() {
                 var eDate = new Date(val['hub_session_date@OData.Community.Display.V1.FormattedValue'] + " " + val['hub_end_time@OData.Community.Display.V1.FormattedValue']);
                 var startHour = new Date(val['hub_session_date@OData.Community.Display.V1.FormattedValue'] + " " + val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
                 var obj = {
-                    aStudUniqueId:self.generateUniqueId(),
+                    studUniqueId:self.generateUniqueId(),
                     id: val._hub_student_value,
                     name: val["_hub_student_value@OData.Community.Display.V1.FormattedValue"],
                     start: sDate,
@@ -3562,7 +3562,7 @@ function SylvanCalendar() {
 
                 if (allowStudentFlag) {
                     var obj = {
-                        aStudUniqueId:self.generateUniqueId(),
+                        studUniqueId:self.generateUniqueId(),
                         id: val['aenrollment_x002e_hub_student'],
                         name: val["aenrollment_x002e_hub_student@OData.Community.Display.V1.FormattedValue"],
                         gradeId: val['astudent_x002e_hub_grade'],
@@ -4790,11 +4790,7 @@ function SylvanCalendar() {
         checkFor1to1 = checkFor1to1 != undefined;
         if (studentList.length) {
             wjQuery.each(studentList, function (key, value) {
-                if (value['sessionStatus'] == SCHEDULE_STATUS ||
-                   value['sessionStatus'] == RESCHEDULE_STATUS ||
-                   value['sessionStatus'] == EXCUSED_STATUS ||
-                   value['sessionStatus'] == UNEXCUSED_STATUS ||
-                   value['sessionStatus'] == MAKEUP_STATUS || value['isFromMasterSchedule']) {
+                if(self.checkStudentToDisplayOrNot(value['sessionStatus']) || value['isFromMasterSchedule']){
                     var id = value['id'];
                     var name = value['name'];
                     var grade = value['grade'];
@@ -4819,8 +4815,8 @@ function SylvanCalendar() {
                                 }
                                 else {
                                     index = event[k].students.map(function (x) {
-                                        return x.id;
-                                    }).indexOf(id);
+                                        return x.studUniqueId;
+                                    }).indexOf(value['studUniqueId']);
                                     if (index == -1) {
                                         if (resourceObj.deliveryTypeCode == groupInstruction) {
                                             event[k].title += "<span class='drag-student" + strikeThroughClass + "' eventid='" + eventId + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='studentSession' value='" + id + "'>" + name + ", " + grade + "<i class='material-icons' title='" + value['serviceValue'] + "' style='color:" + value['subjectColorCode'] + "'>location_on</i></span>";
@@ -4832,7 +4828,7 @@ function SylvanCalendar() {
                                             }
                                         }
                                         event[k].students.push({
-                                            aStudUniqueId:value['aStudUniqueId'],
+                                            studUniqueId:value['studUniqueId'],
                                             id: id,
                                             subjectColorCode: value['subjectColorCode'],
                                             name: name,
@@ -4857,7 +4853,7 @@ function SylvanCalendar() {
                                     }
                                 }
                                 event[k].students = [{
-                                    aStudUniqueId:value['aStudUniqueId'],
+                                    studUniqueId:value['studUniqueId'],
                                     id: id,
                                     name: name,
                                     grade: grade,
@@ -4871,10 +4867,18 @@ function SylvanCalendar() {
                                 }];
                                 event[k].is1to1 = value['is1to1'];
                             }
+
+
                             if (event[k].title.indexOf('<span class="student-placeholder-' + event[k].deliveryType + '">Student name</span>') != -1) {
                                 event[k].title = event[k].title.replace('<span class="student-placeholder-' + event[k].deliveryType + '">Student name</span>', '');
                             }
-                            if (event[k].students.length < resourceObj["capacity"] || resourceObj["capacity"] == undefined) {
+
+                            // Exclude excused and unexcused student in the event available capacity count
+                            if(value['sessionStatus'] != EXCUSED_STATUS && value['sessionStatus'] != UNEXCUSED_STATUS){
+                                event[k]['noOfStudents'] += 1;
+                            }
+
+                            if (event[k]['noOfStudents'] < resourceObj["capacity"] || resourceObj["capacity"] == undefined) {
                                 event[k].title += '<span class="student-placeholder-' + event[k].deliveryType + '">Student name</span>';
                                 self.addContext("", 'studentPlaceholder', true, event[k].deliveryTypeCode);
                                 // Conflict removal
@@ -4886,7 +4890,7 @@ function SylvanCalendar() {
                                     event[k].conflictMsg.splice(msgIndex, 1);
                                 }
                                 self.updateConflictMsg(event[k]);
-                            } else if (event[k].students.length > resourceObj["capacity"]) {
+                            } else if (event[k]['noOfStudents'] > resourceObj["capacity"]) {
                                 var msgIndex = event[k].conflictMsg.map(function (x) {
                                     return x;
                                 }).indexOf(1);
@@ -4951,7 +4955,7 @@ function SylvanCalendar() {
                         var obj = {
                             id: eventId,
                             students: [{
-                                aStudUniqueId:value['aStudUniqueId'],
+                                studUniqueId:value['studUniqueId'],
                                 id: id,
                                 name: name,
                                 subjectColorCode: value['subjectColorCode'],
@@ -4975,13 +4979,19 @@ function SylvanCalendar() {
                         }
                         obj.title = "";
 
+                        // Exclude excused and unexcused student in the event available capacity count
+                        if(value['sessionStatus'] == EXCUSED_STATUS || value['sessionStatus'] == UNEXCUSED_STATUS){
+                            obj['noOfStudents'] = 0;
+                        }else{
+                            obj['noOfStudents'] = 1;
+                        }
+
                         // Display one to one icon only for PI DT
                         if (resourceObj.deliveryTypeCode == personalInstruction) {
                             if (value['is1to1']) {
                                 obj.title += '<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">';
                             }
                         }
-                        var showPinIcon = self.checkforPinOrTempPin(value);
                         obj.title += "<span class='placeholder teacher-placeholder'>Teacher name</span>";
                         self.addContext("", 'teacherPlaceholder', true, true);
                         if (resourceObj.deliveryTypeCode == groupInstruction) {
@@ -5008,8 +5018,10 @@ function SylvanCalendar() {
                             obj.borderColor = "#9acaea";
                             obj.deliveryType = "Personal-Instruction";
                         }
-
                         if (resourceObj["capacity"] > 1 && obj.deliveryType != undefined) {
+                            obj.title += '<span class="student-placeholder-' + obj.deliveryType + '">Student name</span>';
+                            self.addContext("", 'studentPlaceholder', true, value['deliveryTypeCode']);
+                        }else if(resourceObj["capacity"] == 1 && (value['sessionStatus'] == EXCUSED_STATUS || value['sessionStatus'] == UNEXCUSED_STATUS)){
                             obj.title += '<span class="student-placeholder-' + obj.deliveryType + '">Student name</span>';
                             self.addContext("", 'studentPlaceholder', true, value['deliveryTypeCode']);
                         }
@@ -5019,6 +5031,8 @@ function SylvanCalendar() {
                         else {
                             self.addContext(uniqueId, 'student', false, value['deliveryTypeCode'], value['sessionStatus'], value['sessiontype'], value['isAttended']);
                         }
+
+
                         self.eventList.push(obj);
                         if (isFromFilter) {
                             self.calendar.fullCalendar('removeEvents');
@@ -6787,6 +6801,12 @@ function SylvanCalendar() {
             width: 350,
             draggable: false,
             modal: true,
+            show: {
+                effect: 'slide',
+                complete: function() {
+                    wjQuery(".loading").hide();
+                }
+            },
             buttons: {
                 Yes: function () {
                     wjQuery(this).dialog("close");
@@ -6807,6 +6827,12 @@ function SylvanCalendar() {
             height: "auto",
             width: 350,
             modal: true,
+            show: {
+                effect: 'slide',
+                complete: function() {
+                    wjQuery(".loading").hide();
+                }
+            },
             buttons: {
                 Yes: function () {
                     wjQuery(this).dialog("close");
@@ -6827,6 +6853,12 @@ function SylvanCalendar() {
             height: "auto",
             width: 350,
             modal: true,
+            show: {
+                effect: 'slide',
+                complete: function() {
+                    wjQuery(".loading").hide();
+                }
+            },
             buttons: {
                 Yes: function () {
                     wjQuery(this).dialog("close");
@@ -6847,6 +6879,12 @@ function SylvanCalendar() {
             height: "auto",
             width: 350,
             modal: true,
+            show: {
+                effect: 'slide',
+                complete: function() {
+                    wjQuery(".loading").hide();
+                }
+            },
             buttons: {
                 Yes: function () {
                     wjQuery(this).dialog("close");
@@ -9131,44 +9169,6 @@ function SylvanCalendar() {
         }
     }
 
-    this.checkforPinOrTempPin = function (studentObj) {
-        var self = this;
-        var currentCalendarDate = self.calendar.fullCalendar('getDate');
-        var currentView = new Date(currentCalendarDate).setHours(0);
-        currentView = new Date(new Date(currentView).setMinutes(0));
-        currentView = new Date(new Date(currentView).setSeconds(0));
-        currentCalendarDate = moment(currentCalendarDate).format("MM-DD-YYYY");
-        // currentCalendarDate = moment(currentCalendarDate).format("YYYY-MM-DD");
-        var showPinicon = false;
-        if (self.convertedPinnedList.length) {
-            for (var i = 0; i < self.convertedPinnedList.length; i++) {
-                if (self.convertedPinnedList[i]['studentId'] != undefined) {
-                    if (self.convertedPinnedList[i]['studentId'] == studentObj['id']) {
-                        if (currentView.getDay() == self.convertedPinnedList[i]['dayId']) {
-                            // var currDateArry = currentCalendarDate.split("-");
-                            // var currTimeArry = self.convertMinsNumToTime(self.convertToMinutes(self.convertedPinnedList[i]["startTime"])).split(":");
-                            // var comapreDate = new Date(currDateArry[0],currDateArry[1]-1,currDateArry[2],currTimeArry[0],currTimeArry[1]);
-                            var comapreDate = new Date(currentCalendarDate + " " + self.convertedPinnedList[i]["startTime"]);
-                            if (comapreDate.getTime() == studentObj["startHour"].getTime()) {
-                                showPinicon = true;
-                                break;
-                            }
-                        }
-                    }
-                } else {
-                    // teacher pin function
-                    if (self.convertedPinnedList[i]['teacherId'] == studentObj['id']) {
-                        if (currentCalendarDate.getDay()) {
-                            showPinicon = true;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-        return showPinicon;
-    }
-
     this.floatTeacher = function (floatTeacherObj, placeholderEvent) {
         var self = this;
         floatTeacherObj = floatTeacherObj == null ? [] : floatTeacherObj;
@@ -9500,5 +9500,23 @@ function SylvanCalendar() {
     }
 
 
+    // This method will return true/false based on student session status.
+    // true means display student
+    // false means dont display student 
+    this.checkStudentToDisplayOrNot = function(studentSession){
+        var self = this;
+        var displayStudent = false;
+        if(studentSession != undefined){
+            if( 
+                studentSession == SCHEDULE_STATUS ||
+                studentSession == RESCHEDULE_STATUS ||
+                studentSession == EXCUSED_STATUS ||
+                studentSession == UNEXCUSED_STATUS
+            ){
+                displayStudent = true;
+            }
+        }
+        return displayStudent;
+    }
 }
 

@@ -975,7 +975,7 @@ var student =  [
 "_hub_enrollment_value@Microsoft.Dynamics.CRM.lookuplogicalname":"hub_enrollment",
 "_hub_enrollment_value":"74ca1cd2-53de-e711-8103-c4346bacfbbc",
 "hub_session_status@OData.Community.Display.V1.FormattedValue":"Schedule",
-"hub_session_status":1,
+"hub_session_status":3,
 "aenrollment_x002e_hub_enrollmentstartdate@OData.Community.Display.V1.FormattedValue":"12/3/2017",
 "aenrollment_x002e_hub_enrollmentstartdate":"2017-12-03T00:00:00Z",
 "aprogram_x002e_hub_color":"#47D621",
