@@ -1996,7 +1996,45 @@ function SylvanCalendar() {
                     newTeacherSession.pinId = isPinned[0].id;
                 }
             }
-            t.saveTeacherToSession(newTeacherSession, t.convertedTeacherObj[index], notAvailable);
+            var responseObj = t.saveTeacherToSession(newTeacherSession, t.convertedTeacherObj[index], notAvailable);
+            var teacher =  newTeacherSession;
+            var prevTeacher = t.convertedTeacherObj[index];
+            if (typeof responseObj == 'boolean' && responseObj) {
+                if (notAvailable) {
+                    teacher['scheduleType'] = FLOAT_TEACHER_TYPE;
+                } else {
+                    teacher['scheduleType'] = teacher['scheduleType'] == undefined ? SCHEDULE_STATUS : teacher['scheduleType'];
+                }
+                self.populateTeacherEvent([teacher], true);
+            }else if (typeof responseObj == 'object' && responseObj != null) {
+                if (responseObj.hasOwnProperty('hub_staff_scheduleid')) {
+                    if (notAvailable) {
+                        teacher['scheduleType'] = FLOAT_TEACHER_TYPE;
+                    } else {
+                        teacher['scheduleType'] = teacher['scheduleType'] == undefined ? SCHEDULE_STATUS : teacher['scheduleType'];
+                    }
+                    if (teacher.hasOwnProperty('isFromMasterSchedule')) {
+                        delete teacher.isFromMasterSchedule;
+                        delete teacher.pinId;
+                    }
+                    teacher['scheduleId'] = responseObj['hub_staff_scheduleid'];
+                    var index = -1;
+                    for (var i = 0; i < self.convertedTeacherObj.length; i++) {
+                        if (self.convertedTeacherObj[i].startHour != undefined &&
+                            self.convertedTeacherObj[i].id == teacher.id &&
+                            self.convertedTeacherObj[i].startHour.getTime() == prevTeacher.startHour.getTime() &&
+                            self.convertedTeacherObj[i].resourceId == prevTeacher.resourceId) {
+                            index = i;
+                            break;
+                        }
+                    }
+                    if (index != -1) {
+                        self.convertedTeacherObj[index] = teacher;
+                        self.populateTeacherEvent([teacher], true);
+                        self.populateTAPane(self.taList);
+                    }
+                }
+            }
         }
         this.openSofPane();
         this.showConflictMsg();
@@ -6649,10 +6687,8 @@ function SylvanCalendar() {
 
             if (notAvailable) {
                 objNewSession['hub_schedule_type'] = FLOAT_TEACHER_TYPE;
-                teacher['scheduleType'] = FLOAT_TEACHER_TYPE;
             } else {
-                teacher['scheduleType'] = teacher['scheduleType'] == undefined ? SCHEDULE_STATUS : teacher['scheduleType'];
-                objNewSession['hub_schedule_type'] = teacher['scheduleType'];
+                objNewSession['hub_schedule_type'] = teacher['scheduleType'] == undefined ? SCHEDULE_STATUS : teacher['scheduleType'];
             }
 
             // Get location Object
@@ -6661,37 +6697,37 @@ function SylvanCalendar() {
             objNewSession['hub_centerid'] = locationObj['hub_centerid'];
             objPrevSession['ownerObj'] = locationObj['ownerObj'];
             objPrevSession['hub_centerid'] = locationObj['hub_centerid'];
-            var responseObj = data.saveTeachertoSession(objPrevSession, objNewSession);
-            if (typeof responseObj == 'boolean') {
-                if (responseObj) {
-                    self.populateTeacherEvent([teacher], true);
-                    return responseObj;
-                }
-            }
-            else if (typeof responseObj == 'object' && responseObj != null) {
-                if (responseObj.hasOwnProperty('hub_staff_scheduleid')) {
-                    if (teacher.hasOwnProperty('isFromMasterSchedule')) {
-                        delete teacher.isFromMasterSchedule;
-                        delete teacher.pinId;
-                    }
-                    teacher['scheduleId'] = responseObj['hub_staff_scheduleid'];
-                    var index = -1;
-                    for (var i = 0; i < self.convertedTeacherObj.length; i++) {
-                        if (self.convertedTeacherObj[i].startHour != undefined &&
-                            self.convertedTeacherObj[i].id == teacher.id &&
-                            self.convertedTeacherObj[i].startHour.getTime() == prevTeacher.startHour.getTime() &&
-                            self.convertedTeacherObj[i].resourceId == prevTeacher.resourceId) {
-                            index = i;
-                            break;
-                        }
-                    }
-                    if (index != -1) {
-                        self.convertedTeacherObj[index] = teacher;
-                        self.populateTeacherEvent([teacher], true);
-                        self.populateTAPane(self.taList);
-                    }
-                }
-            }
+            return data.saveTeachertoSession(objPrevSession, objNewSession);
+            // if (typeof responseObj == 'boolean') {
+            //     if (responseObj) {
+            //         self.populateTeacherEvent([teacher], true);
+            //         return responseObj;
+            //     }
+            // }
+            // else if (typeof responseObj == 'object' && responseObj != null) {
+            //     if (responseObj.hasOwnProperty('hub_staff_scheduleid')) {
+            //         if (teacher.hasOwnProperty('isFromMasterSchedule')) {
+            //             delete teacher.isFromMasterSchedule;
+            //             delete teacher.pinId;
+            //         }
+            //         teacher['scheduleId'] = responseObj['hub_staff_scheduleid'];
+            //         var index = -1;
+            //         for (var i = 0; i < self.convertedTeacherObj.length; i++) {
+            //             if (self.convertedTeacherObj[i].startHour != undefined &&
+            //                 self.convertedTeacherObj[i].id == teacher.id &&
+            //                 self.convertedTeacherObj[i].startHour.getTime() == prevTeacher.startHour.getTime() &&
+            //                 self.convertedTeacherObj[i].resourceId == prevTeacher.resourceId) {
+            //                 index = i;
+            //                 break;
+            //             }
+            //         }
+            //         if (index != -1) {
+            //             self.convertedTeacherObj[index] = teacher;
+            //             self.populateTeacherEvent([teacher], true);
+            //             self.populateTAPane(self.taList);
+            //         }
+            //     }
+            // }
         }
     }
 
