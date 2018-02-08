@@ -7082,7 +7082,8 @@ function SylvanCalendar() {
                     }
                 });
             } else {
-                wjQuery("#makeup > .makeup-lst").html('No Students found');
+                wjQuery("#makeup .error_block").html("");
+                wjQuery("#makeup .makeup-lst").html('No Students found');
                 wjQuery("#makeup").dialog({
                     resizable: false,
                     height: 300,
