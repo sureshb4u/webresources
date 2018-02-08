@@ -377,6 +377,11 @@ button{
     text-align: center;
     font-weight: bold;
 }
+
+.excuse-student{
+    text-decoration: line-through;
+}
+
 .sof-pi{
     background: #ebf5fb;
     padding: 3px;

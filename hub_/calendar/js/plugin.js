@@ -430,6 +430,8 @@ function SylvanCalendar() {
     this.masterScheduleStudents = [];
     this.locationList = [];
     this.accountClosure = {};
+    this.length = 12;
+    this.timestamp = +new Date;
 
     this.init = function (element) {
     }
@@ -3419,6 +3421,7 @@ function SylvanCalendar() {
                 var eDate = new Date(val['hub_session_date@OData.Community.Display.V1.FormattedValue'] + " " + val['hub_end_time@OData.Community.Display.V1.FormattedValue']);
                 var startHour = new Date(val['hub_session_date@OData.Community.Display.V1.FormattedValue'] + " " + val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
                 var obj = {
+                    aStudUniqueId:self.generateUniqueId(),
                     id: val._hub_student_value,
                     name: val["_hub_student_value@OData.Community.Display.V1.FormattedValue"],
                     start: sDate,
@@ -3491,16 +3494,11 @@ function SylvanCalendar() {
                     }
                 }
                 else if (obj.sessionStatus != INVALID_STATUS &&
-                    obj.sessionStatus != UNEXCUSED_STATUS &&
-                    obj.sessionStatus != OMIT_STATUS &&
-                    obj.sessionStatus != EXCUSED_STATUS) {
+                    obj.sessionStatus != OMIT_STATUS ) {
                     self.pushStudentToSOF(obj);
                 }
 
-                if (obj.sessionStatus == INVALID_STATUS ||
-                    obj.sessionStatus == UNEXCUSED_STATUS ||
-                    obj.sessionStatus == OMIT_STATUS ||
-                    obj.sessionStatus == EXCUSED_STATUS) {
+                if (obj.sessionStatus == INVALID_STATUS || obj.sessionStatus == OMIT_STATUS ) {
                     var index = -1;
                     for (var i = 0; i < eventObjList.length; i++) {
                         if (eventObjList[i].id == obj.id &&
@@ -3564,6 +3562,7 @@ function SylvanCalendar() {
 
                 if (allowStudentFlag) {
                     var obj = {
+                        aStudUniqueId:self.generateUniqueId(),
                         id: val['aenrollment_x002e_hub_student'],
                         name: val["aenrollment_x002e_hub_student@OData.Community.Display.V1.FormattedValue"],
                         gradeId: val['astudent_x002e_hub_grade'],
@@ -4793,6 +4792,8 @@ function SylvanCalendar() {
             wjQuery.each(studentList, function (key, value) {
                 if (value['sessionStatus'] == SCHEDULE_STATUS ||
                    value['sessionStatus'] == RESCHEDULE_STATUS ||
+                   value['sessionStatus'] == EXCUSED_STATUS ||
+                   value['sessionStatus'] == UNEXCUSED_STATUS ||
                    value['sessionStatus'] == MAKEUP_STATUS || value['isFromMasterSchedule']) {
                     var id = value['id'];
                     var name = value['name'];
@@ -4806,6 +4807,10 @@ function SylvanCalendar() {
                     var uniqueId = id + "_" + value['resourceId'] + "_" + value['startHour'];
                     var event = self.calendar.fullCalendar('clientEvents', eventId);
                     var resourceObj = self.getResourceObj(value['resourceId']);
+                    var strikeThroughClass = "";
+                    if(value['sessionStatus'] == EXCUSED_STATUS || value['sessionStatus'] == UNEXCUSED_STATUS){
+                       strikeThroughClass = " excuse-student"; 
+                    }
                     if (event.length) {
                         wjQuery.each(event, function (k, v) {
                             if (event[k].hasOwnProperty("students") && event[k]['students'].length != 0) {
@@ -4818,15 +4823,16 @@ function SylvanCalendar() {
                                     }).indexOf(id);
                                     if (index == -1) {
                                         if (resourceObj.deliveryTypeCode == groupInstruction) {
-                                            event[k].title += "<span class='drag-student' eventid='" + eventId + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='studentSession' value='" + id + "'>" + name + ", " + grade + "<i class='material-icons' title='" + value['serviceValue'] + "' style='color:" + value['subjectColorCode'] + "'>location_on</i></span>";
+                                            event[k].title += "<span class='drag-student" + strikeThroughClass + "' eventid='" + eventId + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='studentSession' value='" + id + "'>" + name + ", " + grade + "<i class='material-icons' title='" + value['serviceValue'] + "' style='color:" + value['subjectColorCode'] + "'>location_on</i></span>";
                                         } else {
                                             if (value['pinId'] != undefined) {
-                                                event[k].title += "<span class='draggable drag-student' eventid='" + eventId + "' pinnedId='" + value['pinId'] + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='studentSession' value='" + id + "'><img src='/webresources/hub_/calendar/images/pin.png'/>" + name + ", " + grade + "<i class='material-icons' title='" + value['serviceValue'] + "' style='color:" + value['subjectColorCode'] + "'>location_on</i></span>";
+                                                event[k].title += "<span class='draggable drag-student" + strikeThroughClass + "' eventid='" + eventId + "' pinnedId='" + value['pinId'] + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='studentSession' value='" + id + "'><img src='/webresources/hub_/calendar/images/pin.png'/>" + name + ", " + grade + "<i class='material-icons' title='" + value['serviceValue'] + "' style='color:" + value['subjectColorCode'] + "'>location_on</i></span>";
                                             } else {
-                                                event[k].title += "<span class='draggable drag-student' eventid='" + eventId + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='studentSession' value='" + id + "'>" + name + ", " + grade + "<i class='material-icons' title='" + value['serviceValue'] + "' style='color:" + value['subjectColorCode'] + "'>location_on</i></span>";
+                                                event[k].title += "<span class='draggable drag-student" + strikeThroughClass + "' eventid='" + eventId + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='studentSession' value='" + id + "'>" + name + ", " + grade + "<i class='material-icons' title='" + value['serviceValue'] + "' style='color:" + value['subjectColorCode'] + "'>location_on</i></span>";
                                             }
                                         }
                                         event[k].students.push({
+                                            aStudUniqueId:value['aStudUniqueId'],
                                             id: id,
                                             subjectColorCode: value['subjectColorCode'],
                                             name: name,
@@ -4842,15 +4848,16 @@ function SylvanCalendar() {
                                 }
                             } else {
                                 if (resourceObj.deliveryTypeCode == groupInstruction) {
-                                    event[k].title += "<span class='drag-student' eventid='" + eventId + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='studentSession' value='" + id + "'>" + name + ", " + grade + "<i class='material-icons' title='" + value['serviceValue'] + "' style='color:" + value['subjectColorCode'] + "'>location_on</i></span>";
+                                    event[k].title += "<span class='drag-student" + strikeThroughClass + "' eventid='" + eventId + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='studentSession' value='" + id + "'>" + name + ", " + grade + "<i class='material-icons' title='" + value['serviceValue'] + "' style='color:" + value['subjectColorCode'] + "'>location_on</i></span>";
                                 } else {
                                     if (value['pinId'] != undefined) {
-                                        event[k].title += "<span class='draggable drag-student' eventid='" + eventId + "' pinnedId='" + value['pinId'] + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='studentSession' value='" + id + "'><img src='/webresources/hub_/calendar/images/pin.png'/>" + name + ", " + grade + "<i class='material-icons' title='" + value['serviceValue'] + "' style='color:" + value['subjectColorCode'] + "'>location_on</i></span>";
+                                        event[k].title += "<span class='draggable drag-student" + strikeThroughClass + "' eventid='" + eventId + "' pinnedId='" + value['pinId'] + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='studentSession' value='" + id + "'><img src='/webresources/hub_/calendar/images/pin.png'/>" + name + ", " + grade + "<i class='material-icons' title='" + value['serviceValue'] + "' style='color:" + value['subjectColorCode'] + "'>location_on</i></span>";
                                     } else {
-                                        event[k].title += "<span class='draggable drag-student' eventid='" + eventId + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='studentSession' value='" + id + "'>" + name + ", " + grade + "<i class='material-icons' title='" + value['serviceValue'] + "' style='color:" + value['subjectColorCode'] + "'>location_on</i></span>";
+                                        event[k].title += "<span class='draggable drag-student" + strikeThroughClass + "' eventid='" + eventId + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='studentSession' value='" + id + "'>" + name + ", " + grade + "<i class='material-icons' title='" + value['serviceValue'] + "' style='color:" + value['subjectColorCode'] + "'>location_on</i></span>";
                                     }
                                 }
                                 event[k].students = [{
+                                    aStudUniqueId:value['aStudUniqueId'],
                                     id: id,
                                     name: name,
                                     grade: grade,
@@ -4944,6 +4951,7 @@ function SylvanCalendar() {
                         var obj = {
                             id: eventId,
                             students: [{
+                                aStudUniqueId:value['aStudUniqueId'],
                                 id: id,
                                 name: name,
                                 subjectColorCode: value['subjectColorCode'],
@@ -4977,12 +4985,12 @@ function SylvanCalendar() {
                         obj.title += "<span class='placeholder teacher-placeholder'>Teacher name</span>";
                         self.addContext("", 'teacherPlaceholder', true, true);
                         if (resourceObj.deliveryTypeCode == groupInstruction) {
-                            obj.title += "<span class='drag-student' eventid='" + eventId + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='studentSession' value='" + id + "'>" + name + ", " + grade + "<i class='material-icons' title='" + value['serviceValue'] + "' style='color:" + value['subjectColorCode'] + "'>location_on</i></span>";
+                            obj.title += "<span class='drag-student" + strikeThroughClass + "' eventid='" + eventId + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='studentSession' value='" + id + "'>" + name + ", " + grade + "<i class='material-icons' title='" + value['serviceValue'] + "' style='color:" + value['subjectColorCode'] + "'>location_on</i></span>";
                         } else {
                             if (value['pinId'] != undefined) {
-                                obj.title += "<span class='draggable drag-student' eventid='" + eventId + "' pinnedId='" + value['pinId'] + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='studentSession' value='" + id + "'><img src='/webresources/hub_/calendar/images/pin.png'/>" + name + ", " + grade + "<i class='material-icons' title='" + value['serviceValue'] + "' style='color:" + value['subjectColorCode'] + "'>location_on</i></span>";
+                                obj.title += "<span class='draggable drag-student" + strikeThroughClass + "' eventid='" + eventId + "' pinnedId='" + value['pinId'] + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='studentSession' value='" + id + "'><img src='/webresources/hub_/calendar/images/pin.png'/>" + name + ", " + grade + "<i class='material-icons' title='" + value['serviceValue'] + "' style='color:" + value['subjectColorCode'] + "'>location_on</i></span>";
                             } else {
-                                obj.title += "<span class='draggable drag-student' eventid='" + eventId + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='studentSession' value='" + id + "'>" + name + ", " + grade + "<i class='material-icons' title='" + value['serviceValue'] + "' style='color:" + value['subjectColorCode'] + "'>location_on</i></span>";
+                                obj.title += "<span class='draggable drag-student" + strikeThroughClass + "' eventid='" + eventId + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='studentSession' value='" + id + "'>" + name + ", " + grade + "<i class='material-icons' title='" + value['serviceValue'] + "' style='color:" + value['subjectColorCode'] + "'>location_on</i></span>";
                             }
                         }
 
@@ -6466,49 +6474,6 @@ function SylvanCalendar() {
                 var prevEventId = wjQuery(element).attr("eventid");
                 var prevEvent = self.calendar.fullCalendar('clientEvents', prevEventId);
                 self.updatePrevStudentEvent(prevEvent, uniqueIds[0], prevEventId);
-                // if (prevEvent) {
-                //     var eventTitleHTML = wjQuery(prevEvent[0].title);
-                //     for (var i = 0; i < eventTitleHTML.length; i++) {
-                //         if (wjQuery(eventTitleHTML[i]).attr('value') == wjQuery(element).attr('value')) {
-                //             eventTitleHTML.splice(i, 1);
-                //         }
-                //     }
-                //     if (eventTitleHTML.prop('outerHTML') != undefined) {
-                //         if (eventTitleHTML.length == 1) {
-                //             prevEvent[0].title = eventTitleHTML.prop('outerHTML');
-                //         } else {
-                //             prevEvent[0].title = "";
-                //             for (var i = 0; i < eventTitleHTML.length; i++) {
-                //                 prevEvent[0].title += eventTitleHTML[i].outerHTML;
-                //             }
-                //         }
-
-                //         var removeStudentIndex = prevEvent[0].students.map(function (x) {
-                //             return x.id;
-                //         }).indexOf(wjQuery(element).attr('value'));
-                //         prevEvent[0].students.splice(removeStudentIndex, 1);
-
-                //         self.removeAllConflictsFromPrevEvent(prevEvent[0]);
-
-                //         if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder teacher-placeholder" || eventTitleHTML[0].className == "student-placeholder-" + prevEvent[0].deliveryType)) ||
-                //           (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder teacher-placeholder" && eventTitleHTML[1].className == "student-placeholder-" + prevEvent[0].deliveryType) ||
-                //           (eventTitleHTML.length == 3 && eventTitleHTML[0].className == "onetoone" && eventTitleHTML[1].className == "placeholder teacher-placeholder" && eventTitleHTML[2].className == "student-placeholder-" + prevEvent[0].deliveryType)) {
-                //             for (var i = 0; i < self.eventList.length; i++) {
-                //                 if (self.eventList[i].id == prevEventId)
-                //                     self.eventList.splice(i, 1);
-                //             }
-                //             self.calendar.fullCalendar('removeEvents', prevEventId);
-                //         }
-
-                //         self.calendar.fullCalendar('updateEvent', prevEvent[0]);
-                //     } else {
-                //         for (var i = 0; i < self.eventList.length; i++) {
-                //             if (self.eventList[i].id == prevEventId)
-                //                 self.eventList.splice(i, 1);
-                //         }
-                //         self.calendar.fullCalendar('removeEvents', prevEventId);
-                //     }
-                // }
             }
         }
         self.openSofPane();
@@ -9516,6 +9481,21 @@ function SylvanCalendar() {
             }
         }
         return closed;
+    }
+
+    this.getRandomInt = function( min, max ) {
+        return Math.floor( Math.random() * ( max - min + 1 ) ) + min;
+    }
+
+    this.generateUniqueId = function() {
+        var ts = this.timestamp.toString();
+        var parts = ts.split( "" ).reverse();
+        var id = "";
+        for( var i = 0; i < this.length; ++i ) {
+            var index = this.getRandomInt( 0, parts.length - 1 );
+            id += parts[index];  
+        }
+        return id;
     }
 
 
