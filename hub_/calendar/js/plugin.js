@@ -3615,8 +3615,7 @@ function SylvanCalendar() {
                         for (var i = 0; i < pinnedStudent.length; i++) {
                             if (pinnedStudent[i] != undefined) {
                                 var newObj = wjQuery.extend(true, {}, obj);
-                                // newObj.pinId = undefined;
-                                newObj.pinId = pinnedStudent[i].id;
+                                newObj.pinId = undefined;
                                 newObj.enrollmentId = pinnedStudent[i].enrollmentId;
                                 newObj.start = new Date(moment(sDate).format('MM-DD-YYYY') + " " + pinnedStudent[i].startTime);
                                 newObj.end = new Date(moment(sDate).format('MM-DD-YYYY') + " " + pinnedStudent[i].endTime);
@@ -3635,6 +3634,7 @@ function SylvanCalendar() {
                                             }
                                         }
                                         if (zindex == -1) {
+                                            newObj.pinId = pinnedStudent[i].id;
                                             pinnedList.push(newObj);
                                         }
                                     }
