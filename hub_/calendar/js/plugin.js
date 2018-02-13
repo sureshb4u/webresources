@@ -1929,6 +1929,7 @@ function SylvanCalendar() {
         wjQuery.each(eventTitleHTML, function (k, v) {
             if (wjQuery(v).attr("uniqueId") == wjQuery(element).attr("uniqueId")) {
                 eventTitleHTML[k] = wjQuery(element).addClass('excuse-student');
+                eventTitleHTML[k] = wjQuery(element).removeClass('draggable');
                 eventTitleHTML1 += eventTitleHTML[k][0].outerHTML;
             }else{
                 eventTitleHTML1 += v.outerHTML;
@@ -1971,6 +1972,15 @@ function SylvanCalendar() {
                     }
 
                     // remove all conflicts By passing prevEvent Object 
+                    prevEvent[0]['noOfStudents'] = 0; 
+                    if(prevEvent[0].hasOwnProperty('students') && prevEvent[0]['students'].length){
+                        wjQuery.each(prevEvent[0]['students'], function (key, val) {
+                            if(val['studentSession'] != EXCUSED_STATUS && val['studentSession'] != UNEXCUSED_STATUS){
+                                prevEvent[0]['noOfStudents'] += 1; 
+                            }
+                        });
+                    }
+
                     self.removeAllConflictsFromPrevEvent(prevEvent[0]);
                     eventTitleHTML = wjQuery(prevEvent[0].title);
                     if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder teacher-placeholder" || eventTitleHTML[0].className == "student-placeholder-" + prevEvent[0].deliveryType)) ||
@@ -1983,6 +1993,7 @@ function SylvanCalendar() {
                             }
                         }
                     }
+
                     this.calendar.fullCalendar('updateEvent', prevEvent);
                 }
                 else {
@@ -3821,7 +3832,7 @@ function SylvanCalendar() {
                                     }
                                     // capacity check for students place holder
                                     if (event[k].hasOwnProperty("students")) {
-                                        if (resourceObj['capacity'] > event[k].students.length) {
+                                        if (resourceObj['capacity'] > event[k]['noOfStudents']) {
                                             if (event[k].title.indexOf('<span class="student-placeholder-' + event[k].deliveryType + '">Student name</span>') == -1) {
                                                 event[k].title += '<span class="student-placeholder-' + event[k].deliveryType + '">Student name</span>';
                                                 self.addContext("", 'studentPlaceholder', true, event[k].deliveryTypeCode);
@@ -3870,7 +3881,7 @@ function SylvanCalendar() {
                                 });
                             }
                             if (event[k].students != undefined) {
-                                if (event[k].students.length < resourceObj["capacity"] || resourceObj["capacity"] == undefined) {
+                                if (event[k]['noOfStudents'] < resourceObj["capacity"] || resourceObj["capacity"] == undefined) {
                                     if (event[k].title.indexOf('<span class="student-placeholder-' + event[k].deliveryType + '">Student name</span>') == -1) {
                                         event[k].title += '<span class="student-placeholder-' + event[k].deliveryType + '">Student name</span>';
                                         self.addContext("", 'studentPlaceholder', true, event[k].deliveryTypeCode);
@@ -3884,7 +3895,7 @@ function SylvanCalendar() {
                                         event[k].conflictMsg.splice(msgIndex, 1);
                                     }
                                     self.updateConflictMsg(event[k]);
-                                } else if (event[k].students.length > resourceObj["capacity"]) {
+                                } else if (event[k]['noOfStudents'] > resourceObj["capacity"]) {
                                     var msgIndex = event[k].conflictMsg.map(function (z) {
                                         return z;
                                     }).indexOf(1);
@@ -3898,7 +3909,7 @@ function SylvanCalendar() {
                                 event[k].title = event[k].title.replace('<span class="student-placeholder-' + event[k].deliveryType + '"-' + event[k].deliveryType + '>Student name</span>', "");
                             }
                             if (event[k].hasOwnProperty("students")) {
-                                if (resourceObj['capacity'] > event[k].students.length) {
+                                if (resourceObj['capacity'] > event[k]['noOfStudents']) {
                                     if (event[k].title.indexOf('<span class="student-placeholder-' + event[k].deliveryType + '">Student name</span>') == -1) {
                                         event[k].title += '<span class="student-placeholder-' + event[k].deliveryType + '">Student name</span>';
                                         self.addContext("", 'studentPlaceholder', true, event[k].deliveryTypeCode);
@@ -3972,7 +3983,8 @@ function SylvanCalendar() {
                             deliveryTypeCode: resourceObj.deliveryTypeCode,
                             deliveryTypeCodeVal: resourceObj.deliveryTypeCodeVal,
                             textColor: "#333333",
-                            conflictMsg: []
+                            conflictMsg: [],
+                            noOfStudents:0
                         }
                         if (value['pinId'] != undefined) {
                             obj.title = "<span class='draggable drag-teacher' pinnedId='" + value['pinId'] + "' eventid='" + eventId + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='teacherSession' value='" + id + "'><img src='/webresources/hub_/calendar/images/pin.png'/>" + name + "</span>";
@@ -5176,6 +5188,9 @@ function SylvanCalendar() {
                     this.convertedStudentObj[index]['sessionStatus'] = EXCUSED_STATUS;
                     var value = this.convertedStudentObj[index];
                     self.updateExcuseStudent(element, prevEvent);
+                    if(wjQuery(element).hasAttr("pinId")){
+                        self.unPinStudent(element);
+                    }
                     self.addContext(wjQuery(element).attr("uniqueId"), 'student', true, value['deliveryTypeCode'], value['sessionStatus'], value['sessiontype'], value['isAttended']);
                     self.draggable('draggable');
                 }
@@ -5602,9 +5617,14 @@ function SylvanCalendar() {
         if (labelFor == 'student') {
             if (deliveryType == personalInstruction) {
                 var resourceObj = self.getResourceObj(uniqueId.split("_")[1]);
-                if (resourceObj.deliveryTypeCode == deliveryType && (sessionStatus == SCHEDULE_STATUS
-                    || sessionStatus == undefined) && sessionType != FLOAT_TYPE && sessionType != MAKEUP_TYPE) {
-                    obj.unpin = { name: "Unpin", disabled: self.checkAccountClosure() };
+                if (resourceObj.deliveryTypeCode == deliveryType && 
+                    (sessionStatus == SCHEDULE_STATUS|| sessionStatus == undefined) && 
+                    sessionType != FLOAT_TYPE && 
+                    sessionType != MAKEUP_TYPE) {
+                    obj.unpin = { 
+                        name: "Unpin", 
+                        disabled: self.checkAccountClosure() 
+                    };
                     obj.unpin.visible = true;
                     obj.unpin.callback = function (key, options) {
                         wjQuery(".loading").show();
@@ -5617,7 +5637,10 @@ function SylvanCalendar() {
                             }
                         }, 300);
                     }
-                    obj.pin = { name: "Pin", disabled: self.checkAccountClosure() };
+                    obj.pin = { 
+                        name: "Pin", 
+                        disabled: self.checkAccountClosure() 
+                    };
                     obj.pin.visible = true;
                     obj.pin.callback = function (key, options) {
                         wjQuery(".loading").show();
@@ -5639,8 +5662,8 @@ function SylvanCalendar() {
                         obj.unpin.visible = false;
                         obj.pin.visible = true;
                     }
-
                 }
+
                 obj.omit = {
                     name: "Omit",
                     disabled: self.checkAccountClosure(),
@@ -5673,16 +5696,16 @@ function SylvanCalendar() {
                     //         self.excuseAndMakeUpStudent(options.$trigger[0]);
                     //     }
                     // }
-                }
-                obj.moveToSof = {
-                    name: "Move to SOF",
-                    disabled: self.checkAccountClosure(),
-                    callback: function (key, options) {
-                        wjQuery(".loading").show();
-                        options = wjQuery.extend(true, {}, options);
-                        setTimeout(function () {
-                            self.moveStudentToSOF(options.$trigger[0]);
-                        }, 300);
+                    obj.moveToSof = {
+                        name: "Move to SOF",
+                        disabled: self.checkAccountClosure(),
+                        callback: function (key, options) {
+                            wjQuery(".loading").show();
+                            options = wjQuery.extend(true, {}, options);
+                            setTimeout(function () {
+                                self.moveStudentToSOF(options.$trigger[0]);
+                            }, 300);
+                        }
                     }
                 }
 
@@ -9045,18 +9068,24 @@ function SylvanCalendar() {
                 }
 
                 if(newResourceObj.deliveryTypeCode == personalInstruction){
-                    showPromt = false;
-                    wjQuery.each(newEvent[0]['students'], function (k, v) {
-                        if (v['is1to1'] && v['sessionStatus'] != EXCUSED_STATUS && v['sessionStatus'] != UNEXCUSED_STATUS) {
-                            showPromt = true;
-                            return true;
-                        }
-                    });
-                    if(showPromt){
+                    var eventIs1to1 = self.checkEventIsOneToOne(newEvent[0]['students']);
+                    if(eventIs1to1){
                         if (messageObject.confirmation.indexOf(" Session is OneToOne") == -1) {
                             messageObject.confirmation.push(" Session is OneToOne");
                         }
                     }
+                    // showPromt = false;
+                    // wjQuery.each(newEvent[0]['students'], function (k, v) {
+                    //     if (v['is1to1'] && v['sessionStatus'] != EXCUSED_STATUS && v['sessionStatus'] != UNEXCUSED_STATUS) {
+                    //         showPromt = true;
+                    //         return true;
+                    //     }
+                    // });
+                    // if(showPromt){
+                    //     if (messageObject.confirmation.indexOf(" Session is OneToOne") == -1) {
+                    //         messageObject.confirmation.push(" Session is OneToOne");
+                    //     }
+                    // }
                 }else{
                     var newServiceId = newStudentObj['serviceId'];
                     var showPromt = false;
