@@ -2063,7 +2063,7 @@ function SylvanCalendar() {
                 prevEvent[0].teachers.splice(removeTeacherIndex, 1);
 
                 // remove all conflicts By passing prevEvent Object 
-                t.removeAllConflictsFromPrevEvent(prevEvent[0]);
+               self.removeAllConflictsFromPrevEvent(prevEvent[0]);
                 eventTitleHTML = wjQuery(prevEvent[0].title);
                 if ((eventTitleHTML.length == 1 && (eventTitleHTML[0].className == "placeholder teacher-placeholder" || eventTitleHTML[0].className == "student-placeholder-" + prevEvent[0].deliveryType)) ||
                    (eventTitleHTML.length == 2 && eventTitleHTML[0].className == "placeholder teacher-placeholder" && eventTitleHTML[1].className == "student-placeholder-" + prevEvent[0].deliveryType) ||
