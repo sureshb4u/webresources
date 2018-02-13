@@ -512,7 +512,7 @@ function SylvanCalendar() {
                         var d = new Date();
                         var n = d.getHours();
                         var scrollNum = ((n - 8) * wjQuery(".fc-slot1").height() * 4) - 2;
-                        $("#scrollarea").animate({ scrollTop: scrollNum }, 500, function () {
+                        wjQuery("#scrollarea").animate({ scrollTop: scrollNum }, 500, function () {
                             wjQuery(".loading").hide();
                         });
                     } else {
@@ -4532,118 +4532,97 @@ function SylvanCalendar() {
                     if(resourceObj.deliveryTypeCode != groupInstruction && value['sessionStatus'] != EXCUSED_STATUS && value['sessionStatus'] != UNEXCUSED_STATUS){
                         draggable = "draggable drag-student";
                     }
-                    if(resourceObj.deliveryTypeCode == personalInstruction && value['sessionStatus'] == EXCUSED_STATUS || value['sessionStatus'] == UNEXCUSED_STATUS){
+                    if(resourceObj.deliveryTypeCode == personalInstruction && (value['sessionStatus'] == EXCUSED_STATUS || value['sessionStatus'] == UNEXCUSED_STATUS)){
                        strikeThroughClass = " excuse-student"; 
                     }
                     if (event.length) {
                         wjQuery.each(event, function (k, v) {
-                            if (event[k].hasOwnProperty("students") && event[k]['students'].length != 0) {
-                                if (checkFor1to1 && ((is1to1 || event[k].students[0].is1to1) && event[k].students[0].id != id)) {
-                                    self.pushStudentToSOF(value);
-                                }
-                                else {
-                                    index = event[k].students.map(function (x) {
-                                        return x.studUniqueId;
-                                    }).indexOf(value['studUniqueId']);
-                                    if (index == -1) {
-                                        if (value['pinId'] != undefined) {
-                                            event[k].title += "<span class='"+ draggable + strikeThroughClass + "' eventid='" + eventId + "' studUniqueId='" + value['studUniqueId'] + "' pinnedId='" + value['pinId'] + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='studentSession' value='" + id + "'><img src='/webresources/hub_/calendar/images/pin.png'/>" + name + ", " + grade + "<i class='material-icons' title='" + value['serviceValue'] + "' style='color:" + value['subjectColorCode'] + "'>location_on</i></span>";
-                                        } else {
-                                            event[k].title += "<span class='"+ draggable + strikeThroughClass + "' eventid='" + eventId + "' studUniqueId='" + value['studUniqueId'] + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='studentSession' value='" + id + "'>" + name + ", " + grade + "<i class='material-icons' title='" + value['serviceValue'] + "' style='color:" + value['subjectColorCode'] + "'>location_on</i></span>";
-                                        }
-                                        event[k].students.push(value);
+                            if(value['sessionStatus'] != EXCUSED_STATUS && value['sessionStatus'] != UNEXCUSED_STATUS){
+                                if(event[k].hasOwnProperty("students")){
+                                    event[k].students.push(value);
+                                    if(!event[k].is1to1){
+                                        event[k].is1to1 = value['is1to1'];
                                     }
+                                }else{
+                                    event[k].students = [value];
+                                    event[k].is1to1 = value['is1to1'];
                                 }
-                            } else {
+                                event[k]['noOfStudents'] += 1;
                                 if (value['pinId'] != undefined) {
                                     event[k].title += "<span class='"+ draggable + strikeThroughClass + "' eventid='" + eventId + "' studUniqueId='" + value['studUniqueId'] + "' pinnedId='" + value['pinId'] + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='studentSession' value='" + id + "'><img src='/webresources/hub_/calendar/images/pin.png'/>" + name + ", " + grade + "<i class='material-icons' title='" + value['serviceValue'] + "' style='color:" + value['subjectColorCode'] + "'>location_on</i></span>";
                                 } else {
                                     event[k].title += "<span class='"+ draggable + strikeThroughClass + "' eventid='" + eventId + "' studUniqueId='" + value['studUniqueId'] + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='studentSession' value='" + id + "'>" + name + ", " + grade + "<i class='material-icons' title='" + value['serviceValue'] + "' style='color:" + value['subjectColorCode'] + "'>location_on</i></span>";
                                 }
-                                event[k].students = [value];
-                                event[k].is1to1 = value['is1to1'];
-                            }
 
-
-                            if (event[k].title.indexOf('<span class="student-placeholder-' + event[k].deliveryType + '">Student name</span>') != -1) {
-                                event[k].title = event[k].title.replace('<span class="student-placeholder-' + event[k].deliveryType + '">Student name</span>', '');
-                            }
-
-                            // Exclude excused and unexcused student in the event available capacity count
-                            if(value['sessionStatus'] != EXCUSED_STATUS && value['sessionStatus'] != UNEXCUSED_STATUS){
-                                event[k]['noOfStudents'] += 1;
-                            }
-
-                            if (event[k]['noOfStudents'] < resourceObj["capacity"] || resourceObj["capacity"] == undefined) {
-                                event[k].title += '<span class="student-placeholder-' + event[k].deliveryType + '">Student name</span>';
-                                self.addContext("", 'studentPlaceholder', true, event[k].deliveryTypeCode);
-                                // Conflict removal
-                                // capacity conflict removal
-                                var msgIndex = event[k].conflictMsg.map(function (x) {
-                                    return x;
-                                }).indexOf(1);
-                                if (msgIndex > -1) {
-                                    event[k].conflictMsg.splice(msgIndex, 1);
-                                }
-                                self.updateConflictMsg(event[k]);
-                            } else if (event[k]['noOfStudents'] > resourceObj["capacity"]) {
-                                var msgIndex = event[k].conflictMsg.map(function (x) {
-                                    return x;
-                                }).indexOf(1);
-                                if (msgIndex == -1) {
-                                    event[k].conflictMsg.push(1);
-                                }
-                                self.updateConflictMsg(event[k]);
-                            }
-
-                            // One To one conflict check and icon show Logic for exist event 
-                            if (value.is1to1) {
-                                event[k].is1to1 = value.is1to1;
-                            } else {
-                                var eventIs1to1 = self.checkEventIsOneToOne(event[k]['students']);
-                                if (eventIs1to1) {
-                                    event[k].is1to1 = true;
-                                } else {
-                                    event[k].is1to1 = false;
-                                }
-                            }
-
-                            // One to one type lock and conflict ico is only for PI DT
-                            if (resourceObj.deliveryTypeCode == personalInstruction) {
-                                if (event[k].is1to1 == true || value.is1to1 == true) {
-                                    if (event[k].title.indexOf('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">') == -1) {
-                                        event[k].title += '<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">';
-                                    }
+                                if (event[k].title.indexOf('<span class="student-placeholder-' + event[k].deliveryType + '">Student name</span>') != -1) {
+                                    event[k].title = event[k].title.replace('<span class="student-placeholder-' + event[k].deliveryType + '">Student name</span>', '');
                                 }
 
-                                if (event[k].is1to1 && event[k].hasOwnProperty('students') && event[k]['students'].length > 1) {
+                                // Capcity check and add/remove of capacity conflict.
+                                if (event[k]['noOfStudents'] < resourceObj["capacity"] || resourceObj["capacity"] == undefined) {
+                                    event[k].title += '<span class="student-placeholder-' + event[k].deliveryType + '">Student name</span>';
+                                    self.addContext("", 'studentPlaceholder', true, event[k].deliveryTypeCode);
+                                    // capacity conflict removal
                                     var msgIndex = event[k].conflictMsg.map(function (x) {
                                         return x;
-                                    }).indexOf(2);
+                                    }).indexOf(1);
+                                    if (msgIndex > -1) {
+                                        event[k].conflictMsg.splice(msgIndex, 1);
+                                    }
+                                    self.updateConflictMsg(event[k]);
+                                } else if (event[k]['noOfStudents'] > resourceObj["capacity"]) {
+                                    // capacity conflict addition
+                                    var msgIndex = event[k].conflictMsg.map(function (x) {
+                                        return x;
+                                    }).indexOf(1);
                                     if (msgIndex == -1) {
-                                        event[k].conflictMsg.push(2);
+                                        event[k].conflictMsg.push(1);
                                     }
                                     self.updateConflictMsg(event[k]);
                                 }
-                            }
 
-                            var isNonPreferred = self.checkNonPreferredTeacherConflict(event[k]);
-                            if (isNonPreferred) {
-                                // non preferred teacher conflict check
-                                var msgIndex = event[k].conflictMsg.map(function (x) {
-                                    return x;
-                                }).indexOf(3);
-                                if (msgIndex == -1) {
-                                    event[k].conflictMsg.push(3);
-                                    self.updateConflictMsg(event[k]);
+                                // One to one type lock and conflict ico is only for PI DT
+                                if (resourceObj.deliveryTypeCode == personalInstruction) {
+                                    if (event[k].is1to1 == true || value.is1to1 == true) {
+                                        if (event[k].title.indexOf('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">') == -1) {
+                                            event[k].title += '<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">';
+                                        }
+                                    } 
+                                    if (event[k].is1to1 && event[k].hasOwnProperty('students') && event[k]['students'].length > 1) {
+                                        var msgIndex = event[k].conflictMsg.map(function (x) {
+                                            return x;
+                                        }).indexOf(2);
+                                        if (msgIndex == -1) {
+                                            event[k].conflictMsg.push(2);
+                                        }
+                                        self.updateConflictMsg(event[k]);
+                                    }
                                 }
-                            }
 
+                                var isNonPreferred = self.checkNonPreferredTeacherConflict(event[k]);
+                                if (isNonPreferred) {
+                                    // non preferred teacher conflict check
+                                    var msgIndex = event[k].conflictMsg.map(function (x) {
+                                        return x;
+                                    }).indexOf(3);
+                                    if (msgIndex == -1) {
+                                        event[k].conflictMsg.push(3);
+                                        self.updateConflictMsg(event[k]);
+                                    }
+                                }
+
+                            }else{
+                                if(event[k].hasOwnProperty("students")){
+                                    event[k].students.push(value);
+                                }else{
+                                    event[k].students = [value];
+                                }
+                                event[k].title += "<span class='"+ draggable + strikeThroughClass + "' eventid='" + eventId + "' studUniqueId='" + value['studUniqueId'] + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='studentSession' value='" + id + "'>" + name + ", " + grade + "<i class='material-icons' title='" + value['serviceValue'] + "' style='color:" + value['subjectColorCode'] + "'>location_on</i></span>";
+                            }
                         });
                         if (value['pinId'] != undefined) {
                             self.addContext(uniqueId, 'student', true, value['deliveryTypeCode'], value['sessionStatus'], value['sessiontype'], value['isAttended']);
-                        }
-                        else {
+                        }else {
                             self.addContext(uniqueId, 'student', false, value['deliveryTypeCode'], value['sessionStatus'], value['sessiontype'], value['isAttended']);
                         }
                         self.calendar.fullCalendar('updateEvent', event);
@@ -4668,14 +4647,14 @@ function SylvanCalendar() {
                             obj['noOfStudents'] = 0;
                         }else{
                             obj['noOfStudents'] = 1;
-                        }
-
-                        // Display one to one icon only for PI DT
-                        if (resourceObj.deliveryTypeCode == personalInstruction) {
-                            if (value['is1to1']) {
-                                obj.title += '<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">';
+                            // Display one to one icon only for PI DT
+                            if (resourceObj.deliveryTypeCode == personalInstruction) {
+                                if (value['is1to1']) {
+                                    obj.title += '<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">';
+                                }
                             }
                         }
+
                         obj.title += "<span class='placeholder teacher-placeholder'>Teacher name</span>";
                         self.addContext("", 'teacherPlaceholder', true, true);
                         if (value['pinId'] != undefined) {
@@ -4689,15 +4668,19 @@ function SylvanCalendar() {
                             obj.backgroundColor = "#dff0d5";
                             obj.borderColor = "#7bc143";
                             obj.deliveryType = "Group-Facilitation";
+                            obj.deliveryTypeCode = groupFacilitation;
                         } else if (resourceObj.deliveryTypeCode == groupInstruction) {
                             obj.backgroundColor = "#fedeb7";
                             obj.borderColor = "#f88e50";
                             obj.deliveryType = "Group-Instruction";
+                            obj.deliveryTypeCode = groupInstruction;
                         } else if (resourceObj.deliveryTypeCode == personalInstruction) {
                             obj.backgroundColor = "#ebf5fb";
                             obj.borderColor = "#9acaea";
                             obj.deliveryType = "Personal-Instruction";
+                            obj.deliveryTypeCode = personalInstruction;
                         }
+
                         if (resourceObj["capacity"] > 1 && obj.deliveryType != undefined) {
                             obj.title += '<span class="student-placeholder-' + obj.deliveryType + '">Student name</span>';
                             self.addContext("", 'studentPlaceholder', true, value['deliveryTypeCode']);
@@ -8655,7 +8638,7 @@ function SylvanCalendar() {
         }
         var n = dateObj.getHours();
         var scrollNum = ((n - 8) * wjQuery(".fc-slot1").height() * 4) - 2;
-        $("#scrollarea").animate({ scrollTop: scrollNum });
+        wjQuery("#scrollarea").animate({ scrollTop: scrollNum });
     }
 
     this.getLocationObject = function (locationId) {
