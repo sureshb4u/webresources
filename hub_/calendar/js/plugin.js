@@ -8028,53 +8028,7 @@ function SylvanCalendar() {
                 });
             }
             if (dropableEvent.length == 0) {
-                if (self.sofList['Group Facilitation'].length) {
-                    dropableEvent = self.sofList['Group Facilitation'].filter(function (el) {
-                        return el.id == stuId &&
-                                (
-                                        (
-                                            startHour.getTime() <= el.start.getTime() &&
-                                            endHour.getTime() >= el.end.getTime()
-                                        ) ||
-                                        (
-                                            el.start.getTime() <= startHour.getTime() &&
-                                            el.end.getTime() >= endHour.getTime()
-                                        ) ||
-                                        (
-                                            endHour.getTime() > el.start.getTime() &&
-                                            el.end.getTime() > startHour.getTime()
-                                        )
-                                )
-                    });
-                }
-                if (dropableEvent.length == 0) {
-                    if (self.sofList['Group Instruction'].length) {
-                        dropableEvent = self.sofList['Group Instruction'].filter(function (el) {
-                            return el.id == stuId &&
-                                    (
-                                            (
-                                                startHour.getTime() <= el.start.getTime() &&
-                                                endHour.getTime() >= el.end.getTime()
-                                            ) ||
-                                            (
-                                                el.start.getTime() <= startHour.getTime() &&
-                                                el.end.getTime() >= endHour.getTime()
-                                            ) ||
-                                            (
-                                                endHour.getTime() > el.start.getTime() &&
-                                                el.end.getTime() > startHour.getTime()
-                                            )
-                                    )
-                        });
-                    }
-                    if (dropableEvent.length == 0) {
-                        allowToDropStudent = true;
-                    } else {
-                        allowToDropStudent = false;
-                    }
-                } else {
-                    allowToDropStudent = false;
-                }
+                allowToDropStudent = true;
             } else {
                 allowToDropStudent = false;
             }
