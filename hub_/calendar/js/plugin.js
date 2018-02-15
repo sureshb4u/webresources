@@ -7106,12 +7106,12 @@ function SylvanCalendar() {
                                 }
                                 else if (arrayList[i].deliveryTypeCode == groupInstruction) {
                                     var index = -1;
-                                    for (var k = 0; k < this.weekEventObject[arrayList[i].startHour].student.gi.length; k++) {
-                                        if (this.weekEventObject[arrayList[i].startHour].student.gi[k].id == arrayList[i].id) {
-                                            index = k;
-                                            break;
-                                        }
-                                    }
+                                    // for (var k = 0; k < this.weekEventObject[arrayList[i].startHour].student.gi.length; k++) {
+                                    //     if (this.weekEventObject[arrayList[i].startHour].student.gi[k].id == arrayList[i].id) {
+                                    //         index = k;
+                                    //         break;
+                                    //     }
+                                    // }
                                     if (index == -1) {
                                         if (arrayList[i].sessionStatus == SCHEDULE_STATUS ||
                                             arrayList[i].sessionStatus == RESCHEDULE_STATUS ||
@@ -7122,12 +7122,12 @@ function SylvanCalendar() {
                                 }
                                 else if (arrayList[i].deliveryTypeCode == groupFacilitation) {
                                     var index = -1;
-                                    for (var k = 0; k < this.weekEventObject[arrayList[i].startHour].student.gf.length; k++) {
-                                        if (this.weekEventObject[arrayList[i].startHour].student.gf[k].id == arrayList[i].id) {
-                                            index = k;
-                                            break;
-                                        }
-                                    }
+                                    // for (var k = 0; k < this.weekEventObject[arrayList[i].startHour].student.gf.length; k++) {
+                                    //     if (this.weekEventObject[arrayList[i].startHour].student.gf[k].id == arrayList[i].id) {
+                                    //         index = k;
+                                    //         break;
+                                    //     }
+                                    // }
                                     if (index == -1) {
                                         if (arrayList[i].sessionStatus == SCHEDULE_STATUS ||
                                             arrayList[i].sessionStatus == RESCHEDULE_STATUS ||
