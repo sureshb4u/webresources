@@ -883,7 +883,7 @@ function SylvanCalendar() {
                     var studentStartHour = sofList[Object.keys(sofList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
                         var studentPosition = studentStartHour - minTime;
-                        var elm = '<div class="student-container cursor padding-lr-xxs" type="student" uniqueValue="' + sofList[Object.keys(sofList)[j]][i].id + '_' + sofList[Object.keys(sofList)[j]][i].start + '"  value="' + sofList[Object.keys(sofList)[j]][i].id + '">' + sofList[Object.keys(sofList)[j]][i].name + ',<span>' + sofList[Object.keys(sofList)[j]][i].grade + '</span></div>';
+                        var elm = '<div class="student-container cursor padding-lr-xxs" type="student" studUniqueId="'+sofList[Object.keys(sofList)[j]][i].studUniqueId+'" uniqueValue="' + sofList[Object.keys(sofList)[j]][i].id + '_' + sofList[Object.keys(sofList)[j]][i].start + '"  value="' + sofList[Object.keys(sofList)[j]][i].id + '">' + sofList[Object.keys(sofList)[j]][i].name + ',<span>' + sofList[Object.keys(sofList)[j]][i].grade + '</span></div>';
                         var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
                             return y;
                         }).indexOf(sofList[Object.keys(sofList)[j]][i].deliveryTypeId);
@@ -901,7 +901,7 @@ function SylvanCalendar() {
                     var studentStartHour = sofList[Object.keys(sofList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
                         var studentPosition = studentStartHour - minTime;
-                        var elm = '<div class="student-container cursor padding-lr-xxs" type="student" uniqueValue="' + sofList[Object.keys(sofList)[j]][i].id + '_' + sofList[Object.keys(sofList)[j]][i].start + '" value="' + sofList[Object.keys(sofList)[j]][i].id + '">' + sofList[Object.keys(sofList)[j]][i].name + ',<span>' + sofList[Object.keys(sofList)[j]][i].grade + '</span></div>';
+                        var elm = '<div class="student-container cursor padding-lr-xxs" type="student" studUniqueId="'+sofList[Object.keys(sofList)[j]][i].studUniqueId+'" uniqueValue="' + sofList[Object.keys(sofList)[j]][i].id + '_' + sofList[Object.keys(sofList)[j]][i].start + '" value="' + sofList[Object.keys(sofList)[j]][i].id + '">' + sofList[Object.keys(sofList)[j]][i].name + ',<span>' + sofList[Object.keys(sofList)[j]][i].grade + '</span></div>';
                         var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
                             return y;
                         }).indexOf(sofList[Object.keys(sofList)[j]][i].deliveryTypeId);
@@ -918,7 +918,7 @@ function SylvanCalendar() {
                     var studentStartHour = sofList[Object.keys(sofList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
                         var studentPosition = studentStartHour - minTime;
-                        var elm = '<div class="student-container cursor padding-lr-xxs" type="student" uniqueValue="' + sofList[Object.keys(sofList)[j]][i].id + '_' + sofList[Object.keys(sofList)[j]][i].start + '" value="' + sofList[Object.keys(sofList)[j]][i].id + '">' + sofList[Object.keys(sofList)[j]][i].name + ',<span>' + sofList[Object.keys(sofList)[j]][i].grade + '</span></div>';
+                        var elm = '<div class="student-container cursor padding-lr-xxs" type="student" studUniqueId="'+sofList[Object.keys(sofList)[j]][i].studUniqueId+'" uniqueValue="' + sofList[Object.keys(sofList)[j]][i].id + '_' + sofList[Object.keys(sofList)[j]][i].start + '" value="' + sofList[Object.keys(sofList)[j]][i].id + '">' + sofList[Object.keys(sofList)[j]][i].name + ',<span>' + sofList[Object.keys(sofList)[j]][i].grade + '</span></div>';
                         var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
                             return y;
                         }).indexOf(sofList[Object.keys(sofList)[j]][i].deliveryTypeId);
