@@ -9048,6 +9048,70 @@ var FloatTeacherList = [
 ];
 
 
+var beSaList = [
+	{
+"@odata.etag":"W/\"5415205\"",
+"hub_is_1to1@OData.Community.Display.V1.FormattedValue":"No",
+"hub_is_1to1":false,
+"_hub_service_value@OData.Community.Display.V1.FormattedValue":"Algebra Fundamentals",
+"_hub_service_value@Microsoft.Dynamics.CRM.associatednavigationproperty":"hub_service",
+"_hub_service_value@Microsoft.Dynamics.CRM.lookuplogicalname":"hub_productservice",
+"_hub_service_value":"de633fde-b4c1-e711-80ff-c4346bac4304",
+"hub_isattended@OData.Community.Display.V1.FormattedValue":"No",
+"hub_isattended":false,
+"_hub_resourceid_value@OData.Community.Display.V1.FormattedValue":"Table-2",
+"_hub_resourceid_value@Microsoft.Dynamics.CRM.associatednavigationproperty":"hub_resourceid",
+"_hub_resourceid_value@Microsoft.Dynamics.CRM.lookuplogicalname":"hub_center_resources",
+"_hub_resourceid_value":"1881f55a-ab77-e711-80f3-c4346bad526c",
+"hub_session_date@OData.Community.Display.V1.FormattedValue":"02/15/2018",
+"hub_session_date":"2018-02-15",
+"_hub_center_value@OData.Community.Display.V1.FormattedValue":"Better Education, Inc.",
+"_hub_center_value@Microsoft.Dynamics.CRM.associatednavigationproperty":"hub_center",
+"_hub_center_value@Microsoft.Dynamics.CRM.lookuplogicalname":"hub_center",
+"_hub_center_value":"46ecf508-e26d-e711-80f2-c4346bacfbbc",
+"hub_end_time@OData.Community.Display.V1.FormattedValue":"11:15 AM",
+"hub_end_time":675,
+"_hub_student_value@OData.Community.Display.V1.FormattedValue":"Aasma K",
+"_hub_student_value@Microsoft.Dynamics.CRM.associatednavigationproperty":"hub_student",
+"_hub_student_value@Microsoft.Dynamics.CRM.lookuplogicalname":"contact",
+"_hub_student_value":"b2049975-fddf-e711-8103-c4346bacfbbc",
+"hub_sessiontype@OData.Community.Display.V1.FormattedValue":"Regular",
+"hub_sessiontype":1,
+"hub_name":"Aasma K - Algebra Fundamentals-10:15 AM-11:15 AM",
+"hub_late@OData.Community.Display.V1.FormattedValue":"No",
+"hub_late":false,
+"hub_start_time@OData.Community.Display.V1.FormattedValue":"10:15 AM",
+"hub_start_time":615,
+"hub_studentsessionid":"868fafd2-92e0-e711-811d-c4346bada738",
+"_hub_enrollment_value@OData.Community.Display.V1.FormattedValue":"Aasma K - Algebra Fundamentals",
+"_hub_enrollment_value@Microsoft.Dynamics.CRM.associatednavigationproperty":"hub_enrollment",
+"_hub_enrollment_value@Microsoft.Dynamics.CRM.lookuplogicalname":"hub_enrollment",
+"_hub_enrollment_value":"af37228a-fddf-e711-8103-c4346bacfbbc",
+"hub_session_status@OData.Community.Display.V1.FormattedValue":"Schedule",
+"hub_session_status":1,
+"aenrollment_x002e_hub_enrollmentstartdate@OData.Community.Display.V1.FormattedValue":"12/3/2017",
+"aenrollment_x002e_hub_enrollmentstartdate":"2017-12-03T00:00:00Z",
+"aprogram_x002e_hub_color":"#47D621",
+"adeliverytype_x002e_hub_name":"Personal Instruction",
+"aenrollment_x002e_hub_name":"Aasma K - Algebra Fundamentals",
+"aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue":"Personal Instruction",
+"aproductservice_x002e_hub_deliverytype":"d6c706eb-a534-e711-80ed-c4346bad526c",
+"aenrollment_x002e_hub_enrollmentid":"af37228a-fddf-e711-8103-c4346bacfbbc",
+"aprogram_x002e_hub_name":"Algebra Fundamentals",
+"aprogram_x002e_hub_programid":"f81f8cb0-6d3f-e711-80ef-c4346bad526c",
+"aproductservice_x002e_hub_timeslottype@OData.Community.Display.V1.FormattedValue":"Standard",
+"aproductservice_x002e_hub_timeslottype":1,
+"astudent_x002e_hub_grade@OData.Community.Display.V1.FormattedValue":"7",
+"astudent_x002e_hub_grade":9,
+"adeliverytype_x002e_hub_code@OData.Community.Display.V1.FormattedValue":"PI",
+"adeliverytype_x002e_hub_code":1,
+"aproductservice_x002e_hub_duration@OData.Community.Display.V1.FormattedValue":"1 Hour",
+"aproductservice_x002e_hub_duration":60
+}
+
+]
+
+
 function Data(){
 
   this.getResources = function(id){
@@ -9099,6 +9163,13 @@ function Data(){
     return teacherAvailability;
     //done
   }
+
+  this.getsaList = function(locationId,startDate,endDate){
+    return beSaList;
+    //done
+  }
+
+  
 
   this.getStudentMasterSchedule = function(locationId,startDate,endDate){
     return masterSchedule;

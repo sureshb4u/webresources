@@ -310,6 +310,9 @@ setTimeout(function () {
                 wjQuery('.sof-btn,.sof-close-icon').off('click').on('click', function () {
                     sylvanCalendar.sofPane();
                 });
+                wjQuery('.sa-btn,.sa-close-icon').off('click').on('click', function () {
+                    sylvanCalendar.saPane();
+                });
                 wjQuery('.ta-btn,.ta-close-icon').off('click').on('click', function () {
                     sylvanCalendar.taPane();
                 });
@@ -359,6 +362,7 @@ setTimeout(function () {
             // var clickedType = wjQuery('.dtBtn').attr('bname');
             deliveryTypeList = [];
             wjQuery('.student-overflow').remove();
+            wjQuery('.student-attendance').remove();
             wjQuery('.teacher-availability').remove();
             wjQuery.each(wjQuery('.dtBtn'), function (index, elm) {
                 if (wjQuery(elm).is(':checked')) {
@@ -397,11 +401,15 @@ function SylvanCalendar() {
     this.filters = new Object();
     this.eventList = [];
     this.sofList = [];
+    this.saList = [];
     this.makeupList = [];
     this.locationId = "";
     this.sofList['Personal Instruction'] = [];
     this.sofList['Group Instruction'] = [];
     this.sofList['Group Facilitation'] = [];
+    this.saList['Personal Instruction'] = [];
+    this.saList['Group Instruction'] = [];
+    this.saList['Group Facilitation'] = [];
     this.taList = [];
     // 1. Teacher conflict
     // 2. Capacity Conflict
@@ -438,9 +446,11 @@ function SylvanCalendar() {
 
     //Student pane and TA pane Functionality
     var sofExpanded = false;
+    var saExpanded = false;
     var taExpanded = false;
     this.loadMasterInformation = function () {
         var self = this;
+        saExpanded = false;
         sofExpanded = false;
         taExpanded = false;
         var checkedList = [];
@@ -592,11 +602,14 @@ function SylvanCalendar() {
             }
         });
         wjQuery('.sof-pane').css('height', wjQuery('#calendar').height() - 10 + "px");
+        wjQuery('.sa-pane').css('height', wjQuery('#calendar').height() - 10 + "px");
         wjQuery('.ta-pane').css('height', wjQuery('#calendar').height() - 10 + "px");
         wjQuery('.sof-pane').css('overflow', 'hidden');
+        wjQuery('.sa-pane').css('overflow', 'hidden');
         wjQuery('.ta-pane').css('overflow', 'hidden');
         wjQuery('.ta-pane').hide();
         wjQuery('.sof-pane').hide();
+        wjQuery('.sa-pane').hide();
         //ScrollHeiht 
         if (self.resourceList.length > 6) {
             wjQuery('.calendar-firstCol').css('height', wjQuery('#scrollarea').height() - 10 + 'px');
@@ -670,13 +683,21 @@ function SylvanCalendar() {
         this.resourceList = [];
         this.eventList = [];
         this.sofList = [];
+        this.saList = [];
         this.makeupList = [];
+
         this.sofList['Personal Instruction'] = [];
         this.sofList['Group Instruction'] = [];
         this.sofList['Group Facilitation'] = [];
+
+        this.saList['Personal Instruction'] = [];
+        this.saList['Group Instruction'] = [];
+        this.saList['Group Facilitation'] = [];
+
         // this.conflictMsg = [];
         wjQuery('.teacher-block').remove();
         wjQuery('.student-overflow').remove();
+        wjQuery('.student-attendance').remove();
         this.taList = [];
         this.convertedTeacherObj = [];
         this.convertedStudentObj = [];
@@ -935,6 +956,73 @@ function SylvanCalendar() {
             this.draggable('student-container');
         }
     }
+    this.populateSAPane = function (saList, minTime, maxTime) {
+        var self = this;
+        var sofTemplate = [];
+        wjQuery('.student-attendance').html("");
+        for (var i = 0; i < (maxTime - minTime) ; i++) {
+            var elm = '<div class="student-attendance" id="student_block_' + i + '" style="height:' + (wjQuery(".fc-agenda-slots td div").height() * 4 + 3) + 'px;overflow:auto"></div>';
+            wjQuery('.sa-pane').append(elm);
+        }
+        for (var j = 0; j < Object.keys(saList).length; j++) {
+            if (Object.keys(saList)[j] == "Personal Instruction") {
+                for (var i = 0; i < saList[Object.keys(saList)[j]].length; i++) {
+                    var studentStartHour = saList[Object.keys(saList)[j]][i].start.getHours();
+                    if (studentStartHour >= minTime && studentStartHour <= maxTime) {
+                        var studentPosition = studentStartHour - minTime;
+                        var elm = '<div class="student-container cursor padding-lr-xxs" type="student" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start + '"  value="' + saList[Object.keys(saList)[j]][i].id + '">' + saList[Object.keys(saList)[j]][i].name + ',<span>' + saList[Object.keys(saList)[j]][i].grade + '</span></div>';
+                        var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
+                            return y;
+                        }).indexOf(saList[Object.keys(saList)[j]][i].deliveryTypeId);
+                        if (deliveryTypeIndex != -1) {
+                            if (wjQuery('#student_block_' + studentPosition + ' .sof-pi').length == 0) {
+                                wjQuery('#student_block_' + studentPosition).append('<div class="sof-pi"></div>');
+                            }
+                            wjQuery('#student_block_' + studentPosition + ' .sof-pi').append(elm);
+                        }
+                    }
+                }
+            } else if (Object.keys(saList)[j] == 'Group Instruction') {
+                // GI Student will not come in sof list
+                for (var i = 0; i < saList[Object.keys(saList)[j]].length; i++) {
+                    var studentStartHour = saList[Object.keys(saList)[j]][i].start.getHours();
+                    if (studentStartHour >= minTime && studentStartHour <= maxTime) {
+                        var studentPosition = studentStartHour - minTime;
+                        var elm = '<div class="student-container cursor padding-lr-xxs" type="student" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start + '" value="' + saList[Object.keys(saList)[j]][i].id + '">' + saList[Object.keys(saList)[j]][i].name + ',<span>' + saList[Object.keys(saList)[j]][i].grade + '</span></div>';
+                        var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
+                            return y;
+                        }).indexOf(saList[Object.keys(saList)[j]][i].deliveryTypeId);
+                        if (deliveryTypeIndex != -1) {
+                            if (wjQuery('#student_block_' + studentPosition + ' .sof-gi').length == 0) {
+                                wjQuery('#student_block_' + studentPosition).append('<div class="sof-gi"></div>');
+                            }
+                            wjQuery('#student_block_' + studentPosition + ' .sof-gi').append(elm);
+                        }
+                    }
+                }
+            } else if (Object.keys(saList)[j] == 'Group Facilitation') {
+                for (var i = 0; i < saList[Object.keys(saList)[j]].length; i++) {
+                    var studentStartHour = saList[Object.keys(saList)[j]][i].start.getHours();
+                    if (studentStartHour >= minTime && studentStartHour <= maxTime) {
+                        var studentPosition = studentStartHour - minTime;
+                        var elm = '<div class="student-container cursor padding-lr-xxs" type="student" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start + '" value="' + saList[Object.keys(saList)[j]][i].id + '">' + saList[Object.keys(saList)[j]][i].name + ',<span>' + saList[Object.keys(saList)[j]][i].grade + '</span></div>';
+                        var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
+                            return y;
+                        }).indexOf(saList[Object.keys(saList)[j]][i].deliveryTypeId);
+                        if (deliveryTypeIndex != -1) {
+                            if (wjQuery('#student_block_' + studentPosition + ' .sof-gf').length == 0) {
+                                wjQuery('#student_block_' + studentPosition).append('<div class="sof-gf"></div>');
+                            }
+                            wjQuery('#student_block_' + studentPosition + ' .sof-gf').append(elm);
+                        }
+                    }
+                }
+            }
+            this.saWidthCalc();
+            this.draggable('student-container');
+        }
+    }
+
 
     this.sofWidthCalc = function () {
         var self = this;
@@ -984,6 +1072,55 @@ function SylvanCalendar() {
             }
         }
     }
+
+    this.saWidthCalc = function () {
+        var self = this;
+        if (this.selectedDeliveryType.length == 1) {
+            wjQuery(".sof-pi").css("width", "calc(100% - 10px)");
+        } else {
+            if (this.saList['Personal Instruction'].length != 0 &&
+                this.saList['Group Instruction'].length == 0 &&
+                this.saList['Group Facilitation'].length == 0) {
+                wjQuery(".sof-pi").css("width", "calc(100% - 10px)");
+            }
+            else if (this.saList['Personal Instruction'].length == 0 &&
+                this.saList['Group Instruction'].length != 0 &&
+                this.saList['Group Facilitation'].length == 0) {
+                wjQuery(".sof-gi").css("width", "calc(100% - 10px)");
+            }
+            else if (this.saList['Personal Instruction'].length == 0 &&
+                this.saList['Group Instruction'].length == 0 &&
+                this.saList['Group Facilitation'].length != 0) {
+                wjQuery(".sof-gf").css("width", "calc(100% - 10px)");
+            }
+            else if (this.saList['Personal Instruction'].length != 0 &&
+                this.saList['Group Instruction'].length == 0 &&
+                this.saList['Group Facilitation'].length != 0) {
+                wjQuery(".sof-pi").css("width", "calc(50% - 10px)");
+                wjQuery(".sof-gf").css("width", "calc(50% - 10px)");
+            }
+            else if (this.saList['Personal Instruction'].length != 0 &&
+                this.saList['Group Instruction'].length != 0 &&
+                this.saList['Group Facilitation'].length == 0) {
+                wjQuery(".sof-pi").css("width", "calc(50% - 10px)");
+                wjQuery(".sof-gi").css("width", "calc(50% - 10px)");
+            }
+            else if (this.saList['Personal Instruction'].length == 0 &&
+                this.saList['Group Instruction'].length != 0 &&
+                this.saList['Group Facilitation'].length != 0) {
+                wjQuery(".sof-gi").css("width", "calc(50% - 10px)");
+                wjQuery(".sof-gf").css("width", "calc(50% - 10px)");
+            }
+            else if (this.saList['Personal Instruction'].length != 0 &&
+                this.saList['Group Instruction'].length != 0 &&
+                this.saList['Group Facilitation'].length != 0) {
+                wjQuery(".sof-gi").css("width", "calc(33% - 10px)");
+                wjQuery(".sof-gf").css("width", "calc(33% - 10px)");
+                wjQuery(".sof-pi").css("width", "calc(33% - 10px)");
+            }
+        }
+    }
+
 
     this.getTeacherSubjects = function (teacherObj) {
         var self = this;
@@ -2115,6 +2252,7 @@ function SylvanCalendar() {
         self.sofList = [];
         wjQuery('.teacher-block').remove();
         wjQuery('.student-overflow').remove();
+        wjQuery('.student-attendance').remove()
         self.taList = [];
         self.convertedTeacherObj = [];
         self.convertedStudentObj = [];
@@ -2526,6 +2664,13 @@ function SylvanCalendar() {
                     if (self.teacherAvailability == null) {
                         self.teacherAvailability = [];
                     }
+
+                    var beSaList = [];
+                    beSaList = isFetch || (beSaList.length == 0) ? data.getsaList(locationId, startDate, endDate) : beSaList;
+                    if (beSaList == null) {
+                        beSaList = [];
+                    }
+
                     self.pinnedData = isFetch || (self.pinnedData.length == 0) ? data.getPinnedData(locationId, startDate, endDate, locationObj['_hub_parentcenter_value']) : self.pinnedData;
                     if (self.pinnedData == null) {
                         self.pinnedData = [];
@@ -2562,6 +2707,7 @@ function SylvanCalendar() {
                         self.populateTeacherEvent(self.generateEventObject(self.teacherSchedule == null ? [] : self.teacherSchedule, "teacherSchedule"), true);
                     }
                     self.populateTAPane(self.generateEventObject(self.teacherAvailability == null ? [] : self.teacherAvailability, "teacherAvailability"));
+                    self.populateSAPane(self.convertSAList(beSaList), self.calendarOptions.minTime, self.calendarOptions.maxTime);
                     self.showConflictMsg();
                     self.scrollToEvent();
                     // self.buildCalfirstCol();
@@ -2822,11 +2968,18 @@ function SylvanCalendar() {
             wjQuery('.ta-pane').css('opacity', '1');
             wjQuery('.ta-pane').animate(taExpanded ? { 'marginRight': '-15px' } : { marginRight: '-260px' }, 500);
         }
+        if (saExpanded) {
+            saExpanded = !saExpanded; // to change the slide
+            saExpanded ? wjQuery('.sa-pane').addClass('open') : wjQuery('.sa-pane').removeClass('open');
+            wjQuery('.sa-pane').css('opacity', '1');
+            wjQuery('.sa-pane').animate(saExpanded ? { 'marginRight': '-15px' } : { marginRight: '-260px' }, 500);
+        }
         sofExpanded = !sofExpanded;
         if (sofExpanded) {
             this.scrollTop = wjQuery("#scrollarea").scrollTop();
             wjQuery('.sof-pane').prop("scrollTop", this.scrollTop);
             wjQuery('.ta-pane').hide();
+            wjQuery('.sa-pane').hide();
             wjQuery('.sof-pane').css('opacity', '1');
         }
         sofExpanded ? wjQuery('.sof-pane').addClass('open') : wjQuery('.sof-pane').removeClass('open');
@@ -2834,6 +2987,50 @@ function SylvanCalendar() {
         if (!sofExpanded) {
             setTimeout(function () {
                 wjQuery('.sof-pane').hide();
+            }, 600);
+        }
+    }
+
+    this.saPane = function () {
+        var self = this;
+        wjQuery('.sa-pane').show();
+        wjQuery("#scrollarea").scroll(function () {
+            console.log(this.scrollTop);
+            wjQuery('.sa-pane').prop("scrollTop", this.scrollTop)
+                .prop("scrollLeft", this.scrollLeft);
+        });
+        wjQuery('.student-attendance').on('mousewheel DOMMouseScroll', function (e) {
+            // console.log(e);
+            var e0 = e.originalEvent;
+            var delta = e0.wheelDelta || -e0.detail;
+            this.scrollTop += (delta < 0 ? 1 : -1) * 30;
+            e.preventDefault();
+        });
+        if (taExpanded) {
+            taExpanded = !taExpanded; // to change the slide
+            taExpanded ? wjQuery('.ta-pane').addClass('open') : wjQuery('.ta-pane').removeClass('open');
+            wjQuery('.ta-pane').css('opacity', '1');
+            wjQuery('.ta-pane').animate(taExpanded ? { 'marginRight': '-15px' } : { marginRight: '-260px' }, 500);
+        }
+        if (sofExpanded) {
+            sofExpanded = !sofExpanded;
+            sofExpanded ? wjQuery('.sof-pane').addClass('open') : wjQuery('.sof-pane').removeClass('open');
+            wjQuery('.sof-pane').css('opacity', '1');
+            wjQuery('.sof-pane').animate(sofExpanded ? { 'marginRight': '-15px' } : { marginRight: '-260px' }, 500);
+        }
+        saExpanded = !saExpanded;
+        if (saExpanded) {
+            this.scrollTop = wjQuery("#scrollarea").scrollTop();
+            wjQuery('.sa-pane').prop("scrollTop", this.scrollTop);
+            wjQuery('.ta-pane').hide();
+            wjQuery('.sof-pane').hide();
+            wjQuery('.sa-pane').css('opacity', '1');
+        }
+        saExpanded ? wjQuery('.sa-pane').addClass('open') : wjQuery('.sa-pane').removeClass('open');
+        wjQuery('.sa-pane').animate(saExpanded ? { 'marginRight': '-15px' } : { marginRight: '-260px' }, 500);
+        if (!saExpanded) {
+            setTimeout(function () {
+                wjQuery('.sa-pane').hide();
             }, 600);
         }
     }
@@ -2859,12 +3056,19 @@ function SylvanCalendar() {
             wjQuery('.sof-pane').css('opacity', '1');
             wjQuery('.sof-pane').animate(sofExpanded ? { 'marginRight': '-15px' } : { marginRight: '-260px' }, 500);
         }
+        if (saExpanded) {
+            saExpanded = !saExpanded; // to change the slide
+            saExpanded ? wjQuery('.sa-pane').addClass('open') : wjQuery('.sa-pane').removeClass('open');
+            wjQuery('.sa-pane').css('opacity', '1');
+            wjQuery('.sa-pane').animate(saExpanded ? { 'marginRight': '-15px' } : { marginRight: '-260px' }, 500);
+        }
         taExpanded = !taExpanded;
         if (taExpanded) {
             this.scrollTop = wjQuery("#scrollarea").scrollTop();
             wjQuery('.ta-pane').prop("scrollTop", this.scrollTop);
             wjQuery('.ta-pane').css('opacity', '1');
             wjQuery('.sof-pane').hide();
+            wjQuery('.sa-pane').hide();
         }
         taExpanded ? wjQuery('.ta-pane').addClass('open') : wjQuery('.ta-pane').removeClass('open');
         wjQuery('.ta-pane').animate(taExpanded ? { 'marginRight': '-15px' } : { marginRight: '-260px' }, 500);
@@ -4337,6 +4541,7 @@ function SylvanCalendar() {
         }, 300);
     }
 
+
     this.pushStudentToSOF = function (data) {
         var self = this;
         var currentView = this.calendar.fullCalendar('getView');
@@ -4408,6 +4613,60 @@ function SylvanCalendar() {
         }
         else if (currentView.name == 'agendaWeek') {
             this.generateWeekEventObject([data], 'studentSession');
+        }
+    };
+
+    this.pushStudentToSA = function (data) {
+        var self = this;
+        var currentView = this.calendar.fullCalendar('getView');
+        if (currentView.name == 'resourceDay') {
+            if (Object.keys(this.saList).length == 0) {
+                this.saList['Personal Instruction'] = [];
+                this.saList['Group Instruction'] = [];
+                this.saList['Group Facilitation'] = [];
+            }
+            var studentPushFlagDecision = true;
+            var currentCalendarDate = this.calendar.fullCalendar('getDate');
+            var dateFlag = moment(currentCalendarDate).format("YYYY-MM-DD") == moment(data.startHour).format("YYYY-MM-DD");
+            if (studentPushFlagDecision && dateFlag) {
+                if (data.deliveryTypeCode == personalInstruction) {
+                    var index = -1;
+                    for (var i = 0; i < this.saList['Personal Instruction'].length; i++) {
+                        if (this.saList['Personal Instruction'][i].id == data.id &&
+                            this.saList['Personal Instruction'][i].startHour.getTime() == data.startHour.getTime()) {
+                            index = i;
+                            break;
+                        }
+                    }
+                    if (index == -1) {
+                        this.saList['Personal Instruction'].push(data);
+                    }
+                } else if (data.deliveryTypeCode == groupInstruction) {
+                    var index = -1;
+                    for (var i = 0; i < this.saList['Group Instruction'].length; i++) {
+                        if (this.saList['Group Instruction'][i].id == data.id &&
+                            this.saList['Group Instruction'][i].startHour.getTime() == data.startHour.getTime()) {
+                            index = i;
+                            break;
+                        }
+                    }
+                    if (index == -1) {
+                        this.saList['Group Instruction'].push(data);
+                    }
+                } else if (data.deliveryTypeCode == groupFacilitation) {
+                    var index = -1;
+                    for (var i = 0; i < this.saList['Group Facilitation'].length; i++) {
+                        if (this.saList['Group Facilitation'][i].id == data.id &&
+                            this.saList['Group Facilitation'][i].startHour.getTime() == data.startHour.getTime()) {
+                            index = i;
+                            break;
+                        }
+                    }
+                    if (index == -1) {
+                        this.saList['Group Facilitation'].push(data);
+                    }
+                }
+            }
         }
     };
 
@@ -4637,6 +4896,53 @@ function SylvanCalendar() {
             wjQuery(".sof-btn").removeClass('overflow-info');
             wjQuery(".sof-btn").addClass('overflow-info');
             wjQuery('.sof-btn,.sof-close-icon').prop('title', "There are students in overflow pane");
+            self.sofWidthCalc();
+        }
+    }
+
+    this.openSaPane = function () {
+        var self = this;
+        var closeSaPane = false;
+        if (Object.keys(this.saList).length == 0) {
+            this.saList['Personal Instruction'] = [];
+            this.saList['Group Facilitation'] = [];
+            this.saList['Group Instruction'] = [];
+        }
+        if (this.selectedDeliveryType.length == 1) {
+            if (this.getDeliveryTypeVal(this.selectedDeliveryType[0]) == personalInstruction) {
+                if (this.saList['Personal Instruction'].length == 0) {
+                    closeSaPane = true;
+                }
+            }
+        } else if (this.selectedDeliveryType.length == 2) {
+            if (this.saList['Group Facilitation'].length == 0) {
+                closeSaPane = true;
+            }
+        } else {
+            if (this.saList['Personal Instruction'].length == 0) {
+                wjQuery(".sa-gf").css("width", "calc(100% - 10px)");
+            } else if (this.saList['Group Facilitation'].length == 0) {
+                wjQuery(".sa-pi").css("width", "calc(100% - 10px)");
+            }
+            if (this.saList['Personal Instruction'].length == 0 && this.saList['Group Facilitation'].length == 0 && this.sofList['Group Instruction'].length == 0) {
+                closeSaPane = true;
+            }
+        }
+
+        if (closeSaPane) {
+            if (sofExpanded) {
+                this.saPane();
+            }
+            // wjQuery('.sof-btn, .sof-close-icon').unbind('click');
+            wjQuery(".sa-btn").removeClass('overflow-info');
+            wjQuery('.sa-btn,.sa-close-icon').prop('title', "There are no student in overflow pane");
+        } else {
+            /*if(!saExpanded){
+              this.saPane();
+            }*/
+            wjQuery(".sa-btn").removeClass('overflow-info');
+            wjQuery(".sa-btn").addClass('overflow-info');
+            wjQuery('.sa-btn,.sa-close-icon').prop('title', "There are students in overflow pane");
             self.sofWidthCalc();
         }
     }
@@ -6642,6 +6948,75 @@ function SylvanCalendar() {
         });
         return eventObjList;
     }
+
+    this.convertSAList = function (saList) {
+        var self = this;
+        eventObjList = [];
+        wjQuery.each(saList, function (ke, val) {
+            var sDate = new Date(val['hub_session_date@OData.Community.Display.V1.FormattedValue'] + " " + val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
+            var eDate = new Date(val['hub_session_date@OData.Community.Display.V1.FormattedValue'] + " " + val['hub_end_time@OData.Community.Display.V1.FormattedValue']);
+            var startHour = new Date(val['hub_session_date@OData.Community.Display.V1.FormattedValue'] + " " + val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
+            var obj = {
+                studUniqueId:self.generateUniqueId(),
+                id: val._hub_student_value,
+                name: val["_hub_student_value@OData.Community.Display.V1.FormattedValue"],
+                start: sDate,
+                end: eDate,
+                sessionDate: val['hub_session_date'],
+                startHour: startHour,
+                gradeId: val['astudent_x002e_hub_grade'],
+                grade: val['astudent_x002e_hub_grade@OData.Community.Display.V1.FormattedValue'],
+                deliveryTypeId: val['aproductservice_x002e_hub_deliverytype'],
+                deliveryType: val['aproductservice_x002e_hub_deliverytype@OData.Community.Display.V1.FormattedValue'],
+                deliveryTypeCode: val['adeliverytype_x002e_hub_code'],
+                deliveryTypeCodeVal: val['adeliverytype_x002e_hub_code@OData.Community.Display.V1.FormattedValue'],
+                subject: val['aprogram_x002e_hub_areaofinterest@OData.Community.Display.V1.FormattedValue'],
+                subjectId: val['aprogram_x002e_hub_areaofinterest'],
+                subjectColorCode: val['aprogram_x002e_hub_color'],
+                programId: val['aprogram_x002e_hub_programid'],
+                serviceId: val['_hub_service_value'],
+                serviceValue: val['_hub_service_value@OData.Community.Display.V1.FormattedValue'],
+                sessionId: val['hub_studentsessionid'],
+                sessionType: val['hub_sessiontype'],
+                sessionStatus: val['hub_session_status'],
+                duration: val['aproductservice_x002e_hub_duration'],
+                timeSlotType: val['aproductservice_x002e_hub_timeslottype'],
+                namedHoursId: val['aproductservice_x002e_hub_namedgfhoursid'],
+                isAttended: val['hub_isattended'],
+                makeupExpiryDate: val['hub_makeup_expiry_date@OData.Community.Display.V1.FormattedValue'],
+                namedHoursId: val['aproductservice_x002e_hub_namedgfhoursid']
+            }
+
+            if (val['hub_name'] != undefined) {
+                obj['fullName'] = val['hub_name'];
+            } else {
+                obj['fullName'] = val["_hub_enrollment_value@OData.Community.Display.V1.FormattedValue"];
+            }
+
+            if (val["hub_is_1to1"] == undefined) {
+                obj['is1to1'] = false;
+            } else {
+                obj['is1to1'] = val["hub_is_1to1"];
+            }
+
+            if (val['_hub_enrollment_value'] != undefined) {
+                obj['enrollmentId'] = val['_hub_enrollment_value'];
+            } else if (val['hub_enrollmentid'] != undefined) {
+                obj['enrollmentId'] = val['hub_enrollmentid'];
+            }
+
+            if (val['_hub_center_value'] != undefined) {
+                obj['locationId'] = val['_hub_center_value'];
+                obj['locationName'] = val['_hub_center_value@OData.Community.Display.V1.FormattedValue'];
+            } else if (val['_hub_location_value'] != undefined) {
+                obj['locationId'] = val['_hub_location_value'];
+                obj['locationName'] = val['_hub_location_value@OData.Community.Display.V1.FormattedValue'];
+            }
+            self.pushStudentToSA(obj);
+        });
+        return this.saList;
+    }
+
 
     this.removeTeacher = function (event) {
         var self = this;

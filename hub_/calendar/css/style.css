@@ -296,7 +296,7 @@ i.material-icons.cursor.float-right {
 button{
     outline: none;
 }
-.sof-pane,.ta-pane{
+.sof-pane, .sa-pane, .ta-pane{
     width: 250px;
     height: 200px;
     margin-right: -260px;
@@ -306,7 +306,7 @@ button{
     z-index: 3;
     background: #fff; 
 }
-.sof-pane.open,.ta-pane.open{
+.sof-pane.open, .sa-pane.open, .ta-pane.open{
     display: block;
 }
 .fc-event{
@@ -326,7 +326,7 @@ button{
     display: inline-block;
     margin: -3px 3px;
 }
-.ta-header,.sof-header{
+.ta-header,.sof-header,.sa-header{
     padding: 10px 20px;
     border-bottom: 1px solid #ddd;
     /*margin-bottom: 38px;*/
@@ -339,7 +339,7 @@ button{
 .teacher-block{
     padding: 10px 10px 0px;
 }
-.student-overflow,.teacher-availability{
+.student-overflow, .student-attendance, .teacher-availability{
     border-right: 1px solid #ccc;
     border-left: 1px solid #ccc;
     border-top: 1px solid #ccc;
@@ -377,7 +377,7 @@ button{
     text-align: center;
     font-weight: bold;
 }
-.sof-pi{
+.sof-pi, .sa-pi{
     background: #ebf5fb;
     padding: 3px;
     border: 1px solid #9acaea;
@@ -387,7 +387,7 @@ button{
     width: calc(50% - 8px);
     height: calc(100% - 1px);
 }
-.sof-gi{
+.sof-gi, .sa-gi{
     padding: 3px;
     border: 1px solid #f88e50;
     background: #fedeb7;
@@ -397,7 +397,7 @@ button{
     width: calc(50% - 8px);
     height: calc(100% - 1px);
 }
-.sof-gf{
+.sof-gf, .sa-gf{
     padding: 3px;
     border: 1px solid #7bc143;
     background: #dff0d5;
@@ -481,6 +481,11 @@ button{
 }*/
 
 .sof-btn[disabled]:hover{
+    background-color: #e6e6e6;
+    color: #333333;
+}
+
+.sa-btn[disabled]:hover{
     background-color: #e6e6e6;
     color: #333333;
 }
