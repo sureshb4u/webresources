@@ -1145,7 +1145,9 @@ function SylvanCalendar() {
                 objNewSession['hub_session_date'] = moment(student[0].start).format("YYYY-MM-DD");
                 objNewSession['hub_deliverytype'] = student[0].deliveryTypeId;
                 objNewSession['hub_deliverytype@OData.Community.Display.V1.FormattedValue'] = student[0].deliveryType;
-
+                objNewSession['hub_deliverytype_code'] = student[0].deliveryTypeCode;
+                objSession['hub_deliverytype_code'] = student[0].deliveryTypeCode;
+                
                 objSession['hub_start_time'] = this.convertToMinutes(moment(student[0]['start']).format("h:mm A"));
                 objSession['hub_end_time'] = this.convertToMinutes(moment(student[0]['end']).format("h:mm A"));
 
@@ -6116,6 +6118,7 @@ function SylvanCalendar() {
             objPrevSession['hub_student@odata.bind'] = prevStudent['id'];
             objPrevSession['hub_center@odata.bind'] = prevStudent["locationId"];
             objPrevSession['hub_deliverytype@OData.Community.Display.V1.FormattedValue'] = prevStudent['deliveryType'];
+            objPrevSession['hub_deliverytype_code'] = newStudent.deliveryTypeCode;
 
             objNewSession['hub_center@odata.bind'] = prevStudent["locationId"];
             objNewSession['hub_enrollment@odata.bind'] = prevStudent['enrollmentId'];
@@ -6128,6 +6131,7 @@ function SylvanCalendar() {
             objNewSession['hub_end_time'] = objNewSession['hub_start_time'] + 60;
             objNewSession['hub_deliverytype'] = newStudent.deliveryTypeId;
             objNewSession['hub_deliverytype@OData.Community.Display.V1.FormattedValue'] = newStudent.deliveryType;
+            objNewSession['hub_deliverytype_code'] = newStudent.deliveryTypeCode;
 
             // Get location object
             var locationObj = self.getLocationObject(self.locationId);
@@ -6452,7 +6456,7 @@ function SylvanCalendar() {
                         objSession["hub_sessiontype"] = studentObj[0]['sessionType'];
                         objSession["hub_session_status"] = studentObj[0]['sessionStatus'];
                         objSession["hub_makeup_expiry_date"] = studentObj[0]['makeupExpiryDate'];
-
+                        objSession['hub_deliverytype_code'] = studentObj[0].deliveryTypeCode;
                         if (studentObj[0]["is1to1"] != undefined) {
                             objSession["hub_is_1to1"] = studentObj[0]["is1to1"];
                         }
