@@ -350,7 +350,7 @@ button{
     width: calc(100% - 20px);
 }*/
 
-#student_block_0, #teacher_block_0 {
+#student_block_0, #sa_student_block_0, #teacher_block_0 {
 	margin-top: 43px;
 }
 .loc-dropdown.btn-group .btn {

@@ -112,12 +112,18 @@ setTimeout(function () {
                     return fetchResources(locationId, deliveryTypeList, true);
                 } else {
                     wjQuery(".sof-btn").prop("disabled", true);
+                    wjQuery(".sa-btn").prop("disabled", true);
                     wjQuery(".ta-btn").prop("disabled", true);
                     wjQuery(".filter-section").hide();
                     if (wjQuery(".sof-pane").hasClass("open")) {
                         wjQuery(".sof-btn,.sof-close-icon").trigger('click');
                     }
-
+                    if (wjQuery(".sa-pane").hasClass("open")) {
+                        wjQuery(".sa-btn,.sa-close-icon").trigger('click');
+                    }
+                    if (wjQuery(".ta-pane").hasClass("open")) {
+                        wjQuery(".ta-btn,.ta-close-icon").trigger('click');
+                    }
                     sylvanCalendar.locationId = locationId;
                     fetchResources(sylvanCalendar.locationId, deliveryTypeList, true);
                     wjQuery(".sof-btn").removeClass('overflow-info');
@@ -286,10 +292,14 @@ setTimeout(function () {
 
                 wjQuery('.wkView').off('click').on('click', function () {
                     wjQuery(".sof-btn").prop("disabled", true);
+                    wjQuery(".sa-btn").prop("disabled", true);
                     wjQuery(".ta-btn").prop("disabled", true);
                     wjQuery(".filter-section").hide();
                     if (wjQuery(".sof-pane").hasClass("open")) {
                         wjQuery(".sof-btn,.sof-close-icon").trigger('click');
+                    }
+                    if (wjQuery(".sa-pane").hasClass("open")) {
+                        wjQuery(".sa-btn,.sa-close-icon").trigger('click');
                     }
                     if (wjQuery(".ta-pane").hasClass("open")) {
                         wjQuery(".ta-btn,.ta-close-icon").trigger('click');
@@ -299,6 +309,7 @@ setTimeout(function () {
                 });
                 wjQuery('.dayView').off('click').on('click', function () {
                     wjQuery(".sof-btn").prop("disabled", false);
+                    wjQuery(".sa-btn").prop("disabled", false);
                     wjQuery(".ta-btn").prop("disabled", false);
                     wjQuery(".filter-section").show();
                     sylvanCalendar.openSofPane();
@@ -961,7 +972,7 @@ function SylvanCalendar() {
         var sofTemplate = [];
         wjQuery('.student-attendance').html("");
         for (var i = 0; i < (maxTime - minTime) ; i++) {
-            var elm = '<div class="student-attendance" id="student_block_' + i + '" style="height:' + (wjQuery(".fc-agenda-slots td div").height() * 4 + 3) + 'px;overflow:auto"></div>';
+            var elm = '<div class="student-attendance" id="sa_student_block_' + i + '" style="height:' + (wjQuery(".fc-agenda-slots td div").height() * 4 + 3) + 'px;overflow:auto"></div>';
             wjQuery('.sa-pane').append(elm);
         }
         for (var j = 0; j < Object.keys(saList).length; j++) {
@@ -970,15 +981,15 @@ function SylvanCalendar() {
                     var studentStartHour = saList[Object.keys(saList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
                         var studentPosition = studentStartHour - minTime;
-                        var elm = '<div class="student-container cursor padding-lr-xxs" type="student" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start + '"  value="' + saList[Object.keys(saList)[j]][i].id + '">' + saList[Object.keys(saList)[j]][i].name + ',<span>' + saList[Object.keys(saList)[j]][i].grade + '</span></div>';
+                        var elm = '<div class="student-container cursor padding-lr-xxs" type="student" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" >' + saList[Object.keys(saList)[j]][i].name + ',<span>' + saList[Object.keys(saList)[j]][i].grade + '</span></div>';
                         var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
                             return y;
                         }).indexOf(saList[Object.keys(saList)[j]][i].deliveryTypeId);
                         if (deliveryTypeIndex != -1) {
-                            if (wjQuery('#student_block_' + studentPosition + ' .sof-pi').length == 0) {
-                                wjQuery('#student_block_' + studentPosition).append('<div class="sof-pi"></div>');
+                            if (wjQuery('#sa_student_block_' + studentPosition + ' .sa-pi').length == 0) {
+                                wjQuery('#sa_student_block_' + studentPosition).append('<div class="sa-pi"></div>');
                             }
-                            wjQuery('#student_block_' + studentPosition + ' .sof-pi').append(elm);
+                            wjQuery('#sa_student_block_' + studentPosition + ' .sa-pi').append(elm);
                         }
                     }
                 }
@@ -988,15 +999,15 @@ function SylvanCalendar() {
                     var studentStartHour = saList[Object.keys(saList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
                         var studentPosition = studentStartHour - minTime;
-                        var elm = '<div class="student-container cursor padding-lr-xxs" type="student" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start + '" value="' + saList[Object.keys(saList)[j]][i].id + '">' + saList[Object.keys(saList)[j]][i].name + ',<span>' + saList[Object.keys(saList)[j]][i].grade + '</span></div>';
+                        var elm = '<div class="student-container cursor padding-lr-xxs" type="student" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" >' + saList[Object.keys(saList)[j]][i].name + ',<span>' + saList[Object.keys(saList)[j]][i].grade + '</span></div>';
                         var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
                             return y;
                         }).indexOf(saList[Object.keys(saList)[j]][i].deliveryTypeId);
                         if (deliveryTypeIndex != -1) {
-                            if (wjQuery('#student_block_' + studentPosition + ' .sof-gi').length == 0) {
-                                wjQuery('#student_block_' + studentPosition).append('<div class="sof-gi"></div>');
+                            if (wjQuery('#sa_student_block_' + studentPosition + ' .sa-gi').length == 0) {
+                                wjQuery('#sa_student_block_' + studentPosition).append('<div class="sa-gi"></div>');
                             }
-                            wjQuery('#student_block_' + studentPosition + ' .sof-gi').append(elm);
+                            wjQuery('#sa_student_block_' + studentPosition + ' .sa-gi').append(elm);
                         }
                     }
                 }
@@ -1005,15 +1016,15 @@ function SylvanCalendar() {
                     var studentStartHour = saList[Object.keys(saList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
                         var studentPosition = studentStartHour - minTime;
-                        var elm = '<div class="student-container cursor padding-lr-xxs" type="student" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start + '" value="' + saList[Object.keys(saList)[j]][i].id + '">' + saList[Object.keys(saList)[j]][i].name + ',<span>' + saList[Object.keys(saList)[j]][i].grade + '</span></div>';
+                        var elm = '<div class="student-container cursor padding-lr-xxs" type="student" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" >' + saList[Object.keys(saList)[j]][i].name + ',<span>' + saList[Object.keys(saList)[j]][i].grade + '</span></div>';
                         var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
                             return y;
                         }).indexOf(saList[Object.keys(saList)[j]][i].deliveryTypeId);
                         if (deliveryTypeIndex != -1) {
-                            if (wjQuery('#student_block_' + studentPosition + ' .sof-gf').length == 0) {
-                                wjQuery('#student_block_' + studentPosition).append('<div class="sof-gf"></div>');
+                            if (wjQuery('#sa_student_block_' + studentPosition + ' .sa-gf').length == 0) {
+                                wjQuery('#sa_student_block_' + studentPosition).append('<div class="sa-gf"></div>');
                             }
-                            wjQuery('#student_block_' + studentPosition + ' .sof-gf').append(elm);
+                            wjQuery('#sa_student_block_' + studentPosition + ' .sa-gf').append(elm);
                         }
                     }
                 }
@@ -1022,7 +1033,6 @@ function SylvanCalendar() {
             this.draggable('student-container');
         }
     }
-
 
     this.sofWidthCalc = function () {
         var self = this;
@@ -2319,7 +2329,6 @@ function SylvanCalendar() {
             selectHelper: true,
             select: function (start, end, allDay, event, resourceId) {
                 if (title) {
-                    console.log("@@ adding event " + title + ", start " + start + ", end " + end + ", allDay " + allDay + ", resource " + resourceId);
                     this.calendar.fullCalendar('renderEvent',
                     {
                         title: title,
@@ -2995,12 +3004,10 @@ function SylvanCalendar() {
         var self = this;
         wjQuery('.sa-pane').show();
         wjQuery("#scrollarea").scroll(function () {
-            console.log(this.scrollTop);
             wjQuery('.sa-pane').prop("scrollTop", this.scrollTop)
                 .prop("scrollLeft", this.scrollLeft);
         });
         wjQuery('.student-attendance').on('mousewheel DOMMouseScroll', function (e) {
-            // console.log(e);
             var e0 = e.originalEvent;
             var delta = e0.wheelDelta || -e0.detail;
             this.scrollTop += (delta < 0 ? 1 : -1) * 30;
@@ -4016,9 +4023,9 @@ function SylvanCalendar() {
                                             }
                                             
                                             if (val['pinId'] != undefined) {
-                                                event[k].title += "<span class='"+ draggable + "' pinnedId='" + val['pinId'] + "' eventid='" + eventId + "' studUniqueId='" + value['studUniqueId'] + "' uniqueId='" + val.id + "_" + value['resourceId'] + "_" + value['startHour'] + "' id='" + val.id + value['resourceId'] + "' type='studentSession' value='" + val.id + "'><img src='/webresources/hub_/calendar/images/pin.png'/>" + val.name + ", " + val.grade + "<i class='material-icons' style='color:" + val['subjectColorCode'] + "'>location_on</i></span>";
+                                                event[k].title += "<span class='"+ draggable + "' pinnedId='" + val['pinId'] + "' eventid='" + eventId + "' studUniqueId='" + val['studUniqueId'] + "' uniqueId='" + val.id + "_" + value['resourceId'] + "_" + value['startHour'] + "' id='" + val.id + value['resourceId'] + "' type='studentSession' value='" + val.id + "'><img src='/webresources/hub_/calendar/images/pin.png'/>" + val.name + ", " + val.grade + "<i class='material-icons' style='color:" + val['subjectColorCode'] + "'>location_on</i></span>";
                                             } else {
-                                                event[k].title += "<span class='"+ draggable + "' eventid='" + eventId + "' studUniqueId='" + value['studUniqueId'] + "' uniqueId='" + val.id + "_" + value['resourceId'] + "_" + value['startHour'] + "' id='" + val.id + value['resourceId'] + "' type='studentSession' value='" + val.id + "'>" + val.name + ", " + val.grade + "<i class='material-icons' title='" + val['serviceValue'] + "' style='color:" + val['subjectColorCode'] + "'>location_on</i></span>";
+                                                event[k].title += "<span class='"+ draggable + "' eventid='" + eventId + "' studUniqueId='" + val['studUniqueId'] + "' uniqueId='" + val.id + "_" + value['resourceId'] + "_" + value['startHour'] + "' id='" + val.id + value['resourceId'] + "' type='studentSession' value='" + val.id + "'>" + val.name + ", " + val.grade + "<i class='material-icons' title='" + val['serviceValue'] + "' style='color:" + val['subjectColorCode'] + "'>location_on</i></span>";
                                             }
                                         });
                                     }
@@ -4062,9 +4069,9 @@ function SylvanCalendar() {
                                     }
 
                                     if (val['pinId']) {
-                                        event[k].title += "<span class='"+ draggable + "' pinnedId='" + val['pinId'] + "' eventid='" + eventId + "' studUniqueId='" + value['studUniqueId'] + "' uniqueId='" + val.id + "_" + value['resourceId'] + "_" + value['startHour'] + "' id='" + val.id + value['resourceId'] + "' type='studentSession' value='" + val.id + "'><img src='/webresources/hub_/calendar/images/pin.png'/>" + val.name + ", " + val.grade + "<i class='material-icons' title='" + val['serviceValue'] + "' style='color:" + val['subjectColorCode'] + "'>location_on</i></span>";
+                                        event[k].title += "<span class='"+ draggable + "' pinnedId='" + val['pinId'] + "' eventid='" + eventId + "' studUniqueId='" + val['studUniqueId'] + "' uniqueId='" + val.id + "_" + value['resourceId'] + "_" + value['startHour'] + "' id='" + val.id + value['resourceId'] + "' type='studentSession' value='" + val.id + "'><img src='/webresources/hub_/calendar/images/pin.png'/>" + val.name + ", " + val.grade + "<i class='material-icons' title='" + val['serviceValue'] + "' style='color:" + val['subjectColorCode'] + "'>location_on</i></span>";
                                     } else {
-                                        event[k].title += "<span class='"+ draggable + "' eventid='" + eventId + "' studUniqueId='" + value['studUniqueId'] + "' uniqueId='" + val.id + "_" + value['resourceId'] + "_" + value['startHour'] + "' id='" + val.id + value['resourceId'] + "' type='studentSession' value='" + val.id + "'>" + val.name + ", " + val.grade + "<i class='material-icons' title='" + val['serviceValue'] + "' style='color:" + val['subjectColorCode'] + "'>location_on</i></span>";
+                                        event[k].title += "<span class='"+ draggable + "' eventid='" + eventId + "' studUniqueId='" + val['studUniqueId'] + "' uniqueId='" + val.id + "_" + value['resourceId'] + "_" + value['startHour'] + "' id='" + val.id + value['resourceId'] + "' type='studentSession' value='" + val.id + "'>" + val.name + ", " + val.grade + "<i class='material-icons' title='" + val['serviceValue'] + "' style='color:" + val['subjectColorCode'] + "'>location_on</i></span>";
                                     }
                                 });
                             }
@@ -4900,52 +4907,6 @@ function SylvanCalendar() {
         }
     }
 
-    this.openSaPane = function () {
-        var self = this;
-        var closeSaPane = false;
-        if (Object.keys(this.saList).length == 0) {
-            this.saList['Personal Instruction'] = [];
-            this.saList['Group Facilitation'] = [];
-            this.saList['Group Instruction'] = [];
-        }
-        if (this.selectedDeliveryType.length == 1) {
-            if (this.getDeliveryTypeVal(this.selectedDeliveryType[0]) == personalInstruction) {
-                if (this.saList['Personal Instruction'].length == 0) {
-                    closeSaPane = true;
-                }
-            }
-        } else if (this.selectedDeliveryType.length == 2) {
-            if (this.saList['Group Facilitation'].length == 0) {
-                closeSaPane = true;
-            }
-        } else {
-            if (this.saList['Personal Instruction'].length == 0) {
-                wjQuery(".sa-gf").css("width", "calc(100% - 10px)");
-            } else if (this.saList['Group Facilitation'].length == 0) {
-                wjQuery(".sa-pi").css("width", "calc(100% - 10px)");
-            }
-            if (this.saList['Personal Instruction'].length == 0 && this.saList['Group Facilitation'].length == 0 && this.sofList['Group Instruction'].length == 0) {
-                closeSaPane = true;
-            }
-        }
-
-        if (closeSaPane) {
-            if (sofExpanded) {
-                this.saPane();
-            }
-            // wjQuery('.sof-btn, .sof-close-icon').unbind('click');
-            wjQuery(".sa-btn").removeClass('overflow-info');
-            wjQuery('.sa-btn,.sa-close-icon').prop('title', "There are no student in overflow pane");
-        } else {
-            /*if(!saExpanded){
-              this.saPane();
-            }*/
-            wjQuery(".sa-btn").removeClass('overflow-info');
-            wjQuery(".sa-btn").addClass('overflow-info');
-            wjQuery('.sa-btn,.sa-close-icon').prop('title', "There are students in overflow pane");
-            self.sofWidthCalc();
-        }
-    }
 
     this.filterItems = function (obj, filterTerm, filterFor) {
         var self = this;
@@ -5298,11 +5259,18 @@ function SylvanCalendar() {
                     // }
                 }
                 if (index != -1) {
+                    this.pushStudentToSA(this.convertedStudentObj[index]);
+                    self.saList = this.saList;
+                    setTimeout(function () {
+                        if (self.saList['Personal Instruction'].length > 0 || self.saList['Group Instruction'].length > 0 || self.saList['Group Facilitation'].length > 0) {
+                            self.populateSAPane(self.saList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
+                        }
+                    }, 300);
                     this.convertedStudentObj.splice(index, 1);
+                    var prevEventId = wjQuery(element).attr("eventid");
+                    var prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
+                    self.updatePrevStudentEvent(prevEvent, uniqueIds[0], prevEventId, element);
                 }
-                var prevEventId = wjQuery(element).attr("eventid");
-                var prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
-                self.updatePrevStudentEvent(prevEvent, uniqueIds[0], prevEventId, element);
             }
         }
         this.openSofPane();
@@ -5367,11 +5335,18 @@ function SylvanCalendar() {
                     // }
                 }
                 if (index != -1) {
+                    this.pushStudentToSA(this.convertedStudentObj[index]);
+                    self.saList = this.saList;
+                    setTimeout(function () {
+                        if (self.saList['Personal Instruction'].length > 0 || self.saList['Group Instruction'].length > 0 || self.saList['Group Facilitation'].length > 0) {
+                            self.populateSAPane(self.saList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
+                        }
+                    }, 300);
                     this.convertedStudentObj.splice(index, 1);
+                    var prevEventId = wjQuery(element).attr("eventid");
+                    var prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
+                    self.updatePrevStudentEvent(prevEvent, uniqueIds[0], prevEventId, element);
                 }
-                var prevEventId = wjQuery(element).attr("eventid");
-                var prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
-                self.updatePrevStudentEvent(prevEvent, uniqueIds[0], prevEventId, element);
             }
         }
         self.openSofPane();
@@ -6205,17 +6180,17 @@ function SylvanCalendar() {
                 }
                 if (index != -1) {
                     self.convertedStudentObj.splice(index, 1);
+                    setTimeout(function () {
+                        self.pushStudentToSOF(objStudent[0]);
+                        if (self.sofList['Personal Instruction'].length > 0 || self.sofList['Group Instruction'].length > 0 || self.sofList['Group Facilitation'].length > 0) {
+                            self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
+                            self.openSofPane();
+                        }
+                    }, 500);
+                    var prevEventId = wjQuery(element).attr("eventid");
+                    var prevEvent = self.calendar.fullCalendar('clientEvents', prevEventId);
+                    self.updatePrevStudentEvent(prevEvent, uniqueIds[0], prevEventId, element);
                 }
-                setTimeout(function () {
-                    self.pushStudentToSOF(objStudent[0]);
-                    if (self.sofList['Personal Instruction'].length > 0 || self.sofList['Group Instruction'].length > 0 || self.sofList['Group Facilitation'].length > 0) {
-                        self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
-                        self.openSofPane();
-                    }
-                }, 500);
-                var prevEventId = wjQuery(element).attr("eventid");
-                var prevEvent = self.calendar.fullCalendar('clientEvents', prevEventId);
-                self.updatePrevStudentEvent(prevEvent, uniqueIds[0], prevEventId, element);
             }
         }
         self.openSofPane();
@@ -8887,7 +8862,6 @@ function SylvanCalendar() {
         var self = this;
         // var locationObj = data.getLocation();
         // var locationObj1 = {};
-        // console.log(self.locationList);
         self.locationList = self.locationList == null ? [] : self.locationList;
         for (var i = 0; i < self.locationList.length; i++) {
             if (locationId == self.locationList[i]['hub_centerid']) {
