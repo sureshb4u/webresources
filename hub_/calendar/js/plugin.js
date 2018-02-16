@@ -915,7 +915,7 @@ function SylvanCalendar() {
                     var studentStartHour = sofList[Object.keys(sofList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
                         var studentPosition = studentStartHour - minTime;
-                        var elm = '<div class="student-container cursor padding-lr-xxs" type="student" studUniqueId="'+sofList[Object.keys(sofList)[j]][i].studUniqueId+'" uniqueValue="' + sofList[Object.keys(sofList)[j]][i].id + '_' + sofList[Object.keys(sofList)[j]][i].start + '"  value="' + sofList[Object.keys(sofList)[j]][i].id + '">' + sofList[Object.keys(sofList)[j]][i].name + ',<span>' + sofList[Object.keys(sofList)[j]][i].grade + '</span></div>';
+                        var elm = '<div class="student-container cursor padding-lr-xxs" isfromSa="false" type="student" studUniqueId="'+sofList[Object.keys(sofList)[j]][i].studUniqueId+'" uniqueValue="' + sofList[Object.keys(sofList)[j]][i].id + '_' + sofList[Object.keys(sofList)[j]][i].start + '"  value="' + sofList[Object.keys(sofList)[j]][i].id + '">' + sofList[Object.keys(sofList)[j]][i].name + ',<span>' + sofList[Object.keys(sofList)[j]][i].grade + '</span></div>';
                         var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
                             return y;
                         }).indexOf(sofList[Object.keys(sofList)[j]][i].deliveryTypeId);
@@ -933,7 +933,7 @@ function SylvanCalendar() {
                     var studentStartHour = sofList[Object.keys(sofList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
                         var studentPosition = studentStartHour - minTime;
-                        var elm = '<div class="student-container cursor padding-lr-xxs" type="student" studUniqueId="'+sofList[Object.keys(sofList)[j]][i].studUniqueId+'" uniqueValue="' + sofList[Object.keys(sofList)[j]][i].id + '_' + sofList[Object.keys(sofList)[j]][i].start + '" value="' + sofList[Object.keys(sofList)[j]][i].id + '">' + sofList[Object.keys(sofList)[j]][i].name + ',<span>' + sofList[Object.keys(sofList)[j]][i].grade + '</span></div>';
+                        var elm = '<div class="student-container cursor padding-lr-xxs" isfromSa="false" type="student" studUniqueId="'+sofList[Object.keys(sofList)[j]][i].studUniqueId+'" uniqueValue="' + sofList[Object.keys(sofList)[j]][i].id + '_' + sofList[Object.keys(sofList)[j]][i].start + '" value="' + sofList[Object.keys(sofList)[j]][i].id + '">' + sofList[Object.keys(sofList)[j]][i].name + ',<span>' + sofList[Object.keys(sofList)[j]][i].grade + '</span></div>';
                         var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
                             return y;
                         }).indexOf(sofList[Object.keys(sofList)[j]][i].deliveryTypeId);
@@ -950,7 +950,7 @@ function SylvanCalendar() {
                     var studentStartHour = sofList[Object.keys(sofList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
                         var studentPosition = studentStartHour - minTime;
-                        var elm = '<div class="student-container cursor padding-lr-xxs" type="student" studUniqueId="'+sofList[Object.keys(sofList)[j]][i].studUniqueId+'" uniqueValue="' + sofList[Object.keys(sofList)[j]][i].id + '_' + sofList[Object.keys(sofList)[j]][i].start + '" value="' + sofList[Object.keys(sofList)[j]][i].id + '">' + sofList[Object.keys(sofList)[j]][i].name + ',<span>' + sofList[Object.keys(sofList)[j]][i].grade + '</span></div>';
+                        var elm = '<div class="student-container cursor padding-lr-xxs" isfromSa="false" type="student" studUniqueId="'+sofList[Object.keys(sofList)[j]][i].studUniqueId+'" uniqueValue="' + sofList[Object.keys(sofList)[j]][i].id + '_' + sofList[Object.keys(sofList)[j]][i].start + '" value="' + sofList[Object.keys(sofList)[j]][i].id + '">' + sofList[Object.keys(sofList)[j]][i].name + ',<span>' + sofList[Object.keys(sofList)[j]][i].grade + '</span></div>';
                         var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
                             return y;
                         }).indexOf(sofList[Object.keys(sofList)[j]][i].deliveryTypeId);
@@ -975,13 +975,22 @@ function SylvanCalendar() {
             var elm = '<div class="student-attendance" id="sa_student_block_' + i + '" style="height:' + (wjQuery(".fc-agenda-slots td div").height() * 4 + 3) + 'px;overflow:auto"></div>';
             wjQuery('.sa-pane').append(elm);
         }
+        var draggable = "";
         for (var j = 0; j < Object.keys(saList).length; j++) {
             if (Object.keys(saList)[j] == "Personal Instruction") {
                 for (var i = 0; i < saList[Object.keys(saList)[j]].length; i++) {
+                    var studentObject = saList[Object.keys(saList)[j]][i];
                     var studentStartHour = saList[Object.keys(saList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
+                        var statusText = "Excuse";
+                        if(studentObject['sessionStatus'] == UNEXCUSED_STATUS){
+                            draggable = " draggable";
+                            statusText = "Unexcuse";
+                        }else if(studentObject['sessionStatus'] == OMIT_STATUS){
+                            statusText = "Omit";
+                        }
                         var studentPosition = studentStartHour - minTime;
-                        var elm = '<div class="student-container cursor padding-lr-xxs" type="student" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" >' + saList[Object.keys(saList)[j]][i].name + ',<span>' + saList[Object.keys(saList)[j]][i].grade + '</span></div>';
+                        var elm = '<div class="saStudent-container cursor padding-lr-xxs'+draggable+'" isfromSa="true" type="student" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start + '"  value="' + saList[Object.keys(saList)[j]][i].id + '">' + saList[Object.keys(saList)[j]][i].name + ',<span>' + saList[Object.keys(saList)[j]][i].grade +" ("+statusText+")" + '</span></div>';
                         var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
                             return y;
                         }).indexOf(saList[Object.keys(saList)[j]][i].deliveryTypeId);
@@ -996,10 +1005,18 @@ function SylvanCalendar() {
             } else if (Object.keys(saList)[j] == 'Group Instruction') {
                 // GI Student will not come in sof list
                 for (var i = 0; i < saList[Object.keys(saList)[j]].length; i++) {
+                    var studentObject = saList[Object.keys(saList)[j]][i];
                     var studentStartHour = saList[Object.keys(saList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
+                        var statusText = "Excuse";
+                        if(studentObject['sessionStatus'] == UNEXCUSED_STATUS){
+                            draggable = " draggable";
+                            statusText = "Unexcuse";
+                        }else if(studentObject['sessionStatus'] == OMIT_STATUS){
+                            statusText = "Omit";
+                        }
                         var studentPosition = studentStartHour - minTime;
-                        var elm = '<div class="student-container cursor padding-lr-xxs" type="student" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" >' + saList[Object.keys(saList)[j]][i].name + ',<span>' + saList[Object.keys(saList)[j]][i].grade + '</span></div>';
+                        var elm = '<div class="saStudent-container cursor padding-lr-xxs'+draggable+'" isfromSa="true" type="saStudent" type="student" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start + '"  value="' + saList[Object.keys(saList)[j]][i].id + '" >' + saList[Object.keys(saList)[j]][i].name +',<span>' + saList[Object.keys(saList)[j]][i].grade +" ("+statusText+")" + '</span></div>';
                         var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
                             return y;
                         }).indexOf(saList[Object.keys(saList)[j]][i].deliveryTypeId);
@@ -1013,10 +1030,18 @@ function SylvanCalendar() {
                 }
             } else if (Object.keys(saList)[j] == 'Group Facilitation') {
                 for (var i = 0; i < saList[Object.keys(saList)[j]].length; i++) {
+                    var studentObject = saList[Object.keys(saList)[j]][i];
                     var studentStartHour = saList[Object.keys(saList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
+                        var statusText = "Excuse";
+                        if(studentObject['sessionStatus'] == UNEXCUSED_STATUS){
+                            draggable = " draggable";
+                            statusText = "Unexcuse";
+                        }else if(studentObject['sessionStatus'] == OMIT_STATUS){
+                            statusText = "Omit";
+                        }
                         var studentPosition = studentStartHour - minTime;
-                        var elm = '<div class="student-container cursor padding-lr-xxs" type="student" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" >' + saList[Object.keys(saList)[j]][i].name + ',<span>' + saList[Object.keys(saList)[j]][i].grade + '</span></div>';
+                        var elm = '<div class="saStudent-container cursor padding-lr-xxs'+draggable+'" isfromSa="true" type="saStudent" type="student" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start + '"  value="' + saList[Object.keys(saList)[j]][i].id + '" >' + saList[Object.keys(saList)[j]][i].name + ',<span>' + saList[Object.keys(saList)[j]][i].grade +" ("+statusText+")" + '</span></div>';
                         var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
                             return y;
                         }).indexOf(saList[Object.keys(saList)[j]][i].deliveryTypeId);
@@ -1030,7 +1055,7 @@ function SylvanCalendar() {
                 }
             }
             this.saWidthCalc();
-            this.draggable('student-container');
+            this.draggable('draggable');
         }
     }
 
@@ -1353,23 +1378,45 @@ function SylvanCalendar() {
             var stuId = wjQuery(elm).attr("value");
             var uniqueVal = wjQuery(elm).attr("uniqueValue").split("_");
             var startHour = new Date(date);
-
-            var prevStudObj = this.sofList['Personal Instruction'].filter(function (x) {
-                return  x.id == uniqueVal[0] &&
-                        x.start.getTime() == new Date(uniqueVal[1]).getTime()
-            })
-            if (prevStudObj.length == 0) {
-                prevStudObj = this.sofList['Group Facilitation'].filter(function (x) {
+            var prevStudObj = [];
+            if(wjQuery(elm).attr("isfromSa") == "true"){
+                var prevStudObj = this.saList['Personal Instruction'].filter(function (x) {
                     return  x.studUniqueId == studUniqueId
                     // return  x.id == uniqueVal[0] &&
                     //         x.start.getTime() == new Date(uniqueVal[1]).getTime()
                 })
                 if (prevStudObj.length == 0) {
-                    prevStudObj = this.sofList['Group Instruction'].filter(function (x) {
+                    prevStudObj = this.saList['Group Facilitation'].filter(function (x) {
                         return  x.studUniqueId == studUniqueId
                         // return  x.id == uniqueVal[0] &&
                         //         x.start.getTime() == new Date(uniqueVal[1]).getTime()
                     })
+                    if (prevStudObj.length == 0) {
+                        prevStudObj = this.saList['Group Instruction'].filter(function (x) {
+                            return  x.studUniqueId == studUniqueId
+                            // return  x.id == uniqueVal[0] &&
+                            //         x.start.getTime() == new Date(uniqueVal[1]).getTime()
+                        })
+                    }
+                }
+            }else{
+                var prevStudObj = this.sofList['Personal Instruction'].filter(function (x) {
+                    return  x.id == uniqueVal[0] &&
+                            x.start.getTime() == new Date(uniqueVal[1]).getTime()
+                })
+                if (prevStudObj.length == 0) {
+                    prevStudObj = this.sofList['Group Facilitation'].filter(function (x) {
+                        return  x.studUniqueId == studUniqueId
+                        // return  x.id == uniqueVal[0] &&
+                        //         x.start.getTime() == new Date(uniqueVal[1]).getTime()
+                    })
+                    if (prevStudObj.length == 0) {
+                        prevStudObj = this.sofList['Group Instruction'].filter(function (x) {
+                            return  x.studUniqueId == studUniqueId
+                            // return  x.id == uniqueVal[0] &&
+                            //         x.start.getTime() == new Date(uniqueVal[1]).getTime()
+                        })
+                    }
                 }
             }
 
@@ -1907,47 +1954,86 @@ function SylvanCalendar() {
         var endDate = new Date(date);
         var startHour = new Date(date);
         var stuId = wjQuery(elm).attr("value");
+        var studUniqueId = wjQuery(elm).attr("studUniqueId");
         var uniqueVal = wjQuery(elm).attr("uniqueValue").split("_");
         var parentElement = elm.parentElement;
         var student = [];
         var stdIndex = -1;
         var sofType = "";
-        for (var sw = 0; sw < this.sofList['Personal Instruction'].length; sw++) {
-            if (this.sofList['Personal Instruction'][sw].id == uniqueVal[0] &&
-                this.sofList['Personal Instruction'][sw].start.getTime() == new Date(uniqueVal[1]).getTime()) {
-                sofType = "Personal Instruction";
-                stdIndex = sw;
-                break;
-            }
-        }
-        if (stdIndex != -1) {
-            student.push(this.sofList['Personal Instruction'][stdIndex]);
-        }
-        if (student[0] == undefined) {
-            student = [];
-            for (var sw = 0; sw < this.sofList['Group Facilitation'].length; sw++) {
-                if (this.sofList['Group Facilitation'][sw].id == uniqueVal[0] &&
-                    this.sofList['Group Facilitation'][sw].start.getTime() == new Date(uniqueVal[1]).getTime()) {
-                    sofType = "Group Facilitation";
+
+        if(wjQuery(elm).attr("isfromSa") == "true"){
+            for (var sw = 0; sw < this.saList['Personal Instruction'].length; sw++) {
+                if (this.saList['Personal Instruction'][sw].studUniqueId == studUniqueId) {
+                    sofType = "Personal Instruction";
                     stdIndex = sw;
                     break;
                 }
             }
             if (stdIndex != -1) {
-                student.push(this.sofList['Group Facilitation'][stdIndex]);
+                student.push(this.saList['Personal Instruction'][stdIndex]);
             }
             if (student[0] == undefined) {
                 student = [];
-                for (var sw = 0; sw < this.sofList['Group Instruction'].length; sw++) {
-                    if (this.sofList['Group Instruction'][sw].id == uniqueVal[0] &&
-                        this.sofList['Group Instruction'][sw].start.getTime() == new Date(uniqueVal[1]).getTime()) {
-                        sofType = "Group Instruction";
+                for (var sw = 0; sw < this.saList['Group Facilitation'].length; sw++) {
+                    if (this.saList['Group Facilitation'][sw].studUniqueId == studUniqueId) {
+                        sofType = "Group Facilitation";
                         stdIndex = sw;
                         break;
                     }
                 }
                 if (stdIndex != -1) {
-                    student.push(this.sofList['Group Instruction'][stdIndex]);
+                    student.push(this.saList['Group Facilitation'][stdIndex]);
+                }
+                if (student[0] == undefined) {
+                    student = [];
+                    for (var sw = 0; sw < this.saList['Group Instruction'].length; sw++) {
+                        if (this.saList['Group Instruction'][sw].studUniqueId == studUniqueId) {
+                            sofType = "Group Instruction";
+                            stdIndex = sw;
+                            break;
+                        }
+                    }
+                    if (stdIndex != -1) {
+                        student.push(this.saList['Group Instruction'][stdIndex]);
+                    }
+                }
+            }
+        }else{
+            for (var sw = 0; sw < this.sofList['Personal Instruction'].length; sw++) {
+                if (this.sofList['Personal Instruction'][sw].id == uniqueVal[0] &&
+                    this.sofList['Personal Instruction'][sw].start.getTime() == new Date(uniqueVal[1]).getTime()) {
+                    sofType = "Personal Instruction";
+                    stdIndex = sw;
+                    break;
+                }
+            }
+            if (stdIndex != -1) {
+                student.push(this.sofList['Personal Instruction'][stdIndex]);
+            }
+            if (student[0] == undefined) {
+                student = [];
+                for (var sw = 0; sw < this.sofList['Group Facilitation'].length; sw++) {
+                    if (this.sofList['Group Facilitation'][sw].studUniqueId == studUniqueId) {
+                        sofType = "Group Facilitation";
+                        stdIndex = sw;
+                        break;
+                    }
+                }
+                if (stdIndex != -1) {
+                    student.push(this.sofList['Group Facilitation'][stdIndex]);
+                }
+                if (student[0] == undefined) {
+                    student = [];
+                    for (var sw = 0; sw < this.sofList['Group Instruction'].length; sw++) {
+                        if (this.sofList['Group Instruction'][sw].studUniqueId == studUniqueId) {
+                            sofType = "Group Instruction";
+                            stdIndex = sw;
+                            break;
+                        }
+                    }
+                    if (stdIndex != -1) {
+                        student.push(this.sofList['Group Instruction'][stdIndex]);
+                    }
                 }
             }
         }
@@ -1988,6 +2074,7 @@ function SylvanCalendar() {
                 self.prompt(responseObj);
             }
         }
+        wjQuery(".loading").hide();
     }
 
     this.studentSessionConflictCheck = function (t, date, allDay, ev, ui, resource, elm) {

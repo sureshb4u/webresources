@@ -426,7 +426,7 @@ button{
     padding: 2px;
     z-index: 1;
 }
-.student-container{
+.student-container, .saStudent-container{
     z-index: 500;
 }
 .conflict{
