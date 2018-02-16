@@ -2,10 +2,12 @@ var data = new Data();
 var DEFAULT_START_TIME = "8:00 AM";
 var DEFAULT_END_TIME = "9:00 AM";
 var currentCalendarDate = moment(new Date()).format("YYYY-MM-DD");
+var newAppointmentPage = false;
 
 setTimeout(function () {
     var appointment = new Appointment();
     wjQuery('.headerDate').text(moment(currentCalendarDate).format('MM/DD/YYYY'));
+    var appointmentForm = $("#appointmentForm")[0];
     setTimeout(function () {
         function fetchResources(fetchData) {
             wjQuery(".loading").show();
@@ -13,7 +15,15 @@ setTimeout(function () {
             var weekInfo = appointment.getCurrentWeekInfo(currentCalendarDate);
             var startDate = moment(weekInfo.firstDay).format('YYYY-MM-DD');
             var endDate = moment(weekInfo.lastDay).format('YYYY-MM-DD');
-            var eventDuration = appointment.getCalendarEventDuraion(data.getAppointmentHours(startDate, endDate, false));
+            var appointmentObjParam = {};
+            var eventDuration;
+            if (appointmentForm && appointmentForm.length) {
+                appointmentObjParam.CenterId = appointmentForm.location.value;
+                appointmentObjParam.Type = parseInt(appointmentForm.type.value);
+                eventDuration = appointment.getCalendarEventDuraion(data.getAppointmentHours(startDate, endDate, appointmentObjParam));
+            } else {
+                eventDuration = appointment.getCalendarEventDuraion(data.getAppointmentHours(startDate, endDate));
+            }
             appointment.loadCalendar(currentCalendarDate, eventDuration);
 
             wjQuery('.nextBtn').off('click').on('click', function () {
@@ -41,7 +51,15 @@ setTimeout(function () {
             });
             appointment.refreshCalendarEvent(true);
         }
-        fetchResources(true);
+        if (!wjQuery("#refetch").length) {
+            fetchResources(true);
+        }
+        if (wjQuery("#refetch").length) {
+            newAppointmentPage = true;
+            wjQuery("#refetch").on("click", function () {
+                fetchResources(true);
+            });
+        }
     }, 500);
 }, 500);
 
@@ -96,9 +114,9 @@ function Appointment() {
                 // var endTimeArry = self.convertMinsNumToTime(self.convertToMinutes(appointmentObj['hub_endtime@OData.Community.Display.V1.FormattedValue'])).split(":");
                 // var startObj = new Date(stDateArry[0], stDateArry[1] - 1, stDateArry[2], stTimeArry[0], stTimeArry[1]);
                 // var endObj = new Date(endDateArry[0], endDateArry[1] - 1, endDateArry[2], endTimeArry[0], endTimeArry[1]);
-                
-                var startObj = new Date(appointmentObj['hub_start_date@OData.Community.Display.V1.FormattedValue']+" "+appointmentObj['hub_starttime@OData.Community.Display.V1.FormattedValue'] );
-                var endObj = new Date(appointmentObj['hub_end_date@OData.Community.Display.V1.FormattedValue']+" "+ appointmentObj['hub_endtime@OData.Community.Display.V1.FormattedValue']);
+
+                var startObj = new Date(appointmentObj['hub_start_date@OData.Community.Display.V1.FormattedValue'] + " " + appointmentObj['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+                var endObj = new Date(appointmentObj['hub_end_date@OData.Community.Display.V1.FormattedValue'] + " " + appointmentObj['hub_endtime@OData.Community.Display.V1.FormattedValue']);
                 tempList.push({
                     type: appointmentObj['hub_type'],
                     typeValue: appointmentObj['hub_type@OData.Community.Display.V1.FormattedValue'],
@@ -117,15 +135,15 @@ function Appointment() {
                 // var stTimeArry = self.convertMinsNumToTime(self.convertToMinutes(appointmentHour['hub_starttime@OData.Community.Display.V1.FormattedValue'])).split(":");
                 // var endDateArry = [];
                 // if (appointmentHour['hub_effectiveenddate'] != undefined) {
-                    // endDateArry = appointmentHour['hub_effectiveenddate'].split("-");
+                // endDateArry = appointmentHour['hub_effectiveenddate'].split("-");
                 // }
                 // var endTimeArry = self.convertMinsNumToTime(self.convertToMinutes(appointmentHour['hub_endtime@OData.Community.Display.V1.FormattedValue'])).split(":");
                 // var startObj = new Date(stDateArry[0], stDateArry[1] - 1, stDateArry[2], stTimeArry[0], stTimeArry[1]);
                 // var endObj = new Date(endDateArry[0], endDateArry[1] - 1, endDateArry[2], endTimeArry[0], endTimeArry[1]);
-                
-                var startObj = new Date(appointmentHour['hub_effectivestartdate@OData.Community.Display.V1.FormattedValue']+" "+appointmentHour['hub_starttime@OData.Community.Display.V1.FormattedValue']);
-                var endObj = new Date(appointmentHour['hub_effectiveenddate@OData.Community.Display.V1.FormattedValue']+" "+appointmentHour['hub_endtime@OData.Community.Display.V1.FormattedValue']);
-                
+
+                var startObj = new Date(appointmentHour['hub_effectivestartdate@OData.Community.Display.V1.FormattedValue'] + " " + appointmentHour['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+                var endObj = new Date(appointmentHour['hub_effectiveenddate@OData.Community.Display.V1.FormattedValue'] + " " + appointmentHour['hub_endtime@OData.Community.Display.V1.FormattedValue']);
+
                 tempList.push({
                     type: appointmentHour['aworkhours_x002e_hub_type'],
                     typeValue: appointmentHour['aworkhours_x002e_hub_type@OData.Community.Display.V1.FormattedValue'],
@@ -155,21 +173,21 @@ function Appointment() {
                     centerValue: businessObj['_hub_center_value@OData.Community.Display.V1.FormattedValue']
                 });
             });
-        } else if(label == "appointmentException"){
+        } else if (label == "appointmentException") {
             tempList = [];
-            wjQuery.each(args, function(index, appException) {
-                var startObj = new Date(appException['hub_date@OData.Community.Display.V1.FormattedValue']+" "+appException['hub_start_time@OData.Community.Display.V1.FormattedValue']);
-                var endObj = new Date(appException['hub_date@OData.Community.Display.V1.FormattedValue']+" "+appException['hub_end_time@OData.Community.Display.V1.FormattedValue']);
-                var eventId = appException['aa_x002e_hub_type']+"_"+startObj;
+            wjQuery.each(args, function (index, appException) {
+                var startObj = new Date(appException['hub_date@OData.Community.Display.V1.FormattedValue'] + " " + appException['hub_start_time@OData.Community.Display.V1.FormattedValue']);
+                var endObj = new Date(appException['hub_date@OData.Community.Display.V1.FormattedValue'] + " " + appException['hub_end_time@OData.Community.Display.V1.FormattedValue']);
+                var eventId = appException['aa_x002e_hub_type'] + "_" + startObj;
                 var obj = {
-                    eventId:eventId,
-                    appointmentHourId:appException['hub_timingsid'],
+                    eventId: eventId,
+                    appointmentHourId: appException['hub_timingsid'],
                     id: appException['hub_appointment_slot_exceptionid'],
                     type: appException['aa_x002e_hub_type'],
                     typeName: appException['aa_x002e_hub_type@OData.Community.Display.V1.FormattedValue'],
                     startObj: startObj,
                     endObj: endObj
-                } 
+                }
                 tempList.push(obj);
             });
             this.appointmentHourException = tempList;
@@ -184,6 +202,10 @@ function Appointment() {
         var d = date.getDate();
         var m = date.getMonth();
         var y = date.getFullYear();
+        var calendarHeight = window.innerHeight - 42;
+        if (newAppointmentPage) {
+            calendarHeight = window.innerHeight - 142
+        }
 
         this.calendarOptions = {
             header: false,
@@ -195,7 +217,7 @@ function Appointment() {
             allDaySlot: true,
             droppable: false,
             handleWindowResize: true,
-            height: window.innerHeight - 42,
+            height: calendarHeight,
             slotMinutes: eventDuration,
             selectable: true,
             slotEventOverlap: true,
@@ -207,9 +229,9 @@ function Appointment() {
             //     }
             // },
             eventClick: function (calEvent, jsEvent, view) {
-                if(!calEvent['isHourException']){
+                if (!calEvent['isHourException']) {
                     self.confirmPopup(calEvent, "Selected slot ", true);
-                }else{
+                } else {
                     self.prompt("Exceptional appointment is not selectable");
                 }
             },
@@ -238,7 +260,7 @@ function Appointment() {
         self.appointment = wjQuery('#appointment').fullCalendar(this.calendarOptions);
     }
 
-    this.clearBusinessClosure = function(){
+    this.clearBusinessClosure = function () {
         var self = this;
         this.clearEvents();
         // wjQuery('table.fc-agenda-slots td div').css('backgroundColor', '#ddd');
@@ -333,10 +355,22 @@ function Appointment() {
                     self.businessClosure = [];
                 }
                 self.findLeaveDays();
-                var appointmentException = self.formatObjects(data.getappointmentExceptions(startDate, endDate), "appointmentException");
-                if (fetchData) {
-                    self.appointmentHours = self.formatObjects(data.getAppointmentHours(startDate, endDate, false), "appointmentHours");
-                    self.appointmentList = self.formatObjects(data.getAppointment(startDate, endDate, false), "appointmentList");
+                var appointmentForm = $("#appointmentForm")[0];
+                if (!newAppointmentPage) {
+                    var appointmentException = self.formatObjects(data.getappointmentExceptions(startDate, endDate), "appointmentException");
+                    if (fetchData) {
+                        self.appointmentHours = self.formatObjects(data.getAppointmentHours(startDate, endDate), "appointmentHours");
+                        self.appointmentList = self.formatObjects(data.getAppointment(startDate, endDate, false), "appointmentList");
+                    }
+                } else if (appointmentForm.location.value && appointmentForm.type.value) {
+                    var appointmentException = self.formatObjects(data.getappointmentExceptions(startDate, endDate), "appointmentException");
+                    var appointmentObjParam = {};
+                    appointmentObjParam.CenterId = appointmentForm.location.value;
+                    appointmentObjParam.Type = parseInt(appointmentForm.type.value);
+                    if (fetchData) {
+                        self.appointmentHours = self.formatObjects(data.getAppointmentHours(startDate, endDate, appointmentObjParam), "appointmentHours");
+                        self.appointmentList = self.formatObjects(data.getAppointment(startDate, endDate, false), "appointmentList");
+                    }
                 }
                 self.populateBusinessClosure();
                 self.populateAppointmentHours(self.appointmentHours);
@@ -360,7 +394,7 @@ function Appointment() {
         appointmentHours = appointmentHours == null ? [] : appointmentHours;
         if (appointmentHours.length) {
             wjQuery.each(appointmentHours, function (index, appointmentHrObj) {
-                if(appointmentHrObj['capacity'] != undefined){
+                if (appointmentHrObj['capacity'] != undefined) {
                     var response = self.checkDateRage(appointmentHrObj['startDate'], appointmentHrObj['endDate'], appointmentHrObj['day']);
                     if (response != false) {
                         if (!self.checkBusinessClosure(response)) {
@@ -372,9 +406,9 @@ function Appointment() {
                                     // appointmentHrObj['startObj'] = new Date(stDateArry[0], stDateArry[1] - 1, stDateArry[2], stTimeArry[0], stTimeArry[1]);
                                     // var endTimeArry = self.convertMinsNumToTime(self.convertToMinutes(timingArry[d]['end'])).split(":");
                                     // appointmentHrObj['endObj'] = new Date(stDateArry[0], stDateArry[1] - 1, stDateArry[2], endTimeArry[0], endTimeArry[1]);
-                                    
-                                    appointmentHrObj['startObj'] = new Date(moment(response).format("MM-DD-YYYY")+" "+timingArry[d]['start']);
-                                    appointmentHrObj['endObj'] = new Date(moment(response).format("MM-DD-YYYY")+" "+timingArry[d]['end']);
+
+                                    appointmentHrObj['startObj'] = new Date(moment(response).format("MM-DD-YYYY") + " " + timingArry[d]['start']);
+                                    appointmentHrObj['endObj'] = new Date(moment(response).format("MM-DD-YYYY") + " " + timingArry[d]['end']);
 
                                     var eventColorObj = self.getEventColor(appointmentHrObj["type"]);
                                     var eventId = appointmentHrObj["type"] + "_" + appointmentHrObj['startObj'];
@@ -382,10 +416,10 @@ function Appointment() {
                                     if (eventPopulated.length) {
                                         eventPopulated[0].capacity += appointmentHrObj['capacity'];
                                         eventPopulated[0].title = "0/" + eventPopulated[0].capacity;
-                                        var isexception = self.appointmentHourException.filter(function(x) {
-                                           return x.eventId == eventId;
+                                        var isexception = self.appointmentHourException.filter(function (x) {
+                                            return x.eventId == eventId;
                                         });
-                                        if(isexception.length){
+                                        if (isexception.length) {
                                             eventPopulated[0].title = "";
                                         }
                                         self.appointment.fullCalendar('updateEvent', eventPopulated);
@@ -406,10 +440,10 @@ function Appointment() {
                                             capacity: appointmentHrObj['capacity']
                                         }
 
-                                        var isexception = self.appointmentHourException.filter(function(x) {
-                                           return x.eventId == eventId;
+                                        var isexception = self.appointmentHourException.filter(function (x) {
+                                            return x.eventId == eventId;
                                         });
-                                        if(isexception.length == 0){
+                                        if (isexception.length == 0) {
                                             // if(new Date().getTime() < appointmentHrObj['startObj'].getTime()){
                                             eventObj["backgroundColor"] = eventColorObj.backgroundColor;
                                             eventObj["borderColor"] = eventColorObj.borderColor;
@@ -418,7 +452,7 @@ function Appointment() {
                                             //     eventObj["backgroundColor"] = "#ddd";
                                             //     eventObj["borderColor"] = "#ddd";
                                             // }
-                                        }else{
+                                        } else {
                                             eventObj['title'] = "";
                                             eventObj["isHourException"] = true;
                                             eventObj["backgroundColor"] = "#999";
@@ -453,10 +487,10 @@ function Appointment() {
                 if (eventPopulated.length) {
                     eventPopulated[0].occupied += 1;
                     eventPopulated[0].title = eventPopulated[0].occupied + "/" + eventPopulated[0].capacity;
-                    var isexception = self.appointmentHourException.filter(function(x) {
-                       return x.eventId == eventId;
+                    var isexception = self.appointmentHourException.filter(function (x) {
+                        return x.eventId == eventId;
                     });
-                    if(isexception.length){
+                    if (isexception.length) {
                         eventPopulated[0].title = "";
                     }
                     self.appointment.fullCalendar('updateEvent', eventPopulated);
@@ -495,11 +529,11 @@ function Appointment() {
         }
     }
 
-    this.findLeaveDays = function(){
+    this.findLeaveDays = function () {
         var self = this;
         this.leaveDays = [];
         var currentView = self.appointment.fullCalendar('getView');
-        for(var j = currentView.start.getTime();j<=currentView.end.getTime();j=j+(24*60*60*1000)){
+        for (var j = currentView.start.getTime() ; j <= currentView.end.getTime() ; j = j + (24 * 60 * 60 * 1000)) {
             for (var i = 0; i < self.businessClosure.length; i++) {
                 var businessStartDate = moment(self.businessClosure[i]['startDate']).format("MM-DD-YYYY");
                 var businessEndDate = moment(self.businessClosure[i]['endDate']).format("MM-DD-YYYY");
@@ -513,20 +547,20 @@ function Appointment() {
     };
 
 
-    this.populateBusinessClosure = function(){
+    this.populateBusinessClosure = function () {
         var self = this;
         var currentView = self.appointment.fullCalendar('getView');
         currentView.end = moment(moment(currentView.start).add(6, 'd'))._d;
-        for(var j = currentView.start.getTime();j<=currentView.end.getTime();j=j+(24*60*60*1000)){
+        for (var j = currentView.start.getTime() ; j <= currentView.end.getTime() ; j = j + (24 * 60 * 60 * 1000)) {
             var sample = -1;
             for (var b = 0; b < self.leaveDays.length; b++) {
-                if(moment(self.leaveDays[b]).format('YYYY-MM-DD') == moment(j).format('YYYY-MM-DD')){
+                if (moment(self.leaveDays[b]).format('YYYY-MM-DD') == moment(j).format('YYYY-MM-DD')) {
                     sample = b;
                     var obj = {
                         start: new Date(j),
                         allDay: true,
                         className: "leave-day-class",
-                        title:'',
+                        title: '',
                     };
                     self.eventList.push(obj);
                 }
@@ -631,14 +665,29 @@ function Appointment() {
                     var newDate = moment(event.start).format("YYYY-MM-DD");
                     var startTime = self.convertToMinutes(moment(event.start).format("HH:mm A"));
                     var endTime = self.convertToMinutes(moment(event.end).format("HH:mm A"));
-                    wjQuery(this).dialog("close");
                     var isException = false;
                     if (!fromEvent || event.capacity === event.occupied) {
                         isException = true;
                         self.exceptionaConfirm(newDate, startTime, endTime, isException);
-                    }else{
-                        window.selectedSlot = { date: newDate, start: startTime, end: endTime, isException: isException };
-                        window.close();
+                    } else {
+                        if (newAppointmentPage) {
+                            var appointment = wjQuery("#appointmentForm")[0];
+                            appointment.startDate.value = moment(newDate).format("MM/DD/YYYY");
+                            appointment.startTime.value = self.tConvert(self.convertMinsNumToTime(startTime));
+                            appointment.endTime.value = self.tConvert(self.convertMinsNumToTime(endTime));;
+                            if (isException) {
+                                appointment.exception.checked = isException;
+                                appointment.exception.disabled = true;
+                            }
+                            $("#enableService").click();
+                            $("input[required='required']:filled").removeClass("errorField");
+                            wjQuery(this).dialog("close");
+                            wjQuery("#backBtn").click();
+                        } else {
+                            wjQuery(this).dialog("close");
+                            window.selectedSlot = { date: newDate, start: startTime, end: endTime, isException: isException };
+                            window.close();
+                        }
                     }
                 },
                 No: function () {
@@ -648,7 +697,7 @@ function Appointment() {
         });
     }
 
-    this.exceptionaConfirm = function(newDate, startTime, endTime, isException){
+    this.exceptionaConfirm = function (newDate, startTime, endTime, isException) {
         var self = this;
         var dateString = moment(event.start).format('LL');
         var slotStart = moment(event.start).format('hh:mm A');
@@ -662,8 +711,23 @@ function Appointment() {
             modal: true,
             buttons: {
                 Yes: function () {
-                    window.selectedSlot = { date: newDate, start: startTime, end: endTime, isException: isException };
-                    window.close();
+                    if (wjQuery("#appointmentForm").length) {
+                        var appointment = wjQuery("#appointmentForm")[0];
+                        appointment.startDate.value = newDate;
+                        appointment.startTime.value = startTime;
+                        appointment.endTime.value = endTime;
+                        if (isException) {
+                            appointment.exception.checked = isException;
+                            appointment.exception.disabled = true;
+                        }
+                        $("#enableService").click();
+                        $("input[required='required']:filled").removeClass("errorField");
+                        wjQuery(this).dialog("close");
+                        wjQuery("#backBtn").click();
+                    } else {
+                        window.selectedSlot = { date: newDate, start: startTime, end: endTime, isException: isException };
+                        window.close();
+                    }
                 },
                 No: function () {
                     wjQuery(this).dialog("close");
@@ -703,8 +767,8 @@ function Appointment() {
         currentView.end = new Date(currentView.end).setHours(0);
         currentView.end = new Date(new Date(currentView.end).setMinutes(0));
         currentView.end = new Date(new Date(currentView.end).setSeconds(0));
-       
-         for (var i = currentView.start.getTime(); i <= currentView.end.getTime(); i=i+(24*60*60*1000)) {
+
+        for (var i = currentView.start.getTime() ; i <= currentView.end.getTime() ; i = i + (24 * 60 * 60 * 1000)) {
             var date = new Date(i);
             var dayNum = date.getDay();
             dayNum = dayNum == 0 ? 7 : dayNum;
@@ -713,7 +777,7 @@ function Appointment() {
                 break;
             }
         }
-        if(returnDate != false){
+        if (returnDate != false) {
             if (end == undefined) {
                 if (returnDate.getTime() >= start.getTime()) {
                     returnDate = returnDate;
