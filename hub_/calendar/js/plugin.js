@@ -4712,8 +4712,11 @@ function SylvanCalendar() {
                 } else if (data.deliveryTypeCode == groupInstruction) {
                     var index = -1;
                     for (var i = 0; i < this.sofList['Group Instruction'].length; i++) {
-                        if (this.sofList['Group Instruction'][i].id == data.id &&
-                            this.sofList['Group Instruction'][i].startHour.getTime() == data.startHour.getTime()) {
+                        if (
+                            this.sofList['Group Instruction'][i].studUniqueId == data.studUniqueId
+                            // this.sofList['Group Instruction'][i].id == data.id &&
+                            // this.sofList['Group Instruction'][i].startHour.getTime() == data.startHour.getTime()
+                            ) {
                             index = i;
                             break;
                         }
@@ -4724,8 +4727,10 @@ function SylvanCalendar() {
                 } else if (data.deliveryTypeCode == groupFacilitation) {
                     var index = -1;
                     for (var i = 0; i < this.sofList['Group Facilitation'].length; i++) {
-                        if (this.sofList['Group Facilitation'][i].id == data.id &&
-                            this.sofList['Group Facilitation'][i].startHour.getTime() == data.startHour.getTime()) {
+                        if (this.sofList['Group Facilitation'][i].studUniqueId == data.studUniqueId
+                            // this.sofList['Group Facilitation'][i].id == data.id &&
+                            // this.sofList['Group Facilitation'][i].startHour.getTime() == data.startHour.getTime()
+                            ) {
                             index = i;
                             break;
                         }
@@ -4769,8 +4774,10 @@ function SylvanCalendar() {
                 } else if (data.deliveryTypeCode == groupInstruction) {
                     var index = -1;
                     for (var i = 0; i < this.saList['Group Instruction'].length; i++) {
-                        if (this.saList['Group Instruction'][i].id == data.id &&
-                            this.saList['Group Instruction'][i].startHour.getTime() == data.startHour.getTime()) {
+                        if (this.sofList['Group Instruction'][i].studUniqueId == data.studUniqueId
+                            // this.saList['Group Instruction'][i].id == data.id &&
+                            // this.saList['Group Instruction'][i].startHour.getTime() == data.startHour.getTime()
+                            ) {
                             index = i;
                             break;
                         }
@@ -4781,8 +4788,10 @@ function SylvanCalendar() {
                 } else if (data.deliveryTypeCode == groupFacilitation) {
                     var index = -1;
                     for (var i = 0; i < this.saList['Group Facilitation'].length; i++) {
-                        if (this.saList['Group Facilitation'][i].id == data.id &&
-                            this.saList['Group Facilitation'][i].startHour.getTime() == data.startHour.getTime()) {
+                        if ( this.sofList['Group Facilitation'][i].studUniqueId == data.studUniqueId
+                            // this.saList['Group Facilitation'][i].id == data.id &&
+                            // this.saList['Group Facilitation'][i].startHour.getTime() == data.startHour.getTime()
+                            ) {
                             index = i;
                             break;
                         }
@@ -6253,10 +6262,12 @@ function SylvanCalendar() {
             h -= 12;
         }
         var objStudent = self.convertedStudentObj.filter(function (x) {
-            return x.id == uniqueIds[0] &&
-                   x.resourceId == uniqueIds[1] &&
-                   x.startHour.getTime() == new Date(uniqueIds[2]).getTime();
+        //     return x.id == uniqueIds[0] &&
+        //            x.resourceId == uniqueIds[1] &&
+        //            x.startHour.getTime() == new Date(uniqueIds[2]).getTime();
+            return x.studUniqueId == studUniqueId;
         });
+
         if (objStudent[0] != undefined) {
             var objMovetoSOF = {};
             if (objStudent[0]['isFromMasterSchedule']) {
@@ -6279,7 +6290,7 @@ function SylvanCalendar() {
             objMovetoSOF['ownerObj'] = locationObj['ownerObj'];
 
             var responseObj = data.moveStudentToSOF(objMovetoSOF);
-            if (typeof (responseObj) == 'boolean' || typeof (responseObj) == 'object') {
+            if ((typeof (responseObj) == 'boolean' && responseObj )|| typeof (responseObj) == 'object') {
                 if (responseObj.hasOwnProperty('hub_studentsessionid')) {
                     objStudent[0]['sessionId'] = responseObj['hub_studentsessionid'];
                     objStudent[0]['resourceId'] = responseObj['hub_resourceid@odata.bind'];
@@ -6301,6 +6312,7 @@ function SylvanCalendar() {
                     // }
                 }
                 if (index != -1) {
+                    element.remove();
                     self.convertedStudentObj.splice(index, 1);
                     setTimeout(function () {
                         self.pushStudentToSOF(objStudent[0]);
@@ -6380,13 +6392,15 @@ function SylvanCalendar() {
     this.findStudentEnrollment = function (element) {
         var self = this;
         var uniqueIds = wjQuery(element).attr("uniqueId").split('_');
+        var studUniqueId = wjQuery(element).attr("studUniqueId");
         var objStudent = this.convertedStudentObj.filter(function (x) {
-            return x.id == uniqueIds[0] &&
-                   x.resourceId == uniqueIds[1] &&
-                   x.startHour.getTime() == new Date(uniqueIds[2]).getTime();
+        //     return x.id == uniqueIds[0] &&
+        //            x.resourceId == uniqueIds[1] &&
+        //            x.startHour.getTime() == new Date(uniqueIds[2]).getTime();
+                return x.studUniqueId == studUniqueId
         });
 
-        if (objStudent[0] != undefined) {
+        if (objStudent.length) {
             data.openEnrollment(objStudent[0].enrollmentId);
         }
     };
@@ -6871,7 +6885,7 @@ function SylvanCalendar() {
                             if (eventObj[0].hasOwnProperty("students") && eventObj[0].students.length > 0) {
                                 var stdIndex = -1;
                                 for (var i = 0; i < eventObj[0].students.length; i++) {
-                                    if (eventObj[0].students[i].id == studentObj[0].id) {
+                                    if (eventObj[0].students[i].studUniqueId == studentObj[0].studUniqueId) {
                                         stdIndex = i;
                                         break;
                                     }
