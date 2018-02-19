@@ -2421,7 +2421,7 @@ function SylvanCalendar() {
                 }, 100);
             },
             handleWindowResize: true,
-            height: window.innerHeight - 48,
+            height: window.innerHeight - 50,
             slotMinutes: slotS,
             selectable: false,
             slotEventOverlap: true,
@@ -4774,7 +4774,7 @@ function SylvanCalendar() {
                 } else if (data.deliveryTypeCode == groupInstruction) {
                     var index = -1;
                     for (var i = 0; i < this.saList['Group Instruction'].length; i++) {
-                        if (this.sofList['Group Instruction'][i].studUniqueId == data.studUniqueId
+                        if (this.saList['Group Instruction'][i].studUniqueId == data.studUniqueId
                             // this.saList['Group Instruction'][i].id == data.id &&
                             // this.saList['Group Instruction'][i].startHour.getTime() == data.startHour.getTime()
                             ) {
@@ -4788,7 +4788,7 @@ function SylvanCalendar() {
                 } else if (data.deliveryTypeCode == groupFacilitation) {
                     var index = -1;
                     for (var i = 0; i < this.saList['Group Facilitation'].length; i++) {
-                        if ( this.sofList['Group Facilitation'][i].studUniqueId == data.studUniqueId
+                        if ( this.saList['Group Facilitation'][i].studUniqueId == data.studUniqueId
                             // this.saList['Group Facilitation'][i].id == data.id &&
                             // this.saList['Group Facilitation'][i].startHour.getTime() == data.startHour.getTime()
                             ) {
@@ -5390,6 +5390,7 @@ function SylvanCalendar() {
                     // }
                 }
                 if (index != -1) {
+                    this.convertedStudentObj[index]['sessionStatus'] = OMIT_STATUS;
                     this.pushStudentToSA(this.convertedStudentObj[index]);
                     self.saList = this.saList;
                     setTimeout(function () {
@@ -5466,6 +5467,7 @@ function SylvanCalendar() {
                     // }
                 }
                 if (index != -1) {
+                    this.convertedStudentObj[index]['sessionStatus'] = EXCUSED_STATUS;
                     this.pushStudentToSA(this.convertedStudentObj[index]);
                     self.saList = this.saList;
                     setTimeout(function () {
