@@ -1401,8 +1401,9 @@ function SylvanCalendar() {
                 }
             }else{
                 var prevStudObj = this.sofList['Personal Instruction'].filter(function (x) {
-                    return  x.id == uniqueVal[0] &&
-                            x.start.getTime() == new Date(uniqueVal[1]).getTime()
+                    return  x.studUniqueId == studUniqueId
+                    // return  x.id == uniqueVal[0] &&
+                    //         x.start.getTime() == new Date(uniqueVal[1]).getTime()
                 })
                 if (prevStudObj.length == 0) {
                     prevStudObj = this.sofList['Group Facilitation'].filter(function (x) {
@@ -2002,8 +2003,9 @@ function SylvanCalendar() {
             }
         }else{
             for (var sw = 0; sw < this.sofList['Personal Instruction'].length; sw++) {
-                if (this.sofList['Personal Instruction'][sw].id == uniqueVal[0] &&
-                    this.sofList['Personal Instruction'][sw].start.getTime() == new Date(uniqueVal[1]).getTime()) {
+                if (this.sofList['Personal Instruction'][sw].studUniqueId == studUniqueId) {
+                // if (this.sofList['Personal Instruction'][sw].id == uniqueVal[0] &&
+                //     this.sofList['Personal Instruction'][sw].start.getTime() == new Date(uniqueVal[1]).getTime()) {
                     sofType = "Personal Instruction";
                     stdIndex = sw;
                     break;
@@ -4907,9 +4909,9 @@ function SylvanCalendar() {
                                 }
                         });
                         if (value['pinId'] != undefined) {
-                            self.addContext(uniqueId, 'student', true, value['deliveryTypeCode'], value['sessionStatus'], value['sessiontype'], value['isAttended']);
+                            self.addContext(uniqueId, 'student', true, value['deliveryTypeCode'], value['sessionStatus'], value['sessiontype'], value['isAttended'], value['studUniqueId']);
                         }else {
-                            self.addContext(uniqueId, 'student', false, value['deliveryTypeCode'], value['sessionStatus'], value['sessiontype'], value['isAttended']);
+                            self.addContext(uniqueId, 'student', false, value['deliveryTypeCode'], value['sessionStatus'], value['sessiontype'], value['isAttended'], value['studUniqueId']);
                         }
                         self.calendar.fullCalendar('updateEvent', event);
                     } else {
@@ -4968,10 +4970,10 @@ function SylvanCalendar() {
                             self.addContext("", 'studentPlaceholder', true, value['deliveryTypeCode']);
                         }
                         if (value['pinId'] != undefined) {
-                            self.addContext(uniqueId, 'student', true, value['deliveryTypeCode'], value['sessionStatus'], value['sessiontype'], value['isAttended']);
+                            self.addContext(uniqueId, 'student', true, value['deliveryTypeCode'], value['sessionStatus'], value['sessiontype'], value['isAttended'], value['studUniqueId']);
                         }
                         else {
-                            self.addContext(uniqueId, 'student', false, value['deliveryTypeCode'], value['sessionStatus'], value['sessiontype'], value['isAttended']);
+                            self.addContext(uniqueId, 'student', false, value['deliveryTypeCode'], value['sessionStatus'], value['sessiontype'], value['isAttended'], value['studUniqueId']);
                         }
 
 
@@ -5910,7 +5912,7 @@ function SylvanCalendar() {
     };
 
     //Method to add the context menu for Student and Teacher
-    this.addContext = function (uniqueId, labelFor, isPinned, deliveryType, sessionStatus, sessionType, isAttended) {
+    this.addContext = function (uniqueId, labelFor, isPinned, deliveryType, sessionStatus, sessionType, isAttended, studUniqueId) {
         var self = this;
         var currentView = self.calendar.fullCalendar('getView');
         var obj = {};
@@ -5988,13 +5990,6 @@ function SylvanCalendar() {
                         }, 300);
                     }
                 }
-                // obj.excuseAndMakeUp = {
-                //     name: "Excuse with Makeup",
-                //     disabled:MAKEUP_STATUS == sessionStatus,
-                //     callback: function (key, options) {
-                //         self.excuseAndMakeUpStudent(options.$trigger[0]);
-                //     }
-                // }
                 obj.moveToSof = {
                     name: "Move to SOF",
                     disabled: self.checkAccountClosure(),
@@ -6007,16 +6002,15 @@ function SylvanCalendar() {
                     }
                 }
 
-                wjQuery.contextMenu('destroy', 'span[uniqueId="' + uniqueId + '"]');
+                wjQuery.contextMenu('destroy', 'span[studUniqueId="' + studUniqueId + '"]');
                 wjQuery.contextMenu({
-                    selector: 'span[uniqueId="' + uniqueId + '"]',
+                    selector: 'span[studUniqueId="' + studUniqueId + '"]',
                     build: function ($trigger, e) {
                         return {
                             items: obj
                         };
                     }
                 });
-
             }
             else if (deliveryType == groupFacilitation) {
                 obj.reschedule = {
@@ -6052,9 +6046,9 @@ function SylvanCalendar() {
                         }, 300);
                     }
                 }
-                wjQuery.contextMenu('destroy', 'span[uniqueId="' + uniqueId + '"]');
+                wjQuery.contextMenu('destroy', 'span[studUniqueId="' + studUniqueId + '"]');
                 wjQuery.contextMenu({
-                    selector: 'span[uniqueId="' + uniqueId + '"]',
+                    selector: 'span[studUniqueId="' + studUniqueId + '"]',
                     build: function ($trigger, e) {
                         return {
                             items: obj
@@ -6074,9 +6068,9 @@ function SylvanCalendar() {
                         }, 300);
                     }
                 }
-                wjQuery.contextMenu('destroy', 'span[uniqueId="' + uniqueId + '"]');
+                wjQuery.contextMenu('destroy', 'span[studUniqueId="' + studUniqueId + '"]');
                 wjQuery.contextMenu({
-                    selector: 'span[uniqueId="' + uniqueId + '"]',
+                    selector: 'span[studUniqueId="' + studUniqueId + '"]',
                     build: function ($trigger, e) {
                         return {
                             items: obj
@@ -6884,7 +6878,11 @@ function SylvanCalendar() {
                         var eventId = idArry[1] + idArry[2];
                         var eventObj = self.calendar.fullCalendar('clientEvents', eventId);
                         var callSave = false;
-                        var allowToDropStudent = self.validateStudentOnSameRow(studentObj[0].id, idArry[2], studentObj[0], false, false);
+                        var allowToDropStudent = true;
+                        if(studentObj[0].deliveryTypeCode == personalInstruction){
+                            allowToDropStudent = self.validateStudentOnSameRow(studentObj[0].id, idArry[2], studentObj[0], false, false);
+                        }
+                        
                         if (allowToDropStudent) {
                             if (eventObj[0].hasOwnProperty("students") && eventObj[0].students.length > 0) {
                                 var stdIndex = -1;
@@ -8490,7 +8488,7 @@ function SylvanCalendar() {
             dropableEvent = self.calendar.fullCalendar('clientEvents', function (el) {
                 return el.end != null &&
                         el.hasOwnProperty("students") &&
-                        el.deliveryType == "Personal-Instruction" &&
+                        // el.deliveryType == "Personal-Instruction" &&
                         prevEvent.resourceId + prevEvent.startHour != el.id &&
                         (
                             (
@@ -8511,7 +8509,7 @@ function SylvanCalendar() {
             dropableEvent = self.calendar.fullCalendar('clientEvents', function (el) {
                 return el.end != null &&
                         el.hasOwnProperty("students") &&
-                        el.deliveryType == "Personal-Instruction" &&
+                        // el.deliveryType == "Personal-Instruction" &&
                         (
                             (
                                 startHour.getTime() <= el.start.getTime() &&
@@ -8533,7 +8531,8 @@ function SylvanCalendar() {
                 var val = dropableEvent[s];
                 if (val.hasOwnProperty("students") && val['students'].length) {
                     for (var i = 0; i < val['students'].length; i++) {
-                        if (stuId == val['students'][i]['id']) {
+                        if (stuId == val['students'][i]['id'] && 
+                            val['students'][i]['deliveryTypeCode'] == personalInstruction) {
                             allowToDropStudent = false;
                             break;
                         }
