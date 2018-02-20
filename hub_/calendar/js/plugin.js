@@ -1016,7 +1016,7 @@ function SylvanCalendar() {
                             statusText = "Omit";
                         }
                         var studentPosition = studentStartHour - minTime;
-                        var elm = '<div class="saStudent-container cursor padding-lr-xxs'+draggable+'" isfromSa="true" type="saStudent" type="student" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start + '"  value="' + saList[Object.keys(saList)[j]][i].id + '" >' + saList[Object.keys(saList)[j]][i].name +',<span>' + saList[Object.keys(saList)[j]][i].grade +" ("+statusText+")" + '</span></div>';
+                        var elm = '<div class="saStudent-container cursor padding-lr-xxs'+draggable+'" isfromSa="true" type="student" type="student" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start + '"  value="' + saList[Object.keys(saList)[j]][i].id + '" >' + saList[Object.keys(saList)[j]][i].name +',<span>' + saList[Object.keys(saList)[j]][i].grade +" ("+statusText+")" + '</span></div>';
                         var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
                             return y;
                         }).indexOf(saList[Object.keys(saList)[j]][i].deliveryTypeId);
@@ -1041,7 +1041,7 @@ function SylvanCalendar() {
                             statusText = "Omit";
                         }
                         var studentPosition = studentStartHour - minTime;
-                        var elm = '<div class="saStudent-container cursor padding-lr-xxs'+draggable+'" isfromSa="true" type="saStudent" type="student" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start + '"  value="' + saList[Object.keys(saList)[j]][i].id + '" >' + saList[Object.keys(saList)[j]][i].name + ',<span>' + saList[Object.keys(saList)[j]][i].grade +" ("+statusText+")" + '</span></div>';
+                        var elm = '<div class="saStudent-container cursor padding-lr-xxs'+draggable+'" isfromSa="true" type="student" type="student" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start + '"  value="' + saList[Object.keys(saList)[j]][i].id + '" >' + saList[Object.keys(saList)[j]][i].name + ',<span>' + saList[Object.keys(saList)[j]][i].grade +" ("+statusText+")" + '</span></div>';
                         var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
                             return y;
                         }).indexOf(saList[Object.keys(saList)[j]][i].deliveryTypeId);
@@ -1793,6 +1793,8 @@ function SylvanCalendar() {
             }else{
                 wjQuery(".loading").hide();
             }
+        }else{
+            wjQuery(".loading").hide();
         }
     };
 
