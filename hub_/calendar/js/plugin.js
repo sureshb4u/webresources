@@ -5653,7 +5653,6 @@ function SylvanCalendar() {
                             self.populateSOFPane(self.sofList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
                             self.openSofPane();
                         }, 500);
-                        // self.convertedStudentObj.splice(index, 1);
                     }
                     wjQuery("#excuseModal").dialog("close");
                     var prevEventId = wjQuery(element).attr("eventid");
@@ -5689,14 +5688,8 @@ function SylvanCalendar() {
             for (var i = 0; i < businessClosures.length; i++) {
                 var startDate = businessClosures[i]['hub_startdatetime@OData.Community.Display.V1.FormattedValue'];
                 var endDate = businessClosures[i]['hub_enddatetime@OData.Community.Display.V1.FormattedValue'];
-                // startDate = startDate.split('/');
-                // endDate = endDate.split('/');
-                // var businessClosureStartDate = new Date(startDate[2],startDate[0]-1,startDate[1]);
-                // var businessClosureEndDate = new Date(endDate[2],endDate[0]-1,endDate[1]);
-
                 var businessClosureStartDate = new Date(startDate);
                 var businessClosureEndDate = new Date(endDate);
-
                 if (businessClosureStartDate.getTime() == businessClosureEndDate.getTime()) {
                     disableddates.push(moment(businessClosureStartDate).format('MM/DD/YYYY'));
                 } else {
@@ -5748,9 +5741,6 @@ function SylvanCalendar() {
             var maxDate1 = moment(self.calendar.fullCalendar('getDate')).add(30, 'days')._d;
             var minDate1 = moment(self.calendar.fullCalendar('getDate')).subtract(30, 'days')._d;
             if (objStudent[0]['enrolEndDate'] != undefined) {
-                // var dateArry = objStudent[0]['enrolEndDate'].split("/");
-                // maxDate = new Date(objStudent[0]['enrolEndDate']);
-                // maxDate1 = new Date(parseInt(dateArry[2]),parseInt(dateArry[0])-1,parseInt(dateArry[1]));
                 var maxDate1 = new Date(moment(objStudent[0]['enrolEndDate']).format("MM-DD-YYYY"));
                 maxDate2 = moment(self.calendar.fullCalendar('getDate')).add(30, 'days')._d;
                 if (maxDate2.getTime() <= maxDate1.getTime()) {
@@ -5759,9 +5749,6 @@ function SylvanCalendar() {
             }
             if (objStudent[0]['enrolStartDate'] != undefined) {
                 var minDate1 = new Date(moment(objStudent[0]['enrolStartDate']).format("MM-DD-YYYY"));
-
-                // var dateArry = objStudent[0]['enrolStartDate'].split("/");
-                // minDate1 = new Date(parseInt(dateArry[2]),parseInt(dateArry[0])-1,parseInt(dateArry[1]));
                 minDate2 = moment(self.calendar.fullCalendar('getDate')).subtract(30, 'days')._d;
                 if (minDate2.getTime() >= minDate1.getTime()) {
                     minDate1 = minDate2;
@@ -5929,7 +5916,9 @@ function SylvanCalendar() {
         wjQuery('.loading').hide();
     };
 
-    //Method to add the context menu for Student and Teacher
+    //
+    //  This Method is to add the context menu(Right CLick options) for Student and Teacher
+    //
     this.addContext = function (uniqueId, labelFor, isPinned, deliveryType, sessionStatus, sessionType, isAttended, studUniqueId) {
         var self = this;
         var currentView = self.calendar.fullCalendar('getView');
@@ -6267,6 +6256,9 @@ function SylvanCalendar() {
         }
     };
 
+    //
+    //  This Method is to move student from session to sof pane on right click option moveStudentToSOF
+    //
     this.moveStudentToSOF = function (element) {
         var self = this;
         var uniqueIds = wjQuery(element).attr("uniqueId").split('_');
@@ -6350,6 +6342,9 @@ function SylvanCalendar() {
         wjQuery('.loading').hide();
     };
 
+    //
+    // This function adds draggable event to Student/Teacher DOM element 
+    // 
     this.draggable = function (selector) {
         var self = this;
         wjQuery('.' + selector).draggable({
@@ -6895,7 +6890,7 @@ function SylvanCalendar() {
             if(searchVal.length){
                 var filtertedList = [];
                 filtertedList = self.makeupList.filter(function(object) {
-                    return object.name.toLowerCase().startsWith(searchVal.toLowerCase());
+                    return object.fullName.toLowerCase().startsWith(searchVal.toLowerCase());
                 });
                 self.makeUpItemPopulation(filtertedList);
                 self.makeupClickEvent(filtertedList, idArry, isForMakeup);
