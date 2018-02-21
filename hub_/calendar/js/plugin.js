@@ -6817,17 +6817,14 @@ function SylvanCalendar() {
         var self = this;
         makeupList = (makeupList == null || makeupList == undefined) ? [] : makeupList;
         makeupList = this.getUniqueFromMakeupNFloat(this.convertMakeupNFloatObj(makeupList));
-        var filterMakeupList = wjQuery.extend(true, [], makeupList);
+        self.makeupList = makeupList;
         var selectedPlaceHolder = wjQuery(placeholderEvent).prev("span").attr("uniqueid");
         if (selectedPlaceHolder != undefined) {
             var idArry = selectedPlaceHolder.split('_');
             if (makeupList.length) {
-                var list = "";
-                wjQuery.each(makeupList, function (k, v) {
-                    list += "<li id='" + v.enrollmentId + "' class='makeup-item' >" + v.fullName + ", " + v.grade + "</li>";
-                });
                 wjQuery("#makeup > .error_block").html("");
-                wjQuery("#makeup .makeup-lst").html(list);
+                wjQuery("#makeup .makeup-lst").html("");
+                wjQuery("#makeup input").val("");
                 wjQuery("#makeup").dialog({
                     resizable: false,
                     height: 300,
@@ -6852,106 +6849,9 @@ function SylvanCalendar() {
                 } else {
                     wjQuery("#makeup").dialog('option', 'title', 'Add Float');
                 }
-
-                // On click Makeup student save makeup session will be called
-                wjQuery(".makeup-item").click(function (event) {
-                    var objSession = {};
-                    var id = wjQuery(this).attr("id");
-                    var nameNGrade = wjQuery(this).text();
-                    var start = self.convertToMinutes(moment(idArry[2]).format("h:mm A"));
-                    var studentObj = [];
-                    studentObj = makeupList.filter(function (obj) {
-                        return obj.enrollmentId == id;
-                    });
-
-                    if (studentObj.length) {
-                        if (isForMakeup) {
-                            objSession['hub_studentsessionid'] = studentObj[0].sessionId;
-                            objSession["isForMakeup"] = true;
-                        } else {
-                            objSession['hub_studentsessionid'] = "";
-                            objSession["isForMakeup"] = false;
-                        }
-                        objSession["hub_enrollment@odata.bind"] = studentObj[0]["enrollmentId"];
-                        objSession["hub_student@odata.bind"] = studentObj[0].id;
-                        objSession["hub_service@odata.bind"] = studentObj[0]["serviceId"];
-                        objSession["hub_center@odata.bind"] = self.locationId;
-                        var locationObj = self.getLocationObject(self.locationId);
-                        if (locationObj['_hub_parentcenter_value'] != undefined) {
-                            objSession["hub_parentcenter"] = locationObj['_hub_parentcenter_value'];
-                        }
-                        objSession["hub_session_date"] = moment(new Date(idArry[2])).format("YYYY-MM-DD");
-                        objSession["hub_start_time"] = start;
-                        objSession["hub_end_time"] = start + 60;
-                        objSession["hub_sessiontype"] = studentObj[0]['sessionType'];
-                        objSession["hub_session_status"] = studentObj[0]['sessionStatus'];
-                        objSession["hub_makeup_expiry_date"] = studentObj[0]['makeupExpiryDate'];
-                        objSession['hub_deliverytype_code'] = studentObj[0].deliveryTypeCode;
-                        if (studentObj[0]["is1to1"] != undefined) {
-                            objSession["hub_is_1to1"] = studentObj[0]["is1to1"];
-                        }
-                        objSession["hub_resourceid@odata.bind"] = idArry[1];
-                        var eventId = idArry[1] + idArry[2];
-                        var eventObj = self.calendar.fullCalendar('clientEvents', eventId);
-                        var callSave = false;
-                        var allowToDropStudent = true;
-                        if(studentObj[0].deliveryTypeCode == personalInstruction){
-                            allowToDropStudent = self.validateStudentOnSameRow(studentObj[0].id, idArry[2], studentObj[0], false, false);
-                        }
-                        
-                        if (allowToDropStudent) {
-                            if (eventObj[0].hasOwnProperty("students") && eventObj[0].students.length > 0) {
-                                var stdIndex = -1;
-                                for (var i = 0; i < eventObj[0].students.length; i++) {
-                                    if (eventObj[0].students[i].studUniqueId == studentObj[0].studUniqueId) {
-                                        stdIndex = i;
-                                        break;
-                                    }
-                                }
-                                if (stdIndex == -1) {
-                                    callSave = true;
-                                }
-                            } else {
-                                callSave = true;
-                            }
-                            if (callSave) {
-                                var locationObj = self.getLocationObject(self.locationId);
-                                objSession['ownerObj'] = locationObj['ownerObj'];
-                                var responseObj = data.saveMakeupNFloat(objSession);
-                                if (typeof (responseObj) == 'object') {
-                                    var uniqueid = studentObj[0].id + "_" + idArry[1] + "_" + idArry[2];
-                                    // Update New student Session
-                                    studentObj[0]['resourceId'] = idArry[1];
-                                    studentObj[0]['start'] = new Date(idArry[2]);
-                                    studentObj[0]['startHour'] = new Date(idArry[2]);
-                                    studentObj[0]['end'] = new Date(new Date(idArry[2]).setHours(new Date(idArry[2]).getHours() + 1));
-                                    studentObj[0]['sessionId'] = responseObj['hub_studentsessionid'];
-                                    studentObj[0]['sessionDate'] = responseObj['hub_session_date'];
-                                    if (responseObj['hub_sessiontype'] != undefined) {
-                                        studentObj[0]['sessiontype'] = responseObj['hub_sessiontype'];
-                                    }
-                                    if (responseObj['hub_session_status'] != undefined) {
-                                        studentObj[0]['sessionStatus'] = responseObj['hub_session_status'];
-                                    }
-                                    // update Student
-                                    self.convertedStudentObj.push(studentObj[0]);
-                                    self.populateStudentEvent([studentObj[0]], true);
-                                    self.draggable('draggable');
-                                    wjQuery("#makeup > .error_block").html("");
-                                    wjQuery("#makeup").dialog("close");
-                                } else {
-                                    wjQuery("#makeup > .error_block").html(responseObj);
-                                }
-                            } else {
-                                wjQuery("#makeup > .error_block").html("");
-                                wjQuery("#makeup").dialog("close");
-                            }
-                        } else {
-                            wjQuery("#makeup").dialog("close");
-                            self.prompt("The selected student is already scheduled for the respective timeslot.");
-                        }
-                    }
-                });
+                self.makeUpItemPopulation(makeupList);
+                self.makeupSearch(makeupList, idArry, isForMakeup);
+                self.makeupClickEvent(makeupList, idArry, isForMakeup);
             } else {
                 wjQuery("#makeup .error_block").html("");
                 wjQuery("#makeup .makeup-lst").html('No Students found');
@@ -6985,7 +6885,165 @@ function SylvanCalendar() {
         }
     }
 
+    this.makeupSearch = function(makeupList, idArry, isForMakeup){
+        var self = this;
+        wjQuery("#searchMakeup").keyup(function (event) {
+            var searchVal = wjQuery(this).val();
+            if(searchVal.length){
+                var filtertedList = [];
+                filtertedList = self.makeupList.filter(function(object) {
+                    return object.name.toLowerCase().startsWith(searchVal.toLowerCase());
+                });
+                self.makeUpItemPopulation(filtertedList);
+                self.makeupClickEvent(filtertedList, idArry, isForMakeup);
+            }else{
+                self.makeUpItemPopulation(makeupList);
+                self.makeupClickEvent(makeupList, idArry, isForMakeup);
+            }
+        });
+    }
 
+    this.floatSearch = function(floarList, idArry){
+        var self = this;
+        wjQuery("#searchMakeup").keyup(function (event) {
+            var searchVal = wjQuery(this).val();
+            if(searchVal.length){
+                var filtertedList = [];
+                filtertedList = floarList.filter(function(object) {
+                    return object.hub_name.toLowerCase().startsWith(searchVal.toLowerCase());
+                });
+                self.floatItemPopulation(filtertedList);
+                self.floatClickEvent(filtertedList, idArry);
+            }else{
+                self.floatItemPopulation(floarList);
+                self.floatClickEvent(floarList, idArry);
+            }
+        });
+    }
+
+    this.makeUpItemPopulation = function(makeupList){
+        var self = this;
+        var list = "";
+        wjQuery("#makeup .makeup-lst").html("");
+        wjQuery.each(makeupList, function (k, v) {
+            list += "<li id='" + v.enrollmentId + "' class='makeup-item' >" + v.fullName + ", " + v.grade + "</li>";
+        });
+        wjQuery("#makeup .makeup-lst").html(list);
+    }
+
+
+    this.floatItemPopulation = function(floatTeacherObj){
+        var self = this;
+        var list = "";
+        wjQuery("#makeup .makeup-lst").html("");
+        wjQuery.each(floatTeacherObj, function (k, v) {
+            list += "<li id='" + v.hub_staffid + "' class='float-item' >" + v.hub_name + "</li>";
+        });
+        wjQuery("#makeup .makeup-lst").html(list);
+    }
+
+    this.makeupClickEvent = function(makeupList, idArry, isForMakeup){
+        var self = this;
+        // On click Makeup student save makeup session will be called
+        wjQuery(".makeup-item").click(function (event) {
+            var objSession = {};
+            var id = wjQuery(this).attr("id");
+            var nameNGrade = wjQuery(this).text();
+            var start = self.convertToMinutes(moment(idArry[2]).format("h:mm A"));
+            var studentObj = [];
+            studentObj = makeupList.filter(function (obj) {
+                return obj.enrollmentId == id;
+            });
+
+            if (studentObj.length) {
+                if (isForMakeup) {
+                    objSession['hub_studentsessionid'] = studentObj[0].sessionId;
+                    objSession["isForMakeup"] = true;
+                } else {
+                    objSession['hub_studentsessionid'] = "";
+                    objSession["isForMakeup"] = false;
+                }
+                objSession["hub_enrollment@odata.bind"] = studentObj[0]["enrollmentId"];
+                objSession["hub_student@odata.bind"] = studentObj[0].id;
+                objSession["hub_service@odata.bind"] = studentObj[0]["serviceId"];
+                objSession["hub_center@odata.bind"] = self.locationId;
+                var locationObj = self.getLocationObject(self.locationId);
+                if (locationObj['_hub_parentcenter_value'] != undefined) {
+                    objSession["hub_parentcenter"] = locationObj['_hub_parentcenter_value'];
+                }
+                objSession["hub_session_date"] = moment(new Date(idArry[2])).format("YYYY-MM-DD");
+                objSession["hub_start_time"] = start;
+                objSession["hub_end_time"] = start + 60;
+                objSession["hub_sessiontype"] = studentObj[0]['sessionType'];
+                objSession["hub_session_status"] = studentObj[0]['sessionStatus'];
+                objSession["hub_makeup_expiry_date"] = studentObj[0]['makeupExpiryDate'];
+                objSession['hub_deliverytype_code'] = studentObj[0].deliveryTypeCode;
+                if (studentObj[0]["is1to1"] != undefined) {
+                    objSession["hub_is_1to1"] = studentObj[0]["is1to1"];
+                }
+                objSession["hub_resourceid@odata.bind"] = idArry[1];
+                var eventId = idArry[1] + idArry[2];
+                var eventObj = self.calendar.fullCalendar('clientEvents', eventId);
+                var callSave = false;
+                var allowToDropStudent = true;
+                if(studentObj[0].deliveryTypeCode == personalInstruction){
+                    allowToDropStudent = self.validateStudentOnSameRow(studentObj[0].id, idArry[2], studentObj[0], false, false);
+                }
+                
+                if (allowToDropStudent) {
+                    if (eventObj[0].hasOwnProperty("students") && eventObj[0].students.length > 0) {
+                        var stdIndex = -1;
+                        for (var i = 0; i < eventObj[0].students.length; i++) {
+                            if (eventObj[0].students[i].studUniqueId == studentObj[0].studUniqueId) {
+                                stdIndex = i;
+                                break;
+                            }
+                        }
+                        if (stdIndex == -1) {
+                            callSave = true;
+                        }
+                    } else {
+                        callSave = true;
+                    }
+                    if (callSave) {
+                        var locationObj = self.getLocationObject(self.locationId);
+                        objSession['ownerObj'] = locationObj['ownerObj'];
+                        var responseObj = data.saveMakeupNFloat(objSession);
+                        if (typeof (responseObj) == 'object') {
+                            var uniqueid = studentObj[0].id + "_" + idArry[1] + "_" + idArry[2];
+                            // Update New student Session
+                            studentObj[0]['resourceId'] = idArry[1];
+                            studentObj[0]['start'] = new Date(idArry[2]);
+                            studentObj[0]['startHour'] = new Date(idArry[2]);
+                            studentObj[0]['end'] = new Date(new Date(idArry[2]).setHours(new Date(idArry[2]).getHours() + 1));
+                            studentObj[0]['sessionId'] = responseObj['hub_studentsessionid'];
+                            studentObj[0]['sessionDate'] = responseObj['hub_session_date'];
+                            if (responseObj['hub_sessiontype'] != undefined) {
+                                studentObj[0]['sessiontype'] = responseObj['hub_sessiontype'];
+                            }
+                            if (responseObj['hub_session_status'] != undefined) {
+                                studentObj[0]['sessionStatus'] = responseObj['hub_session_status'];
+                            }
+                            // update Student
+                            self.convertedStudentObj.push(studentObj[0]);
+                            self.populateStudentEvent([studentObj[0]], true);
+                            self.draggable('draggable');
+                            wjQuery("#makeup > .error_block").html("");
+                            wjQuery("#makeup").dialog("close");
+                        } else {
+                            wjQuery("#makeup > .error_block").html(responseObj);
+                        }
+                    } else {
+                        wjQuery("#makeup > .error_block").html("");
+                        wjQuery("#makeup").dialog("close");
+                    }
+                } else {
+                    wjQuery("#makeup").dialog("close");
+                    self.prompt("The selected student is already scheduled for the respective timeslot.");
+                }
+            }
+        });
+    }
 
     this.getUniqueFromMakeupNFloat = function (makeupList) {
         var self = this;
@@ -9037,110 +9095,140 @@ function SylvanCalendar() {
         var selectedPlaceHolder = wjQuery(placeholderEvent).next("span").attr("uniqueid");
         var currentView = self.calendar.fullCalendar('getView');
         var startDate = moment(currentView.start).format("YYYY-MM-DD");
-        if (floatTeacherObj.length && selectedPlaceHolder != undefined) {
-            var idArry = selectedPlaceHolder.split('_');
-            var list = "";
-            wjQuery.each(floatTeacherObj, function (k, v) {
-                list += "<li id='" + v.hub_staffid + "' class='float-item' >" + v.hub_name + "</li>";
-            });
-
-            wjQuery("#makeup > .makeup-lst").html(list);
-            wjQuery("#makeup").dialog({
-                resizable: false,
-                height: 300,
-                width: 350,
-                modal: true,
-                draggable:false,
-                show: {
-                    effect: 'slide',
-                    complete: function () {
-                        wjQuery(".loading").hide();
-                    }
-                },
-                buttons: {
-                    Cancel: function () {
-                        wjQuery(this).dialog("close");
-                    }
-                }
-            });
-
-            wjQuery("#makeup").dialog('option', 'title', 'Add Float');
-            wjQuery(".float-item").click(function (event) {
-                wjQuery(".loading").show();
-                var teacherId = wjQuery(this).attr("id");
-                setTimeout(function () {
-                    // var teacherObj = floatTeacherObj.filter(function (obj) {
-                    //     return obj.hub_staffid == teacherId ;
-                    // });
-                    var teacherObj = [];
-                    for (var s = 0; s < floatTeacherObj.length; s++) {
-                        var obj = floatTeacherObj[s];
-                        if (obj.hub_staffid == teacherId) {
-                            teacherObj.push(obj);
-                            break;
-                        }
-                    }
-                    var allowToDropTeacher = self.validateTeacherOnSameRow(teacherId, idArry[2], teacherObj[0], false);
-                    if (allowToDropTeacher) {
-                        if (self.checkTeacherScheduleInDiffCenter(teacherId, idArry[2])) {
+        if (selectedPlaceHolder != undefined) {
+            if(floatTeacherObj.length){
+                var idArry = selectedPlaceHolder.split('_');
+                wjQuery("#makeup .makeup-lst").html("");
+                wjQuery("#makeup input").val("");
+                wjQuery("#makeup").dialog({
+                    resizable: false,
+                    height: 300,
+                    width: 350,
+                    modal: true,
+                    draggable:false,
+                    show: {
+                        effect: 'slide',
+                        complete: function () {
                             wjQuery(".loading").hide();
-                            wjQuery("#makeup").dialog("close");
-                            self.prompt("The selected staff is already scheduled for the respective timeslot in different center.");
-                        } else {
-                            var isStaffAvailable = self.checkForStaffAvailability(teacherId, idArry[2]);
-                            if (isStaffAvailable) {
-                                var objStaffSch = {};
-                                if (teacherObj.length) {
-                                    teacherObj = teacherObj[0];
-                                    var startTime = moment(idArry[2]).format("hh:mm A");
-                                    var startObj = new Date(idArry[2]);
-                                    objStaffSch["hub_resourceid@odata.bind"] = idArry[1];
-                                    objStaffSch['hub_date'] = startDate;
-                                    objStaffSch["hub_start_time"] = self.convertToMinutes(startTime);
-                                    objStaffSch["hub_end_time"] = self.convertToMinutes(startTime) + 60;
-                                    objStaffSch["hub_schedule_type"] = FLOAT_TEACHER_TYPE;
-                                    objStaffSch["hub_staff@odata.bind"] = teacherObj['hub_staffid'];
-                                    var locationObj = self.getLocationObject(self.locationId);
-                                    objStaffSch['ownerObj'] = locationObj['ownerObj'];
-                                    objStaffSch['hub_centerid'] = locationObj['hub_centerid'];
-                                    var responseObj = data.saveTeacherFloat(objStaffSch);
-                                    if (typeof (responseObj) == "object") {
-                                        var teacherObj = {
-                                            id: teacherObj['hub_staffid'],
-                                            name: teacherObj['hub_name'],
-                                            start: new Date(idArry[2]),
-                                            startHour: new Date(idArry[2]),
-                                            end: new Date(startObj.setHours(startObj.getHours() + 1)),
-                                            resourceId: idArry[1],
-                                            locationId: self.locationId,
-                                            scheduleType: FLOAT_TEACHER_TYPE,
-                                            scheduleId: responseObj["hub_staff_scheduleid"],
-                                            centerId: self.locationId
-                                        };
-                                        self.convertedTeacherObj.push(teacherObj);
-                                        self.populateTeacherEvent([teacherObj], true);
-                                        self.populateTAPane(self.taList);
-                                    }
-                                    wjQuery("#makeup").dialog("close");
-                                } else {
-                                    wjQuery("#makeup").dialog("close");
-                                }
-                                wjQuery(".loading").hide();
-                            } else {
-                                wjQuery(".loading").hide();
-                                self.floatTeacherCnfmPopup(teacherObj, idArry, "Teacher is not available. Do you wish to continue?");
-                                wjQuery("#makeup").dialog("close");
-                            }
                         }
-                    } else {
-                        wjQuery(".loading").hide();
-                        wjQuery("#makeup").dialog("close");
-                        self.prompt("The selected staff is already scheduled for the respective timeslot.");
+                    },
+                    buttons: {
+                        Cancel: function () {
+                            wjQuery(this).dialog("close");
+                        }
                     }
-                }, 300);
-            });
+                });
+                wjQuery("#makeup").dialog('option', 'title', 'Add Float');
+                self.floatItemPopulation(floatTeacherObj);
+                self.floatSearch(floatTeacherObj, idArry);
+                self.floatClickEvent(floatTeacherObj, idArry);
+            }else{
+                wjQuery("#makeup .error_block").html("");
+                wjQuery("#makeup .makeup-lst").html('No Teachers found');
+                wjQuery("#makeup").dialog({
+                    resizable: false,
+                    height: 300,
+                    width: 350,
+                    draggable:false,
+                    modal: true,
+                    show: {
+                        effect: 'slide',
+                        complete: function () {
+                            wjQuery(".loading").hide();
+                        }
+                    },
+                    buttons: {
+                        Cancel: function () {
+                            wjQuery(this).dialog("close");
+                        }
+                    }
+                });
+                wjQuery("#makeup").dialog('option', 'title', 'Add Float');
+            }
+        }else{
+            wjQuery("#makeup").dialog("close");
+            wjQuery(".loading").hide();
         }
         wjQuery(".loading").hide();
+    }
+
+
+    this.floatClickEvent = function(floatTeacherObj, idArry){
+        var self = this;
+        wjQuery(".float-item").click(function (event) {
+            wjQuery(".loading").show();
+            var teacherId = wjQuery(this).attr("id");
+            setTimeout(function () {
+                // var teacherObj = floatTeacherObj.filter(function (obj) {
+                //     return obj.hub_staffid == teacherId ;
+                // });
+                var teacherObj = [];
+                for (var s = 0; s < floatTeacherObj.length; s++) {
+                    var obj = floatTeacherObj[s];
+                    if (obj.hub_staffid == teacherId) {
+                        teacherObj.push(obj);
+                        break;
+                    }
+                }
+                var allowToDropTeacher = self.validateTeacherOnSameRow(teacherId, idArry[2], teacherObj[0], false);
+                if (allowToDropTeacher) {
+                    if (self.checkTeacherScheduleInDiffCenter(teacherId, idArry[2])) {
+                        wjQuery(".loading").hide();
+                        wjQuery("#makeup").dialog("close");
+                        self.prompt("The selected staff is already scheduled for the respective timeslot in different center.");
+                    } else {
+                        var isStaffAvailable = self.checkForStaffAvailability(teacherId, idArry[2]);
+                        if (isStaffAvailable) {
+                            var objStaffSch = {};
+                            if (teacherObj.length) {
+                                teacherObj = teacherObj[0];
+                                var startTime = moment(idArry[2]).format("hh:mm A");
+                                var startObj = new Date(idArry[2]);
+                                objStaffSch["hub_resourceid@odata.bind"] = idArry[1];
+                                objStaffSch['hub_date'] = startDate;
+                                objStaffSch["hub_start_time"] = self.convertToMinutes(startTime);
+                                objStaffSch["hub_end_time"] = self.convertToMinutes(startTime) + 60;
+                                objStaffSch["hub_schedule_type"] = FLOAT_TEACHER_TYPE;
+                                objStaffSch["hub_staff@odata.bind"] = teacherObj['hub_staffid'];
+                                var locationObj = self.getLocationObject(self.locationId);
+                                objStaffSch['ownerObj'] = locationObj['ownerObj'];
+                                objStaffSch['hub_centerid'] = locationObj['hub_centerid'];
+                                var responseObj = data.saveTeacherFloat(objStaffSch);
+                                if (typeof (responseObj) == "object") {
+                                    var teacherObj = {
+                                        id: teacherObj['hub_staffid'],
+                                        name: teacherObj['hub_name'],
+                                        start: new Date(idArry[2]),
+                                        startHour: new Date(idArry[2]),
+                                        end: new Date(startObj.setHours(startObj.getHours() + 1)),
+                                        resourceId: idArry[1],
+                                        locationId: self.locationId,
+                                        scheduleType: FLOAT_TEACHER_TYPE,
+                                        scheduleId: responseObj["hub_staff_scheduleid"],
+                                        centerId: self.locationId
+                                    };
+                                    self.convertedTeacherObj.push(teacherObj);
+                                    self.populateTeacherEvent([teacherObj], true);
+                                    self.populateTAPane(self.taList);
+                                }
+                                wjQuery("#makeup").dialog("close");
+                            } else {
+                                wjQuery("#makeup").dialog("close");
+                            }
+                            wjQuery(".loading").hide();
+                        } else {
+                            wjQuery(".loading").hide();
+                            self.floatTeacherCnfmPopup(teacherObj, idArry, "Teacher is not available. Do you wish to continue?");
+                            wjQuery("#makeup").dialog("close");
+                        }
+                    }
+                } else {
+                    wjQuery(".loading").hide();
+                    wjQuery("#makeup").dialog("close");
+                    self.prompt("The selected staff is already scheduled for the respective timeslot.");
+                }
+            }, 300);
+        });
     }
 
     this.floatTeacherCnfmPopup = function (teacherObj, idArry, message) {

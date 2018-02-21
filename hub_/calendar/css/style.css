@@ -653,6 +653,15 @@ table.fc-border-separate{table-layout: fixed;}
     margin-top: 44px !important;
 }
 
+#search {
+    text-align: center;
+}
+
+#search input{
+    margin: 10px;
+    padding: 15px;
+}
+
 /*@media(max-width: 768px){
     .fc-content .fc-view  {
     width: 300% !important;
