@@ -915,7 +915,7 @@ function SylvanCalendar() {
                     var studentStartHour = sofList[Object.keys(sofList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
                         var studentPosition = studentStartHour - minTime;
-                        var elm = '<div class="student-container cursor padding-lr-xxs" isfromSa="false" type="student" studUniqueId="'+sofList[Object.keys(sofList)[j]][i].studUniqueId+'" uniqueValue="' + sofList[Object.keys(sofList)[j]][i].id + '_' + sofList[Object.keys(sofList)[j]][i].start + '"  value="' + sofList[Object.keys(sofList)[j]][i].id + '">' + sofList[Object.keys(sofList)[j]][i].name + ',<span>' + sofList[Object.keys(sofList)[j]][i].grade + '</span></div>';
+                        var elm = '<div class="student-container cursor padding-lr-xxs" isfromSa="false" type="student" enrollmentId="'+sofList[Object.keys(sofList)[j]][i].enrollmentId+'" studUniqueId="'+sofList[Object.keys(sofList)[j]][i].studUniqueId+'" uniqueValue="' + sofList[Object.keys(sofList)[j]][i].id + '_' + sofList[Object.keys(sofList)[j]][i].start + '"  value="' + sofList[Object.keys(sofList)[j]][i].id + '">' + sofList[Object.keys(sofList)[j]][i].name + ',<span>' + sofList[Object.keys(sofList)[j]][i].grade + '</span></div>';
                         var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
                             return y;
                         }).indexOf(sofList[Object.keys(sofList)[j]][i].deliveryTypeId);
@@ -933,7 +933,7 @@ function SylvanCalendar() {
                     var studentStartHour = sofList[Object.keys(sofList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
                         var studentPosition = studentStartHour - minTime;
-                        var elm = '<div class="student-container cursor padding-lr-xxs" isfromSa="false" type="student" studUniqueId="'+sofList[Object.keys(sofList)[j]][i].studUniqueId+'" uniqueValue="' + sofList[Object.keys(sofList)[j]][i].id + '_' + sofList[Object.keys(sofList)[j]][i].start + '" value="' + sofList[Object.keys(sofList)[j]][i].id + '">' + sofList[Object.keys(sofList)[j]][i].name + ',<span>' + sofList[Object.keys(sofList)[j]][i].grade + '</span></div>';
+                        var elm = '<div class="student-container cursor padding-lr-xxs" isfromSa="false" type="student" enrollmentId="'+sofList[Object.keys(sofList)[j]][i].enrollmentId+'" studUniqueId="'+sofList[Object.keys(sofList)[j]][i].studUniqueId+'" uniqueValue="' + sofList[Object.keys(sofList)[j]][i].id + '_' + sofList[Object.keys(sofList)[j]][i].start + '" value="' + sofList[Object.keys(sofList)[j]][i].id + '">' + sofList[Object.keys(sofList)[j]][i].name + ',<span>' + sofList[Object.keys(sofList)[j]][i].grade + '</span></div>';
                         var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
                             return y;
                         }).indexOf(sofList[Object.keys(sofList)[j]][i].deliveryTypeId);
@@ -950,7 +950,7 @@ function SylvanCalendar() {
                     var studentStartHour = sofList[Object.keys(sofList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
                         var studentPosition = studentStartHour - minTime;
-                        var elm = '<div class="student-container cursor padding-lr-xxs" isfromSa="false" type="student" studUniqueId="'+sofList[Object.keys(sofList)[j]][i].studUniqueId+'" uniqueValue="' + sofList[Object.keys(sofList)[j]][i].id + '_' + sofList[Object.keys(sofList)[j]][i].start + '" value="' + sofList[Object.keys(sofList)[j]][i].id + '">' + sofList[Object.keys(sofList)[j]][i].name + ',<span>' + sofList[Object.keys(sofList)[j]][i].grade + '</span></div>';
+                        var elm = '<div class="student-container cursor padding-lr-xxs" isfromSa="false" type="student" enrollmentId="'+sofList[Object.keys(sofList)[j]][i].enrollmentId+'" studUniqueId="'+sofList[Object.keys(sofList)[j]][i].studUniqueId+'" uniqueValue="' + sofList[Object.keys(sofList)[j]][i].id + '_' + sofList[Object.keys(sofList)[j]][i].start + '" value="' + sofList[Object.keys(sofList)[j]][i].id + '">' + sofList[Object.keys(sofList)[j]][i].name + ',<span>' + sofList[Object.keys(sofList)[j]][i].grade + '</span></div>';
                         var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
                             return y;
                         }).indexOf(sofList[Object.keys(sofList)[j]][i].deliveryTypeId);
@@ -990,7 +990,7 @@ function SylvanCalendar() {
                             statusText = "Omit";
                         }
                         var studentPosition = studentStartHour - minTime;
-                        var elm = '<div class="saStudent-container cursor padding-lr-xxs'+draggable+'" isfromSa="true" type="student" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start + '"  value="' + saList[Object.keys(saList)[j]][i].id + '">' + saList[Object.keys(saList)[j]][i].name + ',<span>' + saList[Object.keys(saList)[j]][i].grade +" ("+statusText+")" + '</span></div>';
+                        var elm = '<div class="saStudent-container cursor padding-lr-xxs'+draggable+'" isfromSa="true" type="student" enrollmentId="'+saList[Object.keys(saList)[j]][i].enrollmentId+'" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start + '"  value="' + saList[Object.keys(saList)[j]][i].id + '">' + saList[Object.keys(saList)[j]][i].name + ',<span>' + saList[Object.keys(saList)[j]][i].grade +" ("+statusText+")" + '</span></div>';
                         var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
                             return y;
                         }).indexOf(saList[Object.keys(saList)[j]][i].deliveryTypeId);
@@ -1016,7 +1016,7 @@ function SylvanCalendar() {
                             statusText = "Omit";
                         }
                         var studentPosition = studentStartHour - minTime;
-                        var elm = '<div class="saStudent-container cursor padding-lr-xxs'+draggable+'" isfromSa="true" type="student" type="student" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start + '"  value="' + saList[Object.keys(saList)[j]][i].id + '" >' + saList[Object.keys(saList)[j]][i].name +',<span>' + saList[Object.keys(saList)[j]][i].grade +" ("+statusText+")" + '</span></div>';
+                        var elm = '<div class="saStudent-container cursor padding-lr-xxs'+draggable+'" isfromSa="true" type="student" enrollmentId="'+saList[Object.keys(saList)[j]][i].enrollmentId+'" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start + '"  value="' + saList[Object.keys(saList)[j]][i].id + '" >' + saList[Object.keys(saList)[j]][i].name +',<span>' + saList[Object.keys(saList)[j]][i].grade +" ("+statusText+")" + '</span></div>';
                         var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
                             return y;
                         }).indexOf(saList[Object.keys(saList)[j]][i].deliveryTypeId);
@@ -1041,7 +1041,7 @@ function SylvanCalendar() {
                             statusText = "Omit";
                         }
                         var studentPosition = studentStartHour - minTime;
-                        var elm = '<div class="saStudent-container cursor padding-lr-xxs'+draggable+'" isfromSa="true" type="student" type="student" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start + '"  value="' + saList[Object.keys(saList)[j]][i].id + '" >' + saList[Object.keys(saList)[j]][i].name + ',<span>' + saList[Object.keys(saList)[j]][i].grade +" ("+statusText+")" + '</span></div>';
+                        var elm = '<div class="saStudent-container cursor padding-lr-xxs'+draggable+'" isfromSa="true" type="student" enrollmentId="'+saList[Object.keys(saList)[j]][i].enrollmentId+'" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start + '"  value="' + saList[Object.keys(saList)[j]][i].id + '" >' + saList[Object.keys(saList)[j]][i].name + ',<span>' + saList[Object.keys(saList)[j]][i].grade +" ("+statusText+")" + '</span></div>';
                         var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
                             return y;
                         }).indexOf(saList[Object.keys(saList)[j]][i].deliveryTypeId);
@@ -1376,6 +1376,7 @@ function SylvanCalendar() {
         if (wjQuery(elm).attr("type") == 'student') {
             var newEvent = this.calendar.fullCalendar('clientEvents', resource.id + date);
             var stuId = wjQuery(elm).attr("value");
+            var enrollmentId = wjQuery(elm).attr("enrollmentId");
             var uniqueVal = wjQuery(elm).attr("uniqueValue").split("_");
             var startHour = new Date(date);
             var prevStudObj = [];
@@ -1383,6 +1384,7 @@ function SylvanCalendar() {
                 var prevStudObj = this.saList['Personal Instruction'].filter(function (x) {
                     // return  x.studUniqueId == studUniqueId
                     return  x.id == uniqueVal[0] &&
+                            x.enrollmentId == enrollmentId &&
                             x.start.getTime() == new Date(uniqueVal[1]).getTime()
                 })
                 if (prevStudObj.length == 0) {
@@ -1403,6 +1405,7 @@ function SylvanCalendar() {
                 var prevStudObj = this.sofList['Personal Instruction'].filter(function (x) {
                     // return  x.studUniqueId == studUniqueId
                     return  x.id == uniqueVal[0] &&
+                            x.enrollmentId == enrollmentId &&
                             x.start.getTime() == new Date(uniqueVal[1]).getTime()
                 })
                 if (prevStudObj.length == 0) {
@@ -1957,6 +1960,7 @@ function SylvanCalendar() {
         var endDate = new Date(date);
         var startHour = new Date(date);
         var stuId = wjQuery(elm).attr("value");
+        var enrollmentId = wjQuery(elm).attr("enrollmentId");
         var studUniqueId = wjQuery(elm).attr("studUniqueId");
         var uniqueVal = wjQuery(elm).attr("uniqueValue").split("_");
         var parentElement = elm.parentElement;
@@ -1967,6 +1971,7 @@ function SylvanCalendar() {
         if(wjQuery(elm).attr("isfromSa") == "true"){
             for (var sw = 0; sw < this.saList['Personal Instruction'].length; sw++) {
                 if (this.saList['Personal Instruction'][sw].id == uniqueVal[0] &&
+                    this.saList['Personal Instruction'][sw].enrollmentId == enrollmentId &&
                     this.saList['Personal Instruction'][sw].start.getTime() == new Date(uniqueVal[1]).getTime()) {
                 // if (this.saList['Personal Instruction'][sw].studUniqueId == studUniqueId) {
                     sofType = "Personal Instruction";
@@ -2005,9 +2010,10 @@ function SylvanCalendar() {
             }
         }else{
             for (var sw = 0; sw < this.sofList['Personal Instruction'].length; sw++) {
-                if (this.sofList['Personal Instruction'][sw].studUniqueId == studUniqueId) {
-                // if (this.sofList['Personal Instruction'][sw].id == uniqueVal[0] &&
-                //     this.sofList['Personal Instruction'][sw].start.getTime() == new Date(uniqueVal[1]).getTime()) {
+                // if (this.sofList['Personal Instruction'][sw].studUniqueId == studUniqueId) {
+                if (this.sofList['Personal Instruction'][sw].id == uniqueVal[0] &&
+                    this.sofList['Personal Instruction'][sw].enrollmentId == enrollmentId &&
+                    this.sofList['Personal Instruction'][sw].start.getTime() == new Date(uniqueVal[1]).getTime()) {
                     sofType = "Personal Instruction";
                     stdIndex = sw;
                     break;
@@ -3518,7 +3524,9 @@ function SylvanCalendar() {
 
                 if (val.hasOwnProperty('_hub_resourceid_value')) {
                     obj.resourceId = val['_hub_resourceid_value'];
-                    if (self.convertedPinnedList.length) {
+                    //
+                    // Below Condition to put pinIcon only for PI DT student. 
+                    if (self.convertedPinnedList.length && obj.deliveryTypeCode == personalInstruction) {
                         var isPinned = self.convertedPinnedList.filter(function (x) {
                             return (x.studentId == obj.id &&
                                     // x.resourceId == obj.resourceId &&
@@ -3550,30 +3558,10 @@ function SylvanCalendar() {
                     if (index == -1) {
                         eventObjList.push(obj);
                     }
-                }
-                else if (obj.sessionStatus != INVALID_STATUS &&
-                    obj.sessionStatus != OMIT_STATUS ) {
+                }else if (  obj.sessionStatus != INVALID_STATUS &&
+                            obj.sessionStatus != OMIT_STATUS ) {
                     self.pushStudentToSOF(obj);
-                }
-
-                if (obj.sessionStatus == INVALID_STATUS ||
-                    obj.sessionStatus == UNEXCUSED_STATUS ||
-                    obj.sessionStatus == OMIT_STATUS ||
-                    obj.sessionStatus == EXCUSED_STATUS) {
-                    var index = -1;
-                    for (var i = 0; i < eventObjList.length; i++) {
-                        if (eventObjList[i].id == obj.id &&
-                            eventObjList[i].resourceId == obj.resourceId &&
-                            eventObjList[i].start.getTime() == obj.start.getTime()) {
-                            index = i;
-                            break;
-                        }
-                    }
-                    if (index == -1) {
-                        eventObjList.push(obj);
-                    }
-                }
-                
+                }                
             });
             setTimeout(function () {
                 if (Object.keys(self.sofList).length) {
