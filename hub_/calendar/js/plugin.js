@@ -315,9 +315,7 @@ setTimeout(function () {
                     sylvanCalendar.openSofPane();
                     sylvanCalendar.dayView();
                 });
-                wjQuery('#addAppointment').click(function () {
-                    sylvanCalendar.addAppointment();
-                });
+                
                 wjQuery('.sof-btn,.sof-close-icon').off('click').on('click', function () {
                     sylvanCalendar.sofPane();
                 });
@@ -451,9 +449,6 @@ function SylvanCalendar() {
     this.accountClosure = {};
     this.length = 12;
     this.timestamp = +new Date;
-
-    this.init = function (element) {
-    }
 
     //Student pane and TA pane Functionality
     var sofExpanded = false;
@@ -627,6 +622,7 @@ function SylvanCalendar() {
         }
     }
 
+    // Location Dropdown population
     this.populateLocation = function (args) {
         var self = this;
         if (args != null) {
@@ -644,7 +640,6 @@ function SylvanCalendar() {
             return locationData[0].hub_centerid;
         }
     }
-
 
     // Class room population
     this.populateResource = function (args, isFetch) {
@@ -743,6 +738,7 @@ function SylvanCalendar() {
             }
         }
     }
+
     this.takeHourValue = function (timeString) {
         var self = this;
         if (timeString != undefined) {
@@ -865,6 +861,7 @@ function SylvanCalendar() {
 
     }
     // First Column fixed Code End
+
     this.calendarFilter = function () {
         var self = this;
         this.buildFilterBody();
@@ -879,6 +876,9 @@ function SylvanCalendar() {
         });
     }
 
+    /*
+     *  Populates dom for filter panel
+     */    
     this.buildFilterBody = function () {
         var self = this;
         wjQuery('.filter-section').html('<div class="filter-container"></div>' +
@@ -901,6 +901,10 @@ function SylvanCalendar() {
         wjQuery('.filter-container').css({ 'height': wjQuery('.filter-section').next().height() - 2 + "px", "overflow-y": "auto" });
     }
 
+
+    /*
+     *  Populates Student overflow panel
+     */
     this.populateSOFPane = function (sofList, minTime, maxTime) {
         var self = this;
         var sofTemplate = [];
@@ -969,6 +973,10 @@ function SylvanCalendar() {
             }
         }
     }
+
+    /*
+     * Populates Student attendance panel
+     */
     this.populateSAPane = function (saList, minTime, maxTime) {
         var self = this;
         var sofTemplate = [];
@@ -1065,6 +1073,9 @@ function SylvanCalendar() {
         }
     }
 
+    /*
+     *  Student overflow width calculation based on students present in sof list
+    */
     this.sofWidthCalc = function () {
         var self = this;
         if (this.selectedDeliveryType.length == 1) {
@@ -1114,6 +1125,9 @@ function SylvanCalendar() {
         }
     }
 
+    /*
+     *  Student attendance width calculation based on students present in sof list
+     */
     this.saWidthCalc = function () {
         var self = this;
         if (this.selectedDeliveryType.length == 1) {
@@ -1162,7 +1176,6 @@ function SylvanCalendar() {
         }
     }
 
-
     this.getTeacherSubjects = function (teacherObj) {
         var self = this;
         var subjects = [];
@@ -1179,6 +1192,9 @@ function SylvanCalendar() {
         return subjects;
     }
 
+    /*
+     * Populate Teacher availability panel
+     */
     this.populateTAPane = function (teacherData) {
         var self = this;
         wjQuery(".teacher-availability").html("");
@@ -1272,7 +1288,8 @@ function SylvanCalendar() {
     }
 
     /*
-     * Method accepts from where student comes and student
+     *  Method accepts student object and this will be called after dragging student
+     *  from sa pane to session 
      */
     this.saveSOFtoSession = function (student, oldStudent) {
         var self = this;
@@ -1339,6 +1356,10 @@ function SylvanCalendar() {
         }
     };
 
+    /*
+     *  Method accepts teacher object and this will be called after dragging teacher
+     *  from ta pane to session 
+     */
     this.saveTAtoSession = function (teacher) {
         var self = this;
         if (teacher != undefined) {
@@ -1374,6 +1395,10 @@ function SylvanCalendar() {
         }
     };
 
+
+    /*
+     *  Method will be called on drop of student/teacher(all calendar drag and drop) 
+     */
     this.createEventOnDrop = function (t, date, allDay, ev, ui, resource, elm) {
         var self = t;
         var newResourceObj = t.getResourceObj(resource.id);
@@ -1808,6 +1833,10 @@ function SylvanCalendar() {
         }
     };
 
+    /*
+     *  Method will be called on drop of teacher from ta pane to session
+     *  This method is responsible for checking teacher related conflict/validation check and popup dispaly before drop.  
+     */
     this.tapaneConflictCheck = function (t, date, allDay, ev, ui, resource, elm, notAvailable) {
         var self = this;
         var endDate = new Date(date);
@@ -1862,6 +1891,10 @@ function SylvanCalendar() {
         wjQuery(".loading").hide();
     }
 
+    /*
+     *  Method will be called on drop of teacher between session to session
+     *  This method is responsible for checking teacher related conflict/validation check and popup dispaly before drop.  
+     */
     this.teacherSessionConflictCheck = function (t, date, allDay, ev, ui, resource, elm, notAvailable) {
         var self = this;
         var endDate = new Date(date);
@@ -1960,6 +1993,10 @@ function SylvanCalendar() {
         }
     }
 
+    /*
+     *  Method will be called on drop of student from sa pane to session
+     *  This method is responsible for checking student related conflict/validation check and popup dispaly before drop.  
+     */
     this.studentSofConflictCheck = function (t, date, allDay, ev, ui, resource, elm) {
         var self = this;
         var newEvent = this.calendar.fullCalendar('clientEvents', resource.id + date);
@@ -2108,6 +2145,10 @@ function SylvanCalendar() {
         wjQuery(".loading").hide();
     }
 
+    /*
+     *  Method will be called on drop of student between session to session
+     *  This method is responsible for checking student related conflict/validation check and popup dispaly before drop.  
+     */
     this.studentSessionConflictCheck = function (t, date, allDay, ev, ui, resource, elm) {
         var self = this;
         var endDate = new Date(date);
@@ -2206,6 +2247,10 @@ function SylvanCalendar() {
         this.draggable('draggable');
     }
 
+    /*
+     *  Method will be called on click of student right click option excuse
+     *  This method is responsible for updateing excused student properties.  
+     */
     this.updateExcuseStudent = function(element, prevEvent){
         var self = this;
         var eventTitleHTML = wjQuery(prevEvent[0].title);
@@ -2223,6 +2268,10 @@ function SylvanCalendar() {
         self.calendar.fullCalendar('updateEvent', prevEvent);
     }
 
+    /*
+     *  Method will be called on each drag and drop of student
+     *  This method is responsible for updateing student properties.  
+     */
     this.updatePrevStudentEvent = function(prevEvent, stuId, prevEventId, element){
         var self = this;
         if (prevEvent != undefined && prevEvent.length) {
@@ -2294,6 +2343,10 @@ function SylvanCalendar() {
         }
     }
 
+    /*
+     *  Method will be called on each drag and drop of teacher
+     *  This method is responsible for updateing teacher properties.  
+     */
     this.updatePrevTeacherEvent = function(prevEvent, teacherId, prevEventId){
         var self = this;
         if (prevEvent.length) {
@@ -2373,6 +2426,10 @@ function SylvanCalendar() {
         }
     }
 
+    /*
+     *  Method will be called on Calendar refresh
+     *  This method is responsible for clearing all events and related global variables used to render calendar events.  
+     */    
     this.clearEvents = function () {
         var self = this;
         self.filters = new Object();
@@ -2402,7 +2459,6 @@ function SylvanCalendar() {
     }
 
     var timeout;
-
     this.loadCalendar = function (args, view) {
         var self = this;
         // assign filter object to local scope filter to avoid this conflict
@@ -2563,6 +2619,10 @@ function SylvanCalendar() {
         });
     }
 
+     /*
+     *  Method will be called on Calendar refresh
+     *  This method is responsible for calling master schedule records from backend.  
+     */  
     this.findDataSource = function (currentCalendarDate, view) {
         var self = this;
         var now = new Date();
@@ -2599,6 +2659,10 @@ function SylvanCalendar() {
         return date;
     }
 
+    /*
+     *  Method will be called on click of calendar navigation 
+     *  This method is responsible for navigating date and renders calendar by calling resresh calendar event.  
+     */  
     this.prev = function (locationId) {
         var self = this;
         this.calendar.fullCalendar('prev');
@@ -2643,6 +2707,10 @@ function SylvanCalendar() {
         self.refreshCalendarEvent(this.locationId, true);
     }
 
+    /*
+     *  Method will be called on click of calendar navigation 
+     *  This method is responsible for navigating date and renders calendar by calling resresh calendar event.  
+     */ 
     this.next = function (locationId) {
         var self = this;
         this.calendar.fullCalendar('next');
@@ -2664,6 +2732,11 @@ function SylvanCalendar() {
         currentCalendarDate = moment(currentCalendarDate).format("YYYY-MM-DD");
         this.refreshCalendarEvent(this.locationId, true);
     }
+
+    /*
+     *  Method will be called on initial rendar of calendar
+     *  This method is responsible for fixing all columns width to 230px(Hardcoded).  
+     */ 
     this.calendarFixedWidth = function () {
         var self = this;
         // Table Fixed column code +scroll  Start
@@ -2705,6 +2778,12 @@ function SylvanCalendar() {
             wjQuery('.fc-scroll-content').css('height', wjQuery('.fc-view').height() - 20 + 'px');
         }
     }
+
+     /*
+     *  Method will be called on initial rendar of calendar
+     *  This method is responsible for calling backend all recoders to populate calendar events based on certain conditions like 
+     *  Master data/ actual data.  
+     */ 
     this.refreshCalendarEvent = function (locationId, isFetch) {
         var self = this;
         setTimeout(function () {
@@ -2894,6 +2973,11 @@ function SylvanCalendar() {
         }, 300);
     }
 
+    /*
+     *  Method will be called on initial rendar of calendar
+     *  This method is responsible for finding renderded calendar date is leave day/not
+     *   
+     */ 
     this.findLeaveDays = function () {
         var self = this;
         self.leaveDays = [];
@@ -2913,7 +2997,11 @@ function SylvanCalendar() {
         }
     };
 
-    // Week view of calendar
+    /*
+     *  Method will be called only wen user selects on week view button
+     *  This method is responsible for rendering week view
+     *   
+     */ 
     this.weekView = function () {
         var self = this;
         var filterElement = undefined;
@@ -2950,7 +3038,11 @@ function SylvanCalendar() {
     }
 
 
-    // Day view of calendar
+     /*
+     *  Method will be called only wen user selects on day view button as well as on page load
+     *  This method is responsible for rendering day view
+     *   
+     */ 
     this.dayView = function () {
         var self = this;
         var filterElement = undefined;
@@ -3032,50 +3124,11 @@ function SylvanCalendar() {
         }
     }
 
-    this.addAppointment = function () {
-        var self = this;
-        wjQuery("#appointmentModal").dialog({
-            modal: true,
-            draggable:false,
-        });
-        wjQuery("#appointmentModal").dialog('option', 'title', 'Add New Appointment Slot');
-        setTimeout(function () {
-            var etime;
-            wjQuery(".from-timepicker-input").timepicker({
-                timeFormat: 'h:mm p',
-                interval: 30,
-                minTime: '9',
-                maxTime: '6:00pm',
-                startTime: '9:00',
-                dynamic: false,
-                dropdown: true,
-                scrollbar: true,
-                change: function () {
-                    var stime = new Date;
-                    stime.setMinutes(stime.getMinutes() + 30);
-                    var hours = stime.getHours();
-                    var minutes = stime.getMinutes();
-                    var ampm = hours >= 12 ? 'PM' : 'AM';
-                    hours = hours % 12;
-                    hours = hours ? hours : 12;
-                    minutes = minutes < 10 ? '0' + minutes : minutes;
-                    var etime = hours + ':' + minutes + ' ' + ampm;
-                    wjQuery(".to-timepicker-input").val(etime);
-                    wjQuery(".to-timepicker-input").timepicker('option', { 'minTime': stime.getHours() });
-                }
-            });
-            wjQuery(".to-timepicker-input").timepicker({
-                timeFormat: 'h:mm p',
-                interval: 30,
-                minTime: wjQuery(".to-timepicker-input").val().split(' ')[0] + ':00',
-                maxTime: '6:00pm',
-                dynamic: false,
-                dropdown: true,
-                scrollbar: true
-            });
-        }, 300);
-    }
-
+    /*
+     *  Method will be called only wen user clicks on sof pane button
+     *  This method is responsible for sliding sof pane from left to right and vice versa
+     *   
+     */ 
     this.sofPane = function () {
         var self = this;
         wjQuery('.sof-pane').show();
@@ -3118,6 +3171,11 @@ function SylvanCalendar() {
         }
     }
 
+    /*
+     *  Method will be called only wen user clicks on sa pane button
+     *  This method is responsible for sliding sa pane from left to right and vice versa
+     *   
+     */
     this.saPane = function () {
         var self = this;
         wjQuery('.sa-pane').show();
@@ -3160,6 +3218,11 @@ function SylvanCalendar() {
         }
     }
 
+    /*
+     *  Method will be called only wen user clicks on ta pane button
+     *  This method is responsible for sliding ta pane from left to right and vice versa
+     *   
+     */
     this.taPane = function () {
         var self = this;
         wjQuery('.ta-pane').show();
@@ -3217,6 +3280,11 @@ function SylvanCalendar() {
         }
     }
 
+    /*
+     *  Method will be called only wen user clicks on filter pane
+     *  This method is responsible for formating json sent from backend
+     *   
+     */
     this.generateFilterObject = function (args) {
         var self = this;
         args[0] == undefined ? filterObj = args : filterObj = args[0];
@@ -3272,16 +3340,8 @@ function SylvanCalendar() {
         var currentCalendarDate = self.calendar.fullCalendar('getDate');
         var effEndDate1 = val['hub_effectiveenddate@OData.Community.Display.V1.FormattedValue'];
         var effEndDate2 = val['aenrollment_x002e_hub_enrollmentenddate@OData.Community.Display.V1.FormattedValue'];
-
-        // var effEndDate1 = val['hub_effectiveenddate'];
-        // var effEndDate2 = val['aenrollment_x002e_hub_enrollmentenddate'];
         var effEndDate3 = val['aenrollment_x002e_hub_committedsessionenddate@OData.Community.Display.V1.FormattedValue'];
         var effEndDate = currentCalendarDate;
-        if (val['aenrollment_x002e_hub_committedsessionenddate@OData.Community.Display.V1.FormattedValue'] != undefined) {
-            // var dateArry =  val['aenrollment_x002e_hub_committedsessionenddate'].split("-");
-            // effEndDate3 = new Date(parseInt(dateArry[0]), parseInt(dateArry[1])-1, parseInt(dateArry[2]));
-        }
-
         if (effEndDate1 == undefined && effEndDate2 == undefined && effEndDate3 == undefined) {
             effEndDate = currentCalendarDate;
         } else if (effEndDate1 == undefined && effEndDate2 == undefined && effEndDate3 != undefined) {
@@ -3325,7 +3385,11 @@ function SylvanCalendar() {
         return new Date(effEndDate);
     }
 
-
+    /*
+     *  Method will be called on page load
+     *  This method is responsible for formating all json sent from backend
+     *   
+     */
     this.generateEventObject = function (args, label) {
         var self = this;
         var currentView = self.calendar.fullCalendar('getView');
@@ -4097,6 +4161,11 @@ function SylvanCalendar() {
         return eventObjList;
     }
 
+    /*
+     *  Method will be called on page load
+     *  This method is responsible for populating teacher events on calendar 
+     *   
+     */
     this.populateTeacherEvent = function (teacherObject, isFromFilter) {
         var self = this;
         wjQuery(".loading").show();
@@ -4364,6 +4433,11 @@ function SylvanCalendar() {
         this.showConflictMsg();
     }
 
+    /*
+     *  Method will be called on page load(Logical sessions)
+     *  This method is responsible for populating students, who's objects are having affinity resource 
+     *   
+     */
     this.populateAffinityStudents = function (affinityList) {
         var self = this;
         var currentView = self.calendar.fullCalendar('getView');
@@ -4470,6 +4544,11 @@ function SylvanCalendar() {
         }
     }
 
+    /*
+     *  Method will be called on page load(Logical sessions)
+     *  This method is responsible for populating students, who's objects are not having resource 
+        will be moved to sof panel    
+     */
     this.populateNoResourceStudent = function (studentList) {
         var self = this;
         var studentsForSOF = [];
@@ -4610,6 +4689,11 @@ function SylvanCalendar() {
         }, 300);
     }
 
+    /*
+     *  Method will be called on page load(Logical sessions)
+     *  This method is responsible for populating students, who's objects are having matching services 
+        will be grouped and populated in one event     
+     */
     this.populateByService = function (serviceStudentList) {
         var self = this;
         var studentsForSOF = [];
@@ -4689,7 +4773,10 @@ function SylvanCalendar() {
         }, 300);
     }
 
-
+    /*
+     *  Method will be called on page load
+     *  This method is responsible for pushing students in sof list     
+     */
     this.pushStudentToSOF = function (data) {
         var self = this;
         var currentView = this.calendar.fullCalendar('getView');
@@ -4769,6 +4856,10 @@ function SylvanCalendar() {
         }
     };
 
+    /*
+     *  Method will be called on page load
+     *  This method is responsible for pushing students in sa list     
+     */
     this.pushStudentToSA = function (data) {
         var self = this;
         var currentView = this.calendar.fullCalendar('getView');
@@ -5018,6 +5109,11 @@ function SylvanCalendar() {
         this.showConflictMsg();
     }
 
+    /*
+     *  Method will be called on page load
+     *  This method is responsible for showing flag for sof availabilty
+        If students are available in panel then button color will turn to red      
+     */
     this.openSofPane = function () {
         var self = this;
         var closeSofPane = false;
@@ -5065,7 +5161,10 @@ function SylvanCalendar() {
         }
     }
 
-
+    /*
+     *  Method will be called on click of filter elemets
+     *  This method is responsible for filtering student/teacher/grade etc...      
+     */
     this.filterItems = function (obj, filterTerm, filterFor) {
         var self = this;
         if (filterFor == "tapane") {
@@ -5098,6 +5197,10 @@ function SylvanCalendar() {
         }
     }
 
+    /*
+     *  Method will be called on click of student right click option pin 
+     *  This method is responsible for filtering student/teacher/grade etc...      
+     */
     this.pinStudent = function (element) {
         var self = this;
         wjQuery('.loading').show();
