@@ -977,7 +977,6 @@ function SylvanCalendar() {
             var elm = '<div class="student-attendance" id="sa_student_block_' + i + '" style="height:' + (wjQuery(".fc-agenda-slots td div").height() * 4 + 3) + 'px;overflow:auto"></div>';
             wjQuery('.sa-pane').append(elm);
         }
-        var draggable = "";
         for (var j = 0; j < Object.keys(saList).length; j++) {
             if (Object.keys(saList)[j] == "Personal Instruction") {
                 for (var i = 0; i < saList[Object.keys(saList)[j]].length; i++) {
@@ -985,14 +984,15 @@ function SylvanCalendar() {
                     var studentStartHour = saList[Object.keys(saList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
                         var statusText = "Excuse";
+                        var draggable1 = "";
                         if(!self.checkAccountClosure() && studentObject['sessionStatus'] == UNEXCUSED_STATUS){
-                            draggable = " draggable";
+                            draggable1 = " draggable";
                             statusText = "Unexcuse";
                         }else if(studentObject['sessionStatus'] == OMIT_STATUS){
                             statusText = "Omit";
                         }
                         var studentPosition = studentStartHour - minTime;
-                        var elm = '<div class="saStudent-container cursor padding-lr-xxs'+draggable+'" isfromSa="true" type="student" enrollmentId="'+saList[Object.keys(saList)[j]][i].enrollmentId+'" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start + '"  value="' + saList[Object.keys(saList)[j]][i].id + '">' + saList[Object.keys(saList)[j]][i].name + ',<span>' + saList[Object.keys(saList)[j]][i].grade +" ("+statusText+")" + '</span></div>';
+                        var elm = '<div class="saStudent-container cursor padding-lr-xxs'+draggable1+'" isfromSa="true" type="student" enrollmentId="'+saList[Object.keys(saList)[j]][i].enrollmentId+'" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start + '"  value="' + saList[Object.keys(saList)[j]][i].id + '">' + saList[Object.keys(saList)[j]][i].name + ',<span>' + saList[Object.keys(saList)[j]][i].grade +" ("+statusText+")" + '</span></div>';
                         var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
                             return y;
                         }).indexOf(saList[Object.keys(saList)[j]][i].deliveryTypeId);
@@ -1011,14 +1011,15 @@ function SylvanCalendar() {
                     var studentStartHour = saList[Object.keys(saList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
                         var statusText = "Excuse";
+                        var draggable1 = "";
                         if(studentObject['sessionStatus'] == UNEXCUSED_STATUS){
-                            draggable = " draggable";
+                            draggable1 = " draggable";
                             statusText = "Unexcuse";
                         }else if(studentObject['sessionStatus'] == OMIT_STATUS){
                             statusText = "Omit";
                         }
                         var studentPosition = studentStartHour - minTime;
-                        var elm = '<div class="saStudent-container cursor padding-lr-xxs'+draggable+'" isfromSa="true" type="student" enrollmentId="'+saList[Object.keys(saList)[j]][i].enrollmentId+'" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start + '"  value="' + saList[Object.keys(saList)[j]][i].id + '" >' + saList[Object.keys(saList)[j]][i].name +',<span>' + saList[Object.keys(saList)[j]][i].grade +" ("+statusText+")" + '</span></div>';
+                        var elm = '<div class="saStudent-container cursor padding-lr-xxs'+draggable1+'" isfromSa="true" type="student" enrollmentId="'+saList[Object.keys(saList)[j]][i].enrollmentId+'" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start + '"  value="' + saList[Object.keys(saList)[j]][i].id + '" >' + saList[Object.keys(saList)[j]][i].name +',<span>' + saList[Object.keys(saList)[j]][i].grade +" ("+statusText+")" + '</span></div>';
                         var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
                             return y;
                         }).indexOf(saList[Object.keys(saList)[j]][i].deliveryTypeId);
@@ -1036,14 +1037,15 @@ function SylvanCalendar() {
                     var studentStartHour = saList[Object.keys(saList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
                         var statusText = "Excuse";
+                        var draggable1 = "";
                         if(studentObject['sessionStatus'] == UNEXCUSED_STATUS){
-                            draggable = " draggable";
+                            draggable1 = " draggable";
                             statusText = "Unexcuse";
                         }else if(studentObject['sessionStatus'] == OMIT_STATUS){
                             statusText = "Omit";
                         }
                         var studentPosition = studentStartHour - minTime;
-                        var elm = '<div class="saStudent-container cursor padding-lr-xxs'+draggable+'" isfromSa="true" type="student" enrollmentId="'+saList[Object.keys(saList)[j]][i].enrollmentId+'" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start + '"  value="' + saList[Object.keys(saList)[j]][i].id + '" >' + saList[Object.keys(saList)[j]][i].name + ',<span>' + saList[Object.keys(saList)[j]][i].grade +" ("+statusText+")" + '</span></div>';
+                        var elm = '<div class="saStudent-container cursor padding-lr-xxs'+draggable1+'" isfromSa="true" type="student" enrollmentId="'+saList[Object.keys(saList)[j]][i].enrollmentId+'" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start + '"  value="' + saList[Object.keys(saList)[j]][i].id + '" >' + saList[Object.keys(saList)[j]][i].name + ',<span>' + saList[Object.keys(saList)[j]][i].grade +" ("+statusText+")" + '</span></div>';
                         var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
                             return y;
                         }).indexOf(saList[Object.keys(saList)[j]][i].deliveryTypeId);
@@ -2067,7 +2069,6 @@ function SylvanCalendar() {
                 if(wjQuery(elm).attr("isfromSa") == "true"){
                     t.saWidthCalc();
                     this.saList[sofType].splice(stdIndex, 1);
-                    newStudent[0]['hub_session_status'] = 1;
                 }else{
                     this.sofList[sofType].splice(stdIndex, 1);
                     t.sofWidthCalc();
@@ -2075,6 +2076,7 @@ function SylvanCalendar() {
                 if (wjQuery(parentElement).html() == '') {
                     parentElement.remove();
                 }
+                newStudent[0]['sessionStatus'] = SCHEDULE_STATUS;
                 this.convertedStudentObj.push(newStudent[0]);
                 t.populateStudentEvent(newStudent, true);
             } else if (typeof (responseObj) == 'object' && responseObj != null && responseObj != undefined) {
@@ -2376,6 +2378,7 @@ function SylvanCalendar() {
         self.filters = new Object();
         self.eventList = [];
         self.sofList = [];
+        self.saList = [];
         wjQuery('.teacher-block').remove();
         wjQuery('.student-overflow').remove();
         wjQuery('.student-attendance').remove()
@@ -2790,8 +2793,7 @@ function SylvanCalendar() {
                         self.teacherAvailability = [];
                     }
 
-                    var beSaList = [];
-                    beSaList = isFetch || (beSaList.length == 0) ? data.getsaList(locationId, startDate, endDate) : beSaList;
+                    var beSaList =  data.getsaList(locationId, startDate, endDate);
                     if (beSaList == null) {
                         beSaList = [];
                     }
