@@ -1509,7 +1509,7 @@ function SylvanCalendar() {
                             }
                         }
                     } else {
-                        t.prompt("The selected student is already scheduled for the respective timeslot.");
+                        t.prompt("The selected student with same service is already scheduled for the respective timeslot.");
                     }
                 }
             }else{
@@ -1711,7 +1711,7 @@ function SylvanCalendar() {
                                 }
                             }
                         } else {
-                            t.prompt("The selected student is already scheduled for the respective timeslot.");
+                            t.prompt("The selected student with same service is already scheduled for the respective timeslot.");
                         }
                     } else {
                         t.prompt("Can not be placed to a GI session.");
@@ -4461,7 +4461,7 @@ function SylvanCalendar() {
                                         break;
                                     }
                                 }
-                                if (index == -1) {
+                                if (index == -1 && self.sofvalidation(affinityList[i])) {
                                     self.convertedStudentObj.push(affinityList[i]);
                                     if (currentView.name == 'resourceDay') {
                                         self.populateStudentEvent(obj, true, true);
@@ -4495,7 +4495,7 @@ function SylvanCalendar() {
                                 break;
                             }
                         }
-                        if (index == -1) {
+                        if (index == -1  && self.sofvalidation(affinityList[i])) {
                             self.convertedStudentObj.push(affinityList[i]);
                             if (currentView.name == 'resourceDay') {
                                 self.populateStudentEvent(obj, true, true);
@@ -4523,7 +4523,7 @@ function SylvanCalendar() {
                         break;
                     }
                 }
-                if (index == -1) {
+                if (index == -1 && self.sofvalidation(affinityList[i])) {
                     self.convertedStudentObj.push(affinityList[i]);
                     if (currentView.name == 'resourceDay') {
                         self.populateStudentEvent(obj, true, true);
@@ -4577,7 +4577,7 @@ function SylvanCalendar() {
                                                 break;
                                             }
                                         }
-                                        if (index == -1) {
+                                        if (index == -1 && self.sofvalidation(studentList[i])) {
                                             self.convertedStudentObj.push(studentList[i]);
                                             if (currentView.name == 'resourceDay') {
                                                 self.populateStudentEvent(obj, true, true);
@@ -4605,7 +4605,7 @@ function SylvanCalendar() {
                                         break;
                                     }
                                 }
-                                if (index == -1) {
+                                if (index == -1 && self.sofvalidation(studentList[i])) {
                                     self.convertedStudentObj.push(studentList[i]);
                                     if (currentView.name == 'resourceDay') {
                                         self.populateStudentEvent(obj, true, true);
@@ -4635,7 +4635,7 @@ function SylvanCalendar() {
                                 break;
                             }
                         }
-                        if (index == -1) {
+                        if (index == -1 && self.sofvalidation(studentList[i])) {
                             self.convertedStudentObj.push(studentList[i]);
                             if (currentView.name == 'resourceDay') {
                                 self.populateStudentEvent(obj, true, true);
@@ -4664,7 +4664,7 @@ function SylvanCalendar() {
                         break;
                     }
                 }
-                if (index == -1) {
+                if (index == -1 && self.sofvalidation(studentList[i])) {
                     studentsForSOF.push(studentList[i]);
                 } else {
                     studentList.splice(i, 1);
@@ -4719,7 +4719,7 @@ function SylvanCalendar() {
                                     break;
                                 }
                             }
-                            if (index == -1) {
+                            if (index == -1 && self.sofvalidation(e)) {
                                 self.convertedStudentObj.push(e);
                             }
                             else {
@@ -4750,7 +4750,7 @@ function SylvanCalendar() {
                             break;
                         }
                     }
-                    if (index == -1) {
+                    if (index == -1 && self.sofvalidation(e)) {
                         studentsForSOF.push(student);
                     }
                 }
@@ -4954,78 +4954,76 @@ function SylvanCalendar() {
                         draggable = "draggable drag-student";
                     }
                     if (event.length) {
-                        // wjQuery.each(event, function (k, v) {
-                        event[k] = event[0]; 
-                        if(event[k].hasOwnProperty("students")){
-                            event[k].students.push(value);
-                            if(!event[k].is1to1){
-                                event[k].is1to1 = value['is1to1'];
+                        if(event[0].hasOwnProperty("students")){
+                            event[0].students.push(value);
+                            if(!event[0].is1to1){
+                                event[0].is1to1 = value['is1to1'];
                             }
                         }else{
-                            event[k].students = [value];
-                            event[k].is1to1 = value['is1to1'];
+                            event[0].students = [value];
+                            event[0].is1to1 = value['is1to1'];
                         }
-                        event[k]['noOfStudents'] += 1;
+                        event[0]['noOfStudents'] += 1;
                         if (value['pinId'] != undefined) {
-                            event[k].title += "<span class='"+ draggable + "' enrollmentId='" + enrollmentId + "' eventid='" + eventId + "' studUniqueId='" + value['studUniqueId'] + "' pinnedId='" + value['pinId'] + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='studentSession' value='" + id + "'><img src='/webresources/hub_/calendar/images/pin.png'/>" + name + ", " + grade + "<i class='material-icons' title='" + value['serviceValue'] + "' style='color:" + value['subjectColorCode'] + "'>location_on</i></span>";
+                            event[0].title += "<span class='"+ draggable + "' enrollmentId='" + enrollmentId + "' eventid='" + eventId + "' studUniqueId='" + value['studUniqueId'] + "' pinnedId='" + value['pinId'] + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='studentSession' value='" + id + "'><img src='/webresources/hub_/calendar/images/pin.png'/>" + name + ", " + grade + "<i class='material-icons' title='" + value['serviceValue'] + "' style='color:" + value['subjectColorCode'] + "'>location_on</i></span>";
                         } else {
-                            event[k].title += "<span class='"+ draggable + "' enrollmentId='" + enrollmentId + "' eventid='" + eventId + "' studUniqueId='" + value['studUniqueId'] + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='studentSession' value='" + id + "'>" + name + ", " + grade + "<i class='material-icons' title='" + value['serviceValue'] + "' style='color:" + value['subjectColorCode'] + "'>location_on</i></span>";
+                            event[0].title += "<span class='"+ draggable + "' enrollmentId='" + enrollmentId + "' eventid='" + eventId + "' studUniqueId='" + value['studUniqueId'] + "' uniqueId='" + uniqueId + "' id='" + id + value['resourceId'] + "' type='studentSession' value='" + id + "'>" + name + ", " + grade + "<i class='material-icons' title='" + value['serviceValue'] + "' style='color:" + value['subjectColorCode'] + "'>location_on</i></span>";
                         }
 
-                        if (event[k].title.indexOf('<span class="student-placeholder-' + event[k].deliveryType + '">Student name</span>') != -1) {
-                            event[k].title = event[k].title.replace('<span class="student-placeholder-' + event[k].deliveryType + '">Student name</span>', '');
+                        if (event[0].title.indexOf('<span class="student-placeholder-' + event[0].deliveryType + '">Student name</span>') != -1) {
+                            event[0].title = event[0].title.replace('<span class="student-placeholder-' + event[0].deliveryType + '">Student name</span>', '');
                         }
 
                         // Capcity check and add/remove of capacity conflict.
-                        if (event[k]['noOfStudents'] < resourceObj["capacity"] || resourceObj["capacity"] == undefined) {
-                            event[k].title += '<span class="student-placeholder-' + event[k].deliveryType + '">Student name</span>';
-                            self.addContext("", 'studentPlaceholder', true, event[k].deliveryTypeCode);
+                        if (event[0]['noOfStudents'] < resourceObj["capacity"] || resourceObj["capacity"] == undefined) {
+                            event[0].title += '<span class="student-placeholder-' + event[0].deliveryType + '">Student name</span>';
+                            self.addContext("", 'studentPlaceholder', true, event[0].deliveryTypeCode);
                             // capacity conflict removal
-                            var msgIndex = event[k].conflictMsg.map(function (x) {
+                            var msgIndex = event[0].conflictMsg.map(function (x) {
                                 return x;
                             }).indexOf(1);
                             if (msgIndex > -1) {
-                                event[k].conflictMsg.splice(msgIndex, 1);
+                                event[0].conflictMsg.splice(msgIndex, 1);
                             }
-                            self.updateConflictMsg(event[k]);
-                        } else if (event[k]['noOfStudents'] > resourceObj["capacity"]) {
+                            self.updateConflictMsg(event[0]);
+                        } else if (event[0]['noOfStudents'] > resourceObj["capacity"]) {
                             // capacity conflict addition
-                            var msgIndex = event[k].conflictMsg.map(function (x) {
+                            var msgIndex = event[0].conflictMsg.map(function (x) {
                                 return x;
                             }).indexOf(1);
                             if (msgIndex == -1) {
-                                event[k].conflictMsg.push(1);
+                                event[0].conflictMsg.push(1);
                             }
-                            self.updateConflictMsg(event[k]);
+                            self.updateConflictMsg(event[0]);
                         }
 
                         // One to one type lock and conflict ico is only for PI DT
                         if (resourceObj.deliveryTypeCode == personalInstruction) {
-                            if (event[k].is1to1 == true || value.is1to1 == true) {
-                                if (event[k].title.indexOf('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">') == -1) {
-                                    event[k].title += '<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">';
+                            if (event[0].is1to1 == true || value.is1to1 == true) {
+                                if (event[0].title.indexOf('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">') == -1) {
+                                    event[0].title += '<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">';
                                 }
                             } 
-                            if (event[k].is1to1 && event[k].hasOwnProperty('students') && event[k]['students'].length > 1) {
-                                var msgIndex = event[k].conflictMsg.map(function (x) {
+                            if (event[0].is1to1 && event[0].hasOwnProperty('students') && event[0]['students'].length > 1) {
+                                var msgIndex = event[0].conflictMsg.map(function (x) {
                                     return x;
                                 }).indexOf(2);
                                 if (msgIndex == -1) {
-                                    event[k].conflictMsg.push(2);
+                                    event[0].conflictMsg.push(2);
                                 }
-                                self.updateConflictMsg(event[k]);
+                                self.updateConflictMsg(event[0]);
                             }
                         }
 
-                        var isNonPreferred = self.checkNonPreferredTeacherConflict(event[k]);
+                        var isNonPreferred = self.checkNonPreferredTeacherConflict(event[0]);
                         if (isNonPreferred) {
                             // non preferred teacher conflict check
-                            var msgIndex = event[k].conflictMsg.map(function (x) {
+                            var msgIndex = event[0].conflictMsg.map(function (x) {
                                 return x;
                             }).indexOf(3);
                             if (msgIndex == -1) {
-                                event[k].conflictMsg.push(3);
-                                self.updateConflictMsg(event[k]);
+                                event[0].conflictMsg.push(3);
+                                self.updateConflictMsg(event[0]);
                             }
                         }
                         // });
@@ -7150,7 +7148,7 @@ function SylvanCalendar() {
                     }
                 } else {
                     wjQuery("#makeup").dialog("close");
-                    self.prompt("The selected student is already scheduled for the respective timeslot.");
+                    self.prompt("The selected student with same service is already scheduled for the respective timeslot.");
                 }
             }
         });
@@ -8718,8 +8716,9 @@ function SylvanCalendar() {
                 var val = dropableEvent[s];
                 if (val.hasOwnProperty("students") && val['students'].length) {
                     for (var i = 0; i < val['students'].length; i++) {
-                        if(val['students'][i]['deliveryTypeCode'] == personalInstruction){
-                            if (stuId == val['students'][i]['id']) {
+                        if(prevEvent['deliveryTypeCode'] == personalInstruction){
+                            if (val['students'][i]['deliveryTypeCode'] == personalInstruction && 
+                                stuId == val['students'][i]['id']) {
                                 allowToDropStudent = false;
                                 break;
                             }
@@ -9693,6 +9692,36 @@ function SylvanCalendar() {
         }
 
         return messageObject;
+    }
+
+    this.sofvalidation = function(studentObj){
+        var self = this;
+        var allowToPush = true;
+        var prevStudObj = [];
+        if(self.sofList.length){
+            prevStudObj = this.sofList['Personal Instruction'].filter(function (x) {
+                return  x.id == studentObj.id &&
+                        x.enrollmentId == studentObj.enrollmentId &&
+                        x.start.getTime() == new Date(studentObj.start).getTime()
+            })
+            if (prevStudObj.length == 0) {
+                prevStudObj = this.sofList['Group Facilitation'].filter(function (x) {
+                    return  x.id == studId &&
+                            x.enrollmentId == enrollmentId &&
+                            x.start.getTime() == new Date(studentObj.start).getTime()
+                })
+                if (prevStudObj.length == 0) {
+                    prevStudObj = this.sofList['Group Instruction'].filter(function (x) {
+                        return  x.id == studentObj.id &&
+                                x.enrollmentId == studentObj.enrollmentId &&
+                                x.start.getTime() == new Date(studentObj.start).getTime()
+                    })
+                }
+            }
+        }
+        if(prevStudObj.length){
+            allowToPush = false;
+        }
     }
 
 }
