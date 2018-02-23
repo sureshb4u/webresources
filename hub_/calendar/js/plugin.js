@@ -8673,7 +8673,6 @@ function SylvanCalendar() {
             dropableEvent = self.calendar.fullCalendar('clientEvents', function (el) {
                 return el.end != null &&
                         el.hasOwnProperty("students") &&
-                        // el.deliveryType == "Personal-Instruction" &&
                         prevEvent.resourceId + prevEvent.startHour != el.id &&
                         (
                             (
@@ -8694,7 +8693,6 @@ function SylvanCalendar() {
             dropableEvent = self.calendar.fullCalendar('clientEvents', function (el) {
                 return el.end != null &&
                         el.hasOwnProperty("students") &&
-                        // el.deliveryType == "Personal-Instruction" &&
                         (
                             (
                                 startHour.getTime() <= el.start.getTime() &&
