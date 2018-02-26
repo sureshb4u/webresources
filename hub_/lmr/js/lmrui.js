@@ -177,7 +177,7 @@ function LmrUI() {
                             '            <span class="first-colm">Credit Card Fees:</span>';
                 skeleton += '<span class="input-field"><b>$</b><input type="text" class="form-control table-input" id="creditval" name="creditval" value="' + el.creditval + '" '+isClosedText+'></span>';
                 if (el.hasOwnProperty("CorePecent")) {
-                    skeleton += '<span id="creditPercent" >' + (el.CorePecent*100) + '</span>';
+                    skeleton += '<span id="creditPercent" >' + (el.CreditPercent*100) + '</span>';
                 }
                     skeleton += '<span id="creditTotal" >($' + el.creditTotal + ')</span>';
 
@@ -719,10 +719,6 @@ function LmrUI() {
         }else{
             self.lmrList[0]['TotalAdvertisingPayment'] = wjQuery("#totalAdvertisingPayment").text().replace("$","");
         }
-
-
-
-
 
         // self.lmrList[0]['miscTotal'] = wjQuery("#miscTotal").text().replace("$","");
         // self.lmrList[0]['TotalRoyaltyAmount'] = wjQuery("#r1Total").text().replace("$","");

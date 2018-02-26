@@ -9,6 +9,7 @@ var lmrList =
         "EdgeAmount":"250",
         "creditval":0,
         "creditTotal":0,
+        "CreditPercent":0.1,
         "CorePecent":0.16,
         "EdgePercent":0.16,
         "CoreTotal":"80",
