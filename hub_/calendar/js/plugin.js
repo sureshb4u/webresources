@@ -1713,6 +1713,64 @@ function SylvanCalendar() {
                         } else {
                             t.prompt("The selected student with same service is already scheduled for the respective timeslot.");
                         }
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     } else {
                         t.prompt("Can not be placed to a GI session.");
                     }
@@ -9720,6 +9778,7 @@ function SylvanCalendar() {
         if(prevStudObj.length){
             allowToPush = false;
         }
+        return allowToPush;
     }
 
 }
