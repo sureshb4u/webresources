@@ -990,11 +990,11 @@ function SylvanCalendar() {
                     var studentObject = saList[Object.keys(saList)[j]][i];
                     var studentStartHour = saList[Object.keys(saList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
-                        var statusText = "Excuse";
+                        var statusText = "Excused";
                         var draggable1 = "";
                         if(!self.checkAccountClosure() && studentObject['sessionStatus'] == UNEXCUSED_STATUS){
                             draggable1 = " draggable";
-                            statusText = "Unexcuse";
+                            statusText = "Unexcused";
                         }else if(studentObject['sessionStatus'] == OMIT_STATUS){
                             statusText = "Omit";
                         }
@@ -1017,11 +1017,11 @@ function SylvanCalendar() {
                     var studentObject = saList[Object.keys(saList)[j]][i];
                     var studentStartHour = saList[Object.keys(saList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
-                        var statusText = "Excuse";
+                        var statusText = "Excused";
                         var draggable1 = "";
                         if(studentObject['sessionStatus'] == UNEXCUSED_STATUS){
                             draggable1 = " draggable";
-                            statusText = "Unexcuse";
+                            statusText = "Unexcused";
                         }else if(studentObject['sessionStatus'] == OMIT_STATUS){
                             statusText = "Omit";
                         }
@@ -1043,11 +1043,11 @@ function SylvanCalendar() {
                     var studentObject = saList[Object.keys(saList)[j]][i];
                     var studentStartHour = saList[Object.keys(saList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
-                        var statusText = "Excuse";
+                        var statusText = "Excused";
                         var draggable1 = "";
                         if(studentObject['sessionStatus'] == UNEXCUSED_STATUS){
                             draggable1 = " draggable";
-                            statusText = "Unexcuse";
+                            statusText = "Unexcused";
                         }else if(studentObject['sessionStatus'] == OMIT_STATUS){
                             statusText = "Omit";
                         }
