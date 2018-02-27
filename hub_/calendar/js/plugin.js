@@ -6143,15 +6143,17 @@ function SylvanCalendar() {
                     }
                 }
 
-                obj.omit = {
-                    name: "Omit",
-                    disabled: self.checkAccountClosure(),
-                    callback: function (key, options) {
-                        wjQuery(".loading").show();
-                        options = wjQuery.extend(true, {}, options);
-                        setTimeout(function () {
-                            self.omitStudentFromSession(options.$trigger[0]);
-                        }, 300);
+                if(sessionType != MAKEUP_TYPE ){
+                    obj.omit = {
+                        name: "Omit",
+                        disabled: self.checkAccountClosure(),
+                        callback: function (key, options) {
+                            wjQuery(".loading").show();
+                            options = wjQuery.extend(true, {}, options);
+                            setTimeout(function () {
+                                self.omitStudentFromSession(options.$trigger[0]);
+                            }, 300);
+                        }
                     }
                 }
 
