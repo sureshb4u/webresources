@@ -996,7 +996,7 @@ function SylvanCalendar() {
                             draggable1 = " draggable";
                             statusText = "Unexcused";
                         }else if(studentObject['sessionStatus'] == OMIT_STATUS){
-                            statusText = "Omit";
+                            statusText = "Omitted";
                         }
                         var studentPosition = studentStartHour - minTime;
                         var elm = '<div class="saStudent-container cursor padding-lr-xxs'+draggable1+'" isfromSa="true" type="student" enrollmentId="'+saList[Object.keys(saList)[j]][i].enrollmentId+'" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start + '"  value="' + saList[Object.keys(saList)[j]][i].id + '">' + saList[Object.keys(saList)[j]][i].name + ',<span>' + saList[Object.keys(saList)[j]][i].grade +" ("+statusText+")" + '</span></div>';
@@ -1023,7 +1023,7 @@ function SylvanCalendar() {
                             draggable1 = " draggable";
                             statusText = "Unexcused";
                         }else if(studentObject['sessionStatus'] == OMIT_STATUS){
-                            statusText = "Omit";
+                            statusText = "Omitted";
                         }
                         var studentPosition = studentStartHour - minTime;
                         var elm = '<div class="saStudent-container cursor padding-lr-xxs'+draggable1+'" isfromSa="true" type="student" enrollmentId="'+saList[Object.keys(saList)[j]][i].enrollmentId+'" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start + '"  value="' + saList[Object.keys(saList)[j]][i].id + '" >' + saList[Object.keys(saList)[j]][i].name +',<span>' + saList[Object.keys(saList)[j]][i].grade +" ("+statusText+")" + '</span></div>';
@@ -1049,7 +1049,7 @@ function SylvanCalendar() {
                             draggable1 = " draggable";
                             statusText = "Unexcused";
                         }else if(studentObject['sessionStatus'] == OMIT_STATUS){
-                            statusText = "Omit";
+                            statusText = "Omitted";
                         }
                         var studentPosition = studentStartHour - minTime;
                         var elm = '<div class="saStudent-container cursor padding-lr-xxs'+draggable1+'" isfromSa="true" type="student" enrollmentId="'+saList[Object.keys(saList)[j]][i].enrollmentId+'" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start + '"  value="' + saList[Object.keys(saList)[j]][i].id + '" >' + saList[Object.keys(saList)[j]][i].name + ',<span>' + saList[Object.keys(saList)[j]][i].grade +" ("+statusText+")" + '</span></div>';
