@@ -352,10 +352,10 @@ button{
     border-top: 1px solid #ccc;
 }
 
-/*.teacher-availability{
-    display: inline-block;
+.teacher-availability{
     width: calc(100% - 20px);
-}*/
+    /*display: inline-block;*/
+}
 
 #student_block_0, #sa_student_block_0, #teacher_block_0 {
 	margin-top: 43px;

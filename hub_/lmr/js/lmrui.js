@@ -515,7 +515,7 @@ function LmrUI() {
             if(wjQuery("#creditval").val() == ""){
                 wjQuery("#creditval").val(0);
             }
-            var miscVal = parseFloat(val);
+            var miscVal = parseFloat(val).toFixed(2);
             if(miscVal>=0){
                 wjQuery("#miscTotal").text("$"+miscVal);
             }else{
