@@ -1412,10 +1412,10 @@ function SylvanCalendar() {
             var prevStudObj = [];
             if(wjQuery(elm).attr("isfromSa") == "true"){
                 var prevStudObj = this.saList['Personal Instruction'].filter(function (x) {
-                    // return  x.studUniqueId == studUniqueId
-                    return  x.id == uniqueVal[0] &&
-                            x.enrollmentId == enrollmentId &&
-                            x.start.getTime() == new Date(uniqueVal[1]).getTime()
+                    return  x.studUniqueId == studUniqueId
+                    // return  x.id == uniqueVal[0] &&
+                    //         x.enrollmentId == enrollmentId &&
+                    //         x.start.getTime() == new Date(uniqueVal[1]).getTime()
                 })
                 if (prevStudObj.length == 0) {
                     prevStudObj = this.saList['Group Facilitation'].filter(function (x) {
@@ -2070,10 +2070,10 @@ function SylvanCalendar() {
 
         if(wjQuery(elm).attr("isfromSa") == "true"){
             for (var sw = 0; sw < this.saList['Personal Instruction'].length; sw++) {
-                if (this.saList['Personal Instruction'][sw].id == uniqueVal[0] &&
-                    this.saList['Personal Instruction'][sw].enrollmentId == enrollmentId &&
-                    this.saList['Personal Instruction'][sw].start.getTime() == new Date(uniqueVal[1]).getTime()) {
-                // if (this.saList['Personal Instruction'][sw].studUniqueId == studUniqueId) {
+                // if (this.saList['Personal Instruction'][sw].id == uniqueVal[0] &&
+                //     this.saList['Personal Instruction'][sw].enrollmentId == enrollmentId &&
+                //     this.saList['Personal Instruction'][sw].start.getTime() == new Date(uniqueVal[1]).getTime()) {
+                if (this.saList['Personal Instruction'][sw].studUniqueId == studUniqueId) {
                     sofType = "Personal Instruction";
                     stdIndex = sw;
                     break;
