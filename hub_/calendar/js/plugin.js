@@ -4933,8 +4933,11 @@ function SylvanCalendar() {
                 if (data.deliveryTypeCode == personalInstruction) {
                     var index = -1;
                     for (var i = 0; i < this.saList['Personal Instruction'].length; i++) {
-                        if (this.saList['Personal Instruction'][i].id == data.id &&
-                            this.saList['Personal Instruction'][i].startHour.getTime() == data.startHour.getTime()) {
+                        if (this.saList['Personal Instruction'][i].studUniqueId == data.studUniqueId
+                            // this.saList['Personal Instruction'][i].id == data.id &&
+                            // this.saList['Personal Instruction'][i].sessionStatus == data.sessionStatus &&
+                            // this.saList['Personal Instruction'][i].startHour.getTime() == data.startHour.getTime()
+                            ) {
                             index = i;
                             break;
                         }
