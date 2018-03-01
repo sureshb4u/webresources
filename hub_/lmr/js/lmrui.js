@@ -515,11 +515,11 @@ function LmrUI() {
             if(wjQuery("#creditval").val() == ""){
                 wjQuery("#creditval").val(0);
             }
-            var miscVal = parseFloat(val).toFixed(2);
+            var miscVal = parseFloat(val);
             if(miscVal>=0){
-                wjQuery("#miscTotal").text("$"+miscVal);
+                wjQuery("#miscTotal").text("$"+miscVal.toFixed(2));
             }else{
-                wjQuery("#miscTotal").text("($"+Math.abs(miscVal)+")");
+                wjQuery("#miscTotal").text("($"+Math.abs(miscVal.toFixed(2))+")");
             }
 
             miscVal = isNaN(miscVal) ? 0 : miscVal; 
