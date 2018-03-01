@@ -151,25 +151,25 @@ function LmrUI() {
                             '        <article>' +
                             '            <span class="first-colm">Core Revenue summary</span>';
                 if (el.hasOwnProperty("CoreAmount")) {
-                    skeleton += '<span id="coreval">$' + el.CoreAmount + '</span>';
+                    skeleton += '<span id="coreval">$' + parseFloat(el.CoreAmount).toFixed(2) + '</span>';
                 }
                 if (el.hasOwnProperty("CorePecent")) {
                     skeleton += '<span>' + (el.CorePecent*100) + '</span>';
                 }
                 if (el.hasOwnProperty("CoreTotal")) {
-                    skeleton += '<span id="coreTotal" >$' + el.CoreTotal + '</span>';
+                    skeleton += '<span id="coreTotal" >$' + parseFloat(el.CoreTotal).toFixed(2) + '</span>';
                 }
                 skeleton += '        </article>' +
                             '        <article>' +
                             '            <span class="first-colm">EDGE revenue summary</span>';
                 if (el.hasOwnProperty("EdgeAmount")) {
-                    skeleton += '<span id="edgeval" >$' + el.EdgeAmount + '</span>';
+                    skeleton += '<span id="edgeval" >$' + parseFloat(el.EdgeAmount).toFixed(2) + '</span>';
                 }
                 if (el.hasOwnProperty("EdgePercent")) {
                     skeleton += '<span>' + (el.EdgePercent*100) + '</span>';
                 }
                 if (el.hasOwnProperty("EdgeTotal")) {
-                    skeleton += '<span id="edgeTotal" >$' + el.EdgeTotal + '</span>';
+                    skeleton += '<span id="edgeTotal" >$' + parseFloat(el.EdgeTotal).toFixed(2) + '</span>';
                 }
 
                 skeleton += '        </article>' +
@@ -179,7 +179,7 @@ function LmrUI() {
                 if (el.hasOwnProperty("CorePecent")) {
                     skeleton += '<span id="creditPercent" >' + (el.CreditPercent*100) + '</span>';
                 }
-                    skeleton += '<span id="creditTotal" >($' + el.creditTotal + ')</span>';
+                    skeleton += '<span id="creditTotal" >($' + parseFloat(el.creditTotal).toFixed(2) + ')</span>';
 
                 skeleton += '        </article>';
                 if(el.ManualAdjustment != undefined && el.ManualAdjustment){
@@ -187,13 +187,13 @@ function LmrUI() {
                                     '<span class="first-colm">Misc Royalty Adjustment</span>'+
                                     '<span class="input-field"><b>$</b><input type="text" class="form-control table-input" id="miscval" name="miscval" value="' + el.miscval + '" '+isClosedText+' ></span>'+
                                     '<span >-</span>'+
-                                    '<span id="miscTotal" >$' + el.miscTotal + '</span>'+
+                                    '<span id="miscTotal" >$' + parseFloat(el.miscTotal).toFixed(2) + '</span>'+
                                 '</article>';
                 }
                 skeleton += '        <article>' +
                             '            <span class="first-colm"><b>Total Cash subject to Royalty</b></span>';
                 if (el.hasOwnProperty("TotalRoyaltyAmount")) {
-                    skeleton += '<span id="r1Total" >$' + el.TotalRoyaltyAmount + '</span>' +
+                    skeleton += '<span id="r1Total" >$' + parseFloat(el.TotalRoyaltyAmount).toFixed(2) + '</span>' +
                     '            <span>&nbsp;</span>' +
                     '            <span>&nbsp;</span>';
                 }
@@ -203,7 +203,7 @@ function LmrUI() {
                 if (el.hasOwnProperty("TotalDue")) {
                     skeleton += ' <span>&nbsp;</span>' +
                                 '<span><b>Total Royalty Due</b></span>' +
-                                '<span id="rTotal">$' + el.TotalDue + '</span>';
+                                '<span id="rTotal">$' + parseFloat(el.TotalDue).toFixed(2) + '</span>';
                 }
                 skeleton += '        </article>' +
                             '        <h1>NATIONAL ADVERTISING:</h1>' +
@@ -216,25 +216,25 @@ function LmrUI() {
                             '        <article>' +
                             '           <span class="first-colm">National Advertising Fund</span>';
                 if (el.hasOwnProperty("NAFAmount")) {
-                    skeleton += ' <span id="nafAmount" >$' + el.NAFAmount + '</span>';
+                    skeleton += ' <span id="nafAmount" >$' +  parseFloat(el.NAFAmount).toFixed(2) + '</span>';
                 }
                 if (el.hasOwnProperty("NAFRate")) {
                     skeleton += ' <span>' + (el.NAFRate*100) + '</span>';
                 }
                 if (el.hasOwnProperty("NAFPayment")) {
-                    skeleton += ' <span id="nafPayment" >$' + el.NAFPayment + '</span>';
+                    skeleton += ' <span id="nafPayment" >$' + parseFloat(el.NAFPayment).toFixed(2) + '</span>';
                 }
                 skeleton += '        </article>' +
                             '        <article>' +
                             '           <span class="first-colm">National Advertising Campaign</span>';
                 if (el.hasOwnProperty("NACAmount")) {
-                    skeleton += ' <span  id="nacAmount" >$' + el.NACAmount + '</span>';
+                    skeleton += ' <span  id="nacAmount" >$' + parseFloat(el.NACAmount).toFixed(2) + '</span>';
                 }
                 if (el.hasOwnProperty("NACRate")) {
                     skeleton += ' <span>' + (el.NACRate*100) + '</span>';
                 }
                 if (el.hasOwnProperty("NACPayment")) {
-                    skeleton += ' <span id="nacPayment" >$' + el.NACPayment + '</span>';
+                    skeleton += ' <span id="nacPayment" >$' + parseFloat(el.NACPayment).toFixed(2) + '</span>';
                 }
                 skeleton += '        </article>' +
                             '        <article class="btm-brdr">' +
@@ -242,7 +242,7 @@ function LmrUI() {
                             '            <span>&nbsp;</span>' +
                             '            <span><b>Total National Advertising due:</b></span>';
                 if (el.hasOwnProperty("TotalAdvertisingPayment")) {
-                    skeleton += ' <span id="totalAdvertisingPayment" >$' + el.TotalAdvertisingPayment + '</span>';
+                    skeleton += ' <span id="totalAdvertisingPayment" >$' + parseFloat(el.TotalAdvertisingPayment).toFixed(2) + '</span>';
                 }
 
                 skeleton += '</article>' +
