@@ -298,7 +298,7 @@ function LmrUI() {
                 '           </p>'+
                 '           <p class="form-row">'+
                 '               <label><b>TOTAL ADVERTISING SPEND:</b></label>'+
-                '               <span id="advTotal">$'+el.advTotal+'</span>'+
+                '               <span id="advTotal">$'+parseFloat(el.advTotal).toFixed(2)+'</span>'+
                 '           </p>'+
                 '        </aside>'+
                 '        <aside class="form-aside">'+
@@ -333,7 +333,7 @@ function LmrUI() {
                 '           </p>'+
                 '           <p class="form-row">'+
                 '               <label><b>TOTAL LOCAL MARKETING SPEND:</b></label>'+
-                '               <span id="localTotal">$'+el.localTotal+'</span>'+
+                '               <span id="localTotal">$'+ parseFloat(el.localTotal).toFixed(2) +'</span>'+
                 '           </p>'+
                 '        </aside>'+
                 '</section>'+
@@ -489,9 +489,9 @@ function LmrUI() {
             } 
 
             if(totalAdvertisingPayment >=0){
-                wjQuery("#totalAdvertisingPayment").text("$"+totalAdvertisingPayment);
+                wjQuery("#totalAdvertisingPayment").text("$"+parseFloat(totalAdvertisingPayment).toFixed(2));
             }else{
-                wjQuery("#totalAdvertisingPayment").text("($"+Math.abs(totalAdvertisingPayment)+")");
+                wjQuery("#totalAdvertisingPayment").text("($"+Math.abs(parseFloat(totalAdvertisingPayment).toFixed(2))+")");
             } 
 
             if (rTotal >= 0) {
@@ -565,9 +565,9 @@ function LmrUI() {
             } 
 
             if(totalAdvertisingPayment >=0){
-                wjQuery("#totalAdvertisingPayment").text("$"+totalAdvertisingPayment);
+                wjQuery("#totalAdvertisingPayment").text("$"+parseFloat(totalAdvertisingPayment).toFixed(2));
             }else{
-                wjQuery("#totalAdvertisingPayment").text("($"+Math.abs(totalAdvertisingPayment)+")");
+                wjQuery("#totalAdvertisingPayment").text("($"+Math.abs(parseFloat(totalAdvertisingPayment).toFixed(2))+")");
             } 
 
 
@@ -597,7 +597,7 @@ function LmrUI() {
                     // console.log(elVal);
                     ltotal += parseFloat(elVal);
                 });
-                wjQuery("#localTotal").text("$"+ltotal);
+                wjQuery("#localTotal").text("$"+parseFloat(ltotal).toFixed(2));
             }
         });
 
@@ -614,7 +614,7 @@ function LmrUI() {
                     // console.log(elVal);
                     ltotal += parseFloat(elVal);
                 });
-                wjQuery("#advTotal").text("$"+ltotal);
+                wjQuery("#advTotal").text("$"+parseFloat(ltotal).toFixed(2));
             }
         });
 
@@ -719,17 +719,6 @@ function LmrUI() {
         }else{
             self.lmrList[0]['TotalAdvertisingPayment'] = wjQuery("#totalAdvertisingPayment").text().replace("$","");
         }
-
-        // self.lmrList[0]['miscTotal'] = wjQuery("#miscTotal").text().replace("$","");
-        // self.lmrList[0]['TotalRoyaltyAmount'] = wjQuery("#r1Total").text().replace("$","");
-        // self.lmrList[0]['TotalDue'] = wjQuery("#rTotal").text().replace("$","");
-        // self.lmrList[0]['localTotal'] = wjQuery("#localTotal").text().replace("$","");
-        // self.lmrList[0]['advTotal'] = wjQuery("#advTotal").text().replace("$","");
-        // self.lmrList[0]['NAFAmount'] = wjQuery('#nafAmount').text().replace("$","");
-        // self.lmrList[0]['NACAmount'] = wjQuery('#nacAmount').text().replace("$","");
-        // self.lmrList[0]['NAFPayment'] = wjQuery('#nafPayment').text().replace("$","");
-        // self.lmrList[0]['NACPayment'] = wjQuery('#nacPayment').text().replace("$","");
-        // self.lmrList[0]['TotalAdvertisingPayment'] = wjQuery('#totalAdvertisingPayment').text().replace("$","");
 
         this.lmrList = self.lmrList;
         var response = OnSubmitLMR(result.recordid, self.selectedMonth, self.selectedYear, self.lmrList[0]);
