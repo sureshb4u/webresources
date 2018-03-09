@@ -639,8 +639,8 @@ function LmrUI() {
         });
 
         // update lmr object
-        self.lmrList[0]['creditval'] = wjQuery("#creditval").val();
-        self.lmrList[0]['miscval'] = wjQuery("#miscval").val();
+        self.lmrList[0]['creditval'] = parseFloat(wjQuery("#creditval").val()).toFixed(2);
+        self.lmrList[0]['miscval'] = parseFloat(wjQuery("#miscval").val()).toFixed(2);
         self.lmrList[0]['Comments'] = wjQuery("#comment").val();
 
         if(wjQuery("#creditTotal").text().indexOf("($") != -1){
