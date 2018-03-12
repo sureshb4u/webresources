@@ -1351,6 +1351,11 @@ function SylvanCalendar() {
                 var locationObj = self.getLocationObject(self.locationId);
                 objNewSession['ownerObj'] = locationObj['ownerObj'];
                 objSession['ownerObj'] = locationObj['ownerObj'];
+
+                if (oldStudent['studentSession']) {
+                    objNewSession['hub_student_session'] = oldStudent['studentSession'];
+                    objSession['hub_student_session'] = oldStudent['studentSession'];
+                }
                 return data.saveSOFtoSession(objNewSession, objSession);
             }
         }
@@ -2187,6 +2192,9 @@ function SylvanCalendar() {
                 if (wjQuery(parentElement).html() == '') {
                     parentElement.remove();
                 }
+                if (responseObj['hub_student_session']) {
+                    newStudent[0]['studentSession'] = responseObj['hub_student_session'];
+                }
                 newStudent[0].sessionId = responseObj['hub_studentsessionid'];
                 newStudent[0]['sessiontype'] = responseObj['hub_sessiontype'];
                 newStudent[0]['sessionStatus'] = responseObj['hub_session_status'];
@@ -2266,6 +2274,9 @@ function SylvanCalendar() {
                 }
             }
             else if (typeof responseObj == 'object' && responseObj != null && responseObj != undefined) {
+                if (responseObj['hub_student_session']) {
+                    newStudentObj.studentSession = responseObj['hub_student_session'];
+                }
                 if (responseObj.hasOwnProperty('hub_studentsessionid')) {
                     elm.remove();
                     self.updatePrevStudentEvent(prevEvent, stuId, prevEventId, elm);
@@ -3646,6 +3657,10 @@ function SylvanCalendar() {
                     namedHoursId: val['aproductservice_x002e_hub_namedgfhoursid']
                 }
 
+                if (val['hub_student_session']) {
+                    obj.studentSession = val['hub_student_session'];
+                }
+
                 if (val.hasOwnProperty('aenrollment_x002e_hub_nonpreferredteacher')) {
                     obj['nonPreferredTeacher'] = val['aenrollment_x002e_hub_nonpreferredteacher'];
                 }
@@ -3768,6 +3783,10 @@ function SylvanCalendar() {
                         val['hub_days'] = val['hub_days'] == 7 ? 0 : val['hub_days'];
                         sDate = currentView.start;
                         sDate = new Date(new Date(sDate).setDate(sDate.getDate() + val['hub_days']))
+                    }
+                    
+                    if (val['hub_student_session']) {
+                        obj.studentSession = val['hub_student_session'];
                     }
 
                     obj['sessionDate'] = moment(sDate).format('YYYY-MM-DD');
@@ -5319,7 +5338,9 @@ function SylvanCalendar() {
         objPinnedStudent['hub_session_status'] = student[0]['sessionStatus'];
         var locationObj = self.getLocationObject(self.locationId);
         objPinnedStudent['ownerObj'] = locationObj['ownerObj'];
-
+        if (student[0]['studentSession']) {
+            objPinnedStudent['hub_student_session'] = student[0]['studentSession'];
+        }
         var responseObj = data.savePinStudent(objPinnedStudent);
         var eventObj = self.calendar.fullCalendar('clientEvents', eventId);
         if (typeof (responseObj) == 'boolean') {
@@ -5402,6 +5423,9 @@ function SylvanCalendar() {
         }
         var locationObj = self.getLocationObject(self.locationId);
         objUnPinnedStudent['ownerObj'] = locationObj['ownerObj'];
+        if (student[0]['studentSession']) {
+            objUnPinnedStudent['hub_student_session'] = student[0]['studentSession'];
+        }
         var unPinResponse = data.saveUnPinStudent(objUnPinnedStudent);
         if (unPinResponse) {
             var eventObj = self.calendar.fullCalendar('clientEvents', eventId);
@@ -5570,7 +5594,9 @@ function SylvanCalendar() {
             }
             var locationObj = self.getLocationObject(self.locationId);
             objCancelSession['ownerObj'] = locationObj['ownerObj'];
-
+            if (objStudent[0]['studentSession']) {
+                objCancelSession['hub_student_session'] = objStudent[0]['studentSession'];
+            }
             var responseObj = data.omitStudentSession(objCancelSession);
 
             if ((typeof (responseObj) == 'boolean' && responseObj) || typeof (responseObj) == 'object') {
@@ -5588,6 +5614,9 @@ function SylvanCalendar() {
                     // }
                 }
                 if (index != -1) {
+                    if (responseObj['hub_student_session']) {
+                        this.convertedStudentObj[index]['studentSession'] = responseObj['hub_student_session'];
+                    }
                     this.convertedStudentObj[index]['sessionStatus'] = OMIT_STATUS;
                     this.pushStudentToSA(this.convertedStudentObj[index]);
                     self.saList = this.saList;
@@ -5648,6 +5677,9 @@ function SylvanCalendar() {
             objCancelSession['hub_resourceid@odata.bind'] = null;
             var locationObj = self.getLocationObject(self.locationId);
             objCancelSession['ownerObj'] = locationObj['ownerObj'];
+            if (objStudent[0]['studentSession']) {
+                objCancelSession['hub_student_session'] = objStudent[0]['studentSession'];
+            }
 
             var responseObj = data.excuseStudentFromSession(objCancelSession);
             if ((typeof (responseObj) == 'boolean' && responseObj) || typeof (responseObj) == 'object') {
@@ -5665,6 +5697,9 @@ function SylvanCalendar() {
                     // }
                 }
                 if (index != -1) {
+                    if (responseObj['hub_student_session']) {
+                        this.convertedStudentObj[index]['studentSession'] = responseObj['hub_student_session'];
+                    }
                     this.convertedStudentObj[index]['sessionStatus'] = EXCUSED_STATUS;
                     this.pushStudentToSA(this.convertedStudentObj[index]);
                     self.saList = this.saList;
@@ -5802,6 +5837,9 @@ function SylvanCalendar() {
                 }
                 var locationObj = self.getLocationObject(self.locationId);
                 objSession['ownerObj'] = locationObj['ownerObj'];
+                if (objStudent[0]['studentSession']) {
+                    objSession['hub_student_session'] = objStudent[0]['studentSession'];
+                }
 
                 if (data.excuseAndMakeUpStudent(objSession) && flag) {
                     wjQuery(".excuseSave").removeClass('makeup');
@@ -6022,7 +6060,10 @@ function SylvanCalendar() {
                 var locationObj = self.getLocationObject(self.locationId);
                 objPrevSession['ownerObj'] = locationObj['ownerObj'];
                 objNewSession['ownerObj'] = locationObj['ownerObj'];
-
+                if (objStudent[0]['studentSession']) {
+                    objNewSession['hub_student_session'] = objStudent[0]['studentSession'];
+                    objPrevSession['hub_student_session'] = objStudent[0]['studentSession'];
+                }
                 var responseObj = data.rescheduleStudentSession(objPrevSession, objNewSession);
                 if (typeof (responseObj) == 'boolean' || typeof (responseObj) == 'object') {
                     if (responseObj && flag) {
@@ -6057,6 +6098,9 @@ function SylvanCalendar() {
                             }
                             if (responseObj['hub_session_status']) {
                                 self.convertedStudentObj[index].sessionStatus = responseObj['hub_session_status'];
+                            }
+                            if (responseObj['hub_session_status']) {
+                                self.convertedStudentObj[index]['studentSession'] = responseObj['hub_session_status'];
                             }
                             setTimeout(function () {
                                 self.pushStudentToSOF(self.convertedStudentObj[index]);
@@ -6475,7 +6519,9 @@ function SylvanCalendar() {
             }
             var locationObj = self.getLocationObject(self.locationId);
             objMovetoSOF['ownerObj'] = locationObj['ownerObj'];
-
+            if (objStudent[0]['studentSession']) {
+                objMovetoSOF['hub_student_session'] = objStudent[0]['studentSession'];
+            }
             var responseObj = data.moveStudentToSOF(objMovetoSOF);
             if ((typeof (responseObj) == 'boolean' && responseObj )|| typeof (responseObj) == 'object') {
                 if (responseObj.hasOwnProperty('hub_studentsessionid')) {
@@ -6484,6 +6530,9 @@ function SylvanCalendar() {
                     objStudent[0]['sessiontype'] = responseObj['hub_sessiontype'];
                     objStudent[0]['sessionStatus'] = responseObj['hub_session_status'];
                     delete objStudent[0]['isFromMasterSchedule'];
+                }
+                if (responseObj['hub_session_status']) {
+                    objStudent[0]['studentSession'] = responseObj['hub_session_status'];
                 }
                 var index = -1;
                 for (var i = 0; i < self.convertedStudentObj.length; i++) {
@@ -6689,7 +6738,6 @@ function SylvanCalendar() {
                 objPrevSession.hub_end_time = this.convertToMinutes(moment(prevStudent.end).format("h:mm A"));
                 objPrevSession['hub_resourceid@odata.bind'] = null
                 objPrevSession.hub_is_1to1 = prevStudent['is1to1'];
-
                 objNewSession.hub_is_1to1 = newStudent['is1to1'];
             } else {
                 objPrevSession['hub_session_date'] = prevStudent['sessionDate'];
@@ -6739,6 +6787,10 @@ function SylvanCalendar() {
             objNewSession['hub_deliverytype'] = newStudent.deliveryTypeId;
             objNewSession['hub_deliverytype@OData.Community.Display.V1.FormattedValue'] = newStudent.deliveryType;
             objNewSession['hub_deliverytype_code'] = newStudent.deliveryTypeCode;
+            if (prevStudent.studentSession) {
+                objNewSession['hub_student_session'] = prevStudent.studentSession;
+                objPrevSession['hub_student_session'] = prevStudent.studentSession;
+            }
 
             // Get location object
             var locationObj = self.getLocationObject(self.locationId);
@@ -7186,6 +7238,9 @@ function SylvanCalendar() {
                     if (callSave) {
                         var locationObj = self.getLocationObject(self.locationId);
                         objSession['ownerObj'] = locationObj['ownerObj'];
+                        if (studentObj[0]['studentSession']) {
+                            objSession['hub_student_session'] = studentObj[0]['studentSession'];
+                        }
                         var responseObj = data.saveMakeupNFloat(objSession);
                         if (typeof (responseObj) == 'object') {
                             var uniqueid = studentObj[0].id + "_" + idArry[1] + "_" + idArry[2];
@@ -7201,6 +7256,9 @@ function SylvanCalendar() {
                             }
                             if (responseObj['hub_session_status'] != undefined) {
                                 studentObj[0]['sessionStatus'] = responseObj['hub_session_status'];
+                            }
+                            if (responseObj['hub_student_session']) {
+                                studentObj['studentSession'] = responseObj['hub_student_session'];
                             }
                             // update Student
                             self.convertedStudentObj.push(studentObj[0]);
@@ -7310,6 +7368,9 @@ function SylvanCalendar() {
                 obj['locationId'] = val['_hub_location_value'];
                 obj['locationName'] = val['_hub_location_value@OData.Community.Display.V1.FormattedValue'];
             }
+            if (val['hub_student_session']) {
+                obj['studentSession'] = val['hub_student_session'];
+            }
             eventObjList.push(obj);
         });
         return eventObjList;
@@ -7377,6 +7438,10 @@ function SylvanCalendar() {
             } else if (val['_hub_location_value'] != undefined) {
                 obj['locationId'] = val['_hub_location_value'];
                 obj['locationName'] = val['_hub_location_value@OData.Community.Display.V1.FormattedValue'];
+            }
+
+            if (val['hub_student_session']) {
+                obj['studentSession'] = val['hub_student_session'];
             }
             self.pushStudentToSA(obj);
         });
