@@ -1327,9 +1327,10 @@ function SylvanCalendar() {
                 }
                 objNewSession['hub_session_status'] = student[0]['sessionStatus'];
                 objSession['hub_session_status'] = student[0]['sessionStatus'];
-
-                objNewSession['hub_makeup_expiry_date'] = student[0]['makeupExpiryDate'];
-                objSession['hub_makeup_expiry_date'] = student[0]['makeupExpiryDate'];
+                if (student[0]['makeupExpiryDate']) {
+                    objNewSession['hub_makeup_expiry_date'] =  moment(student[0]['makeupExpiryDate']).format('YYYY-MM-DD');
+                    objSession['hub_makeup_expiry_date'] = moment(student[0]['makeupExpiryDate']).format('YYYY-MM-DD');
+                }
 
                 objNewSession['hub_is_1to1'] = student[0]['is1to1'];
                 objNewSession['hub_enrollment@odata.bind'] = oldStudent['enrollmentId'];
@@ -5312,7 +5313,9 @@ function SylvanCalendar() {
         if (student[0]['sessiontype'] != undefined) {
             objPinnedStudent['hub_sessiontype'] = student[0]['sessiontype'];
         }
-        objPinnedStudent['hub_makeup_expiry_date'] = student[0]['makeupExpiryDate'];
+        if (student[0]['makeupExpiryDate']) {
+            objPinnedStudent['hub_makeup_expiry_date'] = moment(student[0]['makeupExpiryDate']).format('YYYY-MM-DD');
+        }
         objPinnedStudent['hub_session_status'] = student[0]['sessionStatus'];
         var locationObj = self.getLocationObject(self.locationId);
         objPinnedStudent['ownerObj'] = locationObj['ownerObj'];
@@ -6711,9 +6714,10 @@ function SylvanCalendar() {
                 objNewSession['hub_is_1to1'] = newStudent['is1to1'];
             }
 
-
-            objNewSession['hub_makeup_expiry_date'] = prevStudent['makeupExpiryDate'];
-            objPrevSession['hub_makeup_expiry_date'] = prevStudent['makeupExpiryDate'];
+            if (prevStudent['makeupExpiryDate']) {
+                objNewSession['hub_makeup_expiry_date'] = moment(prevStudent['makeupExpiryDate']).format('YYYY-MM-DD');
+                objPrevSession['hub_makeup_expiry_date'] = moment(prevStudent['makeupExpiryDate']).format('YYYY-MM-DD');
+            }
 
             objPrevSession['hub_enrollment@odata.bind'] = prevStudent['enrollmentId'];
             objPrevSession['hub_deliverytype'] = prevStudent['deliveryTypeId'];
@@ -7149,7 +7153,9 @@ function SylvanCalendar() {
                 objSession["hub_end_time"] = start + 60;
                 objSession["hub_sessiontype"] = studentObj[0]['sessionType'];
                 objSession["hub_session_status"] = studentObj[0]['sessionStatus'];
-                objSession["hub_makeup_expiry_date"] = studentObj[0]['makeupExpiryDate'];
+                if (studentObj[0]['makeupExpiryDate']) {
+                    objSession["hub_makeup_expiry_date"] = moment(studentObj[0]['makeupExpiryDate']).format('YYYY-MM-DD');
+                }
                 objSession['hub_deliverytype_code'] = studentObj[0].deliveryTypeCode;
                 if (studentObj[0]["is1to1"] != undefined) {
                     objSession["hub_is_1to1"] = studentObj[0]["is1to1"];
