@@ -3657,8 +3657,8 @@ function SylvanCalendar() {
                     namedHoursId: val['aproductservice_x002e_hub_namedgfhoursid']
                 }
 
-                if (val['hub_student_session']) {
-                    obj.studentSession = val['hub_student_session'];
+                if (val['_hub_student_session_value']) {
+                    obj.studentSession = val['_hub_student_session_value'];
                 }
 
                 if (val.hasOwnProperty('aenrollment_x002e_hub_nonpreferredteacher')) {
@@ -3785,8 +3785,8 @@ function SylvanCalendar() {
                         sDate = new Date(new Date(sDate).setDate(sDate.getDate() + val['hub_days']))
                     }
                     
-                    if (val['hub_student_session']) {
-                        obj.studentSession = val['hub_student_session'];
+                    if (val['_hub_student_session_value']) {
+                        obj.studentSession = val['_hub_student_session_value'];
                     }
 
                     obj['sessionDate'] = moment(sDate).format('YYYY-MM-DD');
@@ -7368,8 +7368,8 @@ function SylvanCalendar() {
                 obj['locationId'] = val['_hub_location_value'];
                 obj['locationName'] = val['_hub_location_value@OData.Community.Display.V1.FormattedValue'];
             }
-            if (val['hub_student_session']) {
-                obj['studentSession'] = val['hub_student_session'];
+            if (val['_hub_student_session_value']) {
+                obj['studentSession'] = val['_hub_student_session_value'];
             }
             eventObjList.push(obj);
         });
@@ -7440,8 +7440,8 @@ function SylvanCalendar() {
                 obj['locationName'] = val['_hub_location_value@OData.Community.Display.V1.FormattedValue'];
             }
 
-            if (val['hub_student_session']) {
-                obj['studentSession'] = val['hub_student_session'];
+            if (val['_hub_student_session_value']) {
+                obj['studentSession'] = val['_hub_student_session_value'];
             }
             self.pushStudentToSA(obj);
         });
