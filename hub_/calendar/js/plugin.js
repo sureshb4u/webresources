@@ -993,7 +993,7 @@ function SylvanCalendar() {
                         var statusText = "Excused";
                         var draggable1 = "";
                         if(!self.checkAccountClosure() && studentObject['sessionStatus'] == UNEXCUSED_STATUS){
-                            draggable1 = " ";
+                            draggable1 = " draggable";
                             statusText = "Unexcused";
                         }else if(studentObject['sessionStatus'] == OMIT_STATUS){
                             statusText = "Omitted";
@@ -1020,7 +1020,7 @@ function SylvanCalendar() {
                         var statusText = "Excused";
                         var draggable1 = "";
                         if(studentObject['sessionStatus'] == UNEXCUSED_STATUS){
-                            draggable1 = " ";
+                            draggable1 = " draggable";
                             statusText = "Unexcused";
                         }else if(studentObject['sessionStatus'] == OMIT_STATUS){
                             statusText = "Omitted";
@@ -1046,7 +1046,7 @@ function SylvanCalendar() {
                         var statusText = "Excused";
                         var draggable1 = "";
                         if(studentObject['sessionStatus'] == UNEXCUSED_STATUS){
-                            draggable1 = " ";
+                            draggable1 = " draggable";
                             statusText = "Unexcused";
                         }else if(studentObject['sessionStatus'] == OMIT_STATUS){
                             statusText = "Omitted";
@@ -6395,7 +6395,7 @@ function SylvanCalendar() {
                     obj.unExcused = {
                         name: "Un-Excuse",
                         disabled: setVisibility,
-                        visible:true,
+                        visible: sessionStatus != UNEXCUSED_STATUS,
                         callback: function (key, options) {
                             wjQuery(".loading").show();
                             options = wjQuery.extend(true, {}, options);
