@@ -993,7 +993,7 @@ function SylvanCalendar() {
                         var statusText = "Excused";
                         var draggable1 = "";
                         if(!self.checkAccountClosure() && studentObject['sessionStatus'] == UNEXCUSED_STATUS){
-                            draggable1 = " draggable";
+                            draggable1 = " ";
                             statusText = "Unexcused";
                         }else if(studentObject['sessionStatus'] == OMIT_STATUS){
                             statusText = "Omitted";
@@ -1020,7 +1020,7 @@ function SylvanCalendar() {
                         var statusText = "Excused";
                         var draggable1 = "";
                         if(studentObject['sessionStatus'] == UNEXCUSED_STATUS){
-                            draggable1 = " draggable";
+                            draggable1 = " ";
                             statusText = "Unexcused";
                         }else if(studentObject['sessionStatus'] == OMIT_STATUS){
                             statusText = "Omitted";
@@ -1046,7 +1046,7 @@ function SylvanCalendar() {
                         var statusText = "Excused";
                         var draggable1 = "";
                         if(studentObject['sessionStatus'] == UNEXCUSED_STATUS){
-                            draggable1 = " draggable";
+                            draggable1 = " ";
                             statusText = "Unexcused";
                         }else if(studentObject['sessionStatus'] == OMIT_STATUS){
                             statusText = "Omitted";
@@ -5602,7 +5602,7 @@ function SylvanCalendar() {
         wjQuery('.loading').hide();
     };
 
-    this.omitStudentFromSession = function (element) {
+    this.omitStudentFromSession = function (element,status) {
         var self = this;
         var uniqueIds = wjQuery(element).attr("uniqueId").split('_');
         var studUniqueId = wjQuery(element).attr("studUniqueId");
@@ -5636,8 +5636,13 @@ function SylvanCalendar() {
             if (objStudent[0]['masterScheduleId']) {
                 objCancelSession['hub_master_schedule@odata.bind'] = objStudent[0]['masterScheduleId'];
             }
-            var responseObj = data.omitStudentSession(objCancelSession);
-
+            if (status == "attended") {
+                var responseObj = data.markAsAttended(objCancelSession);
+            } else if (status == UNEXCUSED_STATUS) {
+                var responseObj = data.unExcuseSession(objCancelSession);
+            }else{
+                var responseObj = data.omitStudentSession(objCancelSession);
+            }
             if ((typeof (responseObj) == 'boolean' && responseObj) || typeof (responseObj) == 'object') {
                 var index = -1;
                 for (var i = 0; i < this.convertedStudentObj.length; i++) {
@@ -5659,23 +5664,29 @@ function SylvanCalendar() {
                     if (responseObj['hub_master_schedule@odata.bind']) {
                         this.convertedStudentObj[index]['masterScheduleId'] = responseObj['hub_master_schedule@odata.bind'];
                     }
-                    this.convertedStudentObj[index]['sessionStatus'] = OMIT_STATUS;
-                    this.pushStudentToSA(this.convertedStudentObj[index]);
-                    self.saList = this.saList;
-                    setTimeout(function () {
-                        if (self.saList['Personal Instruction'].length > 0 || self.saList['Group Instruction'].length > 0 || self.saList['Group Facilitation'].length > 0) {
-                            self.populateSAPane(self.saList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
-                        }
-                    }, 300);
-                    this.convertedStudentObj.splice(index, 1);
-                    var prevEventId = wjQuery(element).attr("eventid");
-                    var prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
-                    self.updatePrevStudentEvent(prevEvent, uniqueIds[0], prevEventId, element);
+                    if (status != "attended") {
+                        this.convertedStudentObj[index]['sessionStatus'] = status;
+                        this.pushStudentToSA(this.convertedStudentObj[index]);
+                        self.saList = this.saList;
+                        setTimeout(function () {
+                            if (self.saList['Personal Instruction'].length > 0 || self.saList['Group Instruction'].length > 0 || self.saList['Group Facilitation'].length > 0) {
+                                self.populateSAPane(self.saList, self.calendarOptions.minTime, self.calendarOptions.maxTime);
+                            }
+                        }, 300);
+                        this.convertedStudentObj.splice(index, 1);
+                        var prevEventId = wjQuery(element).attr("eventid");
+                        var prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
+                        self.updatePrevStudentEvent(prevEvent, uniqueIds[0], prevEventId, element);
+                    } else {
+                        this.convertedStudentObj[index]['isAttended'] = true;
+                    }
                 }
             }
         }
-        this.openSofPane();
-        this.showConflictMsg();
+        if (status != "attended") {
+            this.openSofPane();
+            this.showConflictMsg();
+        }
         this.draggable('draggable');
         wjQuery('.loading').hide();
     };
@@ -6257,7 +6268,7 @@ function SylvanCalendar() {
                             wjQuery(".loading").show();
                             options = wjQuery.extend(true, {}, options);
                             setTimeout(function () {
-                                self.omitStudentFromSession(options.$trigger[0]);
+                                self.omitStudentFromSession(options.$trigger[0], OMIT_STATUS);
                             }, 300);
                         }
                     }
@@ -6316,7 +6327,7 @@ function SylvanCalendar() {
                         wjQuery(".loading").show();
                         options = wjQuery.extend(true, {}, options);
                         setTimeout(function () {
-                            self.omitStudentFromSession(options.$trigger[0]);
+                            self.omitStudentFromSession(options.$trigger[0],OMIT_STATUS);
                         }, 300);
                     }
                 }
@@ -6349,7 +6360,7 @@ function SylvanCalendar() {
                         wjQuery(".loading").show();
                         options = wjQuery.extend(true, {}, options);
                         setTimeout(function () {
-                            self.omitStudentFromSession(options.$trigger[0]);
+                            self.omitStudentFromSession(options.$trigger[0], OMIT_STATUS);
                         }, 300);
                     }
                 }
@@ -6362,6 +6373,37 @@ function SylvanCalendar() {
                         };
                     }
                 });
+            }
+            if (sessionStatus != INVALID_STATUS) {
+                var currentCalendarDate = self.calendar.fullCalendar('getDate');
+                var setVisibility = (self.checkAccountClosure() || currentCalendarDate.getTime() > new Date().getTime());
+                    obj.attended = {
+                        name: "Attended",
+                        disabled: setVisibility,
+                        visible: !isAttended,
+                        callback: function (key, options) {
+                            wjQuery(".loading").show();
+                            options = wjQuery.extend(true, {}, options);
+                            setTimeout(function () {
+                                if (obj.attended.visible) {
+                                    obj.attended.visible = false;
+                                    self.omitStudentFromSession(options.$trigger[0], "attended");
+                                }
+                            }, 300);
+                        }
+                    }
+                    obj.unExcused = {
+                        name: "Un-Excuse",
+                        disabled: setVisibility,
+                        visible:true,
+                        callback: function (key, options) {
+                            wjQuery(".loading").show();
+                            options = wjQuery.extend(true, {}, options);
+                            setTimeout(function () {
+                                self.omitStudentFromSession(options.$trigger[0],UNEXCUSED_STATUS);
+                            }, 300);
+                        }
+                    }
             }
         }
         else if (labelFor == 'teacher') {
