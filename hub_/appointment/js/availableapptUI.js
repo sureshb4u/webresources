@@ -668,13 +668,14 @@ function Appointment() {
                     var isException = false;
                     if (!fromEvent || event.capacity === event.occupied) {
                         isException = true;
+                        wjQuery(this).dialog("close");
                         self.exceptionaConfirm(newDate, startTime, endTime, isException);
                     } else {
                         if (newAppointmentPage) {
                             var appointment = wjQuery("#appointmentForm")[0];
                             appointment.startDate.value = moment(newDate).format("MM/DD/YYYY");
                             appointment.startTime.value = self.tConvert(self.convertMinsNumToTime(startTime));
-                            appointment.endTime.value = self.tConvert(self.convertMinsNumToTime(endTime));;
+                            appointment.endTime.value = self.tConvert(self.convertMinsNumToTime(endTime));
                             if (isException) {
                                 appointment.exception.checked = isException;
                                 appointment.exception.disabled = true;
@@ -713,16 +714,16 @@ function Appointment() {
                 Yes: function () {
                     if (wjQuery("#appointmentForm").length) {
                         var appointment = wjQuery("#appointmentForm")[0];
-                        appointment.startDate.value = newDate;
-                        appointment.startTime.value = startTime;
-                        appointment.endTime.value = endTime;
-                        if (isException) {
+                        appointment.startDate.value = moment(newDate).format("MM/DD/YYYY");
+                            appointment.startTime.value = self.tConvert(self.convertMinsNumToTime(startTime));
+                            appointment.endTime.value = self.tConvert(self.convertMinsNumToTime(endTime));                       
+                            if (isException) {
                             appointment.exception.checked = isException;
                             appointment.exception.disabled = true;
                         }
+                        wjQuery(this).dialog("close");
                         $("#enableService").click();
                         $("input[required='required']:filled").removeClass("errorField");
-                        wjQuery(this).dialog("close");
                         wjQuery("#backBtn").click();
                     } else {
                         window.selectedSlot = { date: newDate, start: startTime, end: endTime, isException: isException };
