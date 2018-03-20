@@ -731,4 +731,7 @@ i.material-icons.cursor.float-right {
         height:99% !important;
     }
 }
-
+.typeIndicator {
+    font-size: 10px;
+    vertical-align: top;
+}
