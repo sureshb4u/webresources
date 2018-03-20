@@ -703,7 +703,7 @@ function Appointment() {
         var dateString = moment(event.start).format('LL');
         var slotStart = moment(event.start).format('hh:mm A');
         var slotEnd = moment(event.end).format('hh:mm A');
-        var msg = "<p>Appointment is exception. Do you wish to continue?</p>";
+        var msg = "<p>The capacity reached maximum. The appointment would be considered as Exceptional. Do you wish to continue?</p>";
         wjQuery("#dialog > .dialog-msg").html(msg);
         wjQuery("#dialog").dialog({
             resizable: false,
