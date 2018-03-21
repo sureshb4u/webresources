@@ -5988,6 +5988,19 @@ function SylvanCalendar() {
             objNewSession['hub_resourceid@odata.bind'] = null;
             wjQuery("#studentNameofExcuse").text(objStudent[0]['name']);
             // Get business closures for date picker
+            var isClosure = self.checkClosure(minDate1);
+            if (isClosure) {
+                var minDateMonth = moment(minDate1).month() + 1;
+                minDate1 =  moment(minDate1).set('month', minDateMonth)._d;
+                minDate1 =  moment(minDate1).set('date', 1)._d;
+            }
+            isClosure = self.checkClosure(maxDate1);
+            if (isClosure) {
+                var maxDateMonth = moment(maxDate1).month() - 1;
+                var maxClosureDate = new Date();
+                maxClosureDate = moment(moment(maxClosureDate).set('month', maxDateMonth)._d).format("MM-DD-YYYY");
+                maxDate1 = moment(maxClosureDate).endOf('month')._d;
+            }
             self.getDisableDates(minDate1, maxDate1);
             wjQuery(".excuse-datepicker-input").datepicker("destroy");
             wjQuery(".excuse-datepicker-input").datepicker({
@@ -7186,8 +7199,10 @@ function SylvanCalendar() {
             var searchVal = wjQuery(this).val();
             if(searchVal.length){
                 var filtertedList = [];
-                filtertedList = self.makeupList.filter(function(object) {
-                    return object.fullName.toLowerCase().startsWith(searchVal.toLowerCase());
+                filtertedList = self.makeupList.filter(function (object) {
+                    if (object.fullName) {
+                        return object.fullName.toLowerCase().startsWith(searchVal.toLowerCase());
+                    }
                 });
                 self.makeUpItemPopulation(filtertedList);
                 self.makeupClickEvent(filtertedList, idArry, isForMakeup);
@@ -7204,8 +7219,10 @@ function SylvanCalendar() {
             var searchVal = wjQuery(this).val();
             if(searchVal.length){
                 var filtertedList = [];
-                filtertedList = floarList.filter(function(object) {
-                    return object.hub_name.toLowerCase().startsWith(searchVal.toLowerCase());
+                filtertedList = floarList.filter(function (object) {
+                    if (object.hub_name) {
+                        return object.hub_name.toLowerCase().startsWith(searchVal.toLowerCase());
+                    }
                 });
                 self.floatItemPopulation(filtertedList);
                 self.floatClickEvent(filtertedList, idArry);
@@ -9949,6 +9966,23 @@ function SylvanCalendar() {
             }
             return title;
     };
+
+    this.checkClosure = function (date) {
+        var self = this;
+        date = new Date(date);
+        var locationObj = self.getLocationObject(self.locationId);
+        var parentCenterId = locationObj['_hub_parentcenter_value'];
+        if (parentCenterId == undefined) {
+            parentCenterId = locationObj['hub_centerid'];
+        }
+        var accntClosure = data.getAccountClosure(parentCenterId, (date.getMonth() + 1), date.getFullYear());
+        if (accntClosure && accntClosure.length) {
+            if (accntClosure[0]['hub_status'] == 2) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }
 
