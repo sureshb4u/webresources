@@ -5987,7 +5987,7 @@ function SylvanCalendar() {
             var objNewSession = {};
             objNewSession['hub_resourceid@odata.bind'] = null;
             wjQuery("#studentNameofExcuse").text(objStudent[0]['name']);
-            // Get business closures for date picker
+            //checkif the starting month is an AccountClosure
             var isClosure = self.checkClosure(minDate1);
             if (isClosure) {
                 var minDateMonth = moment(minDate1).month() + 1;
@@ -5997,10 +5997,11 @@ function SylvanCalendar() {
             isClosure = self.checkClosure(maxDate1);
             if (isClosure) {
                 var maxDateMonth = moment(maxDate1).month() - 1;
-                var maxClosureDate = new Date();
+                var maxClosureDate = maxDate1;
                 maxClosureDate = moment(moment(maxClosureDate).set('month', maxDateMonth)._d).format("MM-DD-YYYY");
                 maxDate1 = moment(maxClosureDate).endOf('month')._d;
             }
+            // Get business closures for date picker
             self.getDisableDates(minDate1, maxDate1);
             wjQuery(".excuse-datepicker-input").datepicker("destroy");
             wjQuery(".excuse-datepicker-input").datepicker({
