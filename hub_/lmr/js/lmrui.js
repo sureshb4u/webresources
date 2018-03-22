@@ -388,7 +388,11 @@ function LmrUI() {
             self.centerId = wjQuery("#center-id").text();
             self.selectedYear = wjQuery("#yearSelected").val();
             self.selectedMonth = wjQuery("#monthSelected").val();
-            self.confirmPopup("Are you sure to submit?");
+            if (!self.lmrList[0].Reconciled) {
+                self.confirmPopup("Not all bills for the selected month is reconciled, Do you wish to continue?");
+            } else {
+                self.confirmPopup("Are you sure to submit?");
+            }
         });
 
 
