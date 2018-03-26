@@ -3,6 +3,7 @@ var DEFAULT_START_TIME = "8:00 AM";
 var DEFAULT_END_TIME = "9:00 AM";
 var currentCalendarDate = moment(new Date()).format("YYYY-MM-DD");
 var newAppointmentPage = false;
+var disabledDates = [];
 
 setTimeout(function () {
     var appointment = new Appointment();
@@ -36,9 +37,15 @@ setTimeout(function () {
                 appointment.prev();
             });
 
+            function DisableSpecificDates(date) {
+                var string = jQuery.datepicker.formatDate('yy-mm-dd', date);
+                return [disabledDates.indexOf(string) == -1];
+            }
+
             wjQuery('#datepicker').datepicker({
                 buttonImage: "/webresources/hub_/calendar/images/calendar.png",
                 buttonImageOnly: true,
+                beforeShowDay: DisableSpecificDates,
                 changeMonth: true,
                 changeYear: true,
                 showOn: 'button',
@@ -47,9 +54,29 @@ setTimeout(function () {
                     wjQuery(".loading").show();
                     appointment.dateFromCalendar(date);
                     wjQuery('#datepicker').hide();
+                },
+                onChangeMonthYear: function (year,month) {
+                    checkForClosure(month, year);
                 }
             });
+            var checkForClosure = function (month, year) {
+                console.log(month + "--" + year);
+                var parentCenterId = window.location.href.split("=")[1];
+                var closure = data.checkForClosure(parentCenterId, month, year);
+                if (closure) {
+                    var closureStartDate = month + "-01-" + year;
+                    closureStartDate = new Date(moment(closureStartDate).format('MM-DD-YYYY'));
+                    var closureEndDate = moment(closureStartDate).endOf('month')._d;
+                    for (var j = closureStartDate.getTime() ; j <= closureEndDate.getTime() ; j += (24 * 60 * 60 * 1000)) {
+                        disabledDates.push(moment(new Date(j)).format('YYYY-MM-DD'));
+                    }
+                }
+            }
+
+            checkForClosure(new Date().getMonth() + 1, new Date().getFullYear());
+
             appointment.refreshCalendarEvent(true);
+
         }
         if (!wjQuery("#refetch").length) {
             fetchResources(true);
@@ -532,6 +559,9 @@ function Appointment() {
     this.findLeaveDays = function () {
         var self = this;
         this.leaveDays = [];
+        if (window.disabledDates) {
+            this.leaveDays = window.disabledDates;
+        }
         var currentView = self.appointment.fullCalendar('getView');
         for (var j = currentView.start.getTime() ; j <= currentView.end.getTime() ; j = j + (24 * 60 * 60 * 1000)) {
             for (var i = 0; i < self.businessClosure.length; i++) {
@@ -715,9 +745,9 @@ function Appointment() {
                     if (wjQuery("#appointmentForm").length) {
                         var appointment = wjQuery("#appointmentForm")[0];
                         appointment.startDate.value = moment(newDate).format("MM/DD/YYYY");
-                            appointment.startTime.value = self.tConvert(self.convertMinsNumToTime(startTime));
-                            appointment.endTime.value = self.tConvert(self.convertMinsNumToTime(endTime));                       
-                            if (isException) {
+                        appointment.startTime.value = self.tConvert(self.convertMinsNumToTime(startTime));
+                        appointment.endTime.value = self.tConvert(self.convertMinsNumToTime(endTime));
+                        if (isException) {
                             appointment.exception.checked = isException;
                             appointment.exception.disabled = true;
                         }
