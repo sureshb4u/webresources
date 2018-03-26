@@ -468,6 +468,10 @@ function Data(){
   this.getappointmentExceptions = function(startDate,endDate){
       return appointmentExceptions;
   }
+  
+  this.checkForClosure = function (locId, month, year) {
+      return true;
+  }
 
 }
 
