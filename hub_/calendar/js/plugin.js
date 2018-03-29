@@ -3732,7 +3732,6 @@ function SylvanCalendar() {
                         allowStudentFlag = true;
                     }
                 }
-
                 if (allowStudentFlag) {
                     var obj = {
                         studUniqueId:self.generateUniqueId(),
@@ -5621,6 +5620,7 @@ function SylvanCalendar() {
                     }
                     if (status != "attended") {
                         this.convertedStudentObj[index]['sessionStatus'] = status;
+                        this.convertedStudentObj[index]['isAttended'] = false;
                         this.pushStudentToSA(this.convertedStudentObj[index]);
                         self.saList = this.saList;
                         setTimeout(function () {
