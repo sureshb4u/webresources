@@ -36,7 +36,7 @@ var isIE = /*@cc_on!@*/false || !!document.documentMode;
 
 var FLOAT_LABEL = "F";
 var MAKEUP_LABEL = "MU";
-var REGULAR_LABEL = "PERM";
+var REGULAR_LABEL = "REG";
 
 setTimeout(function () {
     var deliveryTypeList = [];
