@@ -23,6 +23,7 @@ var MAKEUP_STATUS = 6;
 var INVALID_STATUS = 7;
 
 // Session type
+var REGULAR_TYPE = 1;
 var FLOAT_TYPE = 2;
 var MAKEUP_TYPE = 3;
 var FLOAT_TEACHER_TYPE = 4;
@@ -35,6 +36,7 @@ var isIE = /*@cc_on!@*/false || !!document.documentMode;
 
 var FLOAT_LABEL = "F";
 var MAKEUP_LABEL = "MU";
+var REGULAR_LABEL = "PERM";
 
 setTimeout(function () {
     var deliveryTypeList = [];
@@ -9961,6 +9963,8 @@ function SylvanCalendar() {
                 indicator = FLOAT_LABEL;
             } else if (sessionType == MAKEUP_TYPE) {
                 indicator = MAKEUP_LABEL;
+            } else if (sessionType == REGULAR_TYPE) {
+                indicator = REGULAR_LABEL
             }
             if (indicator) {
                 title = "<span class='typeIndicator'>" + indicator + "</span>";
@@ -9986,4 +9990,3 @@ function SylvanCalendar() {
     }
 
 }
-
