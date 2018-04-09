@@ -389,7 +389,9 @@ function LmrUI() {
             self.selectedYear = wjQuery("#yearSelected").val();
             self.selectedMonth = wjQuery("#monthSelected").val();
             if (!self.lmrList[0].Reconciled) {
-                self.confirmPopup("Not all bills for the selected month is reconciled, Do you wish to continue?");
+                var dialogTemplate = "<ul class='reconcileDialog'> <li>Click <a href='" + self.lmrList[0].ReconLink + "' target='_blank'><img src='/webresources/hub_/lmr/reconcile.png'></a> to Reconcile All</li>" +
+                    "<li>Click on Yes to ignore and save </li><li>Click on Cancel to close the dialog</li></ul>"
+                self.confirmPopup(dialogTemplate, "Not all bills for the selected month is reconciled");
             } else {
                 self.confirmPopup("Are you sure to submit?");
             }
@@ -770,16 +772,28 @@ function LmrUI() {
         this.selectedMonth = wjQuery("#monthSelected").val();
     }
 
-    this.confirmPopup = function (message) {
+    this.confirmPopup = function (message,title) {
         var self = this;
         wjQuery(".ui-dialog").fadeIn("slow");
         wjQuery(".ui-widget-overlay").fadeIn('slow');
-        wjQuery("#dialog > .dialog-msg").text(message);
+        if (!title) {
+            title = "";
+            wjQuery("#dialog > .dialog-msg").text(message);
+        } else {
+            wjQuery("#dialog > .dialog-msg").empty();
+            wjQuery("#dialog > .dialog-msg").append(message);
+        }
+        var dialogWidth = 350;
+        if(title){
+            dialogWidth = 400;
+        }
         wjQuery("#dialog").dialog({
             dialogClass: "no-close",
             resizable: false,
             height: "auto",
-            width: 350,
+            draggable: false,
+            title: title,
+            width: dialogWidth,
             modal: true,
             position: ['center',10],
             show: {
