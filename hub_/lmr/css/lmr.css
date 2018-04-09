@@ -241,6 +241,25 @@ section .dark {
   left: 15px;
   cursor: pointer;
 }
-
+.reconcileDialog li{
+    line-height:30px;
+}
+.reconcileDialog img{
+    width:25px;
+    height:20px;
+    border-radius:50px;
+    border: 1px solid #dad2d2;
+    box-shadow:0 8px 6px -6px #7f7f7f;
+    position:relative;
+    padding:4px;
+    top:4px;
+}
+.ui-dialog-titlebar{background:#E8AD38;color:white;}
+.ui-dialog-buttonset button { 
+    background: #65635d !important;  
+    font-weight: bold;
+    color: white !important;
+    border-radius: 10px;
+}
 
 /*# sourceMappingURL=lmr.css.map */
