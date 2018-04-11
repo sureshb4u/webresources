@@ -60,8 +60,10 @@ setTimeout(function () {
                 }
             });
             var checkForClosure = function (month, year) {
-                console.log(month + "--" + year);
                 var parentCenterId = window.location.href.split("=")[1];
+                if (parentCenterId) {
+                    parentCenterId = parentCenterId.split("%")[0];
+                }
                 var closure = data.checkForClosure(parentCenterId, month, year);
                 if (closure) {
                     var closureStartDate = month + "-01-" + year;
@@ -181,6 +183,7 @@ function Appointment() {
                     endTime: appointmentHour['hub_endtime@OData.Community.Display.V1.FormattedValue'],
                     endObj: endObj,
                     capacity: appointmentHour['hub_capacity'],
+                    appointmentHourId: appointmentHour['hub_timingsid'],
                     day: appointmentHour['hub_days'],
                     dayVal: appointmentHour['hub_days@OData.Community.Display.V1.FormattedValue'],
                     duration: appointmentHour['aworkhours_x002e_hub_duration']
@@ -464,6 +467,7 @@ function Appointment() {
                                             studentList: [],
                                             parentList: [],
                                             occupied: 0,
+                                            appointmentHourId: appointmentHrObj['appointmentHourId'],
                                             capacity: appointmentHrObj['capacity']
                                         }
 
@@ -709,6 +713,9 @@ function Appointment() {
                             if (isException) {
                                 appointment.exception.checked = isException;
                                 appointment.exception.disabled = true;
+                            } else {
+                                appointment.appointmentHourId = "";
+                                appointment.appointmentHourId = event.appointmentHourId;
                             }
                             $("#enableService").click();
                             $("input[required='required']:filled").removeClass("errorField");
@@ -716,7 +723,7 @@ function Appointment() {
                             wjQuery("#backBtn").click();
                         } else {
                             wjQuery(this).dialog("close");
-                            window.selectedSlot = { date: newDate, start: startTime, end: endTime, isException: isException };
+                            window.selectedSlot = { date: newDate, start: startTime, end: endTime, isException: isException, hub_timingsid: event.appointmentHourId };
                             window.close();
                         }
                     }
@@ -856,4 +863,3 @@ function Appointment() {
         }
     }
 }
-
