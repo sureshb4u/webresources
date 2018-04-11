@@ -9,7 +9,7 @@ var maxClatime = 20;
 var minClatime = 8;
 var slotS = 15;
 // 4 Weeks to get master schedule data.
-var numOfDays = 35;
+var numOfDays = 42;
 
 /*
  * Student Session Status
@@ -3755,6 +3755,7 @@ function SylvanCalendar() {
                         serviceValue: val['aenrollment_x002e_hub_service@OData.Community.Display.V1.FormattedValue'],
                         enrollmentId: val['aenrollment_x002e_hub_enrollmentid'],
                         isFromMasterSchedule: true,
+                        sessiontype:1,
                         is1to1: false,
                         timeSlotType: val['aproductservice_x002e_hub_timeslottype'],
                         namedHoursId: val['aproductservice_x002e_hub_namedgfhoursid']
@@ -3957,6 +3958,7 @@ function SylvanCalendar() {
 
             //out of loop
             if (pinnedList.length) {
+                var uniquePinnedList = [];
                 for (var i = 0; i < pinnedList.length; i++) {
                     var index = -1;
                     for (var j = 0; j < self.convertedStudentObj.length; j++) {
@@ -3969,11 +3971,10 @@ function SylvanCalendar() {
                     }
                     if (index == -1) {
                         self.convertedStudentObj.push(pinnedList[i]);
-                    }
-                    else {
-                        pinnedList.splice(i, 1);
+                        uniquePinnedList.push(pinnedList[i]);
                     }
                 }
+                pinnedList = uniquePinnedList;
                 if (currentView.name == 'resourceDay') {
                     self.populateStudentEvent(pinnedList, true, true);
                 }
@@ -7204,7 +7205,7 @@ function SylvanCalendar() {
                 var filtertedList = [];
                 filtertedList = self.makeupList.filter(function (object) {
                     if (object.fullName) {
-                        return object.fullName.toLowerCase().startsWith(searchVal.toLowerCase());
+                        return object.fullName.toLowerCase().search(searchVal.toLowerCase()) != -1;
                     }
                 });
                 self.makeUpItemPopulation(filtertedList);
@@ -7224,7 +7225,7 @@ function SylvanCalendar() {
                 var filtertedList = [];
                 filtertedList = floarList.filter(function (object) {
                     if (object.hub_name) {
-                        return object.hub_name.toLowerCase().startsWith(searchVal.toLowerCase());
+                        return object.hub_name.toLowerCase().search(searchVal.toLowerCase()) != -1;
                     }
                 });
                 self.floatItemPopulation(filtertedList);
