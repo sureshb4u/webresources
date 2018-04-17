@@ -2130,6 +2130,11 @@ function SylvanCalendar() {
                     parentElement.remove();
                 }
                 newStudent[0]['sessionStatus'] = SCHEDULE_STATUS;
+                if (prevStudent.startHour.getTime() != newStudent[0].startHour.getTime()) {
+                    if (newStudent[0]['pinId']) {
+                        delete newStudent[0]['pinId'];
+                    }
+                }
                 this.convertedStudentObj.push(newStudent[0]);
                 t.populateStudentEvent(newStudent, true);
             } else if (typeof (responseObj) == 'object' && responseObj != null && responseObj != undefined) {
@@ -2158,6 +2163,11 @@ function SylvanCalendar() {
                 if (newStudent[0].hasOwnProperty('isFromMasterSchedule')) {
                     delete newStudent[0].isFromMasterSchedule;
                     newStudent[0]['sessionStatus'] = SCHEDULE_STATUS;
+                }
+                if (prevStudent.startHour.getTime() != newStudent[0].startHour.getTime()) {
+                    if (newStudent[0]['pinId']) {
+                        delete newStudent[0]['pinId'];
+                    }
                 }
                 this.convertedStudentObj.push(newStudent[0]);
                 t.populateStudentEvent(newStudent, true);
@@ -2211,8 +2221,10 @@ function SylvanCalendar() {
             var newStudent = newStudentObj;
             var responseObj = t.saveStudentToSession(t.convertedStudentObj[index], newStudentObj);
             if (typeof responseObj == 'boolean' && responseObj) {
-                delete newStudentObj.pinId;
-                newStudentObj.sessionStatus = RESCHEDULE_STATUS;
+                delete newStudentObj.pinId; 
+                if (t.convertedStudentObj[index].startHour.getTime() != newStudentObj.startHour.getTime()) {
+                    newStudentObj.sessionStatus = RESCHEDULE_STATUS;
+                }
                 elm.remove();
                 self.updatePrevStudentEvent(prevEvent, stuId, prevEventId, elm);
                 var index = -1;
@@ -5363,7 +5375,7 @@ function SylvanCalendar() {
                     txt = txt.replace('<img style="transform:rotate(45deg);" src="/webresources/hub_/calendar/images/pin.png">', '');
                 }
                 wjQuery(element).html("<img src='/webresources/hub_/calendar/images/pin.png'/>" + txt);
-                wjQuery(element).attr('pinnedId', responseObj['hub_pinned_student_teacher_id']);
+                wjQuery(element).attr('pinnedId', responseObj['hub_sch_pinned_students_teachersid']);
                 stdIndex = -1;
                 for (var ij = 0; ij < eventObj[0].students.length; ij++) {
                     var st = eventObj[0].students[ij];
@@ -5373,7 +5385,7 @@ function SylvanCalendar() {
                     }
                 }
                 if (stdIndex != -1) {
-                    eventObj[0].students[stdIndex]['pinId'] = responseObj['hub_pinned_student_teacher_id'];
+                    eventObj[0].students[stdIndex]['pinId'] = responseObj['hub_sch_pinned_students_teachersid'];
                 }
                 self.updateEventTitle(eventObj, element);
             }
@@ -5484,10 +5496,10 @@ function SylvanCalendar() {
                 var eventObj = self.calendar.fullCalendar('clientEvents', eventId);
                 var txt = wjQuery(element).text();
                 wjQuery(element).html("<img src='/webresources/hub_/calendar/images/pin.png'/>" + txt);
-                wjQuery(element).attr('pinnedId', responseObj['hub_pinned_student_teacher_id']);
+                wjQuery(element).attr('pinnedId', responseObj['hub_sch_pinned_students_teachersid']);
                 self.updateEventTitle(eventObj, element);
                 var teacherPinRec = {
-                    id: responseObj['hub_pinned_student_teacher_id'],
+                    id: responseObj['hub_sch_pinned_students_teachersid'],
                     dayId: responseObj['hub_day'],
                     dayValue: objPinnedStaff.hub_day,
                     startTime: moment(startTime).format("h:mm A"),
@@ -9964,8 +9976,6 @@ function SylvanCalendar() {
                 indicator = FLOAT_LABEL;
             } else if (sessionType == MAKEUP_TYPE) {
                 indicator = MAKEUP_LABEL;
-            } else if (sessionType == REGULAR_TYPE) {
-                indicator = REGULAR_LABEL
             }
             if (indicator) {
                 title = "<span class='typeIndicator'>" + indicator + "</span>";
