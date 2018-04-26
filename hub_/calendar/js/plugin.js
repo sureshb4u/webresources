@@ -925,7 +925,11 @@ function SylvanCalendar() {
                     var studentStartHour = sofList[Object.keys(sofList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
                         var studentPosition = studentStartHour - minTime;
-                        var elm = '<div class="student-container cursor padding-lr-xxs" isfromSa="false" type="student" enrollmentId="'+sofList[Object.keys(sofList)[j]][i].enrollmentId+'" studUniqueId="'+sofList[Object.keys(sofList)[j]][i].studUniqueId+'" uniqueValue="' + sofList[Object.keys(sofList)[j]][i].id + '_' + sofList[Object.keys(sofList)[j]][i].start + '"  value="' + sofList[Object.keys(sofList)[j]][i].id + '">' + sofList[Object.keys(sofList)[j]][i].name + ',<span>' + sofList[Object.keys(sofList)[j]][i].grade + '</span></div>';
+                        var elm = '<div class="student-container cursor padding-lr-xxs" isfromSa="false" type="student" enrollmentId="' + sofList[Object.keys(sofList)[j]][i].enrollmentId + '" studUniqueId="' +
+                            sofList[Object.keys(sofList)[j]][i].studUniqueId + '" uniqueValue="' + sofList[Object.keys(sofList)[j]][i].id + '_' + sofList[Object.keys(sofList)[j]][i].start + '"  value="' +
+                            sofList[Object.keys(sofList)[j]][i].id + '">' + sofList[Object.keys(sofList)[j]][i].name + ',<span>' + sofList[Object.keys(sofList)[j]][i].grade +
+                            '</span><i class="material-icons serviceIndicator" title="' + sofList[Object.keys(sofList)[j]][i]['serviceValue'] + '" style="color:' + sofList[Object.keys(sofList)[j]][i]['subjectColorCode'] +
+                            '">location_on</i></div>';
                         var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
                             return y;
                         }).indexOf(sofList[Object.keys(sofList)[j]][i].deliveryTypeId);
@@ -943,7 +947,11 @@ function SylvanCalendar() {
                     var studentStartHour = sofList[Object.keys(sofList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
                         var studentPosition = studentStartHour - minTime;
-                        var elm = '<div class="student-container cursor padding-lr-xxs" isfromSa="false" type="student" enrollmentId="'+sofList[Object.keys(sofList)[j]][i].enrollmentId+'" studUniqueId="'+sofList[Object.keys(sofList)[j]][i].studUniqueId+'" uniqueValue="' + sofList[Object.keys(sofList)[j]][i].id + '_' + sofList[Object.keys(sofList)[j]][i].start + '" value="' + sofList[Object.keys(sofList)[j]][i].id + '">' + sofList[Object.keys(sofList)[j]][i].name + ',<span>' + sofList[Object.keys(sofList)[j]][i].grade + '</span></div>';
+                        var elm = '<div class="student-container cursor padding-lr-xxs" isfromSa="false" type="student" enrollmentId="' + sofList[Object.keys(sofList)[j]][i].enrollmentId +
+                            '" studUniqueId="' + sofList[Object.keys(sofList)[j]][i].studUniqueId + '" uniqueValue="' + sofList[Object.keys(sofList)[j]][i].id + '_' + sofList[Object.keys(sofList)[j]][i].start +
+                            '" value="' + sofList[Object.keys(sofList)[j]][i].id + '">' + sofList[Object.keys(sofList)[j]][i].name + ',<span>' + sofList[Object.keys(sofList)[j]][i].grade +
+                            '</span><i class="material-icons serviceIndicator" title="' + sofList[Object.keys(sofList)[j]][i]['serviceValue'] + '" style="color:' + sofList[Object.keys(sofList)[j]][i]['subjectColorCode'] +
+                            '">location_on</i></div>';
                         var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
                             return y;
                         }).indexOf(sofList[Object.keys(sofList)[j]][i].deliveryTypeId);
@@ -960,7 +968,11 @@ function SylvanCalendar() {
                     var studentStartHour = sofList[Object.keys(sofList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
                         var studentPosition = studentStartHour - minTime;
-                        var elm = '<div class="student-container cursor padding-lr-xxs" isfromSa="false" type="student" enrollmentId="'+sofList[Object.keys(sofList)[j]][i].enrollmentId+'" studUniqueId="'+sofList[Object.keys(sofList)[j]][i].studUniqueId+'" uniqueValue="' + sofList[Object.keys(sofList)[j]][i].id + '_' + sofList[Object.keys(sofList)[j]][i].start + '" value="' + sofList[Object.keys(sofList)[j]][i].id + '">' + sofList[Object.keys(sofList)[j]][i].name + ',<span>' + sofList[Object.keys(sofList)[j]][i].grade + '</span></div>';
+                        var elm = '<div class="student-container cursor padding-lr-xxs" isfromSa="false" type="student" enrollmentId="' + sofList[Object.keys(sofList)[j]][i].enrollmentId +
+                            '" studUniqueId="' + sofList[Object.keys(sofList)[j]][i].studUniqueId + '" uniqueValue="' + sofList[Object.keys(sofList)[j]][i].id + '_' + sofList[Object.keys(sofList)[j]][i].start +
+                            '" value="' + sofList[Object.keys(sofList)[j]][i].id + '">' + sofList[Object.keys(sofList)[j]][i].name + ',<span>' + sofList[Object.keys(sofList)[j]][i].grade +
+                            '</span><i class="material-icons serviceIndicator" title="' + sofList[Object.keys(sofList)[j]][i]['serviceValue'] + '" style="color:' + sofList[Object.keys(sofList)[j]][i]['subjectColorCode'] +
+                            '">location_on</i></div>';
                         var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
                             return y;
                         }).indexOf(sofList[Object.keys(sofList)[j]][i].deliveryTypeId);
@@ -974,6 +986,7 @@ function SylvanCalendar() {
                 }
             }
             this.sofWidthCalc();
+            this.showConflictMsg();
             if(!self.checkAccountClosure()){
                 this.draggable('student-container');
             }
@@ -1006,7 +1019,11 @@ function SylvanCalendar() {
                             statusText = "Omitted";
                         }
                         var studentPosition = studentStartHour - minTime;
-                        var elm = '<div class="saStudent-container cursor padding-lr-xxs'+draggable1+'" isfromSa="true" type="student" enrollmentId="'+saList[Object.keys(saList)[j]][i].enrollmentId+'" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start + '"  value="' + saList[Object.keys(saList)[j]][i].id + '">' + saList[Object.keys(saList)[j]][i].name + ',<span>' + saList[Object.keys(saList)[j]][i].grade +" ("+statusText+")" + '</span></div>';
+                        var elm = '<div class="saStudent-container cursor padding-lr-xxs' + draggable1 + '" isfromSa="true" type="student" enrollmentId="' + saList[Object.keys(saList)[j]][i].enrollmentId +
+                            '" studUniqueId="' + saList[Object.keys(saList)[j]][i].studUniqueId + '" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start +
+                            '"  value="' + saList[Object.keys(saList)[j]][i].id + '">' + saList[Object.keys(saList)[j]][i].name + ',<span>' + saList[Object.keys(saList)[j]][i].grade + " (" + statusText + ")" +
+                           '<i class="material-icons serviceIndicator" title="' + saList[Object.keys(saList)[j]][i]['serviceValue'] + '" style="color:' + saList[Object.keys(saList)[j]][i]['subjectColorCode'] +
+                            '">location_on</i></span></div>';
                         var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
                             return y;
                         }).indexOf(saList[Object.keys(saList)[j]][i].deliveryTypeId);
@@ -1033,7 +1050,11 @@ function SylvanCalendar() {
                             statusText = "Omitted";
                         }
                         var studentPosition = studentStartHour - minTime;
-                        var elm = '<div class="saStudent-container cursor padding-lr-xxs'+draggable1+'" isfromSa="true" type="student" enrollmentId="'+saList[Object.keys(saList)[j]][i].enrollmentId+'" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start + '"  value="' + saList[Object.keys(saList)[j]][i].id + '" >' + saList[Object.keys(saList)[j]][i].name +',<span>' + saList[Object.keys(saList)[j]][i].grade +" ("+statusText+")" + '</span></div>';
+                        var elm = '<div class="saStudent-container cursor padding-lr-xxs' + draggable1 + '" isfromSa="true" type="student" enrollmentId="' + saList[Object.keys(saList)[j]][i].enrollmentId +
+                            '" studUniqueId="' + saList[Object.keys(saList)[j]][i].studUniqueId + '" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start +
+                            '"  value="' + saList[Object.keys(saList)[j]][i].id + '" >' + saList[Object.keys(saList)[j]][i].name + ',<span>' + saList[Object.keys(saList)[j]][i].grade + " (" + statusText + ")" +
+                            '</span><i class="material-icons serviceIndicator" title="' + saList[Object.keys(saList)[j]][i]['serviceValue'] + '" style="color:' + saList[Object.keys(saList)[j]][i]['subjectColorCode'] +
+                            '">location_on</i></div>';
                         var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
                             return y;
                         }).indexOf(saList[Object.keys(saList)[j]][i].deliveryTypeId);
@@ -1059,7 +1080,11 @@ function SylvanCalendar() {
                             statusText = "Omitted";
                         }
                         var studentPosition = studentStartHour - minTime;
-                        var elm = '<div class="saStudent-container cursor padding-lr-xxs'+draggable1+'" isfromSa="true" type="student" enrollmentId="'+saList[Object.keys(saList)[j]][i].enrollmentId+'" studUniqueId="'+saList[Object.keys(saList)[j]][i].studUniqueId+'" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start + '"  value="' + saList[Object.keys(saList)[j]][i].id + '" >' + saList[Object.keys(saList)[j]][i].name + ',<span>' + saList[Object.keys(saList)[j]][i].grade +" ("+statusText+")" + '</span></div>';
+                        var elm = '<div class="saStudent-container cursor padding-lr-xxs' + draggable1 + '" isfromSa="true" type="student" enrollmentId="' + saList[Object.keys(saList)[j]][i].enrollmentId +
+                            '" studUniqueId="' + saList[Object.keys(saList)[j]][i].studUniqueId + '" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start +
+                            '"  value="' + saList[Object.keys(saList)[j]][i].id + '" >' + saList[Object.keys(saList)[j]][i].name + ',<span>' + saList[Object.keys(saList)[j]][i].grade + " (" + statusText + ")" +
+                            '</span><i class="material-icons serviceIndicator" title="' + saList[Object.keys(saList)[j]][i]['serviceValue'] + '" style="color:' + saList[Object.keys(saList)[j]][i]['subjectColorCode'] +
+                            '">location_on</i></div>';
                         var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
                             return y;
                         }).indexOf(saList[Object.keys(saList)[j]][i].deliveryTypeId);
@@ -1073,6 +1098,7 @@ function SylvanCalendar() {
                 }
             }
             this.saWidthCalc();
+            this.showConflictMsg();
             if(!self.checkAccountClosure()){
                 this.draggable('draggable');
             }
@@ -3731,6 +3757,22 @@ function SylvanCalendar() {
                        currentCalendarDate.getTime() <= effEndDate.getTime()) {
                         allowStudentFlag = true;
                     }
+                    var timeSplit = self.convertMinsNumToTime(val['hub_starttime']);
+                    var startHour
+                    if (timeSplit) {
+                        timeSplit = timeSplit.split(":")
+                        var startHour = new Date(currentCalendarDate.setHours(timeSplit[0]));
+                        startHour = new Date(currentCalendarDate.setMinutes(timeSplit[1]));
+                    }
+                    
+                    obj = {}
+                    obj.deliveryTypeCode = val['adeliverytype_x002e_hub_code'];
+                    if (val['aproductservice_x002e_hub_namedgfhoursid']) {
+                        obj.namedGfid = val['aproductservice_x002e_hub_namedgfhoursid'];
+                    }
+                    obj.timeSlotType = val['aproductservice_x002e_hub_timeslottype'];
+                    obj.duration = val['aproductservice_x002e_hub_duration'];
+                   var instructionalHourValidity = self.checkInstructionalHours(obj, startHour);
                 }
                 else if (currentView.name == 'agendaWeek') {
                     // Effective end date logic
@@ -3742,7 +3784,7 @@ function SylvanCalendar() {
                         allowStudentFlag = true;
                     }
                 }
-                if (allowStudentFlag) {
+                if (allowStudentFlag && instructionalHourValidity) {
                     var obj = {
                         studUniqueId:self.generateUniqueId(),
                         id: val['aenrollment_x002e_hub_student'],
@@ -7102,7 +7144,7 @@ function SylvanCalendar() {
 
     this.showConflictMsg = function () {
         var self = this;
-        wjQuery(".sof-btn, .fc-event,.info-icon, .onetoone").tooltip({
+        wjQuery(".sof-btn, .fc-event,.info-icon, .onetoone, .serviceIndicator").tooltip({
             tooltipClass: "custom-conflict",
             track: true,
             content: function () {
