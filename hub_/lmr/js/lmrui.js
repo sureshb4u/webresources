@@ -13,6 +13,7 @@ function LmrUI() {
     this.selectedYear = "";
     this.selectedMonth = "";
     this.centerId = "";
+    this.countryConst = "United States Of America";
 
     this.getQueryParm = function () {
         var self = this;
@@ -110,9 +111,14 @@ function LmrUI() {
     this.generateSkeleton = function () {
         var self = this;
         var skeleton = "";
+        var foreignExchange;
+        var foreignWitholdings;
+        var localAdPayment;
         if (self.lmrList.length) {
             var isClosedText = self.lmrList[0].IsClosed ? "disabled" : "";
             wjQuery.each(self.lmrList, function (index, el) {
+                foreignExchange = el.TotalDue;
+                foreignWitholdings = el.TotalDue;
                 skeleton = '<aside class="heading">';
                 if (el.hasOwnProperty("CenterNumber")) {
                     skeleton += '<article class="row">' +
@@ -142,13 +148,13 @@ function LmrUI() {
                 '<aside class="desc">';
                 skeleton += '    <section class="by4">' +
                             '       <h1>ROYALTY CALCULATION:</h1>' +
-                            '        <article class="dark">' +
+                            '        <article id="royaltySection" class="dark">' +
                             '            <span class="first-colm">&nbsp;</span>' +
                             '            <span>Amount</span>' +
                             '            <span>Royalty%</span>' +
                             '            <span>Total</span>' +
                             '        </article>' +
-                            '        <article>' +
+                            '        <div class="royaltySection"><article>' +
                             '            <span class="first-colm">Core Revenue summary</span>';
                 if (el.hasOwnProperty("CoreAmount")) {
                     skeleton += '<span id="coreval">$' + parseFloat(el.CoreAmount).toFixed(2) + '</span>';
@@ -197,24 +203,49 @@ function LmrUI() {
                     '            <span>&nbsp;</span>' +
                     '            <span>&nbsp;</span>';
                 }
-                skeleton += '        </article>' +
-                            '        <article class="brdr-btm">' +
-                            '            <span class="first-colm">&nbsp;</span>';
-                if (el.hasOwnProperty("TotalDue")) {
-                    skeleton += ' <span>&nbsp;</span>' +
-                                '<span><b>Total Royalty Due</b></span>' +
-                                '<span id="rTotal">$' + parseFloat(el.TotalDue).toFixed(2) + '</span>';
+                if (el.Country && el.Country.toLowerCase() != self.countryConst.toLowerCase()) {
+                    if (!el.Wrate) {
+                        el.Wrate = 0.00;
+                    }
+                    if (!el.Erate) {
+                        el.Erate = 0.00;
+                    }
+                    foreignWitholdings = parseFloat(el.TotalDue).toFixed(2) * el.Wrate;
+                    var localRoyaltyDue = parseFloat(el.TotalDue).toFixed(2) - foreignWitholdings;
+                    foreignExchange = parseFloat(localRoyaltyDue).toFixed(2) * el.Erate;
+                    skeleton += ' </article><article class="subHeader">' +
+                        '<span></span><span></span><span>local currency gross royalty: </span>'+
+                        '<span class="rTotal">$' + parseFloat(el.TotalDue).toFixed(2) + '</span></article>' +
+                        '<article><span>Foreign Tax Witholdings : </span><span class="rTotal">$' + parseFloat(el.TotalDue).toFixed(2) + '</span>' +
+                        '<span>' + (el.Wrate * 100) + '</span><span id="foreignWitholdings">$ ' + parseFloat(foreignWitholdings).toFixed(2) + '</span>' +
+                        '</article><article class="subHeader">'+
+                        '<span></span><span></span><span> total royalty due local currency: </span>'+
+                        '<span id="royaltyDueLocal">$' + parseFloat(localRoyaltyDue).toFixed(2) + '</span></article>' +
+                        '<article><span>Foreign Exchange Conversion : </span><span id="royaltyDueLocal">$' + parseFloat(localRoyaltyDue).toFixed(2) + '</span>' +
+                        '<span>' + (el.Erate * 100) + '</span><span class="foreignExchange">$ ' + parseFloat(foreignExchange).toFixed(2) + '</span>' 
                 }
                 skeleton += '        </article>' +
+                           '        <article class="brdr-btm">' +
+                           '            <span class="first-colm">&nbsp;</span>';
+                if (foreignExchange) {
+                    skeleton += ' <span>&nbsp;</span>' +
+                                '<span><b>Total Royalty Due USD</b></span>' +
+                                '<span class="foreignExchange">$' + parseFloat(foreignExchange).toFixed(2) + '</span>';
+                }else{
+                    skeleton += ' <span>&nbsp;</span>' +
+                                '<span><b>Total Royalty Due USD</b></span>' +
+                                '<span class="rTotal">$' + parseFloat(el.TotalDue).toFixed(2) + '</span>';
+                }
+                skeleton += '        </article></div>' +
                             '        <h1>NATIONAL ADVERTISING:</h1>' +
-                            '        <article class="dark">' +
+                            '        <article id="advertisingSection" class="dark">' +
                             '            <span class="first-colm">&nbsp;</span>' +
                             '            <span>Amount</span>' +
                             '            <span>NAC/NAF%</span>' +
                             '            <span>Total</span>' +
                             '        </article>' +
-                            '        <article>' +
-                            '           <span class="first-colm">National Advertising Fund</span>';
+                            '        <div class="advertisingSection" ><article>' +
+                            '        <span class="first-colm">National Advertising Fund</span>';
                 if (el.hasOwnProperty("NAFAmount")) {
                     skeleton += ' <span id="nafAmount" >$' +  parseFloat(el.NAFAmount).toFixed(2) + '</span>';
                 }
@@ -235,17 +266,26 @@ function LmrUI() {
                 }
                 if (el.hasOwnProperty("NACPayment")) {
                     skeleton += ' <span id="nacPayment" >$' + parseFloat(el.NACPayment).toFixed(2) + '</span>';
+                }          
+                if (el.Country && el.Country.toLowerCase() != self.countryConst.toLowerCase()) {
+                    localAdPayment =  parseFloat(el.TotalAdvertisingPayment).toFixed(2) * el.Erate;
+                    skeleton += '</article><article class="subHeader"><span></span><span></span><span><b>Total National Advertising Local Currency:</b></span>' +
+                        '<span id="totalAdvertisingPaymentLocal" >$' + parseFloat(el.TotalAdvertisingPayment).toFixed(2) + '</span>' +
+                        '</article><article>'+
+                        '<span>Foreign Exchange Conversion : </span><span id="totalAdvertisingPaymentLocal">$' + parseFloat(el.TotalAdvertisingPayment).toFixed(2) + '</span>' +
+                        '<span>' + (el.Erate) * 100 + '</span><span >$' + parseFloat(localAdPayment).toFixed(2) + '</span>'
                 }
                 skeleton += '        </article>' +
                             '        <article class="btm-brdr">' +
                             '            <span class="first-colm">&nbsp;</span>' +
-                            '            <span>&nbsp;</span>' +
-                            '            <span><b>Total National Advertising due:</b></span>';
-                if (el.hasOwnProperty("TotalAdvertisingPayment")) {
+                            '            <span>&nbsp;</span>'+
+                            '<span><b>Total National Advertising Due USD:</b></span>';
+                if (localAdPayment) {
+                    skeleton += ' <span id="totalAdvertisingPayment" >$' + parseFloat(localAdPayment).toFixed(2) + '</span>';
+                } else {
                     skeleton += ' <span id="totalAdvertisingPayment" >$' + parseFloat(el.TotalAdvertisingPayment).toFixed(2) + '</span>';
                 }
-
-                skeleton += '</article>' +
+                skeleton += '</article></div>' +
                 '    </section>' +
                 '</aside>';
             });
@@ -389,7 +429,7 @@ function LmrUI() {
             self.selectedYear = wjQuery("#yearSelected").val();
             self.selectedMonth = wjQuery("#monthSelected").val();
             if (!self.lmrList[0].Reconciled) {
-                var dialogTemplate = "<ul class='reconcileDialog'> <li>Click <a href='" + self.lmrList[0].ReconLink + "' target='_blank'><img src='/webresources/hub_/lmr/reconcile.png'></a> to Reconcile All</li>" +
+                var dialogTemplate = "<ul class='reconcileDialog'> <li>Click <a href='" + self.lmrList[0].ReconLink + "' target='_blank'><img src='/webresources/hub_/images/reconcile.png'></a> to Reconcile All</li>" +
                     "<li>Click on Yes to ignore and save </li><li>Click on Cancel to close the dialog</li></ul>"
                 self.confirmPopup(dialogTemplate, "Not all bills for the selected month is reconciled");
             } else {
@@ -501,9 +541,9 @@ function LmrUI() {
             } 
 
             if (rTotal >= 0) {
-                wjQuery("#rTotal").text("$"+rTotal);
+                wjQuery(".rTotal").text("$"+rTotal);
             }else{
-                wjQuery("#rTotal").text("($"+Math.abs(rTotal)+")");
+                wjQuery(".rTotal").text("($"+Math.abs(rTotal)+")");
             }
 
             if(r1Total >= 0){
@@ -578,10 +618,10 @@ function LmrUI() {
 
 
             if (rTotal >= 0) {
-                wjQuery("#rTotal").text("$"+rTotal);
+                wjQuery(".rTotal").text("$"+rTotal);
             }else{
                 rTotal = rTotal.toString().replace("-","");
-                wjQuery("#rTotal").text("($"+rTotal+")");
+                wjQuery(".rTotal").text("($"+rTotal+")");
             }
             if(r1Total >= 0){
                 wjQuery("#r1Total").text("$"+r1Total);
@@ -623,6 +663,25 @@ function LmrUI() {
                 wjQuery("#advTotal").text("$"+parseFloat(ltotal).toFixed(2));
             }
         });
+
+        wjQuery("article.dark").off("click").on("click", function (el) {
+            var sectionId = wjQuery(el.target).parents().attr("id");
+            if (wjQuery("." + sectionId + " article").hasClass("displayNone")) {
+                wjQuery("." + sectionId + " article").removeClass("displayNone");
+                autoHeightAnimate(wjQuery("." + sectionId));
+            } else {
+                wjQuery("." + sectionId).stop().animate({ "height": "0" }, "500", "swing", function () {
+                    wjQuery("." + sectionId + " article").addClass("displayNone");
+                });
+            }
+        });
+
+       var autoHeightAnimate = function(element) {
+            var curHeight = element.height(), // Get Default Height
+                autoHeight = element.css('height', 'auto').height(); // Get Auto Height
+            element.height(curHeight); // Reset to Default Height
+            element.stop().animate({ height: autoHeight }, "500","swing"); // Animate to Auto Height
+        }
 
     }
 
