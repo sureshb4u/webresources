@@ -92,7 +92,7 @@ button {
   width: 97%;
   margin: 0 auto; }
 
-[class^=by] > article {
+[class^=by] > article,.advertisingSection article,.royaltySection article {
   position: relative;
   display: block;
   overflow: hidden;
@@ -244,14 +244,17 @@ section .dark {
 .reconcileDialog li{
     line-height:30px;
 }
+
+.reconcileDialog a {
+    width:25px;
+    height:30px;
+    position:relative;
+    padding:4px;
+}
 .reconcileDialog img{
     width:25px;
     height:20px;
-    border-radius:50px;
-    border: 1px solid #dad2d2;
-    box-shadow:0 8px 6px -6px #7f7f7f;
     position:relative;
-    padding:4px;
     top:4px;
 }
 .ui-dialog-titlebar{background:#E8AD38;color:white;}
@@ -262,4 +265,12 @@ section .dark {
     border-radius: 10px;
 }
 
+.displayNone{display:none !important;}
+.subHeader {
+    text-transform:uppercase;
+    font-weight:bold;
+}
+.subHeader span {
+    border-right:0;
+}
 /*# sourceMappingURL=lmr.css.map */
