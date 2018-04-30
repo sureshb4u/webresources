@@ -2859,6 +2859,9 @@ function SylvanCalendar() {
                 wjQuery('#calendar div.fc-content').addClass('fc-scroll-content');
                 if (wjQuery('.firstColTable').length == 0) {
                     wjQuery(".fc-view-resourceDay table thead tr").append("<div class='firstColTable'>" + dayName + "<br><span>" + calDate + "</span></div>");
+                } else {
+                    wjQuery('.firstColTable').remove();
+                    wjQuery(".fc-view-resourceDay table thead tr").append("<div class='firstColTable'>" + dayName + "<br><span>" + calDate + "</span></div>");
                 }
             }
             if (self.resourceList.length <= 6) {
@@ -7438,7 +7441,7 @@ function SylvanCalendar() {
                     } else {
                         callSave = true;
                     }
-                    var instructionalHourCheck = self.checkInstructionalHours(studentObj[0]);
+                    var instructionalHourCheck = self.checkInstructionalHours(studentObj[0], idArry[2]);
                     if (callSave) {
                         var locationObj = self.getLocationObject(self.locationId);
                         objSession['ownerObj'] = locationObj['ownerObj'];
