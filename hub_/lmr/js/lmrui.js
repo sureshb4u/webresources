@@ -152,7 +152,7 @@ function LmrUI() {
                             '            <span class="first-colm">&nbsp;</span>' +
                             '            <span>Amount</span>' +
                             '            <span>Royalty%</span>' +
-                            '            <span>Total</span>' +
+                            '            <span>Total <img id="royaltySection" class="accord" src="/webresources/hub_/calendar/images/accord.png"/></span>' +
                             '        </article>' +
                             '        <div class="royaltySection"><article>' +
                             '            <span class="first-colm">Core Revenue summary</span>';
@@ -217,17 +217,17 @@ function LmrUI() {
                         '<span></span><span></span><span>local currency gross royalty: </span>'+
                         '<span class="rTotal">$' + parseFloat(el.TotalDue).toFixed(2) + '</span></article>' +
                         '<article><span>Foreign Tax Witholdings : </span><span class="rTotal">$' + parseFloat(el.TotalDue).toFixed(2) + '</span>' +
-                        '<span>' + (el.Wrate * 100) + '</span><span id="foreignWitholdings">$ ' + parseFloat(foreignWitholdings).toFixed(2) + '</span>' +
+                        '<span id="wrate" raw-value=' + el.Wrate + '>' + parseFloat((el.Wrate * 100)).toFixed(2) + '</span><span id="foreignWitholdings">$ ' + parseFloat(foreignWitholdings).toFixed(2) + '</span>' +
                         '</article><article class="subHeader">'+
                         '<span></span><span></span><span> total royalty due local currency: </span>'+
                         '<span id="royaltyDueLocal">$' + parseFloat(localRoyaltyDue).toFixed(2) + '</span></article>' +
                         '<article><span>Foreign Exchange Conversion : </span><span id="royaltyDueLocal">$' + parseFloat(localRoyaltyDue).toFixed(2) + '</span>' +
-                        '<span>' + (el.Erate * 100) + '</span><span class="foreignExchange">$ ' + parseFloat(foreignExchange).toFixed(2) + '</span>' 
+                        '<span  id="erate" raw-value=' + el.Erate + '>' + parseFloat((el.Erate * 100)).toFixed(2) + '</span><span class="foreignExchange">$ ' + parseFloat(foreignExchange).toFixed(2) + '</span>'
                 }
                 skeleton += '        </article>' +
                            '        <article class="brdr-btm">' +
                            '            <span class="first-colm">&nbsp;</span>';
-                if (foreignExchange) {
+                if (el.Country && el.Country.toLowerCase() != self.countryConst.toLowerCase()) {
                     skeleton += ' <span>&nbsp;</span>' +
                                 '<span><b>Total Royalty Due USD</b></span>' +
                                 '<span class="foreignExchange">$' + parseFloat(foreignExchange).toFixed(2) + '</span>';
@@ -242,7 +242,7 @@ function LmrUI() {
                             '            <span class="first-colm">&nbsp;</span>' +
                             '            <span>Amount</span>' +
                             '            <span>NAC/NAF%</span>' +
-                            '            <span>Total</span>' +
+                            '            <span>Total<img id="advertisingSection" class="accord" src="/webresources/hub_/calendar/images/accord.png"/></span>' +
                             '        </article>' +
                             '        <div class="advertisingSection" ><article>' +
                             '        <span class="first-colm">National Advertising Fund</span>';
@@ -270,10 +270,10 @@ function LmrUI() {
                 if (el.Country && el.Country.toLowerCase() != self.countryConst.toLowerCase()) {
                     localAdPayment =  parseFloat(el.TotalAdvertisingPayment).toFixed(2) * el.Erate;
                     skeleton += '</article><article class="subHeader"><span></span><span></span><span><b>Total National Advertising Local Currency:</b></span>' +
-                        '<span id="totalAdvertisingPaymentLocal" >$' + parseFloat(el.TotalAdvertisingPayment).toFixed(2) + '</span>' +
+                        '<span class="totalAdvertisingPayment" >$' + parseFloat(el.TotalAdvertisingPayment).toFixed(2) + '</span>' +
                         '</article><article>'+
-                        '<span>Foreign Exchange Conversion : </span><span id="totalAdvertisingPaymentLocal">$' + parseFloat(el.TotalAdvertisingPayment).toFixed(2) + '</span>' +
-                        '<span>' + (el.Erate) * 100 + '</span><span >$' + parseFloat(localAdPayment).toFixed(2) + '</span>'
+                        '<span>Foreign Exchange Conversion : </span><span class="totalAdvertisingPayment">$' + parseFloat(el.TotalAdvertisingPayment).toFixed(2) + '</span>' +
+                        '<span>' + parseFloat((el.Erate) * 100).toFixed(2) + '</span><span class="totalAdvertisingPaymentLocal">$' + parseFloat(localAdPayment).toFixed(2) + '</span>'
                 }
                 skeleton += '        </article>' +
                             '        <article class="btm-brdr">' +
@@ -281,9 +281,9 @@ function LmrUI() {
                             '            <span>&nbsp;</span>'+
                             '<span><b>Total National Advertising Due USD:</b></span>';
                 if (localAdPayment) {
-                    skeleton += ' <span id="totalAdvertisingPayment" >$' + parseFloat(localAdPayment).toFixed(2) + '</span>';
+                    skeleton += ' <span class="totalAdvertisingPaymentLocal" >$' + parseFloat(localAdPayment).toFixed(2) + '</span>';
                 } else {
-                    skeleton += ' <span id="totalAdvertisingPayment" >$' + parseFloat(el.TotalAdvertisingPayment).toFixed(2) + '</span>';
+                    skeleton += ' <span class="totalAdvertisingPayment" >$' + parseFloat(el.TotalAdvertisingPayment).toFixed(2) + '</span>';
                 }
                 skeleton += '</article></div>' +
                 '    </section>' +
@@ -293,7 +293,8 @@ function LmrUI() {
             skeleton = "<span>No data found</span>";
         }
         wjQuery("#lmr-table").html(skeleton);
-        wjQuery("#lmr-table").next(".form-area").remove();
+        wjQuery("#lmr-table").next("#adNMarketing").remove();
+        wjQuery("#lmr-table").next(".adNMarketing").remove();
         wjQuery("#lmr-table").next(".btn-article").remove();
         wjQuery("#lmr-table").after(self.appendOtherSkeleten());
         setTimeout(function () {
@@ -307,7 +308,8 @@ function LmrUI() {
         var self = this;
         var el= self.lmrList[0];
         var isClosedText = el.IsClosed ? "disabled" : "";
-        var skeleton =  '<section class="form-area">'+
+        var skeleton = '<article id="adNMarketing" class="dark"><div class="header">advertising & Marketing<span><img id="adNMarketing" class="accord" src="/webresources/hub_/calendar/images/accord.png"/><span></div></article>' +
+                '<div class="adNMarketing"><section class="form-area">' +
                 '        <aside class="form-aside">'+
                 '           <h1>ADVERTISING</h1>'+
                 '           <p class="form-row">'+
@@ -376,7 +378,7 @@ function LmrUI() {
                 '               <span id="localTotal">$'+ parseFloat(el.localTotal).toFixed(2) +'</span>'+
                 '           </p>'+
                 '        </aside>'+
-                '</section>'+
+                '</section></div>' +
                 '<article class="no-brdr btn-article">' +
                 '            <span class="first-colm">Comment</span>' +
                 '            <span><input type="text" value="'+el.Comments+'" class="form-control" id="comment"  '+isClosedText+'></span>' +
@@ -503,7 +505,8 @@ function LmrUI() {
 
             var rTotal = parseFloat((coreTotal+edgeTotal+miscVal) - (creditTotal)).toFixed(2);
             var r1Total = parseFloat(coreVal+edgeVal- miscVal).toFixed(2);
-
+            var wrate = parseFloat(wjQuery("#wrate").attr("raw-value"));
+            var erate = parseFloat(wjQuery("#erate").attr("raw-value"));
             var nafAmount = parseFloat(((parseFloat(self.lmrList[0].NAFAmount) + miscVal) - creditVal).toFixed(2));
             var nacAmount = parseFloat(((parseFloat(self.lmrList[0].NACAmount) + miscVal) - creditVal).toFixed(2));
             var nafPayment = parseFloat((parseFloat(self.lmrList[0].NAFRate)*nafAmount).toFixed(2));
@@ -535,17 +538,26 @@ function LmrUI() {
             } 
 
             if(totalAdvertisingPayment >=0){
-                wjQuery("#totalAdvertisingPayment").text("$"+parseFloat(totalAdvertisingPayment).toFixed(2));
+                wjQuery(".totalAdvertisingPayment").text("$"+parseFloat(totalAdvertisingPayment).toFixed(2));
             }else{
-                wjQuery("#totalAdvertisingPayment").text("($"+Math.abs(parseFloat(totalAdvertisingPayment).toFixed(2))+")");
-            } 
-
-            if (rTotal >= 0) {
-                wjQuery(".rTotal").text("$"+rTotal);
-            }else{
-                wjQuery(".rTotal").text("($"+Math.abs(rTotal)+")");
+                totalAdvertisingPayment = Math.abs(parseFloat(totalAdvertisingPayment).toFixed(2));
+                wjQuery(".totalAdvertisingPayment").text("($"+Math.abs(parseFloat(totalAdvertisingPayment).toFixed(2))+")");
             }
-
+            if (rTotal >= 0) {
+                wjQuery(".rTotal").text("$" + rTotal);
+            } else {
+                wjQuery(".rTotal").text("($" + Math.abs(rTotal) + ")");
+            }
+            if (wjQuery('#royaltyDueLocal').length) {
+                var foreignWithHolding = parseFloat(rTotal).toFixed(2) * wrate;
+                wjQuery("#foreignWitholdings").text("$" + parseFloat(foreignWithHolding).toFixed(2));
+                var localRoyaltyDue = parseFloat(rTotal).toFixed(2) - foreignWithHolding.toFixed(2);
+                wjQuery("#royaltyDueLocal").text("$" + parseFloat(localRoyaltyDue).toFixed(2));
+                var foreignExchange = parseFloat(localRoyaltyDue).toFixed(2) * erate;
+                wjQuery(".foreignExchange").text("$" + parseFloat(foreignExchange).toFixed(2));
+                var adPaymentLocal = parseFloat(totalAdvertisingPayment).toFixed(2) * erate;
+                wjQuery(".totalAdvertisingPaymentLocal").text("$" + parseFloat(foreignExchange).toFixed(2));
+            }
             if(r1Total >= 0){
                 wjQuery("#r1Total").text("$"+r1Total);
             }else{
@@ -578,7 +590,8 @@ function LmrUI() {
 
             var rTotal = parseFloat((coreTotal+edgeTotal+miscVal) - (creditTotal)).toFixed(2);
             var r1Total = parseFloat(coreVal+edgeVal+miscVal).toFixed(2);
-
+            var wrate = parseFloat(wjQuery("#wrate").attr("raw-value"));
+            var erate = parseFloat(wjQuery("#erate").attr("raw-value"));
             var nafAmount = parseFloat(((parseFloat(self.lmrList[0].NAFAmount) + miscVal) - creditVal1).toFixed(2));
             var nacAmount = parseFloat(((parseFloat(self.lmrList[0].NACAmount) + miscVal) - creditVal1).toFixed(2));
             var nafPayment = parseFloat((parseFloat(self.lmrList[0].NAFRate)*nafAmount).toFixed(2));
@@ -611,18 +624,27 @@ function LmrUI() {
             } 
 
             if(totalAdvertisingPayment >=0){
-                wjQuery("#totalAdvertisingPayment").text("$"+parseFloat(totalAdvertisingPayment).toFixed(2));
-            }else{
-                wjQuery("#totalAdvertisingPayment").text("($"+Math.abs(parseFloat(totalAdvertisingPayment).toFixed(2))+")");
-            } 
-
-
-            if (rTotal >= 0) {
-                wjQuery(".rTotal").text("$"+rTotal);
-            }else{
-                rTotal = rTotal.toString().replace("-","");
-                wjQuery(".rTotal").text("($"+rTotal+")");
+                wjQuery(".totalAdvertisingPayment").text("$"+parseFloat(totalAdvertisingPayment).toFixed(2));
+            } else {
+                totalAdvertisingPayment = Math.abs(parseFloat(totalAdvertisingPayment).toFixed(2));
+                wjQuery(".totalAdvertisingPayment").text("($"+Math.abs(parseFloat(totalAdvertisingPayment).toFixed(2))+")");
             }
+            if (rTotal >= 0) {
+                wjQuery(".rTotal").text("$" + rTotal);
+            } else {
+                rTotal = rTotal.toString().replace("-", "");
+                wjQuery(".rTotal").text("($" + rTotal + ")");
+            }
+            if (wjQuery('#royaltyDueLocal').length) {
+                var foreignWithHolding = parseFloat(rTotal).toFixed(2) * wrate;
+                wjQuery("#foreignWitholdings").text("$" + parseFloat(foreignWithHolding).toFixed(2));
+                var localRoyaltyDue = parseFloat(rTotal).toFixed(2) - foreignWithHolding.toFixed(2);
+                wjQuery("#royaltyDueLocal").text("$" + parseFloat(localRoyaltyDue).toFixed(2));
+                var foreignExchange = parseFloat(localRoyaltyDue).toFixed(2) * erate;
+                wjQuery(".foreignExchange").text("$" + parseFloat(foreignExchange).toFixed(2));
+                var adPaymentLocal = parseFloat(totalAdvertisingPayment).toFixed(2) * erate;
+                wjQuery(".totalAdvertisingPaymentLocal").text("$" + parseFloat(foreignExchange).toFixed(2));
+            } 
             if(r1Total >= 0){
                 wjQuery("#r1Total").text("$"+r1Total);
             }else{
@@ -665,15 +687,50 @@ function LmrUI() {
         });
 
         wjQuery("article.dark").off("click").on("click", function (el) {
-            var sectionId = wjQuery(el.target).parents().attr("id");
-            if (wjQuery("." + sectionId + " article").hasClass("displayNone")) {
-                wjQuery("." + sectionId + " article").removeClass("displayNone");
-                autoHeightAnimate(wjQuery("." + sectionId));
-            } else {
-                wjQuery("." + sectionId).stop().animate({ "height": "0" }, "500", "swing", function () {
-                    wjQuery("." + sectionId + " article").addClass("displayNone");
-                });
+            var sectionId = wjQuery(el.target).parent().attr("id");
+            if (wjQuery(el.target).hasClass("accord")) {
+                sectionId = wjQuery(el.target).attr("id");
             }
+            if (sectionId == "adNMarketing") {
+                if (wjQuery("." + sectionId + " section").hasClass("displayNone")) {
+                    wjQuery("." + sectionId + " section").removeClass("displayNone");
+                    autoHeightAnimate(wjQuery("." + sectionId));
+                    wjQuery("#" + sectionId + " .accord").stop().animate({ textIndent: 90 }, {
+                        step: function (now, fx) {
+                            wjQuery(this).css('-webkit-transform', 'rotate(' + now + 'deg)');
+                        }, duration: "500"
+                    }, "swing");
+                } else {
+                    wjQuery("." + sectionId).stop().animate({ "height": "0" }, "500", "swing", function () {
+                        wjQuery("." + sectionId + " section").addClass("displayNone");
+                    });
+                    wjQuery("#" + sectionId + " .accord").stop().animate({ textIndent: 0 }, {
+                        step: function (now, fx) {
+                            wjQuery(this).css('-webkit-transform', 'rotate(' + now + 'deg)');
+                        }, duration: "500"
+                    }, "swing");
+                }
+            } else {
+                if (wjQuery("." + sectionId + " article").hasClass("displayNone")) {
+                    wjQuery("." + sectionId + " article").removeClass("displayNone");
+                    wjQuery("#" + sectionId + " .accord").stop().animate({ textIndent: 90 }, {
+                        step: function (now, fx) {
+                            wjQuery(this).css('-webkit-transform', 'rotate(' + now + 'deg)');
+                        }, duration: "500"
+                    }, "swing");
+                    autoHeightAnimate(wjQuery("." + sectionId));
+                } else {
+                    wjQuery("." + sectionId).stop().animate({ "height": "0" }, "500", "swing", function () {
+                        wjQuery("." + sectionId + " article").addClass("displayNone");
+                    });
+                    wjQuery("#" + sectionId + " .accord").stop().animate({ textIndent: 0 }, {
+                        step: function (now, fx) {
+                            wjQuery(this).css('-webkit-transform', 'rotate(' + now + 'deg)');
+                        }, duration: "500"
+                    }, "swing");
+                }
+            }
+            
         });
 
        var autoHeightAnimate = function(element) {
@@ -681,7 +738,10 @@ function LmrUI() {
                 autoHeight = element.css('height', 'auto').height(); // Get Auto Height
             element.height(curHeight); // Reset to Default Height
             element.stop().animate({ height: autoHeight }, "500","swing"); // Animate to Auto Height
-        }
+       }
+
+       wjQuery("#advertisingSection span:first").click();
+       wjQuery("#adNMarketing .header").click()
 
     }
 
@@ -729,12 +789,7 @@ function LmrUI() {
             self.lmrList[0]['TotalRoyaltyAmount'] = wjQuery("#r1Total").text().replace("$","");
         }
 
-        if(wjQuery("#rTotal").text().indexOf("($") != -1){
-            self.lmrList[0]['TotalDue'] = wjQuery("#rTotal").text().replace("($","");
-            self.lmrList[0]['TotalDue'] = "-"+self.lmrList[0]['TotalDue'].replace(")","");
-        }else{
-            self.lmrList[0]['TotalDue'] = wjQuery("#rTotal").text().replace("$","");
-        }
+        
 
         if(wjQuery("#localTotal").text().indexOf("($") != -1){
             self.lmrList[0]['localTotal'] = wjQuery("#localTotal").text().replace("($","");
@@ -778,11 +833,25 @@ function LmrUI() {
             self.lmrList[0]['NACPayment'] = wjQuery("#nacPayment").text().replace("$","");
         }
 
-        if(wjQuery("#totalAdvertisingPayment").text().indexOf("($") != -1){
-            self.lmrList[0]['TotalAdvertisingPayment'] = wjQuery("#totalAdvertisingPayment").text().replace("($","");
+        var royaltyTotalSelector = ".rTotal";
+        var adTotalSelector = ".totalAdvertisingPayment";
+        if (wjQuery(".totalAdvertisingPaymentLocal").length) {
+            royaltyTotalSelector = ".foreignExchange:first";
+            adTotalSelector = ".totalAdvertisingPaymentLocal:first";
+        }
+
+        if (wjQuery(royaltyTotalSelector).text().indexOf("($") != -1) {
+            self.lmrList[0]['TotalDue'] = wjQuery(royaltyTotalSelector).text().replace("($", "");
+            self.lmrList[0]['TotalDue'] = "-" + self.lmrList[0]['TotalDue'].replace(")", "");
+        } else {
+            self.lmrList[0]['TotalDue'] = wjQuery(royaltyTotalSelector).text().replace("$", "");
+        }
+
+        if (wjQuery(adTotalSelector).text().indexOf("($") != -1) {
+            self.lmrList[0]['TotalAdvertisingPayment'] = wjQuery(adTotalSelector).text().replace("($", "");
             self.lmrList[0]['TotalAdvertisingPayment'] = "-"+self.lmrList[0]['TotalAdvertisingPayment'].replace(")","");
         }else{
-            self.lmrList[0]['TotalAdvertisingPayment'] = wjQuery("#totalAdvertisingPayment").text().replace("$","");
+            self.lmrList[0]['TotalAdvertisingPayment'] = wjQuery(adTotalSelector).text().replace("$", "");
         }
 
         this.lmrList = self.lmrList;
