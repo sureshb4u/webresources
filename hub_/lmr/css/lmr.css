@@ -273,4 +273,31 @@ section .dark {
 .subHeader span {
     border-right:0;
 }
+article#adNMarketing {
+    background: #E8AD38;
+    font-weight: bold;
+    color: white;
+    text-transform: uppercase;
+    height: 40px;
+    width: calc(97% - 2px);
+    margin: 5px auto;
+    margin-bottom: 0px;
+    margin-top: 25px;
+    border: 1px solid #ababab;
+}
+.adNMarketing {
+    margin-bottom:20px;
+}
+.adNMarketing section{
+    margin-top:0px;
+}
+article#adNMarketing .header {
+    padding: 10px;
+}
+.accord {
+    width: 40px;
+    float: right;
+    margin-top: -5px;
+    transform: rotate(90deg);
+}
 /*# sourceMappingURL=lmr.css.map */
