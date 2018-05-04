@@ -358,7 +358,7 @@ button{
 }
 
 #student_block_0, #sa_student_block_0, #teacher_block_0 {
-	margin-top: 43px;
+	margin-top: 44px;
 }
 .loc-dropdown.btn-group .btn {
     width: 200px;
@@ -617,7 +617,7 @@ table.fc-border-separate{table-layout: fixed;}
     /*background: #1e88e5;
     color: #fff;*/
 }
-.col_0{border-top-width: 0;}    
+.col_0:first-child{border-top-width: 0;}    
 .slotdata{
     /*background: #1e88e5;*/
     /*color: #fff;*/
@@ -735,4 +735,14 @@ i.material-icons.cursor.float-right {
 .typeIndicator {
     font-size: 10px;
     vertical-align: top;
+}
+.moveLeft {
+    margin-right: 15px !important;
+    transition:all;
+}
+.moveLeft .ta-header, .moveLeft .sof-header, .moveLeft .sa-header {
+    width:210px !important;
+}
+.moveLeft .teacher-availability {
+    width:100% !important;
 }
