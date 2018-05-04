@@ -3224,7 +3224,7 @@ function ResourceView(element, calendar, viewName) {
             s +=
             "<tr class='fc-slot" + i + ' ' + (!minutes ? '' : 'fc-minor') + "'>" +
             "<th class='fc-agenda-axis " + headerClass + "'>" +
-            ((!slotNormal || !minutes) ? formatDate(d, opt('axisFormat')) : '&nbsp;') +
+            ((!slotNormal || !minutes || minutes == 30) ? formatDate(d, opt('axisFormat')) : '&nbsp;') +
             "</th>" +
             "<td class='" + contentClass + "'>" +
             "<div style='position:relative'>&nbsp;</div>" +
