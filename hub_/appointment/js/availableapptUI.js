@@ -262,7 +262,7 @@ function Appointment() {
                 if (!calEvent['isHourException']) {
                     self.confirmPopup(calEvent, "Selected slot ", true);
                 } else {
-                    self.prompt("Exceptional appointment is not selectable");
+                    self.prompt("Removed Slot cannot be selected");
                 }
             },
             eventRender: function (event, element, view) {
