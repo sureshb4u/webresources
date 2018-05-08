@@ -1908,6 +1908,9 @@ function SylvanCalendar() {
         var self = this;
         var endDate = new Date(date);
         var startHour = new Date(date);
+        if (!eventDuration) {
+            eventDuration = 60;
+        }
         var currentCalendarDate = this.calendar.fullCalendar('getDate');
         currentCalendarDate = new Date(currentCalendarDate.setMinutes(00));
         currentCalendarDate = new Date(currentCalendarDate.setSeconds(00));
