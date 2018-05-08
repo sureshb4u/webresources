@@ -1947,7 +1947,7 @@ function SylvanCalendar() {
             }
             var responseObj = this.saveTAtoSession(teacherObj);
             if (responseObj != undefined && responseObj != null) {
-                if (!t.taList[index].availableDuration) {
+                if (t.taList[index] && !t.taList[index].availableDuration) {
                     elm.remove();
                 }
                 teacherObj.scheduleId = responseObj['hub_staff_scheduleid'];
