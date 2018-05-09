@@ -72,6 +72,7 @@ setTimeout(function () {
                 else {
                     wjQuery('.headerDate').removeClass('today');
                 }
+                fetchResources(locationId, deliveryTypeList, true);
                 if (sylvanCalendar.calendar != undefined) {
                     wjQuery(".loading").show();
                     sylvanCalendar.dateFromCalendar(date, locationId);
@@ -110,6 +111,7 @@ setTimeout(function () {
                             if (sylvanCalendar.calendar != undefined) {
                                 wjQuery(".loading").show();
                                 sylvanCalendar.dateFromCalendar(date, locationId);
+                                fetchResources(locationId, deliveryTypeList, true);
                             }
                             wjQuery('#datepicker').hide();
                         }
@@ -166,6 +168,8 @@ setTimeout(function () {
             var locationChanged = false;
             // asign deliverytpeList to  
             sylvanCalendar.selectedDeliveryType = selectedDeliveryType;
+            var currentCalendarDate = wjQuery(".headerDate").text();
+            currentCalendarDate = new Date(currentCalendarDate);
             if (sylvanCalendar.locationId != locationId) {
                 locationChanged = true;
                 sylvanCalendar.locationId = locationId;
@@ -174,6 +178,19 @@ setTimeout(function () {
             if (fetchData) {
                 var obj = data.getResources(locationId);
                 resources = obj == null ? [] : obj;
+                var tempList = resources.filter(function (resource) {
+                    if (resource.hub_deactivating_start_date && resource.hub_deactivating_end_date &&
+                    !(currentCalendarDate.getTime() >= new Date(moment(resource.hub_deactivating_start_date).format("MM-DD-YYYY")).getTime()
+                    && currentCalendarDate.getTime() <= new Date(moment(resource.hub_deactivating_end_date).format("MM-DD-YYYY")).getTime())) {
+                        return resource;
+                    } else if (!resource.hub_deactivating_end_date && resource.hub_deactivating_start_date
+                        && !(currentCalendarDate.getTime() >= new Date(moment(resource.hub_deactivating_start_date).format("MM-DD-YYYY")).getTime())) {
+                        return resource;
+                    } else if (!resource.hub_deactivating_start_date) {
+                        return resource;
+                    }
+                });
+                resources = tempList;
                 var pi = [];
                 var gi = [];
                 var gf = [];
@@ -272,6 +289,7 @@ setTimeout(function () {
                     if (sylvanCalendar.calendar != undefined) {
                         wjQuery(".loading").show();
                         sylvanCalendar.prev(locationId);
+                        fetchResources(locationId, deliveryTypeList, true);
                     }
                 });
 
@@ -293,6 +311,7 @@ setTimeout(function () {
                     if (sylvanCalendar.calendar != undefined) {
                         wjQuery(".loading").show();
                         sylvanCalendar.next(locationId);
+                        fetchResources(locationId, deliveryTypeList, true);
                     }
                 });
 
@@ -3216,6 +3235,19 @@ function SylvanCalendar() {
             }
             this.resourceList = [];
             var resources = data.getResources(this.locationId);
+            var tempList = resources.filter(function (resource) {
+                if (resource.hub_deactivating_start_date && resource.hub_deactivating_end_date &&
+                    !(currentCalendarDate.getTime() >= new Date(moment(resource.hub_deactivating_start_date).format("MM-DD-YYYY")).getTime()
+                    && currentCalendarDate.getTime() <= new Date(moment(resource.hub_deactivating_end_date).format("MM-DD-YYYY")).getTime())) {
+                    return resource;
+                } else if (!resource.hub_deactivating_end_date && resource.hub_deactivating_start_date
+                    && !(currentCalendarDate.getTime() >= new Date(moment(resource.hub_deactivating_start_date).format("MM-DD-YYYY")).getTime())) {
+                    return resource;
+                } else if (!resource.hub_deactivating_start_date) {
+                    return resource;
+                }
+            });
+            resources = tempList;
             if (resources.length) {
                 var pi = [];
                 var gi = [];
@@ -3534,6 +3566,10 @@ function SylvanCalendar() {
                     //         }
                     //     }
                     // }
+                    var resourceObj = self.getResourceObj(val['resourceId']);
+                    if (!resourceObj) {
+                        teacherAvailableFlag = false;
+                    }
                     if (teacherAvailableFlag) {
                         if (val['startTime'] != undefined && val['endTime'] != undefined) {
                             sDate = new Date(moment(currentCalendarDate).format('MM-DD-YYYY') + " " + val['startTime']);
@@ -3596,7 +3632,13 @@ function SylvanCalendar() {
                     // Terminate loop if time is not there for staff
                     return true;
                 }
-
+                if (val['_hub_resourceid_value']) {
+                    var resourceObj = self.getResourceObj(val['resourceId']);
+                    if (!resourceObj) {
+                        // if Deactivated Resource Found terminate the loop
+                        return true;
+                    }
+                }
                 var teacher = {
                     id: val['_hub_staff_value'],
                     name: val["_hub_staff_value@OData.Community.Display.V1.FormattedValue"],
@@ -3920,34 +3962,64 @@ function SylvanCalendar() {
                                 newObj.startHour = startHour;
                                 if (studentStart.getTime() == newObj.start.getTime()) {
                                     if (pinnedStudent[i].hasOwnProperty('resourceId')) {
-                                        newObj.resourceId = pinnedStudent[i].resourceId;
-                                        var zindex = -1;
-                                        for (var z = 0; z < pinnedList.length; z++) {
-                                            if (pinnedList[z].id == newObj.id &&
-                                                pinnedList[z].enrollmentId == obj.enrollmentId &&
-                                                pinnedList[z].startHour.getTime() == startHour.getTime()) {
-                                                zindex = z;
-                                                break;
+                                        var resourceObj = self.getResourceObj(pinnedStudent[i].hasOwnProperty('resourceId'));
+                                        if (!resourceObj) {
+                                            var xindex = -1;
+                                            noResourceList.forEach(function (noresource, key) {
+                                                if (noresource.id == newObj.id &&
+                                                noresource.enrollmentId == newObj.enrollmentId &&
+                                                noresource.startHour.getTime() == startHour.getTime()) {
+                                                    xindex = key;
+                                                }
+                                            });
+                                            if (xindex == -1) {
+                                                noResourceList.push(newObj);
                                             }
-                                        }
-                                        if (zindex == -1) {
-                                            newObj.pinId = pinnedStudent[i].id;
-                                            pinnedList.push(newObj);
+                                        } else {
+                                            newObj.resourceId = pinnedStudent[i].resourceId;
+                                            var zindex = -1;
+                                            for (var z = 0; z < pinnedList.length; z++) {
+                                                if (pinnedList[z].id == newObj.id &&
+                                                    pinnedList[z].enrollmentId == obj.enrollmentId &&
+                                                    pinnedList[z].startHour.getTime() == startHour.getTime()) {
+                                                    zindex = z;
+                                                    break;
+                                                }
+                                            }
+                                            if (zindex == -1) {
+                                                newObj.pinId = pinnedStudent[i].id;
+                                                pinnedList.push(newObj);
+                                            }
                                         }
                                     }
                                     else if (pinnedStudent[i].hasOwnProperty('affinityResourceId')) {
                                         newObj.resourceId = pinnedStudent[i].affinityResourceId;
-                                        var xindex = -1;
-                                        for (var x = 0; x < affinityList.length; x++) {
-                                            if (affinityList[x].id == newObj.id &&
-                                                affinityList[x].enrollmentId == newObj.enrollmentId &&
-                                                affinityList[x].startHour.getTime() == startHour.getTime()) {
-                                                xindex = x;
-                                                break;
+                                        var resourceObj = self.getResourceObj(newObj.resourceId);
+                                        if (!resourceObj) {
+                                            var xindex = -1;
+                                            noResourceList.forEach(function (noresource, key) {
+                                                if (noresource.id == newObj.id &&
+                                                noresource.enrollmentId == newObj.enrollmentId &&
+                                                noresource.startHour.getTime() == startHour.getTime()) {
+                                                    xindex = key;
+                                                }
+                                            });
+                                            if (xindex == -1) {
+                                                noResourceList.push(newObj);
                                             }
-                                        }
-                                        if (xindex == -1) {
-                                            affinityList.push(newObj);
+                                        } else {
+                                            var xindex = -1;
+                                            for (var x = 0; x < affinityList.length; x++) {
+                                                if (affinityList[x].id == newObj.id &&
+                                                    affinityList[x].enrollmentId == newObj.enrollmentId &&
+                                                    affinityList[x].startHour.getTime() == startHour.getTime()) {
+                                                    xindex = x;
+                                                    break;
+                                                }
+                                            }
+                                            if (xindex == -1) {
+                                                affinityList.push(newObj);
+                                            }
                                         }
                                     } else {
                                         var xindex = -1;
@@ -5415,12 +5487,18 @@ function SylvanCalendar() {
         }
         if (this.selectedDeliveryType.length == 1) {
             if (this.getDeliveryTypeVal(this.selectedDeliveryType[0]) == personalInstruction) {
-                if (this.sofList['Personal Instruction'].length == 0) {
+                var filteredList = this.sofList['Personal Instruction'].filter(function (x) {
+                    return x.startHour.getHours() >= 8
+                });
+                if (this.sofList['Personal Instruction'].length == 0 || filteredList.length == 0) {
                     closeSofPane = true;
                 }
             }
         } else if (this.selectedDeliveryType.length == 2) {
-            if (this.sofList['Group Facilitation'].length == 0) {
+            var filteredList = this.sofList['Group Facilitation'].filter(function (x) {
+                return x.startHour.getHours() >= 8
+            });
+            if (this.sofList['Group Facilitation'].length == 0 || filteredList.length == 0) {
                 closeSofPane = true;
             }
         } else {
@@ -5430,6 +5508,18 @@ function SylvanCalendar() {
                 wjQuery(".sof-pi").css("width", "calc(100% - 10px)");
             }
             if (this.sofList['Personal Instruction'].length == 0 && this.sofList['Group Facilitation'].length == 0 && this.sofList['Group Instruction'].length == 0) {
+                closeSofPane = true;
+            }
+            var filteredGFList = this.sofList['Group Facilitation'].filter(function (x) {
+                return x.startHour.getHours() >= 8
+            });
+            var filteredGIList = this.sofList['Group Instruction'].filter(function (x) {
+                return x.startHour.getHours() >= 8
+            });
+            var filteredPIList = this.sofList['Personal Instruction'].filter(function (x) {
+                return x.startHour.getHours() >= 8
+            });
+            if (filteredGFList.length == 0 && filteredGIList.length == 0 && filteredPIList.length == 0) {
                 closeSofPane = true;
             }
         }
