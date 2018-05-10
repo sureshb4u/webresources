@@ -72,10 +72,10 @@ setTimeout(function () {
                 else {
                     wjQuery('.headerDate').removeClass('today');
                 }
-                fetchResources(locationId, deliveryTypeList, true);
                 if (sylvanCalendar.calendar != undefined) {
                     wjQuery(".loading").show();
                     sylvanCalendar.dateFromCalendar(date, locationId);
+                    fetchResources(locationId, deliveryTypeList, true);
                 }
                 wjQuery('#datepicker').hide();
             }
