@@ -5375,6 +5375,7 @@ function SylvanCalendar() {
         objPinnedStudent.hub_day = self.getDayValue(today);
         objPinnedStudent.hub_session_date = moment(today).format("YYYY-MM-DD");
         objPinnedStudent['hub_sessiontype'] = 1;
+        objPinnedStudent['hub_deliverytype_code'] = student[0].deliveryTypeCode;
         if (student[0]['sessiontype'] != undefined) {
             objPinnedStudent['hub_sessiontype'] = student[0]['sessiontype'];
         }
@@ -5470,6 +5471,7 @@ function SylvanCalendar() {
         objUnPinnedStudent.hub_end_time = objUnPinnedStudent.hub_start_time + 60;
         objUnPinnedStudent.hub_day = this.getDayValue(today);
         objUnPinnedStudent.hub_session_date = moment(today).format("YYYY-MM-DD");
+        objUnPinnedStudent['hub_deliverytype_code'] = student[0].deliveryTypeCode;
         if (wjQuery(element).attr('pinnedId') != undefined) {
             objUnPinnedStudent.hub_sch_pinned_students_teachersid = wjQuery(element).attr('pinnedId');
         }
