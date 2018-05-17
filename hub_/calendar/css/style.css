@@ -304,7 +304,7 @@ button{
     outline: none;
 }
 .sof-pane, .sa-pane, .ta-pane{
-    width: 250px;
+    width: 260px;
     height: 200px;
     margin-right: -260px;
     border: 1px solid #ddd;
@@ -338,13 +338,13 @@ button{
     border-bottom: 1px solid #ddd;
     /*margin-bottom: 38px;*/
     position: fixed;
-    width: 200px;
+    width: 217px;
     height: 22px;
     background-color: #f4f4f4;
     z-index: 5
 }
 .teacher-block{
-    padding: 10px 10px 0px;
+    padding: 10px 10px 10px;
 }
 .student-overflow, .student-attendance, .teacher-availability{
     border-right: 1px solid #ccc;
@@ -353,7 +353,7 @@ button{
 }
 
 .teacher-availability{
-    width: calc(100% - 20px);
+    width: calc(100% - 3px);
     /*display: inline-block;*/
 }
 
@@ -746,4 +746,8 @@ i.material-icons.cursor.float-right {
 }
 .moveLeft .teacher-availability {
     width:100% !important;
+}
+.teacherDetails {
+    font-weight:bold;
+    word-break:break-all;
 }
