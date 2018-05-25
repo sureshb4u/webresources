@@ -114,7 +114,18 @@ function LmrUI() {
         var foreignExchange;
         var foreignWitholdings;
         var localAdPayment;
+        var render = true;
+        self.selectedMonth = wjQuery("#monthSelected").val();
+        self.selectedYear = wjQuery("#yearSelected").val();
         if (self.lmrList.length) {
+            if (self.lmrList[0].onboardingDate) {
+                var onBoardMonth = self.lmrList[0].onboardingDate.split("/")[0];
+                var onBoardYear = self.lmrList[0].onboardingDate.split("/")[2];
+                if (onBoardYear > self.selectedYear || ((onBoardMonth - 1) > self.selectedMonth && onBoardYear >= self.selectedYear)) {
+                    wjQuery(".lmr-submit").hide();
+                    render = false;
+                }
+            }
             var isClosedText = self.lmrList[0].IsClosed ? "disabled" : "";
             wjQuery.each(self.lmrList, function (index, el) {
                 foreignExchange = el.TotalDue;
@@ -185,16 +196,16 @@ function LmrUI() {
                 if (el.hasOwnProperty("CorePecent")) {
                     skeleton += '<span id="creditPercent" >' + (el.CreditPercent*100) + '</span>';
                 }
-                    skeleton += '<span id="creditTotal" >($' + parseFloat(el.creditTotal).toFixed(2) + ')</span>';
+                skeleton += '<span id="creditTotal" >($' + parseFloat(el.creditTotal).toFixed(2) + ')</span>';
 
                 skeleton += '        </article>';
                 if(el.ManualAdjustment != undefined && el.ManualAdjustment){
-                   skeleton +=  '<article>' +
-                                    '<span class="first-colm">Misc Royalty Adjustment</span>'+
-                                    '<span class="input-field"><b>$</b><input type="text" class="form-control table-input" id="miscval" name="miscval" value="' + el.miscval + '" '+isClosedText+' ></span>'+
-                                    '<span >-</span>'+
-                                    '<span id="miscTotal" >$' + parseFloat(el.miscTotal).toFixed(2) + '</span>'+
-                                '</article>';
+                    skeleton +=  '<article>' +
+                                        '<span class="first-colm">Misc Royalty Adjustment</span>'+
+                                        '<span class="input-field"><b>$</b><input type="text" class="form-control table-input" id="miscval" name="miscval" value="' + el.miscval + '" '+isClosedText+' ></span>'+
+                                        '<span >-</span>'+
+                                        '<span id="miscTotal" >$' + parseFloat(el.miscTotal).toFixed(2) + '</span>'+
+                                    '</article>';
                 }
                 skeleton += '        <article>' +
                             '            <span class="first-colm"><b>Total Cash subject to Royalty</b></span>';
@@ -225,8 +236,8 @@ function LmrUI() {
                         '<span  id="erate" raw-value=' + el.Erate + '>' + parseFloat((el.Erate * 100)).toFixed(2) + '</span><span class="foreignExchange">$ ' + parseFloat(foreignExchange).toFixed(2) + '</span>'
                 }
                 skeleton += '        </article>' +
-                           '        <article class="brdr-btm">' +
-                           '            <span class="first-colm">&nbsp;</span>';
+                            '        <article class="brdr-btm">' +
+                            '            <span class="first-colm">&nbsp;</span>';
                 if (el.Country && el.Country.toLowerCase() != self.countryConst.toLowerCase()) {
                     skeleton += ' <span>&nbsp;</span>' +
                                 '<span><b>Total Royalty Due USD</b></span>' +
@@ -288,15 +299,18 @@ function LmrUI() {
                 skeleton += '</article></div>' +
                 '    </section>' +
                 '</aside>';
-            });
+        });
         } else {
-            skeleton = "<span>No data found</span>";
+            skeleton = "<div class='noData'>No data found</div>";
         }
         wjQuery("#lmr-table").html(skeleton);
         wjQuery("#lmr-table").next("#adNMarketing").remove();
         wjQuery("#lmr-table").next(".adNMarketing").remove();
         wjQuery("#lmr-table").next(".btn-article").remove();
         wjQuery("#lmr-table").after(self.appendOtherSkeleten());
+        if (!render) {
+            wjQuery(".lmr-submit").hide();
+        }
         setTimeout(function () {
             self.attachAllEvent();
             wjQuery(".loading").hide();
@@ -391,16 +405,9 @@ function LmrUI() {
 
     this.attachAllEvent = function () {
         var self = this;
-        // wjQuery("#monthSelected").on("change", function () {
-        //     wjQuery(".loading").show();
-        //     self.selectedMonth = wjQuery(this).val();
-        //     self.selectedYear = wjQuery("#yearSelected").val();
-        //     setTimeout(function(){
-        //         wjQuery("#lmr-table").html("");
-        //         var query = self.getQueryParm();
-        //         onLoad(query.recordid, query.entityname, self.selectedMonth, self.selectedYear);
-        //     },300);
-        // });
+        wjQuery("#monthSelected,#yearSelected").on("change", function () {
+            wjQuery(".lmr-submit").css("display","none");
+         });
 
         // wjQuery("#yearSelected").on("change", function () {
         //     wjQuery(".loading").show();
@@ -853,9 +860,24 @@ function LmrUI() {
         }else{
             self.lmrList[0]['TotalAdvertisingPayment'] = wjQuery(adTotalSelector).text().replace("$", "");
         }
-
+        var prevYear;
+        var prevMonth;
+        if (self.lmrList[0].onboardingDate) {
+            var onBoardMonth = self.lmrList[0].onboardingDate.split("/")[0];
+            var onBoardYear = self.lmrList[0].onboardingDate.split("/")[2];
+            if ((onBoardMonth - 1) < self.selectedMonth && onBoardYear <= self.selectedYear) {
+                prevMonth = self.selectedMonth - 1;
+                if (prevMonth < 0) {
+                    prevMonth = 11;
+                    prevYear = parseInt(self.selectedYear - 1);
+                } else {
+                    prevYear = parseInt(self.selectedYear);
+                }
+            }
+        }
         this.lmrList = self.lmrList;
-        var response = OnSubmitLMR(result.recordid, self.selectedMonth, self.selectedYear, self.lmrList[0]);
+        
+        var response = OnSubmitLMR(result.recordid, self.selectedMonth, self.selectedYear, self.lmrList[0], prevMonth, prevYear);
         if (response)
         {
             self.promptUi(response);
