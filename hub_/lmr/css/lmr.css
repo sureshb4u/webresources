@@ -133,7 +133,10 @@ section .dark {
 
 .no-brdr {
   border-right: none !important;
-  border-left: none !important; }
+  border-left: none !important;
+    padding-left:25px;
+  padding-right:25px;
+}
   .no-brdr > span {
     border: none; }
 
