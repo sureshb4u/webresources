@@ -88,7 +88,9 @@ function LmrUI() {
             result.recordid = result.recordid.replace("{", "");
             result.recordid = result.recordid.replace("}", "");
             self.populateYears();
-            self.populateMonths();
+            var currentMonth = new Date().getMonth();
+            var pastMonths = self.months.splice(0, currentMonth + 1);
+            self.populateMonths(pastMonths);
             onLoad(result.recordid, result.entityname, self.selectedMonth, self.selectedYear);
         } else {
             // self.promptUi("No changes to reconcile");
@@ -115,6 +117,9 @@ function LmrUI() {
         var foreignWitholdings;
         var localAdPayment;
         var render = true;
+        wjQuery(".lmr-submit").removeClass("disabledBtn");
+        wjQuery(".lmr-submit").removeAttr("title");
+        wjQuery(".lmr-submit").removeAttr("data-original-title");
         self.selectedMonth = wjQuery("#monthSelected").val();
         self.selectedYear = wjQuery("#yearSelected").val();
         if (self.lmrList.length) {
@@ -122,7 +127,6 @@ function LmrUI() {
                 var onBoardMonth = self.lmrList[0].onboardingDate.split("/")[0];
                 var onBoardYear = self.lmrList[0].onboardingDate.split("/")[2];
                 if (onBoardYear > self.selectedYear || ((onBoardMonth - 1) > self.selectedMonth && onBoardYear >= self.selectedYear)) {
-                    wjQuery(".lmr-submit").hide();
                     render = false;
                 }
             }
@@ -171,6 +175,9 @@ function LmrUI() {
                     skeleton += '<span id="coreval">$' + parseFloat(el.CoreAmount).toFixed(2) + '</span>';
                 }
                 if (el.hasOwnProperty("CorePecent")) {
+                    if (!el.CorePecent) {
+                        el.CorePecent = "0.00";
+                    }
                     skeleton += '<span>' + (el.CorePecent*100) + '</span>';
                 }
                 if (el.hasOwnProperty("CoreTotal")) {
@@ -183,6 +190,9 @@ function LmrUI() {
                     skeleton += '<span id="edgeval" >$' + parseFloat(el.EdgeAmount).toFixed(2) + '</span>';
                 }
                 if (el.hasOwnProperty("EdgePercent")) {
+                    if (!el.EdgePercent) {
+                        el.EdgePercent = "0.00";
+                    }
                     skeleton += '<span>' + (el.EdgePercent*100) + '</span>';
                 }
                 if (el.hasOwnProperty("EdgeTotal")) {
@@ -193,8 +203,11 @@ function LmrUI() {
                             '        <article>' +
                             '            <span class="first-colm">Credit Card Fees:</span>';
                 skeleton += '<span class="input-field"><b>$</b><input type="text" class="form-control table-input" id="creditval" name="creditval" value="' + el.creditval + '" '+isClosedText+'></span>';
-                if (el.hasOwnProperty("CorePecent")) {
-                    skeleton += '<span id="creditPercent" >' + (el.CreditPercent*100) + '</span>';
+                if (el.hasOwnProperty("CreditPercent")) {
+                    if (!el.CreditPercent) {
+                        el.CreditPercent = "0.00";
+                    }
+                    skeleton += '<span id="creditPercent" >' + (el.CreditPercent * 100) + '</span>';
                 }
                 skeleton += '<span id="creditTotal" >($' + parseFloat(el.creditTotal).toFixed(2) + ')</span>';
 
@@ -261,6 +274,9 @@ function LmrUI() {
                     skeleton += ' <span id="nafAmount" >$' +  parseFloat(el.NAFAmount).toFixed(2) + '</span>';
                 }
                 if (el.hasOwnProperty("NAFRate")) {
+                    if (!el.NAFRate) {
+                        el.NAFRate = "0.00";
+                    }
                     skeleton += ' <span>' + (el.NAFRate*100) + '</span>';
                 }
                 if (el.hasOwnProperty("NAFPayment")) {
@@ -273,6 +289,9 @@ function LmrUI() {
                     skeleton += ' <span  id="nacAmount" >$' + parseFloat(el.NACAmount).toFixed(2) + '</span>';
                 }
                 if (el.hasOwnProperty("NACRate")) {
+                    if (!el.NACRate) {
+                        el.NACRate = "0.00";
+                    }
                     skeleton += ' <span>' + (el.NACRate*100) + '</span>';
                 }
                 if (el.hasOwnProperty("NACPayment")) {
@@ -309,7 +328,12 @@ function LmrUI() {
         wjQuery("#lmr-table").next(".btn-article").remove();
         wjQuery("#lmr-table").after(self.appendOtherSkeleten());
         if (!render) {
-            wjQuery(".lmr-submit").hide();
+            wjQuery(".lmr-submit").removeClass("disabledBtn");
+            wjQuery(".lmr-submit").removeAttr("title");
+            wjQuery(".lmr-submit").removeAttr("data-original-title");
+            wjQuery(".lmr-submit").attr("title", "You cannot submit LMR for dates before the Onboading Date");
+            wjQuery(".lmr-submit").attr("data-original-title", "You cannot submit LMR for dates before the Onboading Date");
+            wjQuery(".lmr-submit").addClass("disabledBtn");
         }
         setTimeout(function () {
             self.attachAllEvent();
@@ -397,7 +421,7 @@ function LmrUI() {
                 '            <span class="first-colm">Comment</span>' +
                 '            <span><input type="text" value="'+el.Comments+'" class="form-control" id="comment"  '+isClosedText+'></span>' +
                 '            <span>&nbsp;</span>' +
-                '            <span><button class="lmr-submit" >Submit LMR</button></span>' +
+                '            <span><button class="lmr-submit">Submit LMR</button></span>' +
                 '</article>';
                 return skeleton;
     }
@@ -405,20 +429,28 @@ function LmrUI() {
 
     this.attachAllEvent = function () {
         var self = this;
-        wjQuery("#monthSelected,#yearSelected").on("change", function () {
-            wjQuery(".lmr-submit").css("display","none");
+        wjQuery("#monthSelected,#yearSelected").off().on("change", function () {
+            wjQuery(".lmr-submit").attr("title", "The Month/Year has been changed Please click on view LMR to view and submit.");
+            wjQuery(".lmr-submit").attr("data-original-title", "The Month/Year has been changed Please click on view LMR to view and submit.");
+            wjQuery(".lmr-submit").tooltip({
+                tooltipClass: "custom-conflict",
+                track: false,
+            });
+            wjQuery(".lmr-submit").addClass("disabledBtn");
          });
 
-        // wjQuery("#yearSelected").on("change", function () {
-        //     wjQuery(".loading").show();
-        //     self.selectedYear = wjQuery(this).val();
-        //     self.selectedMonth = wjQuery("#monthSelected").val();
-        //     setTimeout(function(){
-        //         wjQuery("#lmr-table").html("");
-        //         var query = self.getQueryParm();
-        //         onLoad(query.recordid, query.entityname, self.selectedMonth, self.selectedYear);
-        //     },300);
-        // })
+         wjQuery("#yearSelected").on("change", function () {
+             self.selectedYear = wjQuery(this).val();
+             if (self.selectedYear == new Date().getFullYear()) {
+                 wjQuery(".loading").show();
+                 var currentMonth = new Date().getMonth();
+                 var pastMonths = self.months.splice(0, currentMonth + 1);
+                 self.populateMonths(pastMonths);
+                 wjQuery(".loading").hide();
+             } else {
+                 self.populateMonths();
+             }
+         })
         wjQuery(".getLmr").off();
         wjQuery(".getLmr").click(function (event) {
             wjQuery(".loading").show();
@@ -432,21 +464,26 @@ function LmrUI() {
         });
 
         wjQuery(".lmr-submit").off();
-        wjQuery(".lmr-submit").click(function (event) {
-            wjQuery(".loading").show();
-            self.centerId = wjQuery("#center-id").text();
-            self.selectedYear = wjQuery("#yearSelected").val();
-            self.selectedMonth = wjQuery("#monthSelected").val();
-            if (!self.lmrList[0].Reconciled) {
-                var dialogTemplate = "<ul class='reconcileDialog'> <li>Click <a href='" + self.lmrList[0].ReconLink + "' target='_blank'><img src='/webresources/hub_/images/reconcile.png'></a> to Reconcile All</li>" +
-                    "<li>Click on Yes to ignore and save </li><li>Click on Cancel to close the dialog</li></ul>"
-                self.confirmPopup(dialogTemplate, "Not all bills for the selected month is reconciled");
-            } else {
-                self.confirmPopup("Are you sure to submit?");
+        wjQuery("body").off().on("click",".lmr-submit", function (event) {
+            if (!wjQuery(".lmr-submit").hasClass("disabledBtn")) {
+                wjQuery(".loading").show();
+                self.centerId = wjQuery("#center-id").text();
+                self.selectedYear = wjQuery("#yearSelected").val();
+                self.selectedMonth = wjQuery("#monthSelected").val();
+                if (!self.lmrList[0].Reconciled) {
+                    var dialogTemplate = "<ul class='reconcileDialog'> <li>Click <a href='" + self.lmrList[0].ReconLink + "' target='_blank'><img src='/webresources/hub_/images/reconcile.png'></a> to Reconcile All</li>" +
+                        "<li>Click on Yes to ignore and save </li><li>Click on Cancel to close the dialog</li></ul>"
+                    self.confirmPopup(dialogTemplate, "Not all bills for the selected month is reconciled");
+                } else {
+                    self.confirmPopup("Are you sure to submit?");
+                }
             }
         });
 
-
+        wjQuery(".lmr-submit").off().tooltip({
+            tooltipClass: "custom-conflict",
+            track: false,
+        });
 
         wjQuery("#print").off();
         wjQuery("#print").click(function (event) {
@@ -470,7 +507,7 @@ function LmrUI() {
             }
 
             var indexOfMinus = this.value.indexOf("-");
-
+            
 
             if ((e.keyCode === 189 || e.keyCode === 109) && (this.value.length >= 1)) {
                 allow = false;
@@ -483,6 +520,14 @@ function LmrUI() {
                     allow = false;
                     e.preventDefault();
                 }
+            }
+        });
+
+        wjQuery(".table-input").keyup(function (e) {
+            if (this.value && this.value.split(".") && this.value.split(".")[1]) {
+                var decimalVal = this.value.split(".")[1].slice(0, 2);
+                var convertedVal = this.value.split(".")[0] + "." + decimalVal;
+                wjQuery(e.target).val(convertedVal);
             }
         });
 
@@ -865,7 +910,15 @@ function LmrUI() {
         if (self.lmrList[0].onboardingDate) {
             var onBoardMonth = self.lmrList[0].onboardingDate.split("/")[0];
             var onBoardYear = self.lmrList[0].onboardingDate.split("/")[2];
-            if ((onBoardMonth - 1) < self.selectedMonth && onBoardYear <= self.selectedYear) {
+            if (((onBoardMonth - 1) < self.selectedMonth && onBoardYear <= self.selectedYear) || ((onBoardMonth - 1) == self.selectedMonth && onBoardYear < self.selectedYear)) {
+                prevMonth = self.selectedMonth - 1;
+                if (prevMonth < 0) {
+                    prevMonth = 11;
+                    prevYear = parseInt(self.selectedYear - 1);
+                } else {
+                    prevYear = parseInt(self.selectedYear);
+                }
+            } else if ((onBoardMonth - 1) == self.selectedMonth && onBoardYear < self.selectedYear) {
                 prevMonth = self.selectedMonth - 1;
                 if (prevMonth < 0) {
                     prevMonth = 11;
@@ -907,10 +960,13 @@ function LmrUI() {
         this.selectedYear = wjQuery("#yearSelected").val();
     }
 
-    this.populateMonths = function () {
+    this.populateMonths = function (months) {
         var self = this;
+        if (!months) {
+            months = self.months;
+        }
         var monthSkeleton = '<select class="form-control" id="monthSelected">';
-        wjQuery.each(self.months, function (key, val) {
+        wjQuery.each(months, function (key, val) {
             if (self.todayDate.getMonth() === key) {
                 monthSkeleton += '<option value="' + key + '" selected>' + val + '</option>';
             } else {
