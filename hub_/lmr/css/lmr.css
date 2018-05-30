@@ -66,15 +66,12 @@ button {
   outline: none;
   padding: 10px;
   cursor: pointer;
-  width: calc(100% - 30%);
   margin: 0 15%;
   color: white;
   border-radius: 10px;
-  width: 85px;
   margin: 0px 5px; }
 
 .getLmr {
-  width: 85px;
   margin: 0px 5px; }
 
 .btm-brdr {
@@ -302,5 +299,12 @@ article#adNMarketing .header {
     float: right;
     margin-top: -5px;
     transform: rotate(90deg);
+}
+.lmr-submit.disabledBtn {
+    background:#c4c3bd;
+    cursor:not-allowed;
+}
+input[type="text"]{
+    height:34px;
 }
 /*# sourceMappingURL=lmr.css.map */
