@@ -259,11 +259,7 @@ function Appointment() {
             //     }
             // },
             eventClick: function (calEvent, jsEvent, view) {
-                if (!calEvent['isHourException']) {
                     self.confirmPopup(calEvent, "Selected slot ", true);
-                } else {
-                    self.prompt("Removed Slot cannot be selected");
-                }
             },
             eventRender: function (event, element, view) {
                 if (view.name == 'agendaWeek' && event.allDay) {
@@ -687,7 +683,12 @@ function Appointment() {
         var dateString = moment(event.start).format('LL');
         var slotStart = moment(event.start).format('hh:mm A');
         var slotEnd = moment(event.end).format('hh:mm A');
-        var msg = "<p>" + message + " " + dateString + "(" + slotStart + " to " + slotEnd + ")" + "</p>";
+        var msg = "<p>" + message + " " + dateString + "(" + slotStart + " to " + slotEnd + ")";
+        if (event['isHourException']) {
+            msg += "is removed, Do you wish to continue?</p>";
+        } else {
+            msg += "</p>";
+        }
         wjQuery("#dialog > .dialog-msg").html(msg);
         wjQuery("#dialog").dialog({
             resizable: false,
