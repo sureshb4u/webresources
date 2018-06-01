@@ -1289,7 +1289,7 @@ function SylvanCalendar() {
                 if (wjQuery("div[value='" + teacherData[i].id + "']").length > 0) {
                     var teacherTimingDetail = wjQuery("div[value='" + teacherData[i].id + "']").children();
                     var additionalTiming = "<span class='teacherTimingDetails'>, " + teacherData[i].startTime + " - " + teacherData[i].endTime + "</span>";
-                    wjQuery(teacherTimingDetail).append(additionalTiming)
+                    wjQuery(teacherTimingDetail[0]).append(additionalTiming)
                 } else {
                     var elm = '<div class="teacher-block"> <div class="teacher-container" type="teacher" value="' + teacherData[i].id + '">' +
                                 '<div class="display-inline-block teacherDetails"><span>' + teacherData[i].name + '</span><span class="teacherTimingDetails"> ' + teacherData[i].startTime + ' - ' + teacherData[i].endTime + '</span></div>';
@@ -1560,7 +1560,7 @@ function SylvanCalendar() {
                             }
                             
                         } else if (newEvent.length == 1) {
-                            var errArry = self.checkEventValidation(resource.id + date, prevEventId, prevStudObj, elm, newResourceObj, prevStudObj);
+                            var errArry = self.checkEventValidation(resource.id + date, prevEventId, prevStudObj, elm, newResourceObj, prevStudObj,startHour);
                             if(errArry.alert.length){
                                 var messageString = '';
                                 for (var i = 0; i < errArry.alert.length; i++) {
@@ -1773,7 +1773,7 @@ function SylvanCalendar() {
                                     }
                                 }
                                 else if (newEvent.length == 1) {
-                                    var errArry = self.checkEventValidation(resource.id + date, prevEventId, prevStudObj, elm, newResourceObj, prevStudObj);
+                                    var errArry = self.checkEventValidation(resource.id + date, prevEventId, prevStudObj, elm, newResourceObj, prevStudObj,startHour);
                                     if(errArry.alert.length){
                                         var messageString = '';
                                         for (var i = 0; i < errArry.alert.length; i++) {
@@ -1908,6 +1908,7 @@ function SylvanCalendar() {
         }else{
             wjQuery(".loading").hide();
         }
+        wjQuery(".loading").hide();
     };
 
     /*
@@ -2917,9 +2918,15 @@ function SylvanCalendar() {
             var currentView = self.calendar.fullCalendar('getView');
             var studentDataSource = self.findDataSource(currentCalendarDate, currentView);
             var locationObj = self.getLocationObject(self.locationId);
+            windowWidth = null;
+            calendarWidth = null;
+            computedWidth = null;
             if (currentView.name == 'resourceDay') {
                 self.buildCalfirstCol();
                 self.calendarFixedWidth();
+                windowWidth = window.outerWidth;
+                calendarWidth = wjQuery(".fc-view-resourceDay").width();
+                computedWidth = windowWidth - wjQuery(".ta-pane").width();
                 var parentCenterId = locationObj['_hub_parentcenter_value'];
                 if (parentCenterId == undefined) {
                     parentCenterId = locationObj['hub_centerid'];
@@ -3367,6 +3374,7 @@ function SylvanCalendar() {
      */
     this.taPane = function () {
         var self = this;
+        self.attachMouseEvent();
         wjQuery('.ta-pane').show();
         wjQuery('.teacher-availability').on('mousewheel DOMMouseScroll', function (e) {
             var e0 = e.originalEvent;
@@ -3399,6 +3407,7 @@ function SylvanCalendar() {
         if (!taExpanded) {
             setTimeout(function () {
                 wjQuery('.ta-pane').hide();
+                wjQuery('body').off('mousemove', '#scrollarea, .ta-pane.open');
                 if (self.selectedDeliveryType.length == 1) {
                     if (self.sofList['Personal Instruction'].length > 0) {
                         // self.sofPane();
@@ -3698,6 +3707,9 @@ function SylvanCalendar() {
                     allowStudentFlag = true;
                 }
                 if (allowStudentFlag || val['hub_isattended']) {
+                    if (!val['aprogram_x002e_hub_color']) {
+                        val['aprogram_x002e_hub_color'] = "#000";
+                    }
                     var obj = {
                         studUniqueId: self.generateUniqueId(),
                         id: val._hub_student_value,
@@ -3859,6 +3871,9 @@ function SylvanCalendar() {
                     }
                 }
                 if (allowStudentFlag && instructionalHourValidity) {
+                    if (!val['aprogram_x002e_hub_color']) {
+                        val['aprogram_x002e_hub_color'] = "#000";
+                    }
                     var obj = {
                         studUniqueId:self.generateUniqueId(),
                         id: val['aenrollment_x002e_hub_student'],
@@ -3885,7 +3900,7 @@ function SylvanCalendar() {
                         timeSlotType: val['aproductservice_x002e_hub_timeslottype'],
                         namedHoursId: val['aproductservice_x002e_hub_namedgfhoursid']
                     }
-                    if (obj.subjectGradientobj.subjectGradient.split(",")[1]) {
+                    if (obj.subjectGradient && obj.subjectGradient.split(",")[1]) {
                         obj.subjectColorCode = obj.subjectGradient.split(",")[1].replace(");", '');
                     } else {
                         obj.subjectColorCode = obj.subjectGradient;
@@ -3920,6 +3935,17 @@ function SylvanCalendar() {
                                x.startTime == val['hub_starttime@OData.Community.Display.V1.FormattedValue'] &&
                                x.dayId == self.getDayValue(sDate);
                     });
+
+                    if (obj.deliveryTypeCode == personalInstruction) {
+                        var priceList = self.enrollmentPriceList.filter(function (x) {
+                            return x['aenrollment_x002e_hub_enrollmentid'] == obj.enrollmentId;
+                        });
+                        if (priceList[0] != undefined) {
+                            if (priceList[0]['apricelist_x002e_hub_ratio@OData.Community.Display.V1.FormattedValue'] == '1:1') {
+                                obj.is1to1 = true;
+                            }
+                        }
+                    }
 
                     for (var i = 0; i < pinnedStudent.length; i++) {
                         if (pinnedStudent[i] != undefined) {
@@ -4024,6 +4050,9 @@ function SylvanCalendar() {
                                     noResourceList.push(newObj);
                                 }
                             }
+                            obj.start = newObj.start;
+                            obj.end = newObj.end;
+                            obj.startHour = newObj.startHour;
                         }
                     }
                     if (pinnedStudent.length == 0) {
@@ -4045,16 +4074,7 @@ function SylvanCalendar() {
                         }
                     }
 
-                    if (obj.deliveryTypeCode == personalInstruction) {
-                        var priceList = self.enrollmentPriceList.filter(function (x) {
-                            return x['aenrollment_x002e_hub_enrollmentid'] == obj.enrollmentId;
-                        });
-                        if (priceList[0] != undefined) {
-                            if (priceList[0]['apricelist_x002e_hub_ratio@OData.Community.Display.V1.FormattedValue'] == '1:1') {
-                                obj.is1to1 = true;
-                            }
-                        }
-                    } else {
+                    if (obj.deliveryTypeCode != personalInstruction) {
                         if (val.hasOwnProperty('aproductservice_x002e_hub_resource')) {
                             obj.resourceId = val['aproductservice_x002e_hub_resource'];
                             var index = -1;
@@ -7641,7 +7661,7 @@ function SylvanCalendar() {
             if (index == -1) {
                 uniquewList.push(val);
             } else {
-                if ((new Date(makeupList[index].makeupExpiryDate)).getTime() > (new Date(val.makeupExpiryDate)).getTime()) {
+                if ((new Date(uniquewList[index].makeupExpiryDate)).getTime() > (new Date(val.makeupExpiryDate)).getTime()) {
                     uniquewList.splice(index, 1);
                     uniquewList.push(val);
                 }
@@ -7658,6 +7678,9 @@ function SylvanCalendar() {
             var sDate = new Date(val['hub_session_date@OData.Community.Display.V1.FormattedValue'] + " " + val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
             var eDate = new Date(val['hub_session_date@OData.Community.Display.V1.FormattedValue'] + " " + val['hub_end_time@OData.Community.Display.V1.FormattedValue']);
             var startHour = new Date(val['hub_session_date@OData.Community.Display.V1.FormattedValue'] + " " + val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
+            if (!val['aprogram_x002e_hub_color']) {
+                val['aprogram_x002e_hub_color'] = "#000";
+            }
             var obj = {
                 studUniqueId:self.generateUniqueId(),
                 id: val._hub_student_value,
@@ -7739,6 +7762,9 @@ function SylvanCalendar() {
             var sDate = new Date(val['hub_session_date@OData.Community.Display.V1.FormattedValue'] + " " + val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
             var eDate = new Date(val['hub_session_date@OData.Community.Display.V1.FormattedValue'] + " " + val['hub_end_time@OData.Community.Display.V1.FormattedValue']);
             var startHour = new Date(val['hub_session_date@OData.Community.Display.V1.FormattedValue'] + " " + val['hub_start_time@OData.Community.Display.V1.FormattedValue']);
+            if (!val['aprogram_x002e_hub_color']) {
+                val['aprogram_x002e_hub_color'] = "#000";
+            }
             var obj = {
                 studUniqueId:self.generateUniqueId(),
                 id: val._hub_student_value,
@@ -10009,7 +10035,7 @@ function SylvanCalendar() {
     this.scrollVertically = function () {
         var screenWidth = window.screen.width;
         screenWidth = screenWidth.toString();
-        var minScrollingCoord = screenWidth - 250;
+        var minScrollingCoord = screenWidth - 380;  //380 is filter and timeslot width + resource width
         var maxScrollingCoord = wjQuery('.fc-agenda-slots').width();
         var draggedEl = wjQuery('.ui-draggable-dragging');
         var scollArea = wjQuery('.fc-scroll-content');
@@ -10028,7 +10054,7 @@ function SylvanCalendar() {
 
     var mouseX;
     this.bindMouseMovement = function () {
-        wjQuery('#scrollarea').on('mousemove', function (e) {
+        wjQuery('#scrollarea').off().on('mousemove', function (e) {
             mouseX = e.clientX;
         })
     }
@@ -10138,7 +10164,7 @@ function SylvanCalendar() {
     }
 
 
-    this.checkEventValidation = function (newEventId, prevEventId, newStudentObj, element, newResourceObj, prevStudObj) {
+    this.checkEventValidation = function (newEventId, prevEventId, newStudentObj, element, newResourceObj, prevStudObj, startHour) {
         var self = this;
         var messageObject = {
             alert: [],
@@ -10162,7 +10188,7 @@ function SylvanCalendar() {
         }
 
         //InstructionalHour Validation
-        var instructionalHourValidation = self.checkInstructionalHours(prevStudObj, prevStudObj['startHour']);
+        var instructionalHourValidation = self.checkInstructionalHours(newStudentObj, startHour);
         if (!instructionalHourValidation) {
             messageObject.confirmation.push(" Instructional Hour is not available");
         }
@@ -10395,8 +10421,51 @@ function SylvanCalendar() {
             }
             eventObj.startHour = new Date(moment(eventObj.startDate, "MM/DD/YYYY").format("MM/DD/YYYY") + " " + eventObj.startTime).getHours();
             eventObj.endHour = new Date(moment(eventObj.endDate, "MM/DD/YYYY").format("MM/DD/YYYY") + " " + eventObj.endTime).getHours();
-        })
+        });
         return eventObjList;
+    }
+
+    var windowWidth;
+    var calendarWidth;
+    var computedWidth;
+    var horizantalScroll
+    this.attachMouseEvent = function () {
+        var self = this;
+        wjQuery('body').off().on('mousemove', '#scrollarea, .ta-pane.open', function (e) {
+            if (calendarWidth < windowWidth && computedWidth < calendarWidth) {
+                var mouseAxis = e.clientX;
+                console.log(mouseAxis);
+                var totalWidth = calendarWidth - 200;
+                var isTaParent = false;
+                if (wjQuery(e.target).hasClass("ta-pane")) {
+                    isTaParent = true;
+                } else {
+                    wjQuery.each(wjQuery(e.target).parents(), function (index, parent) {
+                        if (wjQuery(parent).hasClass("ta-pane")) {
+                            isTaParent = true;
+                        }
+                    });
+                }
+                if (isTaParent) {
+                    totalWidth = windowWidth - 100
+                }
+                if (mouseAxis >= totalWidth) {
+                    self.adjustSidePane(e.target, isTaParent);
+                } else {
+                    wjQuery(".ta-pane").removeClass("bg");
+                }
+            } else {
+                wjQuery(".ta-pane").removeClass("bg");
+            }
+        });
+    }
+
+    this.adjustSidePane = function (el, isTaParent) {
+        if (isTaParent) {
+            wjQuery(".ta-pane").removeClass("bg");
+        } else {
+            wjQuery(".ta-pane").addClass("bg");
+        }
     }
 
 }
