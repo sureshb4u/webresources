@@ -6351,8 +6351,7 @@ function SylvanCalendar() {
         var obj = {};
         if (labelFor == 'student') {
             var resourceObj = self.getResourceObj(uniqueId.split("_")[1]);
-            if (resourceObj.deliveryTypeCode == deliveryType &&
-                (sessionStatus == SCHEDULE_STATUS || sessionStatus == undefined) &&
+            if ((sessionStatus == SCHEDULE_STATUS || sessionStatus == undefined) &&
                 sessionType != FLOAT_TYPE &&
                 sessionType != MAKEUP_TYPE) {
                 obj.unpin = {
@@ -10054,7 +10053,7 @@ function SylvanCalendar() {
 
     var mouseX;
     this.bindMouseMovement = function () {
-        wjQuery('#scrollarea').off().on('mousemove', function (e) {
+        wjQuery('#scrollarea').off('mousemove').on('mousemove', function (e) {
             mouseX = e.clientX;
         })
     }
