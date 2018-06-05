@@ -124,9 +124,9 @@ function LmrUI() {
         self.selectedYear = wjQuery("#yearSelected").val();
         if (self.lmrList.length) {
             if (self.lmrList[0].onboardingDate) {
-                var onBoardMonth = self.lmrList[0].onboardingDate.split("/")[0];
-                var onBoardYear = self.lmrList[0].onboardingDate.split("/")[2];
-                if (onBoardYear > self.selectedYear || ((onBoardMonth - 1) > self.selectedMonth && onBoardYear >= self.selectedYear)) {
+                var onBoardDate = new Date(self.lmrList[0].onboardingDate).setDate("1");
+                var selectedDate = new Date(self.selectedMonth + "/01/" + self.selectedYear).getTime();
+                if (onBoardDate > selectedDate) {
                     render = false;
                 }
             }
@@ -149,9 +149,14 @@ function LmrUI() {
                 }
                 if (el.hasOwnProperty("CenterAddress")) {
                     skeleton += '<article class="row">' +
-                                    '<span class="first"><b>Center Address:</b></span>' +
-                                    '<span>' + el.CenterAddress + '</span>' +
-                            '</article>';
+                                    '<span class="first"><b>Center Address:</b></span>';
+                    if (el.CenterAddress) {
+                        skeleton += '<span>' + el.CenterAddress + '</span>' ;
+                            
+                    } else {
+                        skeleton += '<span> - </span>';
+                    }
+                    skeleton += '</article>';
                 }
                 if (el.hasOwnProperty("LicenseAgreement")) {
                     skeleton += '<article class="row">' +
@@ -908,17 +913,9 @@ function LmrUI() {
         var prevYear;
         var prevMonth;
         if (self.lmrList[0].onboardingDate) {
-            var onBoardMonth = self.lmrList[0].onboardingDate.split("/")[0];
-            var onBoardYear = self.lmrList[0].onboardingDate.split("/")[2];
-            if (((onBoardMonth - 1) < self.selectedMonth && onBoardYear <= self.selectedYear) || ((onBoardMonth - 1) == self.selectedMonth && onBoardYear < self.selectedYear)) {
-                prevMonth = self.selectedMonth - 1;
-                if (prevMonth < 0) {
-                    prevMonth = 11;
-                    prevYear = parseInt(self.selectedYear - 1);
-                } else {
-                    prevYear = parseInt(self.selectedYear);
-                }
-            } else if ((onBoardMonth - 1) == self.selectedMonth && onBoardYear < self.selectedYear) {
+            var onBoardDate = new Date(self.lmrList[0].onboardingDate).setDate("1");
+            var selectedDate = new Date(self.selectedMonth + "/01/" + self.selectedYear);
+            if (onBoardDate < selectedDate.getTime()) {
                 prevMonth = self.selectedMonth - 1;
                 if (prevMonth < 0) {
                     prevMonth = 11;
