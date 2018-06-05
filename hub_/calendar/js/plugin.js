@@ -940,34 +940,28 @@ function SylvanCalendar() {
     this.populateSOFPane = function (sofList, minTime, maxTime) {
         var self = this;
         var sofTemplate = [];
-        wjQuery('.student-overflow').html("");
-        for (var i = 0; i < (maxTime - minTime) ; i++) {
-            var elm = '<div class="student-overflow" id="student_block_' + i + '" style="height:' + (wjQuery(".fc-agenda-slots td div").height() * 4 + 3) + 'px;overflow:auto"></div>';
-            wjQuery('.sof-pane').append(elm);
-        }
+        wjQuery('.student-overflow').remove();
+        var blockCount = 0;
         for (var j = 0; j < Object.keys(sofList).length; j++) {
             if (Object.keys(sofList)[j] == "Personal Instruction") {
                 for (var i = 0; i < sofList[Object.keys(sofList)[j]].length; i++) {
+                    var studBlock = '<div class="student-overflow" id="student_block_' + blockCount + '" style="height:auto;overflow:auto"></div>';
+                    wjQuery('.sof-pane').append(studBlock);
                     var studentStartHour = sofList[Object.keys(sofList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
                         var studentPosition = studentStartHour - minTime;
                         var elm = '<div class="student-container cursor padding-lr-xxs" isfromSa="false" type="student" enrollmentId="' + sofList[Object.keys(sofList)[j]][i].enrollmentId + '" studUniqueId="' +
                             sofList[Object.keys(sofList)[j]][i].studUniqueId + '" uniqueValue="' + sofList[Object.keys(sofList)[j]][i].id + '_' + sofList[Object.keys(sofList)[j]][i].start + '"  value="' +
-                            sofList[Object.keys(sofList)[j]][i].id + '">' + sofList[Object.keys(sofList)[j]][i].name + ',<span>' + sofList[Object.keys(sofList)[j]][i].grade +
+                            sofList[Object.keys(sofList)[j]][i].id + '"><span>' + sofList[Object.keys(sofList)[j]][i].name + ',' + sofList[Object.keys(sofList)[j]][i].grade +
+                            '</span><span class="timingDetail">, ' + moment(sofList[Object.keys(sofList)[j]][i].start).format("h:mm A") + ' - ' + moment(sofList[Object.keys(sofList)[j]][i].end).format("h:mm A") +
                             '</span><i class="material-icons serviceIndicator" title="' + sofList[Object.keys(sofList)[j]][i]['serviceValue'] + '" style="';
                         if(!isIE){
                             elm+= 'background:'+sofList[Object.keys(sofList)[j]][i]['subjectGradient']+';-webkit-background-clip: text;';
                         }
                         elm+='color:' + sofList[Object.keys(sofList)[j]][i]['subjectColorCode'] +'">location_on</i></div>';
-                        var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
-                            return y;
-                        }).indexOf(sofList[Object.keys(sofList)[j]][i].deliveryTypeId);
-                        if (deliveryTypeIndex != -1) {
-                            if (wjQuery('#student_block_' + studentPosition + ' .sof-pi').length == 0) {
-                                wjQuery('#student_block_' + studentPosition).append('<div class="sof-pi"></div>');
-                            }
-                            wjQuery('#student_block_' + studentPosition + ' .sof-pi').append(elm);
-                        }
+                            wjQuery('#student_block_' + blockCount).append('<div class="sof-pi"></div>');
+                            wjQuery('#student_block_' + blockCount + ' .sof-pi').append(elm);
+                            blockCount++;
                     }
                 }
             } else if (Object.keys(sofList)[j] == 'Group Instruction') {
@@ -975,52 +969,45 @@ function SylvanCalendar() {
                 for (var i = 0; i < sofList[Object.keys(sofList)[j]].length; i++) {
                     var studentStartHour = sofList[Object.keys(sofList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
+                        var studBlock = '<div class="student-overflow" id="student_block_' + blockCount + '" style="height:auto;overflow:auto"></div>';
+                        wjQuery('.sof-pane').append(studBlock);
                         var studentPosition = studentStartHour - minTime;
                         var elm = '<div class="student-container cursor padding-lr-xxs" isfromSa="false" type="student" enrollmentId="' + sofList[Object.keys(sofList)[j]][i].enrollmentId +
                             '" studUniqueId="' + sofList[Object.keys(sofList)[j]][i].studUniqueId + '" uniqueValue="' + sofList[Object.keys(sofList)[j]][i].id + '_' + sofList[Object.keys(sofList)[j]][i].start +
-                            '" value="' + sofList[Object.keys(sofList)[j]][i].id + '">' + sofList[Object.keys(sofList)[j]][i].name + ',<span>' + sofList[Object.keys(sofList)[j]][i].grade +
+                            '" value="' + sofList[Object.keys(sofList)[j]][i].id + '"><span>' + sofList[Object.keys(sofList)[j]][i].name + ',' + sofList[Object.keys(sofList)[j]][i].grade +
+                            '</span><span class="timingDetail">,  ' + moment(sofList[Object.keys(sofList)[j]][i].start).format("h:mm A") + ' - ' + moment(sofList[Object.keys(sofList)[j]][i].end).format("h:mm A") +
                             '</span><i class="material-icons serviceIndicator" title="' + sofList[Object.keys(sofList)[j]][i]['serviceValue'] + '" style="';
                             if(!isIE){
                                 elm+= 'background:'+sofList[Object.keys(sofList)[j]][i]['subjectGradient']+';-webkit-background-clip: text;';
                             }
                            elm+=' color:' + sofList[Object.keys(sofList)[j]][i]['subjectColorCode'] +'">location_on</i></div>';
-                        var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
-                            return y;
-                        }).indexOf(sofList[Object.keys(sofList)[j]][i].deliveryTypeId);
-                        if (deliveryTypeIndex != -1) {
-                            if (wjQuery('#student_block_' + studentPosition + ' .sof-gi').length == 0) {
-                                wjQuery('#student_block_' + studentPosition).append('<div class="sof-gi"></div>');
-                            }
-                            wjQuery('#student_block_' + studentPosition + ' .sof-gi').append(elm);
-                        }
+                            wjQuery('#student_block_' + blockCount).append('<div class="sof-gi"></div>');
+                            wjQuery('#student_block_' + blockCount + ' .sof-gi').append(elm);
+                            blockCount++
                     }
                 }
             } else if (Object.keys(sofList)[j] == 'Group Facilitation') {
                 for (var i = 0; i < sofList[Object.keys(sofList)[j]].length; i++) {
                     var studentStartHour = sofList[Object.keys(sofList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
+                        var studBlock = '<div class="student-overflow" id="student_block_' + blockCount + '" style="height:auto;overflow:auto"></div>';
+                        wjQuery('.sof-pane').append(studBlock);
                         var studentPosition = studentStartHour - minTime;
                         var elm = '<div class="student-container cursor padding-lr-xxs" isfromSa="false" type="student" enrollmentId="' + sofList[Object.keys(sofList)[j]][i].enrollmentId +
                             '" studUniqueId="' + sofList[Object.keys(sofList)[j]][i].studUniqueId + '" uniqueValue="' + sofList[Object.keys(sofList)[j]][i].id + '_' + sofList[Object.keys(sofList)[j]][i].start +
-                            '" value="' + sofList[Object.keys(sofList)[j]][i].id + '">' + sofList[Object.keys(sofList)[j]][i].name + ',<span>' + sofList[Object.keys(sofList)[j]][i].grade +
+                            '" value="' + sofList[Object.keys(sofList)[j]][i].id + '"><span>' + sofList[Object.keys(sofList)[j]][i].name + ',' + sofList[Object.keys(sofList)[j]][i].grade +
+                            '</span><span class="timingDetail">,  ' + moment(sofList[Object.keys(sofList)[j]][i].start).format("h:mm A") + ' - ' + moment(sofList[Object.keys(sofList)[j]][i].end).format("h:mm A") +
                             '</span><i class="material-icons serviceIndicator" title="' + sofList[Object.keys(sofList)[j]][i]['serviceValue'] + '" style="';
                             if(!isIE){
                                 elm+= 'background:'+sofList[Object.keys(sofList)[j]][i]['subjectGradient']+';-webkit-background-clip: text;';
                             }
                             elm+=' color:' + sofList[Object.keys(sofList)[j]][i]['subjectColorCode'] +'">location_on</i></div>';
-                        var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
-                            return y;
-                        }).indexOf(sofList[Object.keys(sofList)[j]][i].deliveryTypeId);
-                        if (deliveryTypeIndex != -1) {
-                            if (wjQuery('#student_block_' + studentPosition + ' .sof-gf').length == 0) {
-                                wjQuery('#student_block_' + studentPosition).append('<div class="sof-gf"></div>');
-                            }
-                            wjQuery('#student_block_' + studentPosition + ' .sof-gf').append(elm);
-                        }
+                            wjQuery('#student_block_' + blockCount).append('<div class="sof-gf"></div>');
+                            wjQuery('#student_block_' + blockCount + ' .sof-gf').append(elm);
+                            blockCount++;
                     }
                 }
             }
-            this.sofWidthCalc();
             this.showConflictMsg();
             if(!self.checkAccountClosure()){
                 this.draggable('student-container');
@@ -1034,17 +1021,16 @@ function SylvanCalendar() {
     this.populateSAPane = function (saList, minTime, maxTime) {
         var self = this;
         var sofTemplate = [];
-        wjQuery('.student-attendance').html("");
-        for (var i = 0; i < (maxTime - minTime) ; i++) {
-            var elm = '<div class="student-attendance" id="sa_student_block_' + i + '" style="height:' + (wjQuery(".fc-agenda-slots td div").height() * 4 + 3) + 'px;overflow:auto"></div>';
-            wjQuery('.sa-pane').append(elm);
-        }
+        wjQuery('.student-attendance').remove();
+        var blockCount = 0;
         for (var j = 0; j < Object.keys(saList).length; j++) {
             if (Object.keys(saList)[j] == "Personal Instruction") {
                 for (var i = 0; i < saList[Object.keys(saList)[j]].length; i++) {
                     var studentObject = saList[Object.keys(saList)[j]][i];
                     var studentStartHour = saList[Object.keys(saList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
+                        var elm = '<div class="student-attendance" id="sa_student_block_' + blockCount + '" style="height:auto;overflow:auto"></div>';
+                        wjQuery('.sa-pane').append(elm);
                         var statusText = "Excused";
                         var draggable1 = "";
                         if(!self.checkAccountClosure() && studentObject['sessionStatus'] == UNEXCUSED_STATUS){
@@ -1056,21 +1042,16 @@ function SylvanCalendar() {
                         var studentPosition = studentStartHour - minTime;
                         var elm = '<div class="saStudent-container cursor padding-lr-xxs' + draggable1 + '" isfromSa="true" type="student" enrollmentId="' + saList[Object.keys(saList)[j]][i].enrollmentId +
                             '" studUniqueId="' + saList[Object.keys(saList)[j]][i].studUniqueId + '" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start +
-                            '"  value="' + saList[Object.keys(saList)[j]][i].id + '">' + saList[Object.keys(saList)[j]][i].name + ',<span>' + saList[Object.keys(saList)[j]][i].grade + " (" + statusText + ")" +
+                            '"  value="' + saList[Object.keys(saList)[j]][i].id + '"><span>' + saList[Object.keys(saList)[j]][i].name + ',' + saList[Object.keys(saList)[j]][i].grade + " (" + statusText + ")" +
+                            '</span><span class="timingDetail">,  ' + moment(saList[Object.keys(saList)[j]][i].start).format("h:mm A") + ' - ' + moment(saList[Object.keys(saList)[j]][i].end).format("h:mm A") +
                            '<i class="material-icons serviceIndicator" title="' + saList[Object.keys(saList)[j]][i]['serviceValue'] + '" style="';
                         if(!isIE){
                             elm+= 'background:'+saList[Object.keys(saList)[j]][i]['subjectGradient']+';-webkit-background-clip: text;';
                         }
                         elm+=' color:' + saList[Object.keys(saList)[j]][i]['subjectColorCode'] +'">location_on</i></div>';
-                        var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
-                            return y;
-                        }).indexOf(saList[Object.keys(saList)[j]][i].deliveryTypeId);
-                        if (deliveryTypeIndex != -1) {
-                            if (wjQuery('#sa_student_block_' + studentPosition + ' .sa-pi').length == 0) {
-                                wjQuery('#sa_student_block_' + studentPosition).append('<div class="sa-pi"></div>');
-                            }
-                            wjQuery('#sa_student_block_' + studentPosition + ' .sa-pi').append(elm);
-                        }
+                        wjQuery('#sa_student_block_' + blockCount).append('<div class="sa-pi"></div>');
+                        wjQuery('#sa_student_block_' + blockCount + ' .sa-pi').append(elm);
+                        blockCount++;
                     }
                 }
             } else if (Object.keys(saList)[j] == 'Group Instruction') {
@@ -1079,6 +1060,8 @@ function SylvanCalendar() {
                     var studentObject = saList[Object.keys(saList)[j]][i];
                     var studentStartHour = saList[Object.keys(saList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
+                        var elm = '<div class="student-attendance" id="sa_student_block_' + blockCount + '" style="height:auto;overflow:auto"></div>';
+                        wjQuery('.sa-pane').append(elm);
                         var statusText = "Excused";
                         var draggable1 = "";
                         if(studentObject['sessionStatus'] == UNEXCUSED_STATUS){
@@ -1090,21 +1073,16 @@ function SylvanCalendar() {
                         var studentPosition = studentStartHour - minTime;
                         var elm = '<div class="saStudent-container cursor padding-lr-xxs' + draggable1 + '" isfromSa="true" type="student" enrollmentId="' + saList[Object.keys(saList)[j]][i].enrollmentId +
                             '" studUniqueId="' + saList[Object.keys(saList)[j]][i].studUniqueId + '" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start +
-                            '"  value="' + saList[Object.keys(saList)[j]][i].id + '" >' + saList[Object.keys(saList)[j]][i].name + ',<span>' + saList[Object.keys(saList)[j]][i].grade + " (" + statusText + ")" +
+                            '"  value="' + saList[Object.keys(saList)[j]][i].id + '" ><span>' + saList[Object.keys(saList)[j]][i].name + ',' + saList[Object.keys(saList)[j]][i].grade + " (" + statusText + ")" +
+                            '</span><span class="timingDetail">,  ' + moment(saList[Object.keys(saList)[j]][i].start).format("h:mm A") + ' - ' + moment(saList[Object.keys(saList)[j]][i].end).format("h:mm A") +
                             '</span><i class="material-icons serviceIndicator" title="' + saList[Object.keys(saList)[j]][i]['serviceValue'] + '" style="';
                             if(!isIE){
                                 elm+= 'background:'+saList[Object.keys(saList)[j]][i]['subjectGradient']+';-webkit-background-clip: text;';
                             }
                             elm+=' color:' + saList[Object.keys(saList)[j]][i]['subjectColorCode'] +'">location_on</i></div>';
-                        var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
-                            return y;
-                        }).indexOf(saList[Object.keys(saList)[j]][i].deliveryTypeId);
-                        if (deliveryTypeIndex != -1) {
-                            if (wjQuery('#sa_student_block_' + studentPosition + ' .sa-gi').length == 0) {
-                                wjQuery('#sa_student_block_' + studentPosition).append('<div class="sa-gi"></div>');
-                            }
-                            wjQuery('#sa_student_block_' + studentPosition + ' .sa-gi').append(elm);
-                        }
+                            wjQuery('#sa_student_block_' + blockCount).append('<div class="sa-gi"></div>');
+                            wjQuery('#sa_student_block_' + blockCount + ' .sa-gi').append(elm);
+                            blockCount++;
                     }
                 }
             } else if (Object.keys(saList)[j] == 'Group Facilitation') {
@@ -1112,6 +1090,8 @@ function SylvanCalendar() {
                     var studentObject = saList[Object.keys(saList)[j]][i];
                     var studentStartHour = saList[Object.keys(saList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
+                        var elm = '<div class="student-attendance" id="sa_student_block_' + blockCount + '" style="height:auto;overflow:auto"></div>';
+                        wjQuery('.sa-pane').append(elm);
                         var statusText = "Excused";
                         var draggable1 = "";
                         if(studentObject['sessionStatus'] == UNEXCUSED_STATUS){
@@ -1123,131 +1103,22 @@ function SylvanCalendar() {
                         var studentPosition = studentStartHour - minTime;
                         var elm = '<div class="saStudent-container cursor padding-lr-xxs' + draggable1 + '" isfromSa="true" type="student" enrollmentId="' + saList[Object.keys(saList)[j]][i].enrollmentId +
                             '" studUniqueId="' + saList[Object.keys(saList)[j]][i].studUniqueId + '" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start +
-                            '"  value="' + saList[Object.keys(saList)[j]][i].id + '" >' + saList[Object.keys(saList)[j]][i].name + ',<span>' + saList[Object.keys(saList)[j]][i].grade + " (" + statusText + ")" +
+                            '"  value="' + saList[Object.keys(saList)[j]][i].id + '" ><span>' + saList[Object.keys(saList)[j]][i].name + ',' + saList[Object.keys(saList)[j]][i].grade + " (" + statusText + ")" +
+                            '</span><span class="timingDetail">,  ' + moment(saList[Object.keys(saList)[j]][i].start).format("h:mm A") + ' - ' + moment(saList[Object.keys(saList)[j]][i].end).format("h:mm A") +
                             '</span><i class="material-icons serviceIndicator" title="' + saList[Object.keys(saList)[j]][i]['serviceValue'] + '" style="';
                         if (!isIE) {
                             elm += 'background:' + saList[Object.keys(saList)[j]][i]['subjectGradient'] + ';-webkit-background-clip: text;';
                         }
                         elm += ' color:' + saList[Object.keys(saList)[j]][i]['subjectColorCode'] + '">location_on</i></div>';
-                        var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
-                            return y;
-                        }).indexOf(saList[Object.keys(saList)[j]][i].deliveryTypeId);
-                        if (deliveryTypeIndex != -1) {
-                            if (wjQuery('#sa_student_block_' + studentPosition + ' .sa-gf').length == 0) {
-                                wjQuery('#sa_student_block_' + studentPosition).append('<div class="sa-gf"></div>');
-                            }
-                            wjQuery('#sa_student_block_' + studentPosition + ' .sa-gf').append(elm);
-                        }
+                        wjQuery('#sa_student_block_' + blockCount).append('<div class="sa-gf"></div>');
+                        wjQuery('#sa_student_block_' + blockCount + ' .sa-gf').append(elm);
+                        blockCount++;
                     }
                 }
             }
-            this.saWidthCalc();
             this.showConflictMsg();
             if(!self.checkAccountClosure()){
                 this.draggable('draggable');
-            }
-        }
-    }
-
-    /*
-     *  Student overflow width calculation based on students present in sof list
-    */
-    this.sofWidthCalc = function () {
-        var self = this;
-        if (this.selectedDeliveryType.length == 1) {
-            wjQuery(".sof-pi").css("width", "calc(100% - 10px)");
-        } else {
-
-            if (this.sofList['Personal Instruction'].length != 0 &&
-                this.sofList['Group Instruction'].length == 0 &&
-                this.sofList['Group Facilitation'].length == 0) {
-                wjQuery(".sof-pi").css("width", "calc(100% - 10px)");
-            }
-            else if (this.sofList['Personal Instruction'].length == 0 &&
-                this.sofList['Group Instruction'].length != 0 &&
-                this.sofList['Group Facilitation'].length == 0) {
-                wjQuery(".sof-gi").css("width", "calc(100% - 10px)");
-            }
-            else if (this.sofList['Personal Instruction'].length == 0 &&
-                this.sofList['Group Instruction'].length == 0 &&
-                this.sofList['Group Facilitation'].length != 0) {
-                wjQuery(".sof-gf").css("width", "calc(100% - 10px)");
-            }
-            else if (this.sofList['Personal Instruction'].length != 0 &&
-                this.sofList['Group Instruction'].length == 0 &&
-                this.sofList['Group Facilitation'].length != 0) {
-                wjQuery(".sof-pi").css("width", "calc(50% - 10px)");
-                wjQuery(".sof-gf").css("width", "calc(50% - 10px)");
-            }
-            else if (this.sofList['Personal Instruction'].length != 0 &&
-                this.sofList['Group Instruction'].length != 0 &&
-                this.sofList['Group Facilitation'].length == 0) {
-                wjQuery(".sof-pi").css("width", "calc(50% - 10px)");
-                wjQuery(".sof-gi").css("width", "calc(50% - 10px)");
-            }
-            else if (this.sofList['Personal Instruction'].length == 0 &&
-                this.sofList['Group Instruction'].length != 0 &&
-                this.sofList['Group Facilitation'].length != 0) {
-                wjQuery(".sof-gi").css("width", "calc(50% - 10px)");
-                wjQuery(".sof-gf").css("width", "calc(50% - 10px)");
-            }
-            else if (this.sofList['Personal Instruction'].length != 0 &&
-                this.sofList['Group Instruction'].length != 0 &&
-                this.sofList['Group Facilitation'].length != 0) {
-                wjQuery(".sof-gi").css("width", "calc(33% - 10px)");
-                wjQuery(".sof-gf").css("width", "calc(33% - 10px)");
-                wjQuery(".sof-pi").css("width", "calc(33% - 10px)");
-            }
-        }
-    }
-
-    /*
-     *  Student attendance width calculation based on students present in sa list
-     */
-    this.saWidthCalc = function () {
-        var self = this;
-        if (this.selectedDeliveryType.length == 1) {
-            wjQuery(".sa-pi").css("width", "calc(100% - 10px)");
-        } else {
-            if (this.saList['Personal Instruction'].length != 0 &&
-                this.saList['Group Instruction'].length == 0 &&
-                this.saList['Group Facilitation'].length == 0) {
-                wjQuery(".sa-pi").css("width", "calc(100% - 10px)");
-            }
-            else if (this.saList['Personal Instruction'].length == 0 &&
-                this.saList['Group Instruction'].length != 0 &&
-                this.saList['Group Facilitation'].length == 0) {
-                wjQuery(".sa-gi").css("width", "calc(100% - 10px)");
-            }
-            else if (this.saList['Personal Instruction'].length == 0 &&
-                this.saList['Group Instruction'].length == 0 &&
-                this.saList['Group Facilitation'].length != 0) {
-                wjQuery(".sa-gf").css("width", "calc(100% - 10px)");
-            }
-            else if (this.saList['Personal Instruction'].length != 0 &&
-                this.saList['Group Instruction'].length == 0 &&
-                this.saList['Group Facilitation'].length != 0) {
-                wjQuery(".sa-pi").css("width", "calc(50% - 10px)");
-                wjQuery(".sa-gf").css("width", "calc(50% - 10px)");
-            }
-            else if (this.saList['Personal Instruction'].length != 0 &&
-                this.saList['Group Instruction'].length != 0 &&
-                this.saList['Group Facilitation'].length == 0) {
-                wjQuery(".sa-pi").css("width", "calc(50% - 10px)");
-                wjQuery(".sa-gi").css("width", "calc(50% - 10px)");
-            }
-            else if (this.saList['Personal Instruction'].length == 0 &&
-                this.saList['Group Instruction'].length != 0 &&
-                this.saList['Group Facilitation'].length != 0) {
-                wjQuery(".sa-gi").css("width", "calc(50% - 10px)");
-                wjQuery(".sa-gf").css("width", "calc(50% - 10px)");
-            }
-            else if (this.saList['Personal Instruction'].length != 0 &&
-                this.saList['Group Instruction'].length != 0 &&
-                this.saList['Group Facilitation'].length != 0) {
-                wjQuery(".sa-gi").css("width", "calc(33% - 10px)");
-                wjQuery(".sa-gf").css("width", "calc(33% - 10px)");
-                wjQuery(".sa-pi").css("width", "calc(33% - 10px)");
             }
         }
     }
@@ -2184,11 +2055,9 @@ function SylvanCalendar() {
             if (typeof (responseObj) == 'boolean' && responseObj) {
                 elm.remove();
                 if(wjQuery(elm).attr("isfromSa") == "true"){
-                    t.saWidthCalc();
                     this.saList[sofType].splice(stdIndex, 1);
                 }else{
                     this.sofList[sofType].splice(stdIndex, 1);
-                    t.sofWidthCalc();
                 }
                 if (wjQuery(parentElement).html() == '') {
                     parentElement.remove();
@@ -2205,10 +2074,8 @@ function SylvanCalendar() {
                 elm.remove();
                 if(wjQuery(elm).attr("isfromSa") == "true"){
                     this.saList[sofType].splice(stdIndex, 1);
-                    t.saWidthCalc();
                 }else{
                     this.sofList[sofType].splice(stdIndex, 1);
-                    t.sofWidthCalc();
                 }
 
                 if (wjQuery(parentElement).html() == '') {
@@ -3278,6 +3145,9 @@ function SylvanCalendar() {
      */ 
     this.sofPane = function () {
         var self = this;
+        self.attachMouseEvent();
+        wjQuery('.bg').removeClass("bg");
+        wjQuery('.stick').removeClass("stick");
         wjQuery('.sof-pane').show();
         wjQuery("#scrollarea").scroll(function () {
             wjQuery('.sof-pane').prop("scrollTop", this.scrollTop)
@@ -3326,6 +3196,9 @@ function SylvanCalendar() {
      */
     this.saPane = function () {
         var self = this;
+        self.attachMouseEvent();
+        wjQuery('.bg').removeClass("bg");
+        wjQuery('.stick').removeClass("stick");
         wjQuery('.sa-pane').show();
         wjQuery("#scrollarea").scroll(function () {
             wjQuery('.sa-pane').prop("scrollTop", this.scrollTop)
@@ -3375,6 +3248,8 @@ function SylvanCalendar() {
     this.taPane = function () {
         var self = this;
         self.attachMouseEvent();
+        wjQuery('.bg').removeClass("bg");
+        wjQuery('.stick').removeClass("stick");
         wjQuery('.ta-pane').show();
         wjQuery('.teacher-availability').on('mousewheel DOMMouseScroll', function (e) {
             var e0 = e.originalEvent;
@@ -3407,7 +3282,6 @@ function SylvanCalendar() {
         if (!taExpanded) {
             setTimeout(function () {
                 wjQuery('.ta-pane').hide();
-                wjQuery('body').off('mousemove', '#scrollarea, .ta-pane.open');
                 if (self.selectedDeliveryType.length == 1) {
                     if (self.sofList['Personal Instruction'].length > 0) {
                         // self.sofPane();
@@ -5330,11 +5204,6 @@ function SylvanCalendar() {
                 closeSofPane = true;
             }
         } else {
-            if (this.sofList['Personal Instruction'].length == 0) {
-                wjQuery(".sof-gf").css("width", "calc(100% - 10px)");
-            } else if (this.sofList['Group Facilitation'].length == 0) {
-                wjQuery(".sof-pi").css("width", "calc(100% - 10px)");
-            }
             if (this.sofList['Personal Instruction'].length == 0 && this.sofList['Group Facilitation'].length == 0 && this.sofList['Group Instruction'].length == 0) {
                 closeSofPane = true;
             }
@@ -5366,7 +5235,6 @@ function SylvanCalendar() {
             wjQuery(".sof-btn").removeClass('overflow-info');
             wjQuery(".sof-btn").addClass('overflow-info');
             wjQuery('.sof-btn,.sof-close-icon').prop('title', "There are students in overflow pane");
-            self.sofWidthCalc();
         }
     }
 
@@ -6916,8 +6784,15 @@ function SylvanCalendar() {
                 var name;
                 if (wjQuery(event.currentTarget).hasClass("teacher-container") && wjQuery(event.currentTarget).children()[0]) {
                     name = wjQuery(event.currentTarget).children().find("span:not(.teacherTimingDetails)")[0].innerHTML;
-                } else {
-                    name = wjQuery(event.currentTarget).text().replace("location_on", "");
+                } else if(wjQuery(event.currentTarget).find(".timingDetail").length){
+                    name = wjQuery(event.currentTarget).find("span:not(.timingDetail)")[0].innerHTML;
+                }else {
+                    var rawText = wjQuery(event.currentTarget).text();
+                    rawText = rawText.split(",");
+                    name = rawText[0]
+                    if (rawText[1]) {
+                        name += ", " + rawText[1].replace("location_on","").slice(1,2);
+                    }
                 }
                 wjQuery(elm).text(name + " (Starting at " + self.helperStartTime + ")");
             }, 30);
@@ -7848,21 +7723,21 @@ function SylvanCalendar() {
         var startTime = uniqueId.split('_')[2];
         var teacherId = wjQuery(event).attr("uniqueid").split("_")[0];
         var index = -1;
-        var currentCalendarDate = this.calendar.fullCalendar('getDate');
+        var currentCalendarDate = self.calendar.fullCalendar('getDate');
         currentCalendarDate = new Date(currentCalendarDate.setMinutes(00));
         currentCalendarDate = new Date(currentCalendarDate.setSeconds(00));
-        for (var a = 0; a < this.convertedTeacherObj.length; a++) {
-            if (this.convertedTeacherObj[a].startHour != undefined &&
-                this.convertedTeacherObj[a].resourceId != undefined &&
-                this.convertedTeacherObj[a].id == teacherId &&
-                this.convertedTeacherObj[a].resourceId == uniqueIds[1] &&
-                this.convertedTeacherObj[a].startHour.getTime() == new Date(startTime).getTime()) {
+        for (var a = 0; a < self.convertedTeacherObj.length; a++) {
+            if (self.convertedTeacherObj[a].startHour != undefined &&
+                self.convertedTeacherObj[a].resourceId != undefined &&
+                self.convertedTeacherObj[a].id == teacherId &&
+                self.convertedTeacherObj[a].resourceId == uniqueIds[1] &&
+                self.convertedTeacherObj[a].startHour.getTime() == new Date(startTime).getTime()) {
                 index = a;
                 break;
             }
         }
         if (index != -1) {
-            var teacherObj = this.convertedTeacherObj[index];
+            var teacherObj = self.convertedTeacherObj[index];
             eventDuration = (teacherObj.end.getTime() - teacherObj.start.getTime()) /(1000 * 60);
             if (teacherObj.hasOwnProperty('isFromMasterSchedule')) {
                 removeTeacherObj['hub_staff@odata.bind'] = teacherObj['id'];
@@ -10428,43 +10303,32 @@ function SylvanCalendar() {
     var calendarWidth;
     var computedWidth;
     var horizantalScroll
+    var overlappingResolution = false;
     this.attachMouseEvent = function () {
         var self = this;
-        wjQuery('body').off().on('mousemove', '#scrollarea, .ta-pane.open', function (e) {
             if (calendarWidth < windowWidth && computedWidth < calendarWidth) {
-                var mouseAxis = e.clientX;
-                console.log(mouseAxis);
-                var totalWidth = calendarWidth - 200;
-                var isTaParent = false;
-                if (wjQuery(e.target).hasClass("ta-pane")) {
-                    isTaParent = true;
-                } else {
-                    wjQuery.each(wjQuery(e.target).parents(), function (index, parent) {
-                        if (wjQuery(parent).hasClass("ta-pane")) {
-                            isTaParent = true;
-                        }
-                    });
-                }
-                if (isTaParent) {
-                    totalWidth = windowWidth - 100
-                }
-                if (mouseAxis >= totalWidth) {
-                    self.adjustSidePane(e.target, isTaParent);
-                } else {
-                    wjQuery(".ta-pane").removeClass("bg");
-                }
+                overlappingResolution = true;
             } else {
-                wjQuery(".ta-pane").removeClass("bg");
+                overlappingResolution = false;
+                wjQuery(".open").removeClass("bg");
+                wjQuery(".stick").removeClass("stick");
+            }
+
+        wjQuery("body").off("click").on("click", ".open", function (e) {
+            if (!wjQuery(e.target).hasClass("ta-close-icon") && overlappingResolution) {
+                wjQuery(".open").addClass("stick");
+                wjQuery(".open").removeClass("bg");
+                wjQuery("#calendar").removeClass("stick");
             }
         });
-    }
 
-    this.adjustSidePane = function (el, isTaParent) {
-        if (isTaParent) {
-            wjQuery(".ta-pane").removeClass("bg");
-        } else {
-            wjQuery(".ta-pane").addClass("bg");
-        }
+        wjQuery("#calendar").off("click").on("click", function (e) {
+            if (overlappingResolution) {
+                wjQuery(".open").removeClass("stick");
+                wjQuery(".open").addClass("bg");
+                wjQuery("#calendar").addClass("stick");
+            }
+        });
     }
 
 }
