@@ -311,7 +311,7 @@ button{
     right: 0;
     position: absolute;
     z-index: 3;
-    transition:opacity, z-index 0.5s linear;
+    transition:opacity 1s linear;
     background: #fff; 
 }
 .sof-pane.open, .sa-pane.open, .ta-pane.open{
@@ -740,6 +740,6 @@ i.material-icons.cursor.float-right {
     font-weight:bold;
     word-break:break-all;
 }
-.bg {opacity: 0.5 !important;z-index: 1;}
+.bg {z-index: 1;opacity: 0.5 !important;}
 .fc-view-resourceDay{z-index:1;}
 .timing-dropdown ul{height:65px;}
