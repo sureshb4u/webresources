@@ -311,6 +311,7 @@ button{
     right: 0;
     position: absolute;
     z-index: 3;
+    transition:opacity, z-index 0.5s linear;
     background: #fff; 
 }
 .sof-pane.open, .sa-pane.open, .ta-pane.open{
@@ -386,33 +387,21 @@ button{
 }
 .sof-pi, .sa-pi{
     background: #ebf5fb;
-    padding: 3px;
+    padding: 10px;
     border: 1px solid #9acaea;
-    /*display: inline-table;*/
-    display: inline-block;
     overflow-y: auto;
-    width: calc(50% - 8px);
-    height: calc(100% - 1px);
 }
 .sof-gi, .sa-gi{
-    padding: 3px;
+    padding: 10px;
     border: 1px solid #f88e50;
     background: #fedeb7;
-    /*display: inline-table;*/
-    display: inline-block;
     overflow-y: auto;
-    width: calc(50% - 8px);
-    height: calc(100% - 1px);
 }
 .sof-gf, .sa-gf{
-    padding: 3px;
+    padding: 10px;
     border: 1px solid #7bc143;
     background: #dff0d5;
-    /*display: inline-table;*/
-    display: inline-block;
     overflow-y: auto;
-    width: calc(50% - 8px);
-    height: calc(100% - 1px);
 }
 .placeholder{
     opacity: 0.5;
@@ -751,3 +740,6 @@ i.material-icons.cursor.float-right {
     font-weight:bold;
     word-break:break-all;
 }
+.bg {opacity: 0.5 !important;z-index: 1;}
+.fc-view-resourceDay{z-index:1;}
+.timing-dropdown ul{height:65px;}
