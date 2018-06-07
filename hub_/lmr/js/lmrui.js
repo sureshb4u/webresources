@@ -125,7 +125,7 @@ function LmrUI() {
         if (self.lmrList.length) {
             if (self.lmrList[0].onboardingDate) {
                 var onBoardDate = new Date(self.lmrList[0].onboardingDate).setDate("1");
-                var selectedDate = new Date((self.selectedMonth+1) + "/01/" + self.selectedYear).getTime();
+                var selectedDate = new Date((parseInt(self.selectedMonth)+1) + "/01/" + self.selectedYear).getTime();
                 if (onBoardDate > selectedDate) {
                     render = false;
                 }
@@ -914,7 +914,7 @@ function LmrUI() {
         var prevMonth;
         if (self.lmrList[0].onboardingDate) {
             var onBoardDate = new Date(self.lmrList[0].onboardingDate).setDate("1");
-            var selectedDate = new Date((self.selectedMonth+1) + "/01/" + self.selectedYear);
+            var selectedDate = new Date((parseInt(self.selectedMonth)+1) + "/01/" + self.selectedYear);
             if (onBoardDate < selectedDate.getTime()) {
                 prevMonth = self.selectedMonth - 1;
                 if (prevMonth < 0) {
