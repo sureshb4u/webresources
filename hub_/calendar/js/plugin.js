@@ -636,8 +636,8 @@ function SylvanCalendar() {
         wjQuery('.sof-pane').css('height', wjQuery('#calendar').height() - 10 + "px");
         wjQuery('.sa-pane').css('height', wjQuery('#calendar').height() - 10 + "px");
         wjQuery('.ta-pane').css('height', wjQuery('#calendar').height() - 10 + "px");
-        wjQuery('.sof-pane').css('overflow', 'hidden');
-        wjQuery('.sa-pane').css('overflow', 'hidden');
+        wjQuery('.sof-pane').css('overflow', 'auto');
+        wjQuery('.sa-pane').css('overflow', 'auto');
         wjQuery('.ta-pane').css('overflow-y', 'auto');
         wjQuery('.ta-pane').hide();
         wjQuery('.sof-pane').hide();
@@ -945,8 +945,6 @@ function SylvanCalendar() {
         for (var j = 0; j < Object.keys(sofList).length; j++) {
             if (Object.keys(sofList)[j] == "Personal Instruction") {
                 for (var i = 0; i < sofList[Object.keys(sofList)[j]].length; i++) {
-                    var studBlock = '<div class="student-overflow" id="student_block_' + blockCount + '" style="height:auto;overflow:auto"></div>';
-                    wjQuery('.sof-pane').append(studBlock);
                     var studentStartHour = sofList[Object.keys(sofList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
                         var studentPosition = studentStartHour - minTime;
@@ -958,10 +956,17 @@ function SylvanCalendar() {
                         if(!isIE){
                             elm+= 'background:'+sofList[Object.keys(sofList)[j]][i]['subjectGradient']+';-webkit-background-clip: text;';
                         }
-                        elm+='color:' + sofList[Object.keys(sofList)[j]][i]['subjectColorCode'] +'">location_on</i></div>';
+                        elm += 'color:' + sofList[Object.keys(sofList)[j]][i]['subjectColorCode'] + '">location_on</i></div>';
+                        var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
+                            return y;
+                        }).indexOf(sofList[Object.keys(sofList)[j]][i].deliveryTypeId);
+                        if (deliveryTypeIndex != -1) {
+                            var studBlock = '<div class="student-overflow" id="student_block_' + blockCount + '" style="height:auto;overflow:auto"></div>';
+                            wjQuery('.sof-pane').append(studBlock);
                             wjQuery('#student_block_' + blockCount).append('<div class="sof-pi"></div>');
                             wjQuery('#student_block_' + blockCount + ' .sof-pi').append(elm);
                             blockCount++;
+                        }
                     }
                 }
             } else if (Object.keys(sofList)[j] == 'Group Instruction') {
@@ -969,8 +974,6 @@ function SylvanCalendar() {
                 for (var i = 0; i < sofList[Object.keys(sofList)[j]].length; i++) {
                     var studentStartHour = sofList[Object.keys(sofList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
-                        var studBlock = '<div class="student-overflow" id="student_block_' + blockCount + '" style="height:auto;overflow:auto"></div>';
-                        wjQuery('.sof-pane').append(studBlock);
                         var studentPosition = studentStartHour - minTime;
                         var elm = '<div class="student-container cursor padding-lr-xxs" isfromSa="false" type="student" enrollmentId="' + sofList[Object.keys(sofList)[j]][i].enrollmentId +
                             '" studUniqueId="' + sofList[Object.keys(sofList)[j]][i].studUniqueId + '" uniqueValue="' + sofList[Object.keys(sofList)[j]][i].id + '_' + sofList[Object.keys(sofList)[j]][i].start +
@@ -980,18 +983,23 @@ function SylvanCalendar() {
                             if(!isIE){
                                 elm+= 'background:'+sofList[Object.keys(sofList)[j]][i]['subjectGradient']+';-webkit-background-clip: text;';
                             }
-                           elm+=' color:' + sofList[Object.keys(sofList)[j]][i]['subjectColorCode'] +'">location_on</i></div>';
-                            wjQuery('#student_block_' + blockCount).append('<div class="sof-gi"></div>');
-                            wjQuery('#student_block_' + blockCount + ' .sof-gi').append(elm);
-                            blockCount++
+                            elm += ' color:' + sofList[Object.keys(sofList)[j]][i]['subjectColorCode'] + '">location_on</i></div>';
+                            var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
+                                return y;
+                            }).indexOf(sofList[Object.keys(sofList)[j]][i].deliveryTypeId);
+                            if (deliveryTypeIndex != -1) {
+                                var studBlock = '<div class="student-overflow" id="student_block_' + blockCount + '" style="height:auto;overflow:auto"></div>';
+                                wjQuery('.sof-pane').append(studBlock);
+                                wjQuery('#student_block_' + blockCount).append('<div class="sof-gi"></div>');
+                                wjQuery('#student_block_' + blockCount + ' .sof-gi').append(elm);
+                                blockCount++
+                            }
                     }
                 }
             } else if (Object.keys(sofList)[j] == 'Group Facilitation') {
                 for (var i = 0; i < sofList[Object.keys(sofList)[j]].length; i++) {
                     var studentStartHour = sofList[Object.keys(sofList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
-                        var studBlock = '<div class="student-overflow" id="student_block_' + blockCount + '" style="height:auto;overflow:auto"></div>';
-                        wjQuery('.sof-pane').append(studBlock);
                         var studentPosition = studentStartHour - minTime;
                         var elm = '<div class="student-container cursor padding-lr-xxs" isfromSa="false" type="student" enrollmentId="' + sofList[Object.keys(sofList)[j]][i].enrollmentId +
                             '" studUniqueId="' + sofList[Object.keys(sofList)[j]][i].studUniqueId + '" uniqueValue="' + sofList[Object.keys(sofList)[j]][i].id + '_' + sofList[Object.keys(sofList)[j]][i].start +
@@ -1001,10 +1009,17 @@ function SylvanCalendar() {
                             if(!isIE){
                                 elm+= 'background:'+sofList[Object.keys(sofList)[j]][i]['subjectGradient']+';-webkit-background-clip: text;';
                             }
-                            elm+=' color:' + sofList[Object.keys(sofList)[j]][i]['subjectColorCode'] +'">location_on</i></div>';
-                            wjQuery('#student_block_' + blockCount).append('<div class="sof-gf"></div>');
-                            wjQuery('#student_block_' + blockCount + ' .sof-gf').append(elm);
-                            blockCount++;
+                            elm += ' color:' + sofList[Object.keys(sofList)[j]][i]['subjectColorCode'] + '">location_on</i></div>';
+                            var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
+                                return y;
+                            }).indexOf(sofList[Object.keys(sofList)[j]][i].deliveryTypeId);
+                            if (deliveryTypeIndex != -1) {
+                                var studBlock = '<div class="student-overflow" id="student_block_' + blockCount + '" style="height:auto;overflow:auto"></div>';
+                                wjQuery('.sof-pane').append(studBlock);
+                                wjQuery('#student_block_' + blockCount).append('<div class="sof-gf"></div>');
+                                wjQuery('#student_block_' + blockCount + ' .sof-gf').append(elm);
+                                blockCount++;
+                            }
                     }
                 }
             }
@@ -1029,8 +1044,6 @@ function SylvanCalendar() {
                     var studentObject = saList[Object.keys(saList)[j]][i];
                     var studentStartHour = saList[Object.keys(saList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
-                        var elm = '<div class="student-attendance" id="sa_student_block_' + blockCount + '" style="height:auto;overflow:auto"></div>';
-                        wjQuery('.sa-pane').append(elm);
                         var statusText = "Excused";
                         var draggable1 = "";
                         if(!self.checkAccountClosure() && studentObject['sessionStatus'] == UNEXCUSED_STATUS){
@@ -1048,10 +1061,17 @@ function SylvanCalendar() {
                         if(!isIE){
                             elm+= 'background:'+saList[Object.keys(saList)[j]][i]['subjectGradient']+';-webkit-background-clip: text;';
                         }
-                        elm+=' color:' + saList[Object.keys(saList)[j]][i]['subjectColorCode'] +'">location_on</i></div>';
-                        wjQuery('#sa_student_block_' + blockCount).append('<div class="sa-pi"></div>');
-                        wjQuery('#sa_student_block_' + blockCount + ' .sa-pi').append(elm);
-                        blockCount++;
+                        elm += ' color:' + saList[Object.keys(saList)[j]][i]['subjectColorCode'] + '">location_on</i></div>';
+                        var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
+                            return y;
+                        }).indexOf(sa[Object.keys(saList)[j]][i].deliveryTypeId);
+                        if (deliveryTypeIndex != -1) {
+                            var block = '<div class="student-attendance" id="sa_student_block_' + blockCount + '" style="height:auto;overflow:auto"></div>';
+                            wjQuery('.sa-pane').append(block);
+                            wjQuery('#sa_student_block_' + blockCount).append('<div class="sa-pi"></div>');
+                            wjQuery('#sa_student_block_' + blockCount + ' .sa-pi').append(elm);
+                            blockCount++;
+                        }
                     }
                 }
             } else if (Object.keys(saList)[j] == 'Group Instruction') {
@@ -1060,8 +1080,6 @@ function SylvanCalendar() {
                     var studentObject = saList[Object.keys(saList)[j]][i];
                     var studentStartHour = saList[Object.keys(saList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
-                        var elm = '<div class="student-attendance" id="sa_student_block_' + blockCount + '" style="height:auto;overflow:auto"></div>';
-                        wjQuery('.sa-pane').append(elm);
                         var statusText = "Excused";
                         var draggable1 = "";
                         if(studentObject['sessionStatus'] == UNEXCUSED_STATUS){
@@ -1079,10 +1097,17 @@ function SylvanCalendar() {
                             if(!isIE){
                                 elm+= 'background:'+saList[Object.keys(saList)[j]][i]['subjectGradient']+';-webkit-background-clip: text;';
                             }
-                            elm+=' color:' + saList[Object.keys(saList)[j]][i]['subjectColorCode'] +'">location_on</i></div>';
-                            wjQuery('#sa_student_block_' + blockCount).append('<div class="sa-gi"></div>');
-                            wjQuery('#sa_student_block_' + blockCount + ' .sa-gi').append(elm);
-                            blockCount++;
+                            elm += ' color:' + saList[Object.keys(saList)[j]][i]['subjectColorCode'] + '">location_on</i></div>';
+                            var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
+                                return y;
+                            }).indexOf(sa[Object.keys(saList)[j]][i].deliveryTypeId);
+                            if (deliveryTypeIndex != -1) {
+                                var block = '<div class="student-attendance" id="sa_student_block_' + blockCount + '" style="height:auto;overflow:auto"></div>';
+                                wjQuery('.sa-pane').append(block);
+                                wjQuery('#sa_student_block_' + blockCount).append('<div class="sa-gi"></div>');
+                                wjQuery('#sa_student_block_' + blockCount + ' .sa-gi').append(elm);
+                                blockCount++;
+                            }
                     }
                 }
             } else if (Object.keys(saList)[j] == 'Group Facilitation') {
@@ -1090,8 +1115,6 @@ function SylvanCalendar() {
                     var studentObject = saList[Object.keys(saList)[j]][i];
                     var studentStartHour = saList[Object.keys(saList)[j]][i].start.getHours();
                     if (studentStartHour >= minTime && studentStartHour <= maxTime) {
-                        var elm = '<div class="student-attendance" id="sa_student_block_' + blockCount + '" style="height:auto;overflow:auto"></div>';
-                        wjQuery('.sa-pane').append(elm);
                         var statusText = "Excused";
                         var draggable1 = "";
                         if(studentObject['sessionStatus'] == UNEXCUSED_STATUS){
@@ -1110,9 +1133,16 @@ function SylvanCalendar() {
                             elm += 'background:' + saList[Object.keys(saList)[j]][i]['subjectGradient'] + ';-webkit-background-clip: text;';
                         }
                         elm += ' color:' + saList[Object.keys(saList)[j]][i]['subjectColorCode'] + '">location_on</i></div>';
-                        wjQuery('#sa_student_block_' + blockCount).append('<div class="sa-gf"></div>');
-                        wjQuery('#sa_student_block_' + blockCount + ' .sa-gf').append(elm);
-                        blockCount++;
+                        var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
+                            return y;
+                        }).indexOf(sa[Object.keys(saList)[j]][i].deliveryTypeId);
+                        if (deliveryTypeIndex != -1) {
+                            var block = '<div class="student-attendance" id="sa_student_block_' + blockCount + '" style="height:auto;overflow:auto"></div>';
+                            wjQuery('.sa-pane').append(block);
+                            wjQuery('#sa_student_block_' + blockCount).append('<div class="sa-gf"></div>');
+                            wjQuery('#sa_student_block_' + blockCount + ' .sa-gf').append(elm);
+                            blockCount++;
+                        }
                     }
                 }
             }
@@ -3149,27 +3179,17 @@ function SylvanCalendar() {
         wjQuery('.bg').removeClass("bg");
         wjQuery('.stick').removeClass("stick");
         wjQuery('.sof-pane').show();
-        wjQuery("#scrollarea").scroll(function () {
-            wjQuery('.sof-pane').prop("scrollTop", this.scrollTop)
-                .prop("scrollLeft", this.scrollLeft);
-        });
-        wjQuery('.student-overflow').on('mousewheel DOMMouseScroll', function (e) {
-            var e0 = e.originalEvent;
-            var delta = e0.wheelDelta || -e0.detail;
-            this.scrollTop += (delta < 0 ? 1 : -1) * 30;
-            e.preventDefault();
-        });
         if (taExpanded) {
             taExpanded = !taExpanded; // to change the slide
             taExpanded ? wjQuery('.ta-pane').addClass('open') : wjQuery('.ta-pane').removeClass('open');
             wjQuery('.ta-pane').css('opacity', '1');
-            wjQuery('.ta-pane').animate(taExpanded ? { 'marginRight': '-15px' } : { marginRight: '-260px' }, 500);
+            wjQuery('.ta-pane').animate(taExpanded ? { 'marginRight': '0px' } : { marginRight: '-260px' }, 500);
         }
         if (saExpanded) {
             saExpanded = !saExpanded; // to change the slide
             saExpanded ? wjQuery('.sa-pane').addClass('open') : wjQuery('.sa-pane').removeClass('open');
             wjQuery('.sa-pane').css('opacity', '1');
-            wjQuery('.sa-pane').animate(saExpanded ? { 'marginRight': '-15px' } : { marginRight: '-260px' }, 500);
+            wjQuery('.sa-pane').animate(saExpanded ? { 'marginRight': '0px' } : { marginRight: '-260px' }, 500);
         }
         sofExpanded = !sofExpanded;
         if (sofExpanded) {
@@ -3180,7 +3200,7 @@ function SylvanCalendar() {
             wjQuery('.sof-pane').css('opacity', '1');
         }
         sofExpanded ? wjQuery('.sof-pane').addClass('open') : wjQuery('.sof-pane').removeClass('open');
-        wjQuery('.sof-pane').animate(sofExpanded ? { 'marginRight': '-15px' } : { marginRight: '-260px' }, 500);
+        wjQuery('.sof-pane').animate(sofExpanded ? { 'marginRight': '0px' } : { marginRight: '-260px' }, 500);
         if (!sofExpanded) {
             setTimeout(function () {
                 wjQuery('.sof-pane').hide();
@@ -3200,27 +3220,17 @@ function SylvanCalendar() {
         wjQuery('.bg').removeClass("bg");
         wjQuery('.stick').removeClass("stick");
         wjQuery('.sa-pane').show();
-        wjQuery("#scrollarea").scroll(function () {
-            wjQuery('.sa-pane').prop("scrollTop", this.scrollTop)
-                .prop("scrollLeft", this.scrollLeft);
-        });
-        wjQuery('.student-attendance').on('mousewheel DOMMouseScroll', function (e) {
-            var e0 = e.originalEvent;
-            var delta = e0.wheelDelta || -e0.detail;
-            this.scrollTop += (delta < 0 ? 1 : -1) * 30;
-            e.preventDefault();
-        });
         if (taExpanded) {
             taExpanded = !taExpanded; // to change the slide
             taExpanded ? wjQuery('.ta-pane').addClass('open') : wjQuery('.ta-pane').removeClass('open');
             wjQuery('.ta-pane').css('opacity', '1');
-            wjQuery('.ta-pane').animate(taExpanded ? { 'marginRight': '-15px' } : { marginRight: '-260px' }, 500);
+            wjQuery('.ta-pane').animate(taExpanded ? { 'marginRight': '0px' } : { marginRight: '-260px' }, 500);
         }
         if (sofExpanded) {
             sofExpanded = !sofExpanded;
             sofExpanded ? wjQuery('.sof-pane').addClass('open') : wjQuery('.sof-pane').removeClass('open');
             wjQuery('.sof-pane').css('opacity', '1');
-            wjQuery('.sof-pane').animate(sofExpanded ? { 'marginRight': '-15px' } : { marginRight: '-260px' }, 500);
+            wjQuery('.sof-pane').animate(sofExpanded ? { 'marginRight': '0px' } : { marginRight: '-260px' }, 500);
         }
         saExpanded = !saExpanded;
         if (saExpanded) {
@@ -3231,7 +3241,7 @@ function SylvanCalendar() {
             wjQuery('.sa-pane').css('opacity', '1');
         }
         saExpanded ? wjQuery('.sa-pane').addClass('open') : wjQuery('.sa-pane').removeClass('open');
-        wjQuery('.sa-pane').animate(saExpanded ? { 'marginRight': '-15px' } : { marginRight: '-260px' }, 500);
+        wjQuery('.sa-pane').animate(saExpanded ? { 'marginRight': '0px' } : { marginRight: '-260px' }, 500);
         if (!saExpanded) {
             setTimeout(function () {
                 wjQuery('.sa-pane').hide();
@@ -3251,24 +3261,18 @@ function SylvanCalendar() {
         wjQuery('.bg').removeClass("bg");
         wjQuery('.stick').removeClass("stick");
         wjQuery('.ta-pane').show();
-        wjQuery('.teacher-availability').on('mousewheel DOMMouseScroll', function (e) {
-            var e0 = e.originalEvent;
-            var delta = e0.wheelDelta || -e0.detail;
-            this.scrollTop += (delta < 0 ? 1 : -1) * 30;
-            e.preventDefault();
-        });
 
         if (sofExpanded) {
             sofExpanded = !sofExpanded;
             sofExpanded ? wjQuery('.sof-pane').addClass('open') : wjQuery('.sof-pane').removeClass('open');
             wjQuery('.sof-pane').css('opacity', '1');
-            wjQuery('.sof-pane').animate(sofExpanded ? { 'marginRight': '-15px' } : { marginRight: '-260px' }, 500);
+            wjQuery('.sof-pane').animate(sofExpanded ? { 'marginRight': '0px' } : { marginRight: '-260px' }, 500);
         }
         if (saExpanded) {
             saExpanded = !saExpanded; // to change the slide
             saExpanded ? wjQuery('.sa-pane').addClass('open') : wjQuery('.sa-pane').removeClass('open');
             wjQuery('.sa-pane').css('opacity', '1');
-            wjQuery('.sa-pane').animate(saExpanded ? { 'marginRight': '-15px' } : { marginRight: '-260px' }, 500);
+            wjQuery('.sa-pane').animate(saExpanded ? { 'marginRight': '0px' } : { marginRight: '-260px' }, 500);
         }
         taExpanded = !taExpanded;
         if (taExpanded) {
