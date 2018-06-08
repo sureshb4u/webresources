@@ -1064,7 +1064,7 @@ function SylvanCalendar() {
                         elm += ' color:' + saList[Object.keys(saList)[j]][i]['subjectColorCode'] + '">location_on</i></div>';
                         var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
                             return y;
-                        }).indexOf(sa[Object.keys(saList)[j]][i].deliveryTypeId);
+                        }).indexOf(saList[Object.keys(saList)[j]][i].deliveryTypeId);
                         if (deliveryTypeIndex != -1) {
                             var block = '<div class="student-attendance" id="sa_student_block_' + blockCount + '" style="height:auto;overflow:auto"></div>';
                             wjQuery('.sa-pane').append(block);
@@ -1100,7 +1100,7 @@ function SylvanCalendar() {
                             elm += ' color:' + saList[Object.keys(saList)[j]][i]['subjectColorCode'] + '">location_on</i></div>';
                             var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
                                 return y;
-                            }).indexOf(sa[Object.keys(saList)[j]][i].deliveryTypeId);
+                            }).indexOf(saList[Object.keys(saList)[j]][i].deliveryTypeId);
                             if (deliveryTypeIndex != -1) {
                                 var block = '<div class="student-attendance" id="sa_student_block_' + blockCount + '" style="height:auto;overflow:auto"></div>';
                                 wjQuery('.sa-pane').append(block);
@@ -1135,7 +1135,7 @@ function SylvanCalendar() {
                         elm += ' color:' + saList[Object.keys(saList)[j]][i]['subjectColorCode'] + '">location_on</i></div>';
                         var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
                             return y;
-                        }).indexOf(sa[Object.keys(saList)[j]][i].deliveryTypeId);
+                        }).indexOf(saList[Object.keys(saList)[j]][i].deliveryTypeId);
                         if (deliveryTypeIndex != -1) {
                             var block = '<div class="student-attendance" id="sa_student_block_' + blockCount + '" style="height:auto;overflow:auto"></div>';
                             wjQuery('.sa-pane').append(block);
