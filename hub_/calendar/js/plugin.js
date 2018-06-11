@@ -43,7 +43,11 @@ setTimeout(function () {
     var deliveryTypeList = [];
     var sylvanCalendar = new SylvanCalendar();
     sylvanCalendar.locationList = data.getLocation();
-    var locationId = sylvanCalendar.populateLocation(data.getLocation());
+    var defaultCenter = data.getRecentlyViewedCenter();
+    if (!defaultCenter) {
+        defaultCenter = [];
+    }
+    var locationId = sylvanCalendar.populateLocation(data.getLocation(), defaultCenter);
     wjQuery('.headerDate').text(moment(currentCalendarDate).format('MM/DD/YYYY'));
     setTimeout(function () {
         for (var i = 0; i < deliveryType.length; i++) {
@@ -89,6 +93,18 @@ setTimeout(function () {
                 wjQuery(".sof-btn").removeClass('overflow-info');
                 locationId = wjQuery(this).attr('value-id');
                 wjQuery('#datepicker').datepicker('destroy');
+                var recentRecordId = wjQuery(this).attr("recent-record-id");
+                if (defaultCenter.length) {
+                    recentRecordId = defaultCenter[0].hub_recently_viewed_recordsid;
+                }
+                var recordId = data.updateRecentlyViewedCenter(locationId, recentRecordId);
+                if (recordId) {
+                    wjQuery(this).attr("recent-record-id", recordId);
+                    if (!defaultCenter.length) {
+                        defaultCenter[0] = {};
+                    }
+                    defaultCenter[0].hub_recently_viewed_recordsid = recordId;
+                }
                 var view = "resourceDay";
                 if (sylvanCalendar.calendar != undefined) {
                     view = sylvanCalendar.calendar.fullCalendar('getView');
@@ -649,20 +665,30 @@ function SylvanCalendar() {
     }
 
     // Location Dropdown population
-    this.populateLocation = function (args) {
+    this.populateLocation = function (args,defaultCenter) {
         var self = this;
         if (args != null) {
             var locationData = [];
             args[0][0] == undefined ? locationData = args : locationData = args[0];
             var locationList = [];
+            var index = -1;
             for (var i = 0; i < locationData.length; i++) {
                 if (!i) {
                     wjQuery(".location-btn").text(locationData[i].hub_centername);
                     wjQuery(".location-btn").val(locationData[i].hub_centerid);
                 }
                 locationList.push('<li><a tabindex="-1" value-id=' + locationData[i].hub_centerid + ' href="javascript:void(0)">' + locationData[i].hub_centername + '</a></li>');
+                if (defaultCenter.length && defaultCenter[0].hub_center == locationData[i].hub_centerid) {
+                    index = i;
+                }
             }
             wjQuery(".loc-dropdown ul").html(locationList);
+            if (index != -1) {
+                wjQuery(".location-btn").text(locationData[index].hub_centername);
+                wjQuery(".location-btn").val(locationData[index].hub_centerid);
+                wjQuery(".loc-dropdown li a[value-id='" + locationData[index].hub_centerid + "']").attr("recent-record-id", defaultCenter[0].hub_recently_viewed_recordsid);
+                return locationData[index].hub_centerid
+            }
             return locationData[0].hub_centerid;
         }
     }
