@@ -282,7 +282,7 @@ function LmrUI() {
                     if (!el.NAFRate) {
                         el.NAFRate = "0.00";
                     }
-                    skeleton += ' <span>' + (el.NAFRate*100) + '</span>';
+                    skeleton += ' <span>' + parseFloat(el.NAFRate*100).toFixed(2) + '</span>';
                 }
                 if (el.hasOwnProperty("NAFPayment")) {
                     skeleton += ' <span id="nafPayment" >$' + parseFloat(el.NAFPayment).toFixed(2) + '</span>';
@@ -297,7 +297,7 @@ function LmrUI() {
                     if (!el.NACRate) {
                         el.NACRate = "0.00";
                     }
-                    skeleton += ' <span>' + (el.NACRate*100) + '</span>';
+                    skeleton += ' <span>' + parseFloat(el.NACRate*100).toFixed(2) + '</span>';
                 }
                 if (el.hasOwnProperty("NACPayment")) {
                     skeleton += ' <span id="nacPayment" >$' + parseFloat(el.NACPayment).toFixed(2) + '</span>';
@@ -530,9 +530,14 @@ function LmrUI() {
 
         wjQuery(".table-input").keyup(function (e) {
             if (this.value && this.value.split(".") && this.value.split(".")[1]) {
-                var decimalVal = this.value.split(".")[1].slice(0, 2);
+                //Splitted the value instead of parseFloat as parseFloat will round off the entered Values
+                var decimalVal = this.value.split(".")[1].slice(0, 2); 
                 var convertedVal = this.value.split(".")[0] + "." + decimalVal;
-                wjQuery(e.target).val(convertedVal);
+                if (decimalVal.length == 2) {
+                    wjQuery(e.target).val(parseFloat(convertedVal).toFixed(2));
+                }
+            } else if (this.value && !this.value.includes(".")) {
+                wjQuery(e.target).val(parseInt(this.value));
             }
         });
 
