@@ -968,92 +968,56 @@ function SylvanCalendar() {
         var sofTemplate = [];
         wjQuery('.student-overflow').remove();
         var blockCount = 0;
-        for (var j = 0; j < Object.keys(sofList).length; j++) {
-            if (Object.keys(sofList)[j] == "Personal Instruction") {
-                for (var i = 0; i < sofList[Object.keys(sofList)[j]].length; i++) {
-                    var studentStartHour = sofList[Object.keys(sofList)[j]][i].start.getHours();
-                    if (studentStartHour >= minTime && studentStartHour <= maxTime) {
-                        var studentPosition = studentStartHour - minTime;
-                        var elm = '<div class="student-container cursor padding-lr-xxs" isfromSa="false" type="student" enrollmentId="' + sofList[Object.keys(sofList)[j]][i].enrollmentId + '" studUniqueId="' +
-                            sofList[Object.keys(sofList)[j]][i].studUniqueId + '" uniqueValue="' + sofList[Object.keys(sofList)[j]][i].id + '_' + sofList[Object.keys(sofList)[j]][i].start + '"  value="' +
-                            sofList[Object.keys(sofList)[j]][i].id + '"><span>' + sofList[Object.keys(sofList)[j]][i].name + ',' + sofList[Object.keys(sofList)[j]][i].grade +
-                            '</span><span class="timingDetail">, ' + moment(sofList[Object.keys(sofList)[j]][i].start).format("h:mm A") + ' - ' + moment(sofList[Object.keys(sofList)[j]][i].end).format("h:mm A") +
-                            '</span><i class="material-icons serviceIndicator" title="' + sofList[Object.keys(sofList)[j]][i]['serviceValue'] + '" style="';
-                        if(!isIE){
-                            elm+= 'background:'+sofList[Object.keys(sofList)[j]][i]['subjectGradient']+';-webkit-background-clip: text;';
-                        }
-                        elm += 'color:' + sofList[Object.keys(sofList)[j]][i]['subjectColorCode'] + '">location_on</i></div>';
-                        var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
-                            return y;
-                        }).indexOf(sofList[Object.keys(sofList)[j]][i].deliveryTypeId);
-                        if (deliveryTypeIndex != -1) {
-                            var studBlock = '<div class="student-overflow" id="student_block_' + blockCount + '" style="height:auto;overflow:auto"></div>';
-                            wjQuery('.sof-pane').append(studBlock);
-                            wjQuery('#student_block_' + blockCount).append('<div class="sof-pi"></div>');
-                            wjQuery('#student_block_' + blockCount + ' .sof-pi').append(elm);
-                            blockCount++;
-                        }
-                    }
+        var sortedSofList = [];
+        //Merging the lists to a single for sorting
+        sortedSofList = sofList['Personal Instruction'].concat(sofList['Group Instruction'],sofList['Group Facilitation']);
+        sortedSofList = sortedSofList.sort(function (a, b) {
+            return new Date(a.start) - new Date(b.start)
+        });
+        wjQuery.each(sortedSofList, function (i, sofList) {
+            var studentStartHour = sofList.start.getHours();
+            if (studentStartHour >= minTime && studentStartHour <= maxTime) {
+                var studentPosition = studentStartHour - minTime;
+                var elm = '<div class="student-container cursor padding-lr-xxs" isfromSa="false" type="student" enrollmentId="' + sofList.enrollmentId + '" studUniqueId="' +
+                    sofList.studUniqueId + '" uniqueValue="' + sofList.id + '_' + sofList.start + '"  value="' +
+                    sofList.id + '"><span>' + sofList.name + ',' + sofList.grade +
+                    '</span><span class="timingDetail">, ' + moment(sofList.start).format("h:mm A") + ' - ' + moment(sofList.end).format("h:mm A") +
+                    '</span><i class="material-icons serviceIndicator" title="' + sofList['serviceValue'] + '" style="';
+                if (!isIE) {
+                    elm += 'background:' + sofList['subjectGradient'] + ';-webkit-background-clip: text;';
                 }
-            } else if (Object.keys(sofList)[j] == 'Group Instruction') {
-                // GI Student will not come in sof list
-                for (var i = 0; i < sofList[Object.keys(sofList)[j]].length; i++) {
-                    var studentStartHour = sofList[Object.keys(sofList)[j]][i].start.getHours();
-                    if (studentStartHour >= minTime && studentStartHour <= maxTime) {
-                        var studentPosition = studentStartHour - minTime;
-                        var elm = '<div class="student-container cursor padding-lr-xxs" isfromSa="false" type="student" enrollmentId="' + sofList[Object.keys(sofList)[j]][i].enrollmentId +
-                            '" studUniqueId="' + sofList[Object.keys(sofList)[j]][i].studUniqueId + '" uniqueValue="' + sofList[Object.keys(sofList)[j]][i].id + '_' + sofList[Object.keys(sofList)[j]][i].start +
-                            '" value="' + sofList[Object.keys(sofList)[j]][i].id + '"><span>' + sofList[Object.keys(sofList)[j]][i].name + ',' + sofList[Object.keys(sofList)[j]][i].grade +
-                            '</span><span class="timingDetail">,  ' + moment(sofList[Object.keys(sofList)[j]][i].start).format("h:mm A") + ' - ' + moment(sofList[Object.keys(sofList)[j]][i].end).format("h:mm A") +
-                            '</span><i class="material-icons serviceIndicator" title="' + sofList[Object.keys(sofList)[j]][i]['serviceValue'] + '" style="';
-                            if(!isIE){
-                                elm+= 'background:'+sofList[Object.keys(sofList)[j]][i]['subjectGradient']+';-webkit-background-clip: text;';
-                            }
-                            elm += ' color:' + sofList[Object.keys(sofList)[j]][i]['subjectColorCode'] + '">location_on</i></div>';
-                            var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
-                                return y;
-                            }).indexOf(sofList[Object.keys(sofList)[j]][i].deliveryTypeId);
-                            if (deliveryTypeIndex != -1) {
-                                var studBlock = '<div class="student-overflow" id="student_block_' + blockCount + '" style="height:auto;overflow:auto"></div>';
-                                wjQuery('.sof-pane').append(studBlock);
-                                wjQuery('#student_block_' + blockCount).append('<div class="sof-gi"></div>');
-                                wjQuery('#student_block_' + blockCount + ' .sof-gi').append(elm);
-                                blockCount++
-                            }
+                elm += 'color:' + sofList['subjectColorCode'] + '">location_on</i></div>';
+                var deliveryTypeIndex = self.selectedDeliveryType.map(function (y) {
+                    return y;
+                }).indexOf(sofList.deliveryTypeId);
+                if (deliveryTypeIndex != -1) {
+                    var studBlock = '<div class="student-overflow" id="student_block_' + blockCount + '" style="height:auto;overflow:auto"></div>';
+                    wjQuery('.sof-pane').append(studBlock);
+                    var blockColor = "";
+                    switch (sofList.deliveryTypeCode) {
+                        case 1:{
+                            blockColor = "sof-pi";
+                            break;
+                        }
+                        case 2: {
+                            blockColor = "sof-gf";
+                            break;
+                        }
+                        case 3: {
+                            blockColor = "sof-gi";
+                            break;
+                        }
                     }
-                }
-            } else if (Object.keys(sofList)[j] == 'Group Facilitation') {
-                for (var i = 0; i < sofList[Object.keys(sofList)[j]].length; i++) {
-                    var studentStartHour = sofList[Object.keys(sofList)[j]][i].start.getHours();
-                    if (studentStartHour >= minTime && studentStartHour <= maxTime) {
-                        var studentPosition = studentStartHour - minTime;
-                        var elm = '<div class="student-container cursor padding-lr-xxs" isfromSa="false" type="student" enrollmentId="' + sofList[Object.keys(sofList)[j]][i].enrollmentId +
-                            '" studUniqueId="' + sofList[Object.keys(sofList)[j]][i].studUniqueId + '" uniqueValue="' + sofList[Object.keys(sofList)[j]][i].id + '_' + sofList[Object.keys(sofList)[j]][i].start +
-                            '" value="' + sofList[Object.keys(sofList)[j]][i].id + '"><span>' + sofList[Object.keys(sofList)[j]][i].name + ',' + sofList[Object.keys(sofList)[j]][i].grade +
-                            '</span><span class="timingDetail">,  ' + moment(sofList[Object.keys(sofList)[j]][i].start).format("h:mm A") + ' - ' + moment(sofList[Object.keys(sofList)[j]][i].end).format("h:mm A") +
-                            '</span><i class="material-icons serviceIndicator" title="' + sofList[Object.keys(sofList)[j]][i]['serviceValue'] + '" style="';
-                            if(!isIE){
-                                elm+= 'background:'+sofList[Object.keys(sofList)[j]][i]['subjectGradient']+';-webkit-background-clip: text;';
-                            }
-                            elm += ' color:' + sofList[Object.keys(sofList)[j]][i]['subjectColorCode'] + '">location_on</i></div>';
-                            var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
-                                return y;
-                            }).indexOf(sofList[Object.keys(sofList)[j]][i].deliveryTypeId);
-                            if (deliveryTypeIndex != -1) {
-                                var studBlock = '<div class="student-overflow" id="student_block_' + blockCount + '" style="height:auto;overflow:auto"></div>';
-                                wjQuery('.sof-pane').append(studBlock);
-                                wjQuery('#student_block_' + blockCount).append('<div class="sof-gf"></div>');
-                                wjQuery('#student_block_' + blockCount + ' .sof-gf').append(elm);
-                                blockCount++;
-                            }
-                    }
+                    wjQuery('#student_block_' + blockCount).append('<div class="' + blockColor + '"></div>');
+                    wjQuery('#student_block_' + blockCount + ' .'+blockColor).append(elm);
+                    blockCount++;
                 }
             }
-            this.showConflictMsg();
-            if(!self.checkAccountClosure()){
-                this.draggable('student-container');
+            self.showConflictMsg();
+            if (!self.checkAccountClosure()) {
+                self.draggable('student-container');
             }
-        }
+        });
     }
 
     /*
@@ -1063,120 +1027,66 @@ function SylvanCalendar() {
         var self = this;
         var sofTemplate = [];
         wjQuery('.student-attendance').remove();
+        var sortedSaList = [];
+        //Merging the lists to a single for sorting
+        sortedSaList = saList['Personal Instruction'].concat(saList['Group Instruction'], saList['Group Facilitation']);
+        sortedSaList = sortedSaList.sort(function (a, b) {
+            return new Date(a.start) - new Date(b.start)
+        });
         var blockCount = 0;
-        for (var j = 0; j < Object.keys(saList).length; j++) {
-            if (Object.keys(saList)[j] == "Personal Instruction") {
-                for (var i = 0; i < saList[Object.keys(saList)[j]].length; i++) {
-                    var studentObject = saList[Object.keys(saList)[j]][i];
-                    var studentStartHour = saList[Object.keys(saList)[j]][i].start.getHours();
-                    if (studentStartHour >= minTime && studentStartHour <= maxTime) {
-                        var statusText = "Excused";
-                        var draggable1 = "";
-                        if(!self.checkAccountClosure() && studentObject['sessionStatus'] == UNEXCUSED_STATUS){
-                            draggable1 = " draggable";
-                            statusText = "Unexcused";
-                        }else if(studentObject['sessionStatus'] == OMIT_STATUS){
-                            statusText = "Omitted";
-                        }
-                        var studentPosition = studentStartHour - minTime;
-                        var elm = '<div class="saStudent-container cursor padding-lr-xxs' + draggable1 + '" isfromSa="true" type="student" enrollmentId="' + saList[Object.keys(saList)[j]][i].enrollmentId +
-                            '" studUniqueId="' + saList[Object.keys(saList)[j]][i].studUniqueId + '" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start +
-                            '"  value="' + saList[Object.keys(saList)[j]][i].id + '"><span>' + saList[Object.keys(saList)[j]][i].name + ',' + saList[Object.keys(saList)[j]][i].grade + " (" + statusText + ")" +
-                            '</span><span class="timingDetail">,  ' + moment(saList[Object.keys(saList)[j]][i].start).format("h:mm A") + ' - ' + moment(saList[Object.keys(saList)[j]][i].end).format("h:mm A") +
-                           '<i class="material-icons serviceIndicator" title="' + saList[Object.keys(saList)[j]][i]['serviceValue'] + '" style="';
-                        if(!isIE){
-                            elm+= 'background:'+saList[Object.keys(saList)[j]][i]['subjectGradient']+';-webkit-background-clip: text;';
-                        }
-                        elm += ' color:' + saList[Object.keys(saList)[j]][i]['subjectColorCode'] + '">location_on</i></div>';
-                        var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
-                            return y;
-                        }).indexOf(saList[Object.keys(saList)[j]][i].deliveryTypeId);
-                        if (deliveryTypeIndex != -1) {
-                            var block = '<div class="student-attendance" id="sa_student_block_' + blockCount + '" style="height:auto;overflow:auto"></div>';
-                            wjQuery('.sa-pane').append(block);
-                            wjQuery('#sa_student_block_' + blockCount).append('<div class="sa-pi"></div>');
-                            wjQuery('#sa_student_block_' + blockCount + ' .sa-pi').append(elm);
-                            blockCount++;
-                        }
-                    }
+        wjQuery.each(sortedSaList, function (i, saList) {
+            var studentObject = saList;
+            var studentStartHour = saList.start.getHours();
+            if (studentStartHour >= minTime && studentStartHour <= maxTime) {
+                var statusText = "Excused";
+                var draggable1 = "";
+                if (!self.checkAccountClosure() && studentObject['sessionStatus'] == UNEXCUSED_STATUS) {
+                    draggable1 = " draggable";
+                    statusText = "Unexcused";
+                } else if (studentObject['sessionStatus'] == OMIT_STATUS) {
+                    statusText = "Omitted";
                 }
-            } else if (Object.keys(saList)[j] == 'Group Instruction') {
-                // GI Student will not come in sof list
-                for (var i = 0; i < saList[Object.keys(saList)[j]].length; i++) {
-                    var studentObject = saList[Object.keys(saList)[j]][i];
-                    var studentStartHour = saList[Object.keys(saList)[j]][i].start.getHours();
-                    if (studentStartHour >= minTime && studentStartHour <= maxTime) {
-                        var statusText = "Excused";
-                        var draggable1 = "";
-                        if(studentObject['sessionStatus'] == UNEXCUSED_STATUS){
-                            draggable1 = " draggable";
-                            statusText = "Unexcused";
-                        }else if(studentObject['sessionStatus'] == OMIT_STATUS){
-                            statusText = "Omitted";
-                        }
-                        var studentPosition = studentStartHour - minTime;
-                        var elm = '<div class="saStudent-container cursor padding-lr-xxs' + draggable1 + '" isfromSa="true" type="student" enrollmentId="' + saList[Object.keys(saList)[j]][i].enrollmentId +
-                            '" studUniqueId="' + saList[Object.keys(saList)[j]][i].studUniqueId + '" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start +
-                            '"  value="' + saList[Object.keys(saList)[j]][i].id + '" ><span>' + saList[Object.keys(saList)[j]][i].name + ',' + saList[Object.keys(saList)[j]][i].grade + " (" + statusText + ")" +
-                            '</span><span class="timingDetail">,  ' + moment(saList[Object.keys(saList)[j]][i].start).format("h:mm A") + ' - ' + moment(saList[Object.keys(saList)[j]][i].end).format("h:mm A") +
-                            '</span><i class="material-icons serviceIndicator" title="' + saList[Object.keys(saList)[j]][i]['serviceValue'] + '" style="';
-                            if(!isIE){
-                                elm+= 'background:'+saList[Object.keys(saList)[j]][i]['subjectGradient']+';-webkit-background-clip: text;';
-                            }
-                            elm += ' color:' + saList[Object.keys(saList)[j]][i]['subjectColorCode'] + '">location_on</i></div>';
-                            var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
-                                return y;
-                            }).indexOf(saList[Object.keys(saList)[j]][i].deliveryTypeId);
-                            if (deliveryTypeIndex != -1) {
-                                var block = '<div class="student-attendance" id="sa_student_block_' + blockCount + '" style="height:auto;overflow:auto"></div>';
-                                wjQuery('.sa-pane').append(block);
-                                wjQuery('#sa_student_block_' + blockCount).append('<div class="sa-gi"></div>');
-                                wjQuery('#sa_student_block_' + blockCount + ' .sa-gi').append(elm);
-                                blockCount++;
-                            }
-                    }
+                var studentPosition = studentStartHour - minTime;
+                var elm = '<div class="saStudent-container cursor padding-lr-xxs' + draggable1 + '" isfromSa="true" type="student" enrollmentId="' + saList.enrollmentId +
+                    '" studUniqueId="' + saList.studUniqueId + '" uniqueValue="' + saList.id + '_' + saList.start +
+                    '"  value="' + saList.id + '"><span>' + saList.name + ',' + saList.grade + " (" + statusText + ")" +
+                    '</span><span class="timingDetail">,  ' + moment(saList.start).format("h:mm A") + ' - ' + moment(saList.end).format("h:mm A") +
+                   '<i class="material-icons serviceIndicator" title="' + saList['serviceValue'] + '" style="';
+                if (!isIE) {
+                    elm += 'background:' + saList['subjectGradient'] + ';-webkit-background-clip: text;';
                 }
-            } else if (Object.keys(saList)[j] == 'Group Facilitation') {
-                for (var i = 0; i < saList[Object.keys(saList)[j]].length; i++) {
-                    var studentObject = saList[Object.keys(saList)[j]][i];
-                    var studentStartHour = saList[Object.keys(saList)[j]][i].start.getHours();
-                    if (studentStartHour >= minTime && studentStartHour <= maxTime) {
-                        var statusText = "Excused";
-                        var draggable1 = "";
-                        if(studentObject['sessionStatus'] == UNEXCUSED_STATUS){
-                            draggable1 = " draggable";
-                            statusText = "Unexcused";
-                        }else if(studentObject['sessionStatus'] == OMIT_STATUS){
-                            statusText = "Omitted";
+                elm += ' color:' + saList['subjectColorCode'] + '">location_on</i></div>';
+                var deliveryTypeIndex = self.selectedDeliveryType.map(function (y) {
+                    return y;
+                }).indexOf(saList.deliveryTypeId);
+                if (deliveryTypeIndex != -1) {
+                    var block = '<div class="student-attendance" id="sa_student_block_' + blockCount + '" style="height:auto;overflow:auto"></div>';
+                    wjQuery('.sa-pane').append(block);
+                    var blockColor = "";
+                    switch (saList.deliveryTypeCode) {
+                        case 1: {
+                            blockColor = "sof-pi";
+                            break;
                         }
-                        var studentPosition = studentStartHour - minTime;
-                        var elm = '<div class="saStudent-container cursor padding-lr-xxs' + draggable1 + '" isfromSa="true" type="student" enrollmentId="' + saList[Object.keys(saList)[j]][i].enrollmentId +
-                            '" studUniqueId="' + saList[Object.keys(saList)[j]][i].studUniqueId + '" uniqueValue="' + saList[Object.keys(saList)[j]][i].id + '_' + saList[Object.keys(saList)[j]][i].start +
-                            '"  value="' + saList[Object.keys(saList)[j]][i].id + '" ><span>' + saList[Object.keys(saList)[j]][i].name + ',' + saList[Object.keys(saList)[j]][i].grade + " (" + statusText + ")" +
-                            '</span><span class="timingDetail">,  ' + moment(saList[Object.keys(saList)[j]][i].start).format("h:mm A") + ' - ' + moment(saList[Object.keys(saList)[j]][i].end).format("h:mm A") +
-                            '</span><i class="material-icons serviceIndicator" title="' + saList[Object.keys(saList)[j]][i]['serviceValue'] + '" style="';
-                        if (!isIE) {
-                            elm += 'background:' + saList[Object.keys(saList)[j]][i]['subjectGradient'] + ';-webkit-background-clip: text;';
+                        case 2: {
+                            blockColor = "sof-gf";
+                            break;
                         }
-                        elm += ' color:' + saList[Object.keys(saList)[j]][i]['subjectColorCode'] + '">location_on</i></div>';
-                        var deliveryTypeIndex = this.selectedDeliveryType.map(function (y) {
-                            return y;
-                        }).indexOf(saList[Object.keys(saList)[j]][i].deliveryTypeId);
-                        if (deliveryTypeIndex != -1) {
-                            var block = '<div class="student-attendance" id="sa_student_block_' + blockCount + '" style="height:auto;overflow:auto"></div>';
-                            wjQuery('.sa-pane').append(block);
-                            wjQuery('#sa_student_block_' + blockCount).append('<div class="sa-gf"></div>');
-                            wjQuery('#sa_student_block_' + blockCount + ' .sa-gf').append(elm);
-                            blockCount++;
+                        case 3: {
+                            blockColor = "sof-gi";
+                            break;
                         }
                     }
+                    wjQuery('#sa_student_block_' + blockCount).append('<div class="' + blockColor + '"></div>');
+                    wjQuery('#sa_student_block_' + blockCount + ' .' + blockColor).append(elm);
+                    blockCount++;
                 }
             }
-            this.showConflictMsg();
-            if(!self.checkAccountClosure()){
-                this.draggable('draggable');
+            self.showConflictMsg();
+            if (!self.checkAccountClosure()) {
+                self.draggable('draggable');
             }
-        }
+        });
     }
 
     this.getTeacherSubjects = function (teacherObj) {
@@ -1206,6 +1116,9 @@ function SylvanCalendar() {
             wjQuery('.ta-pane').append(elm);
         }
         var currentCalendarDate = this.calendar.fullCalendar('getDate');
+        teacherData = teacherData.sort(function (a, b) {
+            return new Date(moment(currentCalendarDate).format('MM-DD-YYYY') + ' ' + a.startTime) - new Date(moment(currentCalendarDate).format('MM-DD-YYYY') + ' ' + b.startTime);
+        });
         var blockCount = 0;
         for (var i = 0; i < teacherData.length; i++) {
             var teacherStart = new Date(moment(currentCalendarDate).format('MM-DD-YYYY') + ' ' + teacherData[i].startTime);
