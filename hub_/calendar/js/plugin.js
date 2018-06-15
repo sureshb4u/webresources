@@ -2889,6 +2889,8 @@ function SylvanCalendar() {
                 else {
                     wjQuery('.loading').hide();
                     wjQuery('table.fc-agenda-slots td div').css('backgroundColor', '#ddd');
+                    wjQuery(".sof-btn").removeClass('overflow-info');
+                    wjQuery(".sof-btn").removeAttr('title');
                 }
             }
             else if (self.calendar.fullCalendar('getView').name == 'agendaWeek') {
