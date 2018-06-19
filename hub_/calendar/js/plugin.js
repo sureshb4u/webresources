@@ -1630,7 +1630,7 @@ function SylvanCalendar() {
                         } else {
                             var msg = "The selected student with same service is already scheduled for the respective timeslot."
                             if (!instructionalHourValidation) {
-                                msg = "No instructional hours are starting at this time.cannot be placed.";
+                                msg = "No instructional hours are starting at this time.Cannot be placed.";
                             }
                             t.prompt(msg);
                         }
@@ -5400,6 +5400,8 @@ function SylvanCalendar() {
         });
         var objPinnedStaff = {};
         if (teacher != undefined) {
+            var resourceObj = self.getResourceObj(teacher[0]['resourceId']);
+            objPinnedStaff["hub_deliverytype_code"] = resourceObj.deliveryTypeCode;
             objPinnedStaff['hub_center@odata.bind'] = teacher[0].locationId;
             objPinnedStaff['hub_teacher@odata.bind'] = id;
             objPinnedStaff.hub_day = this.getDayValue(today);
@@ -10289,3 +10291,4 @@ function SylvanCalendar() {
     }
 
 }
+
