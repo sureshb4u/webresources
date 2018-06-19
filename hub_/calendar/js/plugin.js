@@ -1383,19 +1383,13 @@ function SylvanCalendar() {
                     // if(prevStudObj['deliveryTypeCode'] == personalInstruction){
                     var allowToDropStudent = self.validateStudentOnSameRow(stuId, startHour, prevStudObj, false, true, enrollmentId);
                     // }
-                    if (allowToDropStudent) {
+                    var instructionalHourValidation = self.checkInstructionalHours(prevStudObj, startHour);
+                    if (allowToDropStudent && instructionalHourValidation) {
                         if (newEvent.length == 0) {
-                            var instructionalHourValidation = self.checkInstructionalHours(prevStudObj, startHour);
-                            if (prevStudObj['deliveryType'] == resource.deliveryType && instructionalHourValidation) {
+                            if (prevStudObj['deliveryType'] == resource.deliveryType) {
                                 t.studentSofConflictCheck(t, date, allDay, ev, ui, resource, elm);
-                            } else if (prevStudObj['deliveryType'] != resource.deliveryType) {
-                                var msg = "DeliveryType is different. Do you wish to continue?";
-                                if (!instructionalHourValidation) {
-                                    msg = "DeliveryType is different, Instructional Hour is not available. Do you wish to continue?"
-                                }
-                                t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, msg);
                             } else {
-                                var msg = "InstructionalHour is not available. Do you wish to continue?";
+                                var msg = "DeliveryType is different. Do you wish to continue?";
                                 t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, msg);
                             }
                             
@@ -1421,7 +1415,11 @@ function SylvanCalendar() {
                             }
                         }
                     } else {
-                        t.prompt("The selected student with same service is already scheduled for the respective timeslot.");
+                        var msg = "The selected student with same service is already scheduled for the respective timeslot.";
+                        if (!instructionalHourValidation) {
+                            msg = "No instructional hours are starting at this time.Cannot be placed."
+                        }
+                        t.prompt(msg);
                     }
                 }
             }else{
@@ -1587,8 +1585,9 @@ function SylvanCalendar() {
                         // var allowToDropStudent = true;
                         // if(prevStudObj.deliveryTypeCode == personalInstruction){
                         var allowToDropStudent = self.validateStudentOnSameRow(stuId, startHour, prevStudObj, true, false, enrollmentId);
+                        var instructionalHourValidation = self.checkInstructionalHours(prevStudObj, startHour);
                         // }
-                        if (allowToDropStudent) {
+                        if (allowToDropStudent && instructionalHourValidation) {
                             var minuteflag = true;
                             if (newEvent.length > 0) {
                                 var newEventDuration = (new Date(newEvent[0].end).getTime() - new Date(newEvent[0].start).getTime()) / (1000 * 60);
@@ -1599,18 +1598,12 @@ function SylvanCalendar() {
                             }
                             if (minuteflag) {
                                 if (newEvent.length == 0) {
-                                    var instructionalHourValidation = self.checkInstructionalHours(prevStudObj, startHour);
-                                    if (newResourceObj.deliveryTypeCode == prevStudObj.deliveryTypeCode && instructionalHourValidation) {
+                                    if (newResourceObj.deliveryTypeCode == prevStudObj.deliveryTypeCode) {
                                         t.studentSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
-                                    } else if (newResourceObj.deliveryTypeCode != prevStudObj.deliveryTypeCode) {
-                                        var msg = "DeliveryType is different. Do you wish to continue?";
-                                        if (!instructionalHourValidation) {
-                                            msg = "DeliveryType is different. Instructional Hour is not available.Do you wish to continue?";
-                                        }
-                                        t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, msg);
                                     } else {
-                                        t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, "Instructional Hour is not available. Do you wish to continue?");
-                                    }
+                                        var msg = "DeliveryType is different. Do you wish to continue?";
+                                        t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, msg);
+                                    } 
                                 }
                                 else if (newEvent.length == 1) {
                                     var errArry = self.checkEventValidation(resource.id + date, prevEventId, prevStudObj, elm, newResourceObj, prevStudObj,startHour);
@@ -1635,7 +1628,11 @@ function SylvanCalendar() {
                                 }
                             }
                         } else {
-                            t.prompt("The selected student with same service is already scheduled for the respective timeslot.");
+                            var msg = "The selected student with same service is already scheduled for the respective timeslot."
+                            if (!instructionalHourValidation) {
+                                msg = "No instructional hours are starting at this time.cannot be placed.";
+                            }
+                            t.prompt(msg);
                         }
                     } else {
                         t.prompt("Can not be placed to a GI session.");
@@ -10007,10 +10004,10 @@ function SylvanCalendar() {
         }
 
         //InstructionalHour Validation
-        var instructionalHourValidation = self.checkInstructionalHours(newStudentObj, startHour);
-        if (!instructionalHourValidation) {
-            messageObject.confirmation.push(" Instructional Hour is not available");
-        }
+        //var instructionalHourValidation = self.checkInstructionalHours(newStudentObj, startHour);
+        //if (!instructionalHourValidation) {
+        //    messageObject.alert.push(" Instructional Hour is not available");
+        //}
 
         if(newEvent.length){
             // Non prefered teacher.
@@ -10134,6 +10131,7 @@ function SylvanCalendar() {
 
     this.checkInstructionalHours = function (student,startHour) {
         var currentCalendarDate = this.calendar.fullCalendar('getDate');
+        var formattedStartTime = moment(startHour).format("h:mm A");
         startHour = this.convertToMinutes(moment(startHour).format("h:mm A"));
         var endHour = startHour + student.duration;
         var result = false;
@@ -10151,21 +10149,35 @@ function SylvanCalendar() {
                 }
             });
             if (workHours) {
+                var availableTimings = [];
                 wjQuery.each(workHours, function (key, val) {
                     if (val['hub_effectiveenddate']) {
                         if (currentCalendarDate.getTime() >= new Date(moment(val['hub_effectivestartdate']).format("MM-DD-YYYY")).getTime() &&
                             currentCalendarDate.getTime() <= new Date(moment(val['hub_effectiveenddate']).format("MM-DD-YYYY")).getTime()) {
                             if (startHour >= val['hub_starttime'] && startHour <= val['hub_endtime'] && endHour <= val['hub_endtime'] && endHour >= val['hub_starttime']) {
-                                result = true;
+                                var startTime = val.hub_starttime;
+                                availableTimings.push(startTime);
+                                while ((startTime + student.duration) < val.hub_endtime) {
+                                    startTime += student.duration;
+                                    availableTimings.push(startTime);
+                                }
                             }
                         }
                     } else {
                         if (currentCalendarDate.getTime() >= new Date(moment(val['hub_effectivestartdate']).format("MM-DD-YYYY")).getTime() &&
                             startHour >= val['hub_starttime'] && startHour <= val['hub_endtime'] && endHour <= val['hub_endtime'] && endHour >= val['hub_starttime']) {
-                            result = true;
+                            var startTime = val.hub_starttime;
+                            availableTimings.push(startTime);
+                            while ((startTime + student.duration) < val.hub_endtime) {
+                                startTime += student.duration;
+                                availableTimings.push(startTime);
+                            }
                         }
                     }
                 });
+                if (availableTimings.indexOf(startHour) != -1) {
+                    result = true;
+                }
             }
         }
         return result;
