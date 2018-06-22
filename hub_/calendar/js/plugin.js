@@ -1441,7 +1441,11 @@ function SylvanCalendar() {
                 eventDuration = (new Date(newEvent[0].end).getTime() - new Date(newEvent[0].start).getTime()) / (1000 * 60);
             }
             var allowToDropTeacher = self.validateTeacherOnSameRow(teacherId, startHour, teacher[0], false);
-            if (allowToDropTeacher) {
+            var teacherObj = {}
+            teacherObj.duration = eventDuration;
+            teacherObj.deliveryTypeCode = resource.deliveryTypeCode;
+            var instructionalHourValidation = self.checkInstructionalHours(teacherObj, startHour, "teacher");
+            if (allowToDropTeacher && instructionalHourValidation) {
                 if (self.checkTeacherScheduleInDiffCenter(teacherId, startHour, eventDuration)) {
                     self.prompt("The selected staff is already scheduled for the respective timeslot in different center.");
                 } else {
@@ -1552,7 +1556,11 @@ function SylvanCalendar() {
                     }
                 }
             } else {
-                t.prompt("The selected staff is already scheduled for the respective timeslot.");
+                var msg = "The selected staff is already scheduled for the respective timeslot."
+                if (!instructionalHourValidation) {
+                    msg = "There is no Instructional Hour starting at this time. Cannot be placed."      
+                }
+                t.prompt(msg);
             }
         }
         else if (wjQuery(elm).attr("type") == 'studentSession') {
@@ -1657,7 +1665,14 @@ function SylvanCalendar() {
                 if (startHour.getTime() != prevEvent[0].start.getTime()) {
                     allowToDropTeacher = self.validateTeacherOnSameRow(teacherId, startHour, prevEvent[0], true);
                 }
-                if (allowToDropTeacher) {
+                var teacherObj = {}
+                teacherObj.duration = 60;
+                if (newEvent.length != 0) {
+                    teacherObj.duration = (new Date(newEvent[0].end).getTime() - new Date(newEvent[0].start).getTime()) / (1000 * 60);
+                }
+                teacherObj.deliveryTypeCode = resource.deliveryTypeCode;
+                var instructionalHourValidation = self.checkInstructionalHours(teacherObj, startHour, "teacher");
+                if (allowToDropTeacher && instructionalHourValidation) {
                     if (self.checkTeacherScheduleInDiffCenter(teacherId, startHour, eventDurationTeacher)) {
                         t.prompt("The selected staff is already scheduled for the respective timeslot in different center.");
                     } else {
@@ -1737,7 +1752,11 @@ function SylvanCalendar() {
                         }
                     }
                 } else {
-                    t.prompt("The selected staff is already scheduled for the respective timeslot.");
+                    var msg = "The selected staff is already scheduled for the respective timeslot.";
+                    if (!instructionalHourValidation) {
+                        msg = "There is no Instructional Hour starting at this time. Cannot be placed."
+                    }
+                    t.prompt(msg);
                 }
             }else{
                 wjQuery(".loading").hide();
@@ -3365,7 +3384,15 @@ function SylvanCalendar() {
                     if (!resourceObj) {
                         teacherAvailableFlag = false;
                     }
-                    if (teacherAvailableFlag) {
+                    if (val['startTime'] && val['endTime'] && resourceObj.deliveryTypeCode) {
+                        var teacherObj = {};
+                        teacherObj.deliveryTypeCode = resourceObj.deliveryTypeCode;
+                        var start = new Date(moment(currentCalendarDate).format('MM-DD-YYYY') + " " + val['startTime']);
+                        var end = new Date(moment(currentCalendarDate).format('MM-DD-YYYY') + " " + val['endTime']);
+                        teacherObj.duration = eventDuration = (end.getTime() - start.getTime()) / (1000 * 60);
+                        var instructionalHourValidity = self.checkInstructionalHours(teacherObj, start, "teacher");
+                    }
+                    if (teacherAvailableFlag && instructionalHourValidity) {
                         if (val['startTime'] != undefined && val['endTime'] != undefined) {
                             sDate = new Date(moment(currentCalendarDate).format('MM-DD-YYYY') + " " + val['startTime']);
                             eDate = new Date(moment(currentCalendarDate).format('MM-DD-YYYY') + " " + val['endTime']);
@@ -5399,14 +5426,13 @@ function SylvanCalendar() {
                    x.startHour.getTime() == new Date(uniqueIds[2]).getTime();
         });
         var objPinnedStaff = {};
-        if (teacher != undefined) {
+        if (teacher.length != undefined) {
             var resourceObj = self.getResourceObj(teacher[0]['resourceId']);
-            objPinnedStaff["hub_deliverytype_code"] = resourceObj.deliveryTypeCode;
             objPinnedStaff['hub_center@odata.bind'] = teacher[0].locationId;
             objPinnedStaff['hub_teacher@odata.bind'] = id;
             objPinnedStaff.hub_day = this.getDayValue(today);
             objPinnedStaff.hub_date = moment(today).format("YYYY-MM-DD");
-
+            objPinnedStaff["hub_deliverytype_code"] = resourceObj.deliveryTypeCode;
             objPinnedStaff['hub_start_time'] = this.convertToMinutes(moment(startTime).format("h:mm A"));
             objPinnedStaff['hub_end_time'] = objPinnedStaff.hub_start_time + 60;
             objPinnedStaff['hub_resourceid@odata.bind'] = teacher[0].resourceId;
@@ -10048,20 +10074,6 @@ function SylvanCalendar() {
                     //         messageObject.confirmation.push(" Session is OneToOne");
                     //     }
                     // }
-                }else{
-                    var newServiceId = newStudentObj['serviceId'];
-                    var showPromt = false;
-                    wjQuery.each(newEvent[0]['students'], function (k, v) {
-                        if (v.serviceId != newServiceId) {
-                            showPromt = true;
-                            return true;
-                        }
-                    });
-                    if(showPromt){
-                        if (messageObject.confirmation.indexOf(" Services are not matching") == -1) {
-                            messageObject.confirmation.push(" Services are not matching");
-                        }
-                    }
                 }
             }
         }
@@ -10131,8 +10143,12 @@ function SylvanCalendar() {
         return false;
     }
 
-    this.checkInstructionalHours = function (student,startHour) {
+    this.checkInstructionalHours = function (student,startHour,type) {
         var currentCalendarDate = this.calendar.fullCalendar('getDate');
+        currentCalendarDate = new Date(currentCalendarDate.setHours(00));
+        currentCalendarDate = new Date(currentCalendarDate.setMinutes(00));
+        currentCalendarDate = new Date(currentCalendarDate.setSeconds(00));
+        currentCalendarDate = new Date(moment(currentCalendarDate).format("MM-DD-YYYY"));
         var formattedStartTime = moment(startHour).format("h:mm A");
         startHour = this.convertToMinutes(moment(startHour).format("h:mm A"));
         var endHour = startHour + student.duration;
@@ -10142,15 +10158,20 @@ function SylvanCalendar() {
         }
         if (instructionalHours) {
             var workHours = instructionalHours.filter(function (workHour) {
-                if (student['namedGfid']) {
+                if (student['namedGfid'] && type != "teacher") {
                     return workHour ? workHour._hub_workhours_value == student.namedGfid : [];
                 } else {
-                    if (workHour['adeliverytype_x002e_hub_code'] == student.deliveryTypeCode && student.timeSlotType == workHour.hub_timeslottype) {
-                        return workHour;
+                    if (workHour['adeliverytype_x002e_hub_code'] == student.deliveryTypeCode) {
+                        if(type != "teacher"  && student.timeSlotType == workHour.hub_timeslottype){
+                            return workHour;
+                        }else if(type == "teacher"){
+                            return workHour;
+                        }
                     }
                 }
             });
             if (workHours) {
+                workHours = workHours.sort(function (a, b) { return a.hub_timeslottype - b.hub_timeslottype })
                 var availableTimings = [];
                 wjQuery.each(workHours, function (key, val) {
                     if (val['hub_effectiveenddate']) {
@@ -10291,4 +10312,3 @@ function SylvanCalendar() {
     }
 
 }
-
