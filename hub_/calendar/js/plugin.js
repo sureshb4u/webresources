@@ -1391,7 +1391,7 @@ function SylvanCalendar() {
                     }
                     if (allowToDropStudent && instructionalHourValidation) {
                         if (newEvent.length == 0) {
-                            var instructionalHour;
+                            var instructionalHour = true ;
                             if (prevStudObj.sessiontype == FLOAT_TYPE || prevStudObj.sessiontype == MAKEUP_TYPE) {
                                 instructionalHour = self.checkInstructionalHours(prevStudObj, startHour);
                             }
@@ -1429,7 +1429,7 @@ function SylvanCalendar() {
                     } else {
                         var msg = "The selected student with same service is already scheduled for the respective timeslot.";
                         if (!instructionalHourValidation) {
-                            msg = "No instructional hours are starting at this time.Cannot be placed."
+                            msg = "Cannot be placed in middle of a defined Slot Hour."
                         }
                         t.prompt(msg);
                     }
@@ -1623,7 +1623,7 @@ function SylvanCalendar() {
                             }
                             if (minuteflag) {
                                 if (newEvent.length == 0) {
-                                    var instructionalHour;
+                                    var instructionalHour = true;
                                     if (prevStudObj.sessiontype == FLOAT_TYPE || prevStudObj.sessiontype == MAKEUP_TYPE) {
                                         instructionalHour = self.checkInstructionalHours(prevStudObj, startHour);
                                     }
@@ -1662,7 +1662,7 @@ function SylvanCalendar() {
                         } else {
                             var msg = "The selected student with same service is already scheduled for the respective timeslot."
                             if (!instructionalHourValidation) {
-                                msg = "No instructional hours are starting at this time.Cannot be placed.";
+                                msg = "Cannot be placed in middle of a defined Slot Hour.";
                             }
                             t.prompt(msg);
                         }
