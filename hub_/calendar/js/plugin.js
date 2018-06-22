@@ -1383,13 +1383,25 @@ function SylvanCalendar() {
                     // if(prevStudObj['deliveryTypeCode'] == personalInstruction){
                     var allowToDropStudent = self.validateStudentOnSameRow(stuId, startHour, prevStudObj, false, true, enrollmentId);
                     // }
-                    var instructionalHourValidation = self.checkInstructionalHours(prevStudObj, startHour);
+                    var instructionalHourValidation;
+                    if (prevStudObj.sessiontype != FLOAT_TYPE && prevStudObj.sessiontype != MAKEUP_TYPE) {
+                        instructionalHourValidation = self.checkInstructionalHours(prevStudObj, startHour);
+                    }else{
+                        instructionalHourValidation = true
+                    }
                     if (allowToDropStudent && instructionalHourValidation) {
                         if (newEvent.length == 0) {
-                            if (prevStudObj['deliveryType'] == resource.deliveryType) {
+                            var instructionalHour;
+                            if (prevStudObj.sessiontype == FLOAT_TYPE || prevStudObj.sessiontype == MAKEUP_TYPE) {
+                                instructionalHour = self.checkInstructionalHours(prevStudObj, startHour);
+                            }
+                            if (prevStudObj['deliveryType'] == resource.deliveryType && instructionalHour) {
                                 t.studentSofConflictCheck(t, date, allDay, ev, ui, resource, elm);
                             } else {
                                 var msg = "DeliveryType is different. Do you wish to continue?";
+                                if (!instructionalHour) {
+                                    msg = "DeliveryType is different, Instructional Hour is not availabel. Do you wish to continue?"
+                                }
                                 t.studentSofCnfmPopup(t, date, allDay, ev, ui, resource, elm, msg);
                             }
                             
@@ -1593,7 +1605,12 @@ function SylvanCalendar() {
                         // var allowToDropStudent = true;
                         // if(prevStudObj.deliveryTypeCode == personalInstruction){
                         var allowToDropStudent = self.validateStudentOnSameRow(stuId, startHour, prevStudObj, true, false, enrollmentId);
-                        var instructionalHourValidation = self.checkInstructionalHours(prevStudObj, startHour);
+                        var instructionalHourValidation;
+                        if (prevStudObj.sessiontype != FLOAT_TYPE && prevStudObj.sessiontype != MAKEUP_TYPE) {
+                            instructionalHourValidation = self.checkInstructionalHours(prevStudObj, startHour);
+                        } else {
+                            instructionalHourValidation = true
+                        }
                         // }
                         if (allowToDropStudent && instructionalHourValidation) {
                             var minuteflag = true;
@@ -1606,10 +1623,17 @@ function SylvanCalendar() {
                             }
                             if (minuteflag) {
                                 if (newEvent.length == 0) {
-                                    if (newResourceObj.deliveryTypeCode == prevStudObj.deliveryTypeCode) {
+                                    var instructionalHour;
+                                    if (prevStudObj.sessiontype == FLOAT_TYPE || prevStudObj.sessiontype == MAKEUP_TYPE) {
+                                        instructionalHour = self.checkInstructionalHours(prevStudObj, startHour);
+                                    }
+                                    if (newResourceObj.deliveryTypeCode == prevStudObj.deliveryTypeCode && instructionalHour) {
                                         t.studentSessionConflictCheck(t, date, allDay, ev, ui, resource, elm);
                                     } else {
                                         var msg = "DeliveryType is different. Do you wish to continue?";
+                                        if (!instructionalHour) {
+                                            msg = "DeliveryType is different, Instructional Hour is not available. Do you wish to continue?"
+                                        }
                                         t.studentSessionCnfmPopup(t, date, allDay, ev, ui, resource, elm, msg);
                                     } 
                                 }
@@ -10032,10 +10056,12 @@ function SylvanCalendar() {
         }
 
         //InstructionalHour Validation
-        //var instructionalHourValidation = self.checkInstructionalHours(newStudentObj, startHour);
-        //if (!instructionalHourValidation) {
-        //    messageObject.alert.push(" Instructional Hour is not available");
-        //}
+        if (newStudentObj.sessionType == FLOAT_TYPE || newStudentObj.sessionType == MAKEUP_TYPE) {
+            var instructionalHourValidation = self.checkInstructionalHours(newStudentObj, startHour);
+            if (!instructionalHourValidation) {
+                messageObject.alert.push(" Instructional Hour is not available");
+            }
+        }
 
         if(newEvent.length){
             // Non prefered teacher.
@@ -10143,7 +10169,7 @@ function SylvanCalendar() {
         return false;
     }
 
-    this.checkInstructionalHours = function (student,startHour,type) {
+    this.checkInstructionalHours = function (student, startHour, type) {
         var currentCalendarDate = this.calendar.fullCalendar('getDate');
         currentCalendarDate = new Date(currentCalendarDate.setHours(00));
         currentCalendarDate = new Date(currentCalendarDate.setMinutes(00));
