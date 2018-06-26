@@ -10063,7 +10063,11 @@ function SylvanCalendar() {
             }
         }
 
-        if(newEvent.length){
+        if (newEvent.length) {
+            var newEventDuration = (new Date(newEvent[0].end).getTime() - new Date(newEvent[0].start).getTime()) / (1000 * 60);
+            if (newEventDuration != prevStudObj.duration) {
+                messageObject.alert.push("Student slot timings are mismatching.Cannot be placed.");
+            }
             // Non prefered teacher.
             var nonPreferedTeacher = self.checkNonPreferredTeacher(newStudentObj, newEvent[0]);
             if(nonPreferedTeacher){
