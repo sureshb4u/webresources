@@ -2295,8 +2295,8 @@ function SylvanCalendar() {
                 prevEvent[0].students.splice(removeStudentIndex, 1);
                 // No students remove lock from prev event
                 if (prevEvent[0]['students'] == undefined || prevEvent[0].hasOwnProperty('students') && prevEvent[0]['students'].length == 0) {
-                    if (prevEvent[0].title.indexOf('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">') != -1) {
-                        prevEvent[0].title = prevEvent[0].title.replace('<img class="onetoone" title="1:1 Session" src="/webresources/hub_/calendar/images/lock.png">', "");
+                    if (prevEvent[0].title.indexOf('<img  title="1:1 Session" class="onetoone" src="/webresources/hub_/calendar/images/lock.png">') != -1) {
+                        prevEvent[0].title = prevEvent[0].title.replace('<img  title="1:1 Session" class="onetoone" src="/webresources/hub_/calendar/images/lock.png">', "");
                         prevEvent[0].is1to1 = false;
                     }
                 }
@@ -3670,7 +3670,7 @@ function SylvanCalendar() {
                             eventObjList.push(obj);
                         }
                     } else if (obj.sessionStatus != INVALID_STATUS &&
-                                obj.sessionStatus != OMIT_STATUS) {
+                                obj.sessionStatus != OMIT_STATUS && obj.sessionStatus != EXCUSED_STATUS && obj.sessionStatus != UNEXCUSED_STATUS) {
                         self.pushStudentToSOF(obj);
                     }
                 }                
@@ -3762,7 +3762,7 @@ function SylvanCalendar() {
                         enrollmentId: val['aenrollment_x002e_hub_enrollmentid'],
                         duration : val['aproductservice_x002e_hub_duration'],
                         isFromMasterSchedule: true,
-                        sessiontype:1,
+                        sessiontype: 1,
                         is1to1: false,
                         timeSlotType: val['aproductservice_x002e_hub_timeslottype'],
                         namedHoursId: val['aproductservice_x002e_hub_namedgfhoursid']
@@ -3837,7 +3837,18 @@ function SylvanCalendar() {
                                             }
                                         });
                                         if (xindex == -1) {
-                                            noResourceList.push(newObj);
+                                            var pushFlag = true;
+                                            self.students.forEach(function (student, key) {
+                                                var startTime = new Date(moment(student["hub_session_date@OData.Community.Display.V1.FormattedValue"] + " " + student["hub_start_time@OData.Community.Display.V1.FormattedValue"]));
+                                                if (newObj.id == student["_hub_student_value"] &&
+                                                    newObj.enrollmentId == student["_hub_enrollment_value"] &&
+                                                    startHour.getTime() == startTime.getTime()) {
+                                                        pushFlag = false;
+                                                }
+                                            });
+                                            if (pushFlag) {
+                                                noResourceList.push(newObj);
+                                            }
                                         }
                                     } else {
                                         newObj.resourceId = pinnedStudent[i].resourceId;
@@ -3852,7 +3863,18 @@ function SylvanCalendar() {
                                         }
                                         if (zindex == -1) {
                                             newObj.pinId = pinnedStudent[i].id;
-                                            pinnedList.push(newObj);
+                                            var pushFlag = true;
+                                            self.students.forEach(function (student, key) {
+                                                var startTime = new Date(moment(student["hub_session_date@OData.Community.Display.V1.FormattedValue"] + " " + student["hub_start_time@OData.Community.Display.V1.FormattedValue"]));
+                                                if (newObj.id == student["_hub_student_value"] &&
+                                                    newObj.enrollmentId == student["_hub_enrollment_value"] &&
+                                                    startHour.getTime() == startTime.getTime()) {
+                                                    pushFlag = false;
+                                                }
+                                            });
+                                            if (pushFlag) {
+                                                pinnedList.push(newObj);
+                                            }
                                         }
                                     }
                                 }
@@ -3869,7 +3891,18 @@ function SylvanCalendar() {
                                             }
                                         });
                                         if (xindex == -1) {
-                                            noResourceList.push(newObj);
+                                            var pushFlag = true;
+                                            self.students.forEach(function (student, key) {
+                                                var startTime = new Date(moment(student["hub_session_date@OData.Community.Display.V1.FormattedValue"] + " " + student["hub_start_time@OData.Community.Display.V1.FormattedValue"]));
+                                                if (newObj.id == student["_hub_student_value"] &&
+                                                    newObj.enrollmentId == student["_hub_enrollment_value"] &&
+                                                    startHour.getTime() == startTime.getTime()) {
+                                                    pushFlag = false;
+                                                }
+                                            });
+                                            if (pushFlag) {
+                                                noResourceList.push(newObj);
+                                            }
                                         }
                                     } else {
                                         var xindex = -1;
@@ -3882,7 +3915,18 @@ function SylvanCalendar() {
                                             }
                                         }
                                         if (xindex == -1) {
-                                            affinityList.push(newObj);
+                                            var pushFlag = true;
+                                            self.students.forEach(function (student, key) {
+                                                var startTime = new Date(moment(student["hub_session_date@OData.Community.Display.V1.FormattedValue"] + " " + student["hub_start_time@OData.Community.Display.V1.FormattedValue"]));
+                                                if (newObj.id == student["_hub_student_value"] &&
+                                                    newObj.enrollmentId == student["_hub_enrollment_value"] &&
+                                                    startHour.getTime() == startTime.getTime()) {
+                                                    pushFlag = false;
+                                                }
+                                            });
+                                            if (pushFlag) {
+                                                affinityList.push(newObj);
+                                            }
                                         }
                                     }
                                 } else {
@@ -3895,7 +3939,18 @@ function SylvanCalendar() {
                                         }
                                     });
                                     if (xindex == -1) {
-                                        noResourceList.push(newObj);
+                                        var pushFlag = true;
+                                        self.students.forEach(function (student, key) {
+                                            var startTime = new Date(moment(student["hub_session_date@OData.Community.Display.V1.FormattedValue"] + " " + student["hub_start_time@OData.Community.Display.V1.FormattedValue"]));
+                                            if (newObj.id == student["_hub_student_value"] &&
+                                                newObj.enrollmentId == student["_hub_enrollment_value"] &&
+                                                startHour.getTime() == startTime.getTime()) {
+                                                pushFlag = false;
+                                            }
+                                        });
+                                        if (pushFlag) {
+                                            noResourceList.push(newObj);
+                                        }
                                     }
                                 }
                             } else {
@@ -3914,7 +3969,18 @@ function SylvanCalendar() {
                                     }
                                 }
                                 if (findex == -1) {
-                                    noResourceList.push(newObj);
+                                    var pushFlag = true;
+                                    self.students.forEach(function (student, key) {
+                                        var startTime = new Date(moment(student["hub_session_date@OData.Community.Display.V1.FormattedValue"] + " " + student["hub_start_time@OData.Community.Display.V1.FormattedValue"]));
+                                        if (newObj.id == student["_hub_student_value"] &&
+                                            newObj.enrollmentId == student["_hub_enrollment_value"] &&
+                                            startHour.getTime() == startTime.getTime()) {
+                                            pushFlag = false;
+                                        }
+                                    });
+                                    if (pushFlag) {
+                                        noResourceList.push(newObj);
+                                    }
                                 }
                             }
                             obj.start = newObj.start;
@@ -3937,7 +4003,18 @@ function SylvanCalendar() {
                             }
                         }
                         if (index == -1) {
-                            noResourceList.push(obj);
+                            var pushFlag = true;
+                            self.students.forEach(function (student, key) {
+                                var startTime = new Date(moment(student["hub_session_date@OData.Community.Display.V1.FormattedValue"] + " " + student["hub_start_time@OData.Community.Display.V1.FormattedValue"]));
+                                if (obj.id == student["_hub_student_value"] &&
+                                    obj.enrollmentId == student["_hub_enrollment_value"] &&
+                                    startHour.getTime() == startTime.getTime()) {
+                                    pushFlag = false;
+                                }
+                            });
+                            if (pushFlag) {
+                                noResourceList.push(obj);
+                            }
                         }
                     }
 
