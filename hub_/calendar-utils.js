@@ -191,20 +191,33 @@ export function getWeekViewHeader(_a) {
     return days;
 }
 export function getWeekView(_a) {
-    var _b = _a.events, events = _b === void 0 ? [] : _b, viewDate = _a.viewDate, weekStartsOn = _a.weekStartsOn, _c = _a.excluded, excluded = _c === void 0 ? [] : _c, _d = _a.precision, precision = _d === void 0 ? 'days' : _d, _e = _a.absolutePositionedEvents, absolutePositionedEvents = _e === void 0 ? false : _e;
+    var _b = _a.events, events = _b === void 0 ? [] : _b, viewDate = _a.viewDate, weekStartsOn = _a.weekStartsOn, dayStart = _a.dayStart,  dayEnd = _a.dayEnd , hourSegments = _a.hourSegments, _c = _a.excluded, excluded = _c === void 0 ? [] : _c, _d = _a.precision, precision = _d === void 0 ? 'days' : _d,  segmentHeight = _a.segmentHeight, _e = _a.absolutePositionedEvents, absolutePositionedEvents = _e === void 0 ? false : _e;
     if (!events) {
         events = [];
     }
     var startOfViewWeek = startOfWeek(viewDate, { weekStartsOn: weekStartsOn });
     var endOfViewWeek = endOfWeek(viewDate, { weekStartsOn: weekStartsOn });
     var maxRange = DAYS_IN_WEEK - excluded.length;
+    var previousDayEvents = [];
     var eventsInPeriod = getEventsInPeriod({
         events: events,
         periodStart: startOfViewWeek,
         periodEnd: endOfViewWeek
     });
+    var weekViewEvents = eventsInPeriod
+    .sort(function (eventA, eventB) {
+    return eventA.start.valueOf() - eventB.start.valueOf();
+})
     var eventsMapped = eventsInPeriod
         .map(function (event) {
+        var startOfView = setMinutes(setHours(startOfDay(event.start), dayStart.hour), dayStart.minute);
+        var endOfView = setMinutes(setHours(startOfMinute(endOfDay(event.start)), dayEnd.hour), dayEnd.minute);
+        var eventStart = event.start;
+        var eventEnd = event.end || eventStart;
+        var startsBeforeDay = eventStart < startOfView;
+        var endsAfterDay = eventEnd > endOfView;
+        var startDate = startsBeforeDay ? startOfView : eventStart;
+        var endDate = endsAfterDay ? endOfView : eventEnd;
         var offset = getWeekViewEventOffset({
             event: event,
             startOfWeek: startOfViewWeek,
@@ -218,16 +231,93 @@ export function getWeekView(_a) {
             excluded: excluded,
             precision: precision
         });
-        return { event: event, offset: offset, span: span };
+        var hourHeightModifier = (hourSegments * segmentHeight )/ MINUTES_IN_HOUR;
+        var top = 0;
+        var startDate = startsBeforeDay ? startOfView : eventStart;
+        var endDate = endsAfterDay ? endOfView :  eventEnd;
+        if (eventStart > startOfView) {
+            top += differenceInMinutes(eventStart, startOfView);
+            top += 4 // 4px for border;
+        }
+        var height = 30;
+        if(!endsAfterDay){
+            top *= hourHeightModifier;
+            height = differenceInMinutes(endDate, startDate);
+            if (!event.end) {
+                height = segmentHeight;
+            }
+            else {
+                height *= hourHeightModifier;
+            }
+        }else{
+            top = -50
+        }
+        var bottom = top + height;
+        var overlappingEvents = weekViewEvents.filter(function(otherEvents){
+            if((event.end > otherEvents.start && event.start < otherEvents.end) || (event.start == otherEvents.start) || (event.end == otherEvents.end)){
+                return true;
+            }
+        });
+        var eventWidth = ((100 / maxRange) * span);
+        var left = 0;
+        left = ((100 / maxRange) * offset);
+        var weekViewObj = { event: event, offset: offset, span: span ,top: top, height: height, width: eventWidth, left:left};
+        var overlappingPreviousEvents = previousDayEvents.filter(function (previousEvent) {
+            var previousEventTop = previousEvent.top;
+            var previousEventBottom = previousEvent.top + previousEvent.height;
+            if(previousEvent.left == left){
+                if (top < previousEventBottom && previousEventBottom < bottom) {
+                    return true;
+                }
+                else if (previousEventTop <= top && bottom <= previousEventBottom) {
+                    return true;
+                }
+            }
+            return false;
+        });
+        
+        if(overlappingEvents.length){
+            eventWidth /= overlappingEvents.length;
+        }
+        var prevEventLeft;
+        var currentEventLeft;
+        currentEventLeft = left;
+        while (overlappingPreviousEvents.some(function (previousEvent,index) { 
+            if(previousEvent.exactLeft === currentEventLeft){
+                prevEventLeft = previousEvent.exactLeft;
+                previousEvent.width = (eventWidth * (index+1));
+                return true;
+            }else{
+                prevEventLeft = null;
+                return false;
+            }; 
+        })) {
+            if(overlappingEvents.length > 1){
+                currentEventLeft = prevEventLeft + eventWidth;
+            }else{
+                break;
+            }
+        }
+        if (height > 0) {
+            weekViewObj.exactLeft = currentEventLeft;
+            weekViewObj.width = eventWidth;
+            previousDayEvents.push(weekViewObj);
+        }
+        //var width = Math.max.apply(Math, weekViewEvents.map(function (event) { return offset + eventWidth; }));
+        return { event: event, offset: offset, span: span ,top: top, height: height, width:eventWidth, left:weekViewObj.exactLeft};
     })
         .filter(function (e) { return e.offset < maxRange; })
         .filter(function (e) { return e.span > 0; })
         .map(function (entry) { return ({
         event: entry.event,
+        width: entry.width,
+        left: entry.left,
         offset: entry.offset,
         span: entry.span,
         startsBeforeWeek: entry.event.start < startOfViewWeek,
-        endsAfterWeek: (entry.event.end || entry.event.start) > endOfViewWeek
+        endsAfterWeek: (entry.event.end || entry.event.start) > endOfViewWeek,
+        top: entry.top, 
+        height: entry.height
     }); })
         .sort(function (itemA, itemB) {
         var startSecondsDiff = differenceInSeconds(itemA.event.start, itemB.event.start);
