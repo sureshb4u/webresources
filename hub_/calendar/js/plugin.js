@@ -39,7 +39,7 @@ var MAKEUP_LABEL = "MU";
 var REGULAR_LABEL = "REG";
 var instructionalHours = [];
 var ACTIVE_STATE = 0;
-var INACTIVE_STATE = 0;
+var INACTIVE_STATE = 1;
 
 setTimeout(function () {
     var deliveryTypeList = [];
@@ -3449,9 +3449,8 @@ function SylvanCalendar() {
                             if (index == -1) {
                                 var pushFlag = true;
                                 self.teacherSchedule.filter(function (teacherSchedule) {
-                                    var scheduleStartTime = new Date(teacherSchedule["hub_date@OData.Community.Display.V1.FormattedValue"] + " " + teacherSchedule["hub_start_time@OData.Community.Display.V1.FormattedValue"]);
                                     if (teacherSchedule["_hub_staff_value"] == teacher.id && 
-                                        scheduleStartTime == teacher.start) {
+                                        teacherSchedule["hub_start_time@OData.Community.Display.V1.FormattedValue"] == val['startTime']) {
                                         if (teacherSchedule.statecode == INACTIVE_STATE) {
                                             pushFlag = false;
                                         }
@@ -3563,7 +3562,7 @@ function SylvanCalendar() {
                 //         }
                 //     }
                 // }
-                if (index == -1) {
+                if (index == -1 && val.statecode == ACTIVE_STATE) {
                     eventObjList.push(teacher);
                 }
             });
@@ -7856,16 +7855,10 @@ function SylvanCalendar() {
             else {
                 removeTeacherObj['hub_staff_scheduleid'] = teacherObj["scheduleId"];
             }
-            var responseObj = true;
-            if (teacherObj.hasOwnProperty('isFromMasterSchedule')) {
-                responseObj = true;
-            }
-            else {
-                var locationObj = self.getLocationObject(self.locationId);
-                removeTeacherObj['ownerObj'] = locationObj['ownerObj'];
-                removeTeacherObj['hub_centerid'] = locationObj['hub_centerid'];
-                responseObj = data.removeTeacher(removeTeacherObj);
-            }
+            var locationObj = self.getLocationObject(self.locationId);
+            removeTeacherObj['ownerObj'] = locationObj['ownerObj'];
+            removeTeacherObj['hub_centerid'] = locationObj['hub_centerid'];
+            var responseObj = data.removeTeacher(removeTeacherObj);
             if (typeof (responseObj) == 'boolean' || typeof (responseObj) == 'object') {
                 var index = -1;
                 var filteredTeacher = self.taList.filter(function (x, key) {
