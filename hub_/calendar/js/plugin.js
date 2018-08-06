@@ -6644,10 +6644,25 @@ function SylvanCalendar() {
                                 currentView = self.calendar.fullCalendar('getView');
                                 var startDate = moment(currentView.start).format("YYYY-MM-DD");
                                 var locationObj = self.getLocationObject(self.locationId);
+                                var satelliteIds = [];
                                 if (locationObj['_hub_parentcenter_value'] != undefined) {
-                                    self.makeupPopup(data.getMakeupNFloat({ "hub_center@odata.bind": self.locationId, "isForMakeup": false, "hub_date": startDate, "hub_parentcenter": locationObj['_hub_parentcenter_value'] }), options.$trigger[0], false);
+                                    satelliteIds.push(locationObj['_hub_parentcenter_value']);
+                                    self.locationList.forEach(function (y) {
+                                        if (locationObj['_hub_parentcenter_value'] == y['_hub_parentcenter_value']) {
+                                            satelliteIds.push(y.hub_centerid);
+                                        }
+                                    });
+                                    self.makeupPopup(data.getMakeupNFloat({ "hub_center@odata.bind": self.locationId, "isForMakeup": false, "hub_date": startDate, "hub_parentcenter": satelliteIds }), options.$trigger[0], false);
                                 } else {
-                                    self.makeupPopup(data.getMakeupNFloat({ "hub_center@odata.bind": self.locationId, "isForMakeup": false, "hub_date": startDate }), options.$trigger[0], false);
+                                    self.locationList.forEach(function (y) {
+                                        if (self.locationId == y['_hub_parentcenter_value']) {
+                                            satelliteIds.push(y.hub_centerid);
+                                        }
+                                    });
+                                    if (!satelliteIds.length) {
+                                        satelliteIds = null;
+                                    }
+                                    self.makeupPopup(data.getMakeupNFloat({ "hub_center@odata.bind": self.locationId, "isForMakeup": false, "hub_date": startDate, "hub_parentcenter": satelliteIds }), options.$trigger[0], false);
                                 }
                             }, 300);
                         }
