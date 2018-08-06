@@ -173,22 +173,24 @@ function Appointment() {
 
                 var startObj = new Date(appointmentHour['hub_effectivestartdate@OData.Community.Display.V1.FormattedValue'] + " " + appointmentHour['hub_starttime@OData.Community.Display.V1.FormattedValue']);
                 var endObj = new Date(appointmentHour['hub_effectiveenddate@OData.Community.Display.V1.FormattedValue'] + " " + appointmentHour['hub_endtime@OData.Community.Display.V1.FormattedValue']);
-
-                tempList.push({
-                    type: appointmentHour['aworkhours_x002e_hub_type'],
-                    typeValue: appointmentHour['aworkhours_x002e_hub_type@OData.Community.Display.V1.FormattedValue'],
-                    startObj: startObj,
-                    startDate: appointmentHour['hub_effectivestartdate@OData.Community.Display.V1.FormattedValue'],
-                    startTime: appointmentHour['hub_starttime@OData.Community.Display.V1.FormattedValue'],
-                    endDate: appointmentHour['hub_effectiveenddate@OData.Community.Display.V1.FormattedValue'],
-                    endTime: appointmentHour['hub_endtime@OData.Community.Display.V1.FormattedValue'],
-                    endObj: endObj,
-                    capacity: appointmentHour['hub_capacity'],
-                    appointmentHourId: appointmentHour['hub_timingsid'],
-                    day: appointmentHour['hub_days'],
-                    dayVal: appointmentHour['hub_days@OData.Community.Display.V1.FormattedValue'],
-                    duration: appointmentHour['hub_duration']
-                });
+                if (appointmentHour['hub_duration']) {
+                    tempList.push({
+                        type: appointmentHour['aworkhours_x002e_hub_type'],
+                        typeValue: appointmentHour['aworkhours_x002e_hub_type@OData.Community.Display.V1.FormattedValue'],
+                        startObj: startObj,
+                        startDate: appointmentHour['hub_effectivestartdate@OData.Community.Display.V1.FormattedValue'],
+                        startTime: appointmentHour['hub_starttime@OData.Community.Display.V1.FormattedValue'],
+                        endDate: appointmentHour['hub_effectiveenddate@OData.Community.Display.V1.FormattedValue'],
+                        endTime: appointmentHour['hub_endtime@OData.Community.Display.V1.FormattedValue'],
+                        endObj: endObj,
+                        capacity: appointmentHour['hub_capacity'],
+                        appointmentHourId: appointmentHour['hub_timingsid'],
+                        day: appointmentHour['hub_days'],
+                        dayVal: appointmentHour['hub_days@OData.Community.Display.V1.FormattedValue'],
+                        duration: appointmentHour['hub_duration']
+                    });
+                }
+                
             });
             this.appointmentHours = tempList;
         } else if (label == "businessClosure") {
