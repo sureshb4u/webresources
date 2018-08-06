@@ -121,7 +121,7 @@ function Appointment() {
         var eventDuration = 60;
         if (args.length) {
             for (var i = 0; i < args.length; i++) {
-                eventDuration = args[i]['aworkhours_x002e_hub_duration'];
+                eventDuration = args[i]['hub_duration'];
                 // var eventColorObj = self.getEventColor(args[i]['aworkhours_x002e_hub_type']);
                 // eventDuration = eventColorObj['slotMinutes'] == undefined ? 60 : eventColorObj['slotMinutes'];
                 break;
@@ -154,6 +154,7 @@ function Appointment() {
                     endDate: appointmentObj['hub_end_date@OData.Community.Display.V1.FormattedValue'],
                     endTime: appointmentObj['hub_endtime@OData.Community.Display.V1.FormattedValue'],
                     startObj: startObj,
+                    timingsId: appointmentObj['_hub_timingsid_value'],
                     endObj: endObj,
                 });
             });
@@ -186,7 +187,7 @@ function Appointment() {
                     appointmentHourId: appointmentHour['hub_timingsid'],
                     day: appointmentHour['hub_days'],
                     dayVal: appointmentHour['hub_days@OData.Community.Display.V1.FormattedValue'],
-                    duration: appointmentHour['aworkhours_x002e_hub_duration']
+                    duration: appointmentHour['hub_duration']
                 });
             });
             this.appointmentHours = tempList;
@@ -437,7 +438,7 @@ function Appointment() {
                                     appointmentHrObj['endObj'] = new Date(moment(response).format("MM-DD-YYYY") + " " + timingArry[d]['end']);
 
                                     var eventColorObj = self.getEventColor(appointmentHrObj["type"]);
-                                    var eventId = appointmentHrObj["type"] + "_" + appointmentHrObj['startObj'];
+                                    var eventId = appointmentHrObj["type"] + "_" + appointmentHrObj['startObj'] + "_" + appointmentHrObj['appointmentHourId'];
                                     var eventPopulated = self.appointment.fullCalendar('clientEvents', eventId);
                                     if (eventPopulated.length) {
                                         eventPopulated[0].capacity += appointmentHrObj['capacity'];
@@ -509,7 +510,7 @@ function Appointment() {
         if (appointmentList.length) {
             wjQuery.each(appointmentList, function (index, appointmentObj) {
                 var eventColorObj = self.getEventColor(appointmentObj["type"]);
-                var eventId = appointmentObj["type"] + "_" + appointmentObj['startObj'];
+                var eventId = appointmentObj["type"] + "_" + appointmentObj['startObj'] + "_" + appointmentObj['timingsId'];
                 var eventPopulated = self.appointment.fullCalendar('clientEvents', eventId);
                 if (eventPopulated.length) {
                     eventPopulated[0].occupied += 1;
