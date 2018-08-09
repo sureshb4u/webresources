@@ -4179,12 +4179,39 @@ function SylvanCalendar() {
             var currentView = new Date(currentCalendarDate).setHours(0);
             currentView = new Date(new Date(currentCalendarDate).setMinutes(0));
             currentView = new Date(new Date(currentCalendarDate).setSeconds(0));
+            var staffAvailability = args;
+            args.forEach(function (staffAvailable,staffIndex) {
+                var filteredStaff = staffAvailability.filter(function (staff, staffKey) {
+                    if (currentCalendarDate.getDay() == staff["hub_days"] && staffAvailable["astaff_timings_x002e_hub_staffid"] == staff["astaff_timings_x002e_hub_staffid"] &&
+                        staffAvailable["hub_days"] == staff["hub_days"]) {
+                         return staff;
+                    };
+                });
+                filteredStaff.forEach(function (teacherTiming, key) {
+                    if (key != 0 && teacherTiming) {
+                        if ((teacherTiming['hub_starttime'] <= staffAvailable["hub_starttime"] && teacherTiming["hub_endTime"] >= staffAvailable["hub_starttime"]) ||
+                            teacherTiming['hub_starttime'] >= staffAvailable["hub_starttime"] && teacherTiming['hub_starttime'] <= staffAvailable["hub_endtime"]) {
+                            if (teacherTiming['hub_starttime'] < staffAvailable["hub_starttime"]) {
+                                var indexTobeDeleted = args.indexOf(teacerTiming);
+                                args.splice(indexTobeDeleted, 1);
+                                args[staffIndex]['hub_starttime'] = teacherTiming['hub_starttime'];
+                                args[staffIndex]["hub_starttime@OData.Community.Display.V1.FormattedValue"] = teacherTiming["hub_starttime@OData.Community.Display.V1.FormattedValue"];
+                            } else if (teacherTiming["hub_endtime"] > staffAvailable["hub_endtime"]) {
+                                var indexTobeDeleted = args.indexOf(teacherTiming);
+                                args.splice(indexTobeDeleted, 1);
+                                args[staffIndex]['hub_endtime'] = teacherTiming['hub_endtime'];
+                                args[staffIndex]["hub_endtime@OData.Community.Display.V1.FormattedValue"] = teacherTiming["hub_endtime@OData.Community.Display.V1.FormattedValue"];
+                            }
+                        }
+                    }
+                });
+            });
             for (var i = 0; i < args.length; i++) {
                 var exceptionTimeArray = [];
                 var index = -1;
                 if (self.staffExceptions.length) {
                     for (var k = 0; k < self.staffExceptions.length ; k++) {
-                        if (args[i]['_hub_staffid_value'] == self.staffExceptions[k]['astaff_x002e_hub_staffid']) {
+                        if (args[i]['astaff_timings_x002e_hub_staffid'] == self.staffExceptions[k]['astaff_x002e_hub_staffid']) {
                             var exceptionStartDate = new Date(self.staffExceptions[k]['hub_startdate@OData.Community.Display.V1.FormattedValue']);
                             // Set time for start date
                             exceptionStartDate = new Date(exceptionStartDate).setHours(0);
@@ -4212,51 +4239,21 @@ function SylvanCalendar() {
                     }
                 }
                 if (index == -1) {
-                    if (args[i]['hub_' + moment(currentCalendarDate).format('dddd').toLowerCase()]) {
+                    if (args[i]['hub_days'] == currentCalendarDate.getDay()) {
                         var obj = {
-                            name: args[i]['_hub_staffid_value@OData.Community.Display.V1.FormattedValue'],
-                            id: args[i]['_hub_staffid_value'],
-                            startDate: args[i]['hub_startdate@OData.Community.Display.V1.FormattedValue'],
-                            endDate: args[i]['hub_enddate@OData.Community.Display.V1.FormattedValue'],
+                            name: args[i]['astaff_timings_x002e_hub_staffid@OData.Community.Display.V1.FormattedValue'],
+                            id: args[i]['astaff_timings_x002e_hub_staffid'],
+                            startDate: args[i]['astaff_timings_x002e_hub_startdate@OData.Community.Display.V1.FormattedValue'],
+                            endDate: args[i]['astaff_timings_x002e_hub_enddate@OData.Community.Display.V1.FormattedValue'],
                             locationId: args[i]['astaff_x002e_hub_center'],
-                            deliveryTypeId: args[i]['_hub_deliverytype_value'],
-                            subjects: self.getTeacherSubjects(args[i])
-
+                            subjects: self.getTeacherSubjects(args[i]),
+                            startTime: args[i]['hub_starttime@OData.Community.Display.V1.FormattedValue'],
+                            endTime: args[i]['hub_endtime@OData.Community.Display.V1.FormattedValue']
                         }
                         //sorted the exceptions in ascending order of start time
                         exceptionTimeArray = exceptionTimeArray.sort(function (a, b) {
                             return a.exceptionStartHour - b.exceptionStartHour;
                         });
-                        switch (moment(currentCalendarDate).format('dddd').toLowerCase()) {
-                            case 'monday':
-                                obj.startTime = args[i]['hub_monstarttime@OData.Community.Display.V1.FormattedValue'];
-                                obj.endTime = args[i]['hub_monendtime@OData.Community.Display.V1.FormattedValue'];
-                                break;
-                            case 'tuesday':
-                                obj.startTime = args[i]['hub_tuestarttime@OData.Community.Display.V1.FormattedValue'];
-                                obj.endTime = args[i]['hub_tueendtime@OData.Community.Display.V1.FormattedValue'];
-                                break;
-                            case 'wednesday':
-                                obj.startTime = args[i]['hub_wedstarttime@OData.Community.Display.V1.FormattedValue'];
-                                obj.endTime = args[i]['hub_wedendtime@OData.Community.Display.V1.FormattedValue'];
-                                break;
-                            case 'thursday':
-                                obj.startTime = args[i]['hub_thurstarttime@OData.Community.Display.V1.FormattedValue'];
-                                obj.endTime = args[i]['hub_thurendtime@OData.Community.Display.V1.FormattedValue'];
-                                break;
-                            case 'friday':
-                                obj.startTime = args[i]['hub_fristarttime@OData.Community.Display.V1.FormattedValue'];
-                                obj.endTime = args[i]['hub_friendtime@OData.Community.Display.V1.FormattedValue'];
-                                break;
-                            case 'saturday':
-                                obj.startTime = args[i]['hub_satstarttime@OData.Community.Display.V1.FormattedValue'];
-                                obj.endTime = args[i]['hub_satendtime@OData.Community.Display.V1.FormattedValue'];
-                                break;
-                            case 'sunday':
-                                obj.startTime = args[i]['hub_sunstarttime@OData.Community.Display.V1.FormattedValue'];
-                                obj.endTime = args[i]['hub_satendtime@OData.Community.Display.V1.FormattedValue'];
-                                break;
-                        }
                         if (!obj.endTime) {
                             obj.endTime = moment(obj.startTime, 'h:mm A').hours(20).format("h:mm A");
                             obj.endTime = moment(obj.endTime, 'h:mm A').minutes(00).format("h:mm A");
