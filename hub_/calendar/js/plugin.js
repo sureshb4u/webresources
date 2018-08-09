@@ -6608,10 +6608,11 @@ function SylvanCalendar() {
                                 var startDate = moment(currentView.start).format("YYYY-MM-DD");
                                 var locationObj = self.getLocationObject(self.locationId);
                                 var satelliteIds = [];
+                                satelliteIds.push(self.locationId);
                                 if (locationObj['_hub_parentcenter_value'] != undefined) {
                                     satelliteIds.push(locationObj['_hub_parentcenter_value']);
                                     self.locationList.forEach(function (y) {
-                                        if (locationObj['_hub_parentcenter_value'] == y['_hub_parentcenter_value']) {
+                                        if (locationObj['_hub_parentcenter_value'] == y['_hub_parentcenter_value'] && y['hub_centerid'] != self.locationId) {
                                             satelliteIds.push(y.hub_centerid);
                                         }
                                     });
@@ -6642,10 +6643,11 @@ function SylvanCalendar() {
                                 var startDate = moment(currentView.start).format("YYYY-MM-DD");
                                 var locationObj = self.getLocationObject(self.locationId);
                                 var satelliteIds = [];
+                                satelliteIds.push(self.locationId);
                                 if (locationObj['_hub_parentcenter_value'] != undefined) {
                                     satelliteIds.push(locationObj['_hub_parentcenter_value']);
                                     self.locationList.forEach(function (y) {
-                                        if (locationObj['_hub_parentcenter_value'] == y['_hub_parentcenter_value']) {
+                                        if (locationObj['_hub_parentcenter_value'] == y['_hub_parentcenter_value'] && y['hub_centerid'] != self.locationId) {
                                             satelliteIds.push(y.hub_centerid);
                                         }
                                     });
