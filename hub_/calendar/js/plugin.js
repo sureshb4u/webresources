@@ -1126,7 +1126,7 @@ function SylvanCalendar() {
             var teacherStart = new Date(moment(currentCalendarDate).format('MM-DD-YYYY') + ' ' + teacherData[i].startTime);
             var teacherEnd = new Date(moment(currentCalendarDate).format('MM-DD-YYYY') + ' ' + (teacherData[i].endTime));
             var teacherStartHour = teacherStart.getHours();
-            if (teacherStartHour >= this.calendarOptions.minTime && teacherStartHour <= this.calendarOptions.maxTime) {
+            if (teacherStartHour <= this.calendarOptions.maxTime) {
                 var teacherPosition = teacherStartHour - this.calendarOptions.minTime;
                 if (wjQuery("div[value='" + teacherData[i].id + "']").length > 0) {
                     var teacherTimingDetail = wjQuery("div[value='" + teacherData[i].id + "']").children();
@@ -1210,9 +1210,9 @@ function SylvanCalendar() {
 
                 objNewSession['hub_sessiontype'] = 1;
                 objSession['hub_sessiontype'] = 1;
-                if (student[0]['sessiontype'] != undefined) {
-                    objNewSession['hub_sessiontype'] = student[0]['sessiontype'];
-                    objSession['hub_sessiontype'] = student[0]['sessiontype'];
+                if (student[0]['sessionType'] != undefined) {
+                    objNewSession['hub_sessiontype'] = student[0]['sessionType'];
+                    objSession['hub_sessiontype'] = student[0]['sessionType'];
                 }
                 objNewSession['hub_session_status'] = student[0]['sessionStatus'];
                 objSession['hub_session_status'] = student[0]['sessionStatus'];
@@ -3347,7 +3347,17 @@ function SylvanCalendar() {
         var endDateArray = [];
         var deliveryTypeCode = val['adeliverytype_x002e_hub_code'];
         var timeSlotType = val['aproductservice_x002e_hub_timeslottype'];
+        var currentCalendarDate = self.calendar.fullCalendar('getDate');
         var instructionalHourEndDate = [];
+        if (val["hub_sessiontype"] == MAKEUP_TYPE) {
+            return new Date(currentCalendarDate);
+        } else if (val["hub_sessiontype"] == FLOAT_TYPE) {
+            if (val['aenrollment_x002e_hub_committedsessionenddate@OData.Community.Display.V1.FormattedValue']) {
+                return new Date(moment(val['aenrollment_x002e_hub_committedsessionenddate@OData.Community.Display.V1.FormattedValue']).format("MM-DD-YYYY"));
+            } else {
+                return new Date(currentCalendarDate);
+            }
+        }
         if (instructionalHours) {
                 instructionalHourEndDate = instructionalHours.filter(function (insHour, key) {
                 if (deliveryTypeCode == groupFacilitation) {
@@ -3362,7 +3372,6 @@ function SylvanCalendar() {
                 endDateArray.push(moment(val['hub_effectiveenddate@OData.Community.Display.V1.FormattedValue']).format("MM-DD-YYYY"));
             }
         })
-        var currentCalendarDate = self.calendar.fullCalendar('getDate');
         if (val['hub_effectiveenddate@OData.Community.Display.V1.FormattedValue']) {
             endDateArray.push(moment(val['hub_effectiveenddate@OData.Community.Display.V1.FormattedValue']).format("MM-DD-YYYY"));
         }
@@ -4179,6 +4188,7 @@ function SylvanCalendar() {
             var currentView = new Date(currentCalendarDate).setHours(0);
             currentView = new Date(new Date(currentCalendarDate).setMinutes(0));
             currentView = new Date(new Date(currentCalendarDate).setSeconds(0));
+            args.sort(function (a, b) { return a.hub_starttime - b.hub_starttime });
             var staffAvailability = args;
             args.forEach(function (staffAvailable,staffIndex) {
                 var filteredStaff = staffAvailability.filter(function (staff, staffKey) {
@@ -4187,12 +4197,13 @@ function SylvanCalendar() {
                          return staff;
                     };
                 });
+                filteredStaff.sort(function (a, b) { return a.hub_starttime - b.hub_starttime });
                 filteredStaff.forEach(function (teacherTiming, key) {
-                    if (key != 0 && teacherTiming) {
-                        if ((teacherTiming['hub_starttime'] <= staffAvailable["hub_starttime"] && teacherTiming["hub_endTime"] >= staffAvailable["hub_starttime"]) ||
+                    if (teacherTiming.hub_timingsid != staffAvailable.hub_timingsid) {
+                        if ((teacherTiming['hub_starttime'] <= staffAvailable["hub_starttime"] && teacherTiming["hub_endtime"] >= staffAvailable["hub_starttime"]) ||
                             teacherTiming['hub_starttime'] >= staffAvailable["hub_starttime"] && teacherTiming['hub_starttime'] <= staffAvailable["hub_endtime"]) {
                             if (teacherTiming['hub_starttime'] < staffAvailable["hub_starttime"]) {
-                                var indexTobeDeleted = args.indexOf(teacerTiming);
+                                var indexTobeDeleted = args.indexOf(teacherTiming);
                                 args.splice(indexTobeDeleted, 1);
                                 args[staffIndex]['hub_starttime'] = teacherTiming['hub_starttime'];
                                 args[staffIndex]["hub_starttime@OData.Community.Display.V1.FormattedValue"] = teacherTiming["hub_starttime@OData.Community.Display.V1.FormattedValue"];
@@ -4201,6 +4212,9 @@ function SylvanCalendar() {
                                 args.splice(indexTobeDeleted, 1);
                                 args[staffIndex]['hub_endtime'] = teacherTiming['hub_endtime'];
                                 args[staffIndex]["hub_endtime@OData.Community.Display.V1.FormattedValue"] = teacherTiming["hub_endtime@OData.Community.Display.V1.FormattedValue"];
+                            } else if (teacherTiming['hub_starttime'] >= staffAvailable["hub_starttime"] && teacherTiming["hub_endtime"] <= staffAvailable["hub_endtime"]) {
+                                var indexTobeDeleted = args.indexOf(teacherTiming);
+                                args.splice(indexTobeDeleted, 1);
                             }
                         }
                     }
@@ -8078,21 +8092,19 @@ function SylvanCalendar() {
                 currentView.end = new Date(new Date(currentView.end).setSeconds(0));
                 for (var i = 0; i < arrayList.length; i++) {
                     var obj = {
-                        name: arrayList[i]['_hub_staffid_value@OData.Community.Display.V1.FormattedValue'],
-                        id: arrayList[i]['_hub_staffid_value'],
-                        locationId: arrayList[i]['astaff_x002e_hub_center'],
+                        name: arrayList[i]['astaff_timings_x002e_hub_staffid@OData.Community.Display.V1.FormattedValue'],
+                        id: arrayList[i]['astaff_timings_x002e_hub_staffid'],
+                        locationId: arrayList[i]['astaff_timings_x002e_hub_centerid'],
                         deliveryTypeId: arrayList[i]['_hub_deliverytype_value'],
                         subjects: this.getTeacherSubjects(arrayList[i]),
                         isTeacher: true
                     };
-                    if (arrayList[i]['hub_startdate@OData.Community.Display.V1.FormattedValue'] != undefined) {
-                        obj.startDate = new Date(arrayList[i]['hub_startdate@OData.Community.Display.V1.FormattedValue']);
-                        obj.startDate = new Date(obj.startDate).setHours(0);
-                        obj.startDate = new Date(new Date(obj.startDate).setMinutes(0));
-                        obj.startDate = new Date(new Date(obj.startDate).setSeconds(0));
-                    }
-                    if (arrayList[i]['hub_enddate@OData.Community.Display.V1.FormattedValue'] != undefined) {
-                        obj.endDate = new Date(arrayList[i]['hub_enddate@OData.Community.Display.V1.FormattedValue']);
+                    obj.startDate = new Date(arrayList[i]['astaff_timings_x002e_hub_startdate@OData.Community.Display.V1.FormattedValue']);
+                    obj.startDate = new Date(obj.startDate).setHours(0);
+                    obj.startDate = new Date(new Date(obj.startDate).setMinutes(0));
+                    obj.startDate = new Date(new Date(obj.startDate).setSeconds(0));
+                    if (arrayList[i]['astaff_timings_x002e_hub_enddate@OData.Community.Display.V1.FormattedValue'] != undefined) {
+                        obj.endDate = new Date(arrayList[i]['astaff_timings_x002e_hub_enddate@OData.Community.Display.V1.FormattedValue']);
                         obj.endDate = new Date(obj.endDate).setHours(0);
                         obj.endDate = new Date(new Date(obj.endDate).setMinutes(0));
                         obj.endDate = new Date(new Date(obj.endDate).setSeconds(0));
@@ -8103,171 +8115,35 @@ function SylvanCalendar() {
                         obj.endDate = new Date(new Date(obj.endDate).setSeconds(0));
                     }
                     for (var j = currentView.start.getTime() ; j < currentView.end.getTime() ; j = j + (24 * 60 * 60 * 1000)) {
-                        if (arrayList[i]['hub_' + moment(j).format('dddd').toLowerCase()]) {
+                        if (new Date(j).getDay() == arrayList[i].hub_days) {
                             var taObject = wjQuery.extend(true, {}, obj);
                             if (j >= taObject.startDate.getTime() && j <= taObject.endDate.getTime()) {
-                                switch (moment(j).format('dddd').toLowerCase()) {
-                                    case 'monday':
-                                        taObject.startTime = new Date(moment(j).format('MM-DD-YYYY') + " " + arrayList[i]['hub_monstarttime@OData.Community.Display.V1.FormattedValue']);
-                                        if (arrayList[i]['hub_monendtime@OData.Community.Display.V1.FormattedValue'] == undefined) {
-                                            taObject.endTime = new Date(taObject.startTime.setHours(taObject.startTime.getHours() + 1));
-                                            taObject.startHour = taObject.startTime;
-                                            taObject.startHour = new Date(taObject.startHour.setMinutes(0));
-                                            this.taList.push(taObject);
-                                        }
-                                        else {
-                                            taObject.endTime = new Date(moment(j).format('MM-DD-YYYY') + " " + arrayList[i]['hub_monendtime@OData.Community.Display.V1.FormattedValue']);
-                                            var staffStartHour = taObject.startTime;
-                                            staffStartHour = new Date(staffStartHour.setMinutes(0));
-                                            do {
-                                                var newObject = wjQuery.extend(true, {}, taObject);
-                                                var start = new Date(staffStartHour.getTime());
-                                                newObject.startHour = start;
-                                                this.taList.push(newObject);
-                                                staffStartHour = new Date(staffStartHour.setHours(staffStartHour.getHours() + 1));
-                                            }
-                                            while (staffStartHour.getTime() < taObject.endTime.getTime());
-                                        }
-                                        break;
-                                    case 'tuesday':
-                                        taObject.startTime = new Date(moment(j).format('MM-DD-YYYY') + " " + arrayList[i]['hub_tuestarttime@OData.Community.Display.V1.FormattedValue']);
-                                        if (arrayList[i]['hub_tueendtime@OData.Community.Display.V1.FormattedValue'] == undefined) {
-                                            taObject.endTime = new Date(taObject.startTime.setHours(taObject.startTime.getHours() + 1));
-                                            taObject.startHour = taObject.startTime;
-                                            taObject.startHour = new Date(taObject.startHour.setMinutes(0));
-                                            this.taList.push(taObject);
-                                        }
-                                        else {
-                                            taObject.endTime = new Date(moment(j).format('MM-DD-YYYY') + " " + arrayList[i]['hub_tueendtime@OData.Community.Display.V1.FormattedValue']);
-                                            var staffStartHour = taObject.startTime;
-                                            staffStartHour = new Date(staffStartHour.setMinutes(0));
-                                            do {
-                                                var newObject = wjQuery.extend(true, {}, taObject);
-                                                var start = new Date(staffStartHour.getTime());
-                                                newObject.startHour = start;
-                                                this.taList.push(newObject);
-                                                staffStartHour = new Date(staffStartHour.setHours(staffStartHour.getHours() + 1));
-                                            }
-                                            while (staffStartHour.getTime() < taObject.endTime.getTime());
-                                        }
-                                        break;
-                                    case 'wednesday':
-                                        taObject.startTime = new Date(moment(j).format('MM-DD-YYYY') + " " + arrayList[i]['hub_wedstarttime@OData.Community.Display.V1.FormattedValue']);
-                                        if (arrayList[i]['hub_wedendtime@OData.Community.Display.V1.FormattedValue'] == undefined) {
-                                            taObject.endTime = new Date(taObject.startTime.setHours(taObject.startTime.getHours() + 1));
-                                            taObject.startHour = taObject.startTime;
-                                            taObject.startHour = new Date(taObject.startHour.setMinutes(0));
-                                            this.taList.push(taObject);
-                                        }
-                                        else {
-                                            taObject.endTime = new Date(moment(j).format('MM-DD-YYYY') + " " + arrayList[i]['hub_wedendtime@OData.Community.Display.V1.FormattedValue']);
-                                            var staffStartHour = taObject.startTime;
-                                            staffStartHour = new Date(staffStartHour.setMinutes(0));
-                                            do {
-                                                var newObject = wjQuery.extend(true, {}, taObject);
-                                                var start = new Date(staffStartHour.getTime());
-                                                newObject.startHour = start;
-                                                this.taList.push(newObject);
-                                                staffStartHour = new Date(staffStartHour.setHours(staffStartHour.getHours() + 1));
-                                            }
-                                            while (staffStartHour.getTime() < taObject.endTime.getTime());
-                                        }
-                                        break;
-                                    case 'thursday':
-                                        taObject.startTime = new Date(moment(j).format('MM-DD-YYYY') + " " + arrayList[i]['hub_thurstarttime@OData.Community.Display.V1.FormattedValue']);
-                                        if (arrayList[i]['hub_thurendtime@OData.Community.Display.V1.FormattedValue'] == undefined) {
-                                            taObject.endTime = new Date(taObject.startTime.setHours(taObject.startTime.getHours() + 1));
-                                            taObject.startHour = taObject.startTime;
-                                            taObject.startHour = new Date(taObject.startHour.setMinutes(0));
-                                            this.taList.push(taObject);
-                                        }
-                                        else {
-                                            taObject.endTime = new Date(moment(j).format('MM-DD-YYYY') + " " + arrayList[i]['hub_thurendtime@OData.Community.Display.V1.FormattedValue']);
-                                            var staffStartHour = taObject.startTime;
-                                            staffStartHour = new Date(staffStartHour.setMinutes(0));
-                                            do {
-                                                var newObject = wjQuery.extend(true, {}, taObject);
-                                                var start = new Date(staffStartHour.getTime());
-                                                newObject.startHour = start;
-                                                this.taList.push(newObject);
-                                                staffStartHour = new Date(staffStartHour.setHours(staffStartHour.getHours() + 1));
-                                            }
-                                            while (staffStartHour.getTime() < taObject.endTime.getTime());
-                                        }
-                                        break;
-                                    case 'friday':
-                                        taObject.startTime = new Date(moment(j).format('MM-DD-YYYY') + " " + arrayList[i]['hub_fristarttime@OData.Community.Display.V1.FormattedValue']);
-                                        if (arrayList[i]['hub_friendtime@OData.Community.Display.V1.FormattedValue'] == undefined) {
-                                            taObject.endTime = new Date(taObject.startTime.setHours(taObject.startTime.getHours() + 1));
-                                            taObject.startHour = taObject.startTime;
-                                            taObject.startHour = new Date(taObject.startHour.setMinutes(0));
-                                            this.taList.push(taObject);
-                                        }
-                                        else {
-                                            taObject.endTime = new Date(moment(j).format('MM-DD-YYYY') + " " + arrayList[i]['hub_friendtime@OData.Community.Display.V1.FormattedValue']);
-                                            var staffStartHour = taObject.startTime;
-                                            staffStartHour = new Date(staffStartHour.setMinutes(0));
-                                            do {
-                                                var newObject = wjQuery.extend(true, {}, taObject);
-                                                var start = new Date(staffStartHour.getTime());
-                                                newObject.startHour = start;
-                                                this.taList.push(newObject);
-                                                staffStartHour = new Date(staffStartHour.setHours(staffStartHour.getHours() + 1));
-                                            }
-                                            while (staffStartHour.getTime() < taObject.endTime.getTime());
-                                        }
-                                        break;
-                                    case 'saturday':
-                                        taObject.startTime = new Date(moment(j).format('MM-DD-YYYY') + " " + arrayList[i]['hub_satstarttime@OData.Community.Display.V1.FormattedValue']);
-                                        if (arrayList[i]['hub_satendtime@OData.Community.Display.V1.FormattedValue'] == undefined) {
-                                            taObject.endTime = new Date(taObject.startTime.setHours(taObject.startTime.getHours() + 1));
-                                            taObject.startHour = taObject.startTime;
-                                            taObject.startHour = new Date(taObject.startHour.setMinutes(0));
-                                            this.taList.push(taObject);
-                                        }
-                                        else {
-                                            taObject.endTime = new Date(moment(j).format('MM-DD-YYYY') + " " + arrayList[i]['hub_satendtime@OData.Community.Display.V1.FormattedValue']);
-                                            var staffStartHour = taObject.startTime;
-                                            staffStartHour = new Date(staffStartHour.setMinutes(0));
-                                            do {
-                                                var newObject = wjQuery.extend(true, {}, taObject);
-                                                var start = new Date(staffStartHour.getTime());
-                                                newObject.startHour = start;
-                                                this.taList.push(newObject);
-                                                staffStartHour = new Date(staffStartHour.setHours(staffStartHour.getHours() + 1));
-                                            }
-                                            while (staffStartHour.getTime() < taObject.endTime.getTime());
-                                        }
-                                        break;
-                                    case 'sunday':
-                                        taObject.startTime = new Date(moment(j).format('MM-DD-YYYY') + " " + arrayList[i]['hub_sunstarttime@OData.Community.Display.V1.FormattedValue']);
-                                        if (arrayList[i]['hub_sunendtime@OData.Community.Display.V1.FormattedValue'] == undefined) {
-                                            taObject.endTime = new Date(taObject.startTime.setHours(taObject.startTime.getHours() + 1));
-                                            taObject.startHour = taObject.startTime;
-                                            taObject.startHour = new Date(taObject.startHour.setMinutes(0));
-                                            this.taList.push(taObject);
-                                        }
-                                        else {
-                                            taObject.endTime = new Date(moment(j).format('MM-DD-YYYY') + " " + arrayList[i]['hub_sunendtime@OData.Community.Display.V1.FormattedValue']);
-                                            var staffStartHour = taObject.startTime;
-                                            staffStartHour = new Date(staffStartHour.setMinutes(0));
-                                            do {
-                                                var newObject = wjQuery.extend(true, {}, taObject);
-                                                var start = new Date(staffStartHour.getTime());
-                                                newObject.startHour = start;
-                                                this.taList.push(newObject);
-                                                staffStartHour = new Date(staffStartHour.setHours(staffStartHour.getHours() + 1));
-                                            }
-                                            while (staffStartHour.getTime() < taObject.endTime.getTime());
-                                        }
-                                        break;
+                                taObject.startTime = new Date(moment(j).format('MM-DD-YYYY') + " " + arrayList[i]['hub_starttime@OData.Community.Display.V1.FormattedValue']);
+                                if (arrayList[i]['hub_endtime@OData.Community.Display.V1.FormattedValue'] == undefined) {
+                                    taObject.endTime = new Date(taObject.startTime.setHours(taObject.startTime.getHours() + 1));
+                                    taObject.startHour = taObject.startTime;
+                                    taObject.startHour = new Date(taObject.startHour.setMinutes(0));
+                                    this.taList.push(taObject);
+                                }
+                                else {
+                                    taObject.endTime = new Date(moment(j).format('MM-DD-YYYY') + " " + arrayList[i]['hub_endtime@OData.Community.Display.V1.FormattedValue']);
+                                    var staffStartHour = taObject.startTime;
+                                    staffStartHour = new Date(staffStartHour.setMinutes(0));
+                                    do {
+                                        var newObject = wjQuery.extend(true, {}, taObject);
+                                        var start = new Date(staffStartHour.getTime());
+                                        newObject.startHour = start;
+                                        this.taList.push(newObject);
+                                        staffStartHour = new Date(staffStartHour.setHours(staffStartHour.getHours() + 1));
+                                    }
+                                    while (staffStartHour.getTime() < taObject.endTime.getTime());
                                 }
                             }
                         }
                     }
                 }
                 for (var i = 0; i < this.taList.length; i++) {
-                    if (this.taList[i].hasOwnProperty('startHour')) {
+                    if (this.taList[i].hasOwnProperty('startHour') && this.checkForStaffException(this.taList[i])) {
                         if (this.weekEventObject.hasOwnProperty(this.taList[i].startHour)) {
                             if (this.weekEventObject[this.taList[i].startHour].hasOwnProperty('teacherAvailability')) {
                                 var index = -1;
@@ -9596,6 +9472,38 @@ function SylvanCalendar() {
                     (
                         (
                             startHour1 <= staffDetail['hub_starttime'] &&
+                            endHour1 >= staffDetail['hub_endtime']
+                        ) ||
+                        (
+                            staffDetail['hub_starttime'] <= startHour1 &&
+                            staffDetail['hub_endtime'] >= endHour1
+                        ) ||
+                        (
+                            endHour1 > staffDetail['hub_starttime'] &&
+                            staffDetail['hub_endtime'] > startHour1
+                        )
+                    )) {
+                    teacherIsAvialble = false;
+                    break;
+                }
+            }
+        }
+        return teacherIsAvialble;
+    }
+
+    this.checkForStaffException = function (teacher) {
+        var self = this;
+        var teacherIsAvialble = true;
+        if (this.staffExceptions.length) {
+            for (var i = 0; i < this.staffExceptions.length; i++) {
+                var staffDetail = this.staffExceptions[i];
+                var startHour1 = new Date(teacher.startHour);
+                startHour1 = self.convertToMinutes(moment(startHour1).format("h:mm A"));
+                var endHour1 = startHour1 + 60;
+                if (staffDetail['astaff_x002e_hub_staffid'] == teacher.id &&
+                    (
+                        (
+                            teacher.sta <= staffDetail['hub_starttime'] &&
                             endHour1 >= staffDetail['hub_endtime']
                         ) ||
                         (
