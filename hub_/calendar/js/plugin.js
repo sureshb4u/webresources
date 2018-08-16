@@ -1210,9 +1210,9 @@ function SylvanCalendar() {
 
                 objNewSession['hub_sessiontype'] = 1;
                 objSession['hub_sessiontype'] = 1;
-                if (student[0]['sessionType'] != undefined) {
-                    objNewSession['hub_sessiontype'] = student[0]['sessionType'];
-                    objSession['hub_sessiontype'] = student[0]['sessionType'];
+                if (student[0]['sessiontype'] != undefined) {
+                    objNewSession['hub_sessiontype'] = student[0]['sessiontype'];
+                    objSession['hub_sessiontype'] = student[0]['sessiontype'];
                 }
                 objNewSession['hub_session_status'] = student[0]['sessionStatus'];
                 objSession['hub_session_status'] = student[0]['sessionStatus'];
@@ -7538,7 +7538,7 @@ function SylvanCalendar() {
                 objSession["hub_session_date"] = moment(new Date(idArry[2])).format("YYYY-MM-DD");
                 objSession["hub_start_time"] = start;
                 objSession["hub_end_time"] = start + 60;
-                objSession["hub_sessiontype"] = studentObj[0]['sessionType'];
+                objSession["hub_sessiontype"] = studentObj[0]['sessiontype'];
                 objSession["hub_session_status"] = studentObj[0]['sessionStatus'];
                 if (studentObj[0]['makeupExpiryDate']) {
                     objSession["hub_makeup_expiry_date"] = moment(studentObj[0]['makeupExpiryDate']).format('YYYY-MM-DD');
@@ -7631,6 +7631,8 @@ function SylvanCalendar() {
                 studentObj['sourceAppId'] = responseObj['hub_sourceapplicationid'];
             }
             studentObj[0]["locationId"] = self.locationId;
+            var locationObj = self.getLocationObject(self.locationId);
+            studentObj[0]["locationName"] = locationObj.hub_centername;
             // update Student
             self.convertedStudentObj.push(studentObj[0]);
             self.populateStudentEvent([studentObj[0]], true);
@@ -7725,7 +7727,7 @@ function SylvanCalendar() {
                 serviceId: val['_hub_service_value'],
                 serviceValue: val['_hub_service_value@OData.Community.Display.V1.FormattedValue'],
                 sessionId: val['hub_studentsessionid'],
-                sessionType: val['hub_sessiontype'],
+                sessiontype: val['hub_sessiontype'],
                 sessionStatus: val['hub_session_status'],
                 duration: val['aproductservice_x002e_hub_duration'],
                 timeSlotType: val['aproductservice_x002e_hub_timeslottype'],
@@ -7809,7 +7811,7 @@ function SylvanCalendar() {
                 serviceId: val['_hub_service_value'],
                 serviceValue: val['_hub_service_value@OData.Community.Display.V1.FormattedValue'],
                 sessionId: val['hub_studentsessionid'],
-                sessionType: val['hub_sessiontype'],
+                sessiontype: val['hub_sessiontype'],
                 sessionStatus: val['hub_session_status'],
                 duration: val['aproductservice_x002e_hub_duration'],
                 timeSlotType: val['aproductservice_x002e_hub_timeslottype'],
@@ -10099,10 +10101,10 @@ function SylvanCalendar() {
         }
 
         //InstructionalHour Validation
-        if (newStudentObj.sessionType == FLOAT_TYPE || newStudentObj.sessionType == MAKEUP_TYPE) {
+        if (newStudentObj.sessiontype != FLOAT_TYPE && newStudentObj.sessiontype != MAKEUP_TYPE) {
             var instructionalHourValidation = self.checkInstructionalHours(newStudentObj, startHour);
             if (!instructionalHourValidation) {
-                messageObject.alert.push(" Instructional Hour is not available");
+                messageObject.confirmation.push(" Instructional Hour is not available");
             }
         }
 
