@@ -1190,7 +1190,7 @@ function SylvanCalendar() {
             var objSession = {};
             var objNewSession = {};
 
-            objSession['hub_center@odata.bind'] = student[0].locationId;
+            objSession['hub_center@odata.bind'] = self.locationId;
             objSession['hub_resourceid@odata.bind'] = student[0].resourceId;
             objSession.hub_session_date = moment(student[0].start).format("YYYY-MM-DD");
 
@@ -5700,7 +5700,7 @@ function SylvanCalendar() {
             if (objStudent[0]['isFromMasterSchedule']) {
                 objCancelSession['hub_enrollment@odata.bind'] = objStudent[0]['enrollmentId'];
                 objCancelSession['hub_service@odata.bind'] = objStudent[0]['serviceId'];
-                objCancelSession['hub_center@odata.bind'] = objStudent[0]["locationId"];
+                objCancelSession['hub_center@odata.bind'] = self.locationId;
                 objCancelSession['hub_student@odata.bind'] = objStudent[0]['id'];
                 objCancelSession.hub_session_date = moment(objStudent[0]['start']).format('YYYY-MM-DD');
                 objCancelSession.hub_start_time = this.convertToMinutes(moment(new Date(uniqueIds[2])).format("h:mm A"));
@@ -6803,7 +6803,7 @@ function SylvanCalendar() {
             if (objStudent[0]['isFromMasterSchedule']) {
                 objMovetoSOF['hub_enrollment@odata.bind'] = objStudent[0]['enrollmentId'];
                 objMovetoSOF['hub_service@odata.bind'] = objStudent[0]['serviceId'];
-                objMovetoSOF['hub_center@odata.bind'] = objStudent[0]["locationId"];
+                objMovetoSOF['hub_center@odata.bind'] = self.locationId;
                 objMovetoSOF['hub_student@odata.bind'] = objStudent[0]['id'];
                 objMovetoSOF.hub_session_date = moment(objStudent[0].start).format("YYYY-MM-DD");
                 objMovetoSOF.hub_start_time = this.convertToMinutes(moment(objStudent[0].start).format("h:mm A"));
@@ -7630,6 +7630,7 @@ function SylvanCalendar() {
             if (responseObj['hub_sourceapplicationid']) {
                 studentObj['sourceAppId'] = responseObj['hub_sourceapplicationid'];
             }
+            studentObj[0]["locationId"] = self.locationId;
             // update Student
             self.convertedStudentObj.push(studentObj[0]);
             self.populateStudentEvent([studentObj[0]], true);
@@ -7638,6 +7639,7 @@ function SylvanCalendar() {
             wjQuery("#makeup").dialog("close");
         } else {
             wjQuery("#makeup > .error_block").html(responseObj);
+            wjQuery("#makeup").dialog("open");
         }
     }
 
