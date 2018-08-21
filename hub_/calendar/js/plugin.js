@@ -5,8 +5,8 @@ var DEFAULT_END_TIME = "9:00 AM";
 var deliveryType = data.getDeliveryType();
 var currentCalendarDate = moment(new Date()).format("YYYY-MM-DD");
 // Calendar max and min time
-var maxClatime = 20;
-var minClatime = 8;
+var maxClatime = 22;
+var minClatime = 6;
 var slotS = 15;
 // 4 Weeks to get master schedule data.
 var numOfDays = 42;
@@ -571,7 +571,7 @@ function SylvanCalendar() {
                         searchVal = searchVal.split("_")[0];
                         var d = new Date();
                         var n = d.getHours();
-                        var scrollNum = ((n - 8) * wjQuery(".fc-slot1").height() * 4) - 2;
+                        var scrollNum = ((n - 6) * wjQuery(".fc-slot1").height() * 4) - 2;
                         wjQuery("#scrollarea").animate({ scrollTop: scrollNum }, 500, function () {
                             wjQuery(".loading").hide();
                         });
@@ -5302,7 +5302,7 @@ function SylvanCalendar() {
         if (this.selectedDeliveryType.length == 1) {
             if (this.getDeliveryTypeVal(this.selectedDeliveryType[0]) == personalInstruction) {
                 var filteredList = this.sofList['Personal Instruction'].filter(function (x) {
-                    return x.startHour.getHours() >= 8
+                    return x.startHour.getHours() >= 6
                 });
                 if (this.sofList['Personal Instruction'].length == 0 || filteredList.length == 0) {
                     closeSofPane = true;
@@ -5310,7 +5310,7 @@ function SylvanCalendar() {
             }
         } else if (this.selectedDeliveryType.length == 2) {
             var filteredList = this.sofList['Group Facilitation'].filter(function (x) {
-                return x.startHour.getHours() >= 8
+                return x.startHour.getHours() >= 6
             });
             if (this.sofList['Group Facilitation'].length == 0 || filteredList.length == 0) {
                 closeSofPane = true;
@@ -5320,13 +5320,13 @@ function SylvanCalendar() {
                 closeSofPane = true;
             }
             var filteredGFList = this.sofList['Group Facilitation'].filter(function (x) {
-                return x.startHour.getHours() >= 8
+                return x.startHour.getHours() >= 6
             });
             var filteredGIList = this.sofList['Group Instruction'].filter(function (x) {
-                return x.startHour.getHours() >= 8
+                return x.startHour.getHours() >= 6
             });
             var filteredPIList = this.sofList['Personal Instruction'].filter(function (x) {
-                return x.startHour.getHours() >= 8
+                return x.startHour.getHours() >= 6
             });
             if (filteredGFList.length == 0 && filteredGIList.length == 0 && filteredPIList.length == 0) {
                 closeSofPane = true;
@@ -9669,7 +9669,7 @@ function SylvanCalendar() {
     this.scrollToEvent = function () {
         var self = this;
         var currentCalendarDate = moment(this.calendar.fullCalendar('getDate')).format("MM-DD-YYYY");
-        var dateObj = new Date(currentCalendarDate + " " + "08:00 AM");
+        var dateObj = new Date(currentCalendarDate + " " + "06:00 AM");
         var first = true;
         if (this.eventList.length) {
             for (var i = 0; i < this.eventList.length; i++) {
@@ -9690,7 +9690,7 @@ function SylvanCalendar() {
             }
         }
         var n = dateObj.getHours();
-        var scrollNum = ((n - 8) * wjQuery(".fc-slot1").height() * 4) - 2;
+        var scrollNum = ((n - 6) * wjQuery(".fc-slot1").height() * 4) - 2;
         wjQuery("#scrollarea").animate({ scrollTop: scrollNum });
     }
 
