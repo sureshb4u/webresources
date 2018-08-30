@@ -1,6 +1,6 @@
 var data = new Data();
-var DEFAULT_START_TIME = "8:00 AM";
-var DEFAULT_END_TIME = "9:00 AM";
+var DEFAULT_START_TIME = "6:00 AM";
+var DEFAULT_END_TIME = "10:00 PM";
 var currentCalendarDate = moment(new Date()).format("YYYY-MM-DD");
 var newAppointmentPage = false;
 var disabledDates = [];
@@ -11,29 +11,29 @@ setTimeout(function () {
     var appointmentForm = $("#appointmentForm")[0];
     setTimeout(function () {
         function fetchResources(fetchData) {
-            wjQuery(".loading").show();
+            Xrm.Utility.showProgressIndicator("Processing Please wait...");
             // Get duraion from user
             var weekInfo = appointment.getCurrentWeekInfo(currentCalendarDate);
             var startDate = moment(weekInfo.firstDay).format('YYYY-MM-DD');
             var endDate = moment(weekInfo.lastDay).format('YYYY-MM-DD');
             var appointmentObjParam = {};
-            var eventDuration;
+            var eventDuration = 30;
             if (appointmentForm && appointmentForm.length) {
                 appointmentObjParam.CenterId = appointmentForm.location.value;
                 appointmentObjParam.Type = parseInt(appointmentForm.type.value);
-                eventDuration = appointment.getCalendarEventDuraion(data.getAppointmentHours(startDate, endDate, appointmentObjParam));
+                data.getAppointmentHours(startDate, endDate, appointmentObjParam);
             } else {
-                eventDuration = appointment.getCalendarEventDuraion(data.getAppointmentHours(startDate, endDate));
+                data.getAppointmentHours(startDate, endDate);
             }
             appointment.loadCalendar(currentCalendarDate, eventDuration);
 
             wjQuery('.nextBtn').off('click').on('click', function () {
-                wjQuery(".loading").show();
+                Xrm.Utility.showProgressIndicator("Processing Please wait...");
                 appointment.next();
             });
 
             wjQuery('.prevBtn').off('click').on('click', function () {
-                wjQuery(".loading").show();
+                Xrm.Utility.showProgressIndicator("Processing Please wait...");
                 appointment.prev();
             });
 
@@ -51,7 +51,7 @@ setTimeout(function () {
                 showOn: 'button',
                 // minDate: '0', 
                 onSelect: function (date) {
-                    wjQuery(".loading").show();
+                    Xrm.Utility.showProgressIndicator("Processing Please wait...");
                     appointment.dateFromCalendar(date);
                     wjQuery('#datepicker').hide();
                 },
@@ -112,22 +112,6 @@ function Appointment() {
         this.appointment.fullCalendar('removeEvents');
         this.appointment.fullCalendar('removeEventSource');
         this.appointment.fullCalendar('refetchEvents');
-    }
-
-    this.getCalendarEventDuraion = function (args) {
-        var self = this;
-        args = args == null ? [] : args;
-        // Deafault assign it to 60 Min.
-        var eventDuration = 60;
-        if (args.length) {
-            for (var i = 0; i < args.length; i++) {
-                eventDuration = args[i]['hub_duration'];
-                // var eventColorObj = self.getEventColor(args[i]['aworkhours_x002e_hub_type']);
-                // eventDuration = eventColorObj['slotMinutes'] == undefined ? 60 : eventColorObj['slotMinutes'];
-                break;
-            }
-        }
-        return eventDuration;
     }
 
     this.formatObjects = function (args, label) {
@@ -211,10 +195,10 @@ function Appointment() {
             wjQuery.each(args, function (index, appException) {
                 var startObj = new Date(appException['hub_date@OData.Community.Display.V1.FormattedValue'] + " " + appException['hub_start_time@OData.Community.Display.V1.FormattedValue']);
                 var endObj = new Date(appException['hub_date@OData.Community.Display.V1.FormattedValue'] + " " + appException['hub_end_time@OData.Community.Display.V1.FormattedValue']);
-                var eventId = appException['aa_x002e_hub_type'] + "_" + startObj;
+                var eventId = appException['aa_x002e_hub_type'] + "_" + startObj + "_" + appException['_hub_timingsid_value'];
                 var obj = {
                     eventId: eventId,
-                    appointmentHourId: appException['hub_timingsid'],
+                    appointmentHourId: appException['_hub_timingsid_value'],
                     id: appException['hub_appointment_slot_exceptionid'],
                     type: appException['aa_x002e_hub_type'],
                     typeName: appException['aa_x002e_hub_type@OData.Community.Display.V1.FormattedValue'],
@@ -244,8 +228,8 @@ function Appointment() {
             header: false,
             defaultView: 'agendaWeek',
             disableResizing: true,
-            minTime: 8,
-            maxTime: 20,
+            minTime: 6,
+            maxTime: 22,
             allDayText: '',
             allDaySlot: true,
             droppable: false,
@@ -500,9 +484,9 @@ function Appointment() {
                     }
                 }
             });
-            wjQuery(".loading").hide();
+            Xrm.Utility.closeProgressIndicator();
         } else {
-            wjQuery(".loading").hide();
+            Xrm.Utility.closeProgressIndicator();
         }
     }
 
@@ -555,7 +539,7 @@ function Appointment() {
                 self.appointment.fullCalendar('refetchEvents');
             });
         } else {
-            wjQuery(".loading").hide();
+            Xrm.Utility.closeProgressIndicator();
         }
     }
 
