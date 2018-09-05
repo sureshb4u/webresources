@@ -90,7 +90,7 @@ button {
   margin: 0 auto; }
 
 [class^=by] > article,.advertisingSection article,.royaltySection article {
-  position: relative;
+  position: static;
   display: block;
   overflow: hidden;
   border-top: 1px solid #ababab;
@@ -307,4 +307,5 @@ article#adNMarketing .header {
 input[type="text"]{
     height:34px;
 }
+.errorField{border:1px solid red !important;}
 /*# sourceMappingURL=lmr.css.map */
