@@ -520,7 +520,7 @@ function LmrUI() {
             var indexOfMinus = this.value.indexOf("-");
             
 
-            if ((e.keyCode === 189 || e.keyCode === 109) && (this.value.length >= 1)) {
+            if ((e.keyCode === 189 || e.keyCode === 109) && (this.value.length >= 1) || (this.id == "returnPayVal" && (e.keyCode === 189 || e.keyCode === 109))) {
                 allow = false;
                 e.preventDefault();
             }
@@ -542,7 +542,7 @@ function LmrUI() {
                 if (decimalVal.length == 2) {
                     wjQuery(e.target).val(parseFloat(convertedVal).toFixed(2));
                 }
-            } else if (this.value && !this.value.includes(".")) {
+            } else if (this.value && !this.value.includes(".") && this.value != "-") {
                 wjQuery(e.target).val(parseInt(this.value));
             }
         });
@@ -741,7 +741,7 @@ function LmrUI() {
             var val = wjQuery(this).val();
             var coreTotal =  wjQuery('#coreTotal');
             var coreRevenuetotal = self.lmrList[0].CoreTotal;
-            wjQuery(this).tooltip({
+            wjQuery(".returnPaymentContainer").tooltip({
                 tooltipClass: "custom-conflict",
                 track: false,
             });
@@ -751,17 +751,19 @@ function LmrUI() {
                     if (coreRevenuetotal && coreRevenuetotal > 0) {
                         coreTotal.text("$" + parseFloat(coreRevenuetotal).toFixed(2));
                     }
-                    wjQuery(this).removeAttr("title");
-                    wjQuery(this).removeAttr("data-original-title");
+                    wjQuery(".returnPaymentContainer").removeAttr("title");
+                    wjQuery(".returnPaymentContainer").removeAttr("data-original-title");
                     wjQuery(".lmr-submit").removeClass("disabledBtn");
                     wjQuery(this).removeClass("errorField");
                 } else {
                     coreTotal.text("$" + parseFloat(coreRevenuetotal).toFixed(2));
                     wjQuery(this).addClass("errorField");
                     wjQuery(".lmr-submit").addClass("disabledBtn");
-                    wjQuery(this).attr("title", "Return Patment cannot be greater than Core revenue Total");
-                    wjQuery(this).attr("data-original-title", "Return Patment cannot be greater than Core revenue Total");
+                    wjQuery(".returnPaymentContainer").attr("title", "Return Patment cannot be greater than Core revenue Total");
+                    wjQuery(".returnPaymentContainer").attr("data-original-title", "Return Patment cannot be greater than Core revenue Total");
                 }
+            } else {
+                coreTotal.text("$" + parseFloat(coreRevenuetotal).toFixed(2));
             }
         });
 
