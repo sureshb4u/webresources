@@ -73,7 +73,7 @@ function LmrUI() {
 
     this.callOnLoad = function () {
         var self = this;
-        wjQuery(".loading").show();
+        Xrm.Utility.showProgressIndicator("Processing Please wait...");
         var query = decodeURIComponent(window.location.search).replace("?Data=", "");
         var result = {};
         if (typeof query == "undefined" || query == null) {
@@ -94,7 +94,7 @@ function LmrUI() {
             onLoad(result.recordid, result.entityname, self.selectedMonth, self.selectedYear);
         } else {
             // self.promptUi("No changes to reconcile");
-            wjQuery(".loading").hide();
+            Xrm.Utility.closeProgressIndicator();
         }
     }
 
@@ -103,7 +103,7 @@ function LmrUI() {
         var self = this;
         if (dataTodisplay == undefined) {
             self.promptUi("No changes to reconcile");
-            wjQuery(".loading").hide();
+            Xrm.Utility.closeProgressIndicator();
         } else {
             this.lmrList = dataTodisplay;
             self.generateSkeleton();
@@ -134,6 +134,9 @@ function LmrUI() {
             wjQuery.each(self.lmrList, function (index, el) {
                 foreignExchange = el.TotalDue;
                 foreignWitholdings = el.TotalDue;
+                if (!el.hub_returnedpaymentfees) {
+                    el.hub_returnedpaymentfees = 0;
+                }
                 skeleton = '<aside class="heading">';
                 if (el.hasOwnProperty("CenterNumber")) {
                     skeleton += '<article class="row">' +
@@ -174,10 +177,13 @@ function LmrUI() {
                             '            <span>Royalty%</span>' +
                             '            <span>Total <img id="royaltySection" class="accord" src="/webresources/hub_/calendar/images/accord.png"/></span>' +
                             '        </article>' +
-                            '        <div class="royaltySection"><article>' +
-                            '            <span class="first-colm">Core Revenue summary</span>';
+                            '        <div class="royaltySection"><article style="height: 80px;">' +
+                            '            <span class="first-colm"> ' +
+                            '               <div style="padding: 5px;">Core Revenue aummary</div><div style="padding: 5px;padding-top:15px;">Return Payment Fees</div>'+
+                            '            </span>';
                 if (el.hasOwnProperty("CoreAmount")) {
-                    skeleton += '<span id="coreval">$' + parseFloat(el.CoreAmount).toFixed(2) + '</span>';
+                    skeleton += '<span id="coreval"><div style="padding:5px">$' + parseFloat(el.CoreAmount).toFixed(2) + '</div>' +
+                                '<div style="padding: 5px;padding-top:15px;" class="input-field returnPaymentContainer"><b>$</b><input type="text" class="form-control table-input" id="returnPayVal" name="returnPayment" value="' + el.hub_returnedpaymentfees + '" ></div></span>';
                 }
                 if (el.hasOwnProperty("CorePecent")) {
                     if (!el.CorePecent) {
@@ -342,7 +348,7 @@ function LmrUI() {
         }
         setTimeout(function () {
             self.attachAllEvent();
-            wjQuery(".loading").hide();
+            Xrm.Utility.closeProgressIndicator();
             wjQuery("#lmr").removeAttr('style');
         }, 500);
     }
@@ -447,18 +453,18 @@ function LmrUI() {
          wjQuery("#yearSelected").on("change", function () {
              self.selectedYear = wjQuery(this).val();
              if (self.selectedYear == new Date().getFullYear()) {
-                 wjQuery(".loading").show();
+                 Xrm.Utility.showProgressIndicator("Processing Please wait...");
                  var currentMonth = new Date().getMonth();
                  var pastMonths = self.months.splice(0, currentMonth + 1);
                  self.populateMonths(pastMonths);
-                 wjQuery(".loading").hide();
+                 Xrm.Utility.closeProgressIndicator();
              } else {
                  self.populateMonths();
              }
          })
         wjQuery(".getLmr").off();
         wjQuery(".getLmr").click(function (event) {
-            wjQuery(".loading").show();
+            Xrm.Utility.showProgressIndicator("Processing Please wait...");
             self.selectedYear = wjQuery("#yearSelected").val();
             self.selectedMonth = wjQuery("#monthSelected").val();
             setTimeout(function () {
@@ -471,7 +477,7 @@ function LmrUI() {
         wjQuery(".lmr-submit").off();
         wjQuery("body").off().on("click",".lmr-submit", function (event) {
             if (!wjQuery(".lmr-submit").hasClass("disabledBtn")) {
-                wjQuery(".loading").show();
+                Xrm.Utility.showProgressIndicator("Processing Please wait...");
                 self.centerId = wjQuery("#center-id").text();
                 self.selectedYear = wjQuery("#yearSelected").val();
                 self.selectedMonth = wjQuery("#monthSelected").val();
@@ -731,6 +737,34 @@ function LmrUI() {
             }
         });
 
+        wjQuery("#returnPayVal").on("input", function (e) {
+            var val = wjQuery(this).val();
+            var coreTotal =  wjQuery('#coreTotal');
+            var coreRevenuetotal = self.lmrList[0].CoreTotal;
+            wjQuery(this).tooltip({
+                tooltipClass: "custom-conflict",
+                track: false,
+            });
+            if (val) {
+                if (parseFloat(val) <= parseFloat(coreRevenuetotal)) {
+                    coreRevenuetotal = coreRevenuetotal - val;
+                    if (coreRevenuetotal && coreRevenuetotal > 0) {
+                        coreTotal.text("$" + parseFloat(coreRevenuetotal).toFixed(2));
+                    }
+                    wjQuery(this).removeAttr("title");
+                    wjQuery(this).removeAttr("data-original-title");
+                    wjQuery(".lmr-submit").removeClass("disabledBtn");
+                    wjQuery(this).removeClass("errorField");
+                } else {
+                    coreTotal.text("$" + parseFloat(coreRevenuetotal).toFixed(2));
+                    wjQuery(this).addClass("errorField");
+                    wjQuery(".lmr-submit").addClass("disabledBtn");
+                    wjQuery(this).attr("title", "Return Patment cannot be greater than Core revenue Total");
+                    wjQuery(this).attr("data-original-title", "Return Patment cannot be greater than Core revenue Total");
+                }
+            }
+        });
+
         wjQuery(".advtVal").on("input", function(e) {
             var val = wjQuery(this).val();
             var ltotal = 0;
@@ -915,6 +949,10 @@ function LmrUI() {
         }else{
             self.lmrList[0]['TotalAdvertisingPayment'] = wjQuery(adTotalSelector).text().replace("$", "");
         }
+        if (wjQuery("#returnPayVal").val()) {
+            self.lmrList[0]['CoreTotal'] = wjQuery("#coreTotal").text().replace("$", "");
+            self.lmrList[0].ReturnPaymentFees = wjQuery("#returnPayVal").val();
+        }
         var prevYear;
         var prevMonth;
         if (self.lmrList[0].onboardingDate) {
@@ -1007,7 +1045,7 @@ function LmrUI() {
             show: {
                 effect: 'slide',
                 complete: function () {
-                    wjQuery(".loading").hide();
+                    Xrm.Utility.closeProgressIndicator();
                 }
             },
             close: function (event, ui) {
@@ -1016,7 +1054,7 @@ function LmrUI() {
             },
             buttons: {
                 Yes: function () {
-                    wjQuery(".loading").show();
+                    Xrm.Utility.showProgressIndicator("Processing Please wait...");
                     setTimeout(function () {
                         self.submitLmr();
                     }, 300)
@@ -1044,7 +1082,7 @@ function LmrUI() {
             show: {
                 effect: 'slide',
                 complete: function () {
-                    wjQuery(".loading").hide();
+                    Xrm.Utility.closeProgressIndicator();
                 }
             },
             close: function (event, ui) {
@@ -1058,6 +1096,6 @@ function LmrUI() {
                 }
             }
         });
-        wjQuery(".loading").hide();
+        Xrm.Utility.closeProgressIndicator();
     }
 }
