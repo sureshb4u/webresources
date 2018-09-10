@@ -134,8 +134,8 @@ function LmrUI() {
             wjQuery.each(self.lmrList, function (index, el) {
                 foreignExchange = el.TotalDue;
                 foreignWitholdings = el.TotalDue;
-                if (!el.hub_returnedpaymentfees) {
-                    el.hub_returnedpaymentfees = 0;
+                if (!el.returnPaymentFees) {
+                    el.returnPaymentFees = 0;
                 }
                 skeleton = '<aside class="heading">';
                 if (el.hasOwnProperty("CenterNumber")) {
@@ -179,11 +179,11 @@ function LmrUI() {
                             '        </article>' +
                             '        <div class="royaltySection"><article style="height: 80px;">' +
                             '            <span class="first-colm"> ' +
-                            '               <div style="padding: 5px;">Core Revenue aummary</div><div style="padding: 5px;padding-top:15px;">Return Payment Fees</div>'+
+                            '               <div style="padding: 5px;">Core Revenue summary</div><div style="padding: 5px;padding-top:15px;">Return Payment Fees</div>'+
                             '            </span>';
                 if (el.hasOwnProperty("CoreAmount")) {
                     skeleton += '<span id="coreval"><div style="padding:5px">$' + parseFloat(el.CoreAmount).toFixed(2) + '</div>' +
-                                '<div style="padding: 5px;padding-top:15px;" class="input-field returnPaymentContainer"><b>$</b><input type="text" class="form-control table-input" id="returnPayVal" name="returnPayment" value="' + el.hub_returnedpaymentfees + '" ></div></span>';
+                                '<div style="padding: 5px;padding-top:15px;" class="input-field returnPaymentContainer"><b>$</b><input type="text" class="form-control table-input" id="returnPayVal" name="returnPayment" value="' + el.returnPaymentFees + '" ></div></span>';
                 }
                 if (el.hasOwnProperty("CorePecent")) {
                     if (!el.CorePecent) {
@@ -765,6 +765,7 @@ function LmrUI() {
             } else {
                 coreTotal.text("$" + parseFloat(coreRevenuetotal).toFixed(2));
             }
+            wjQuery("#creditval").trigger("input");
         });
 
         wjQuery(".advtVal").on("input", function(e) {
@@ -953,7 +954,7 @@ function LmrUI() {
         }
         if (wjQuery("#returnPayVal").val()) {
             self.lmrList[0]['CoreTotal'] = wjQuery("#coreTotal").text().replace("$", "");
-            self.lmrList[0].ReturnPaymentFees = wjQuery("#returnPayVal").val();
+            self.lmrList[0].returnPaymentFees = wjQuery("#returnPayVal").val();
         }
         var prevYear;
         var prevMonth;
