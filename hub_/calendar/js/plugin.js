@@ -80,7 +80,7 @@ setTimeout(function () {
                 }
                 
                 if (sylvanCalendar.calendar != undefined) {
-                    wjQuery(".loading").show();
+                    Xrm.Utility.showProgressIndicator("Processing please wait...")
                     sylvanCalendar.dateFromCalendar(date, locationId);
                     fetchResources(locationId, deliveryTypeList, true);
                 }
@@ -128,7 +128,7 @@ setTimeout(function () {
                                 wjQuery('.headerDate').removeClass('today');
                             }
                             if (sylvanCalendar.calendar != undefined) {
-                                wjQuery(".loading").show();
+                                Xrm.Utility.showProgressIndicator("Processing please wait...")
                                 sylvanCalendar.dateFromCalendar(date, locationId);
                                 fetchResources(locationId, deliveryTypeList, true);
                             }
@@ -183,7 +183,7 @@ setTimeout(function () {
         var groupPI = false;
 
         function fetchResources(locationId, selectedDeliveryType, fetchData) {
-            wjQuery(".loading").show();
+            Xrm.Utility.showProgressIndicator("Processing please wait...")
             var locationChanged = false;
             // asign deliverytpeList to  
             sylvanCalendar.selectedDeliveryType = selectedDeliveryType;
@@ -306,7 +306,7 @@ setTimeout(function () {
                         wjQuery('.headerDate').removeClass('today');
                     }
                     if (sylvanCalendar.calendar != undefined) {
-                        wjQuery(".loading").show();
+                        Xrm.Utility.showProgressIndicator("Processing please wait...")
                         sylvanCalendar.prev(locationId);
                         fetchResources(locationId, deliveryTypeList, true);
                     }
@@ -328,7 +328,7 @@ setTimeout(function () {
                         wjQuery('.headerDate').removeClass('today');
                     }
                     if (sylvanCalendar.calendar != undefined) {
-                        wjQuery(".loading").show();
+                        Xrm.Utility.showProgressIndicator("Processing please wait...")
                         sylvanCalendar.next(locationId);
                         fetchResources(locationId, deliveryTypeList, true);
                     }
@@ -383,7 +383,7 @@ setTimeout(function () {
                     sylvanCalendar.calendar.fullCalendar('destroy');
                     sylvanCalendar.calendar = undefined;
                 }
-                wjQuery(".loading").hide();
+                Xrm.Utility.closeProgressIndicator()
             }
         }
         wjQuery('#pi-btn input').attr('checked', 'checked');
@@ -565,7 +565,7 @@ function SylvanCalendar() {
                 wjQuery("#" + id).find('.filter-nav-icon').addClass('open');
 
                 wjQuery(".filterCheckBox").click(function () {
-                    wjQuery(".loading").show();
+                    Xrm.Utility.showProgressIndicator("Processing please wait...")
                     var searchVal = wjQuery(this).val();
                     if (searchVal.search("_time") != -1) {
                         searchVal = searchVal.split("_")[0];
@@ -573,7 +573,7 @@ function SylvanCalendar() {
                         var n = d.getHours();
                         var scrollNum = ((n - 6) * wjQuery(".fc-slot1").height() * 4) - 2;
                         wjQuery("#scrollarea").animate({ scrollTop: scrollNum }, 500, function () {
-                            wjQuery(".loading").hide();
+                            Xrm.Utility.closeProgressIndicator()
                         });
                     } else {
                         if (wjQuery(this).is(':checked')) {
@@ -1437,7 +1437,7 @@ function SylvanCalendar() {
                     }
                 }
             }else{
-                wjQuery(".loading").hide();
+                Xrm.Utility.closeProgressIndicator()
             }
         }
         else if (wjQuery(elm).attr("type") == 'teacher') {
@@ -1673,7 +1673,7 @@ function SylvanCalendar() {
                     }
                 }
             }
-            wjQuery(".loading").hide();
+            Xrm.Utility.closeProgressIndicator()
         }
         else if (wjQuery(elm).attr("type") == 'teacherSession') {
             var teacherId = wjQuery(elm).attr("value");
@@ -1785,12 +1785,12 @@ function SylvanCalendar() {
                     t.prompt(msg);
                 }
             }else{
-                wjQuery(".loading").hide();
+                Xrm.Utility.closeProgressIndicator()
             }
         }else{
-            wjQuery(".loading").hide();
+            Xrm.Utility.closeProgressIndicator()
         }
-        wjQuery(".loading").hide();
+        Xrm.Utility.closeProgressIndicator()
     };
 
     /*
@@ -1850,7 +1850,7 @@ function SylvanCalendar() {
                 t.populateTAPane(t.taList);
             }
         }
-        wjQuery(".loading").hide();
+        Xrm.Utility.closeProgressIndicator()
     }
 
     /*
@@ -2120,7 +2120,7 @@ function SylvanCalendar() {
                 self.prompt(responseObj);
             }
         }
-        wjQuery(".loading").hide();
+        Xrm.Utility.closeProgressIndicator()
     }
 
     /*
@@ -2234,7 +2234,7 @@ function SylvanCalendar() {
                 self.prompt(responseObj);
             }
         }
-        wjQuery(".loading").hide();
+        Xrm.Utility.closeProgressIndicator()
         this.openSofPane();
         this.showConflictMsg();
         this.draggable('draggable');
@@ -2485,7 +2485,7 @@ function SylvanCalendar() {
             },
             drop: function (date, allDay, ev, ui, resource) {
                 clearTimeout(timeout);
-                wjQuery(".loading").show();
+                Xrm.Utility.showProgressIndicator("Processing please wait...")
                 timeout = setTimeout(function () {
                     t.createEventOnDrop(t, date, allDay, ev, ui, resource, ui.helper.context);
                 }, 100);
@@ -2792,7 +2792,11 @@ function SylvanCalendar() {
         setTimeout(function () {
             //table Fixed column code End
             var currentCalendarDate = self.calendar.fullCalendar('getDate');
-            instructionalHours = data.getInstructionalHours((moment(currentCalendarDate).day()), moment(currentCalendarDate).format("YYYY-MM-DD"), locationId);
+            var iDay = (moment(currentCalendarDate).day();
+            if(iDay == 0){
+                iDay = 7;
+            }
+            instructionalHours = data.getInstructionalHours(iDay, moment(currentCalendarDate).format("YYYY-MM-DD"), locationId);
             var currentView = self.calendar.fullCalendar('getView');
             var studentDataSource = self.findDataSource(currentCalendarDate, currentView);
             var locationObj = self.getLocationObject(self.locationId);
@@ -2929,7 +2933,7 @@ function SylvanCalendar() {
                     // self.buildCalfirstCol();
                 }
                 else {
-                    wjQuery('.loading').hide();
+                    Xrm.Utility.closeProgressIndicator()
                     wjQuery('table.fc-agenda-slots td div').css('backgroundColor', '#ddd');
                     wjQuery(".sof-btn").removeClass('overflow-info');
                     wjQuery(".sof-btn").removeAttr('title');
@@ -3017,7 +3021,7 @@ function SylvanCalendar() {
     this.weekView = function () {
         var self = this;
         var filterElement = undefined;
-        wjQuery('.loading').show();
+        Xrm.Utility.showProgressIndicator("Processing please wait...")
         if (self.calendar != undefined) {
             wjQuery('thead .fc-agenda-axis.fc-widget-header.fc-first').css('text-align', 'center');
             if (this.calendar.fullCalendar('getView').name != 'agendaWeek') {
@@ -3045,7 +3049,7 @@ function SylvanCalendar() {
             //this.buildCalfirstCol();
         }
         else {
-            wjQuery('.loading').hide();
+            Xrm.Utility.closeProgressIndicator()
         }
     }
 
@@ -3060,7 +3064,7 @@ function SylvanCalendar() {
         var filterElement = undefined;
         var self = this;
         self.eventList = [];
-        wjQuery('.loading').show();
+        Xrm.Utility.showProgressIndicator("Processing please wait...")
         if (self.calendar != undefined) {
             self.calendar.fullCalendar('removeEvents');
             if (self.calendar.fullCalendar('getView').name != 'resourceDay') {
@@ -3147,7 +3151,7 @@ function SylvanCalendar() {
             this.refreshCalendarEvent(this.locationId, true);
         }
         else {
-            wjQuery('.loading').hide();
+            Xrm.Utility.closeProgressIndicator()
         }
     }
 
@@ -4302,7 +4306,7 @@ function SylvanCalendar() {
      */
     this.populateTeacherEvent = function (teacherObject, isFromFilter) {
         var self = this;
-        wjQuery(".loading").show();
+        Xrm.Utility.showProgressIndicator("Processing please wait...")
         if (teacherObject.length) {
             wjQuery.each(teacherObject, function (key, value) {
                 if (value['centerId'] == self.locationId) {
@@ -4580,7 +4584,7 @@ function SylvanCalendar() {
                 }
             });
         }
-        wjQuery(".loading").hide();
+        Xrm.Utility.closeProgressIndicator()
         this.showConflictMsg();
     }
 
@@ -5078,7 +5082,7 @@ function SylvanCalendar() {
     ///
     this.populateStudentEvent = function (studentList, isFromFilter, checkFor1to1) {
         var self = this;
-        wjQuery(".loading").show();
+        Xrm.Utility.showProgressIndicator("Processing please wait...")
         checkFor1to1 = checkFor1to1 != undefined;
         if (studentList.length) {
             wjQuery.each(studentList, function (key, value) {
@@ -5280,7 +5284,7 @@ function SylvanCalendar() {
                 }
             });
         }
-        wjQuery(".loading").hide();
+        Xrm.Utility.closeProgressIndicator()
         // Open Sof pane condition writen in below function 
         this.openSofPane();
         this.showConflictMsg();
@@ -5392,7 +5396,7 @@ function SylvanCalendar() {
      */
     this.pinStudent = function (element) {
         var self = this;
-        wjQuery('.loading').show();
+        Xrm.Utility.showProgressIndicator("Processing please wait...")
         var id = wjQuery(element).attr('value');
         var uniqueId = wjQuery(element).attr('uniqueId');
         var eventId = wjQuery(element).attr('eventid');
@@ -5406,7 +5410,7 @@ function SylvanCalendar() {
         });
         var objPinnedStudent = {};
         if (student.length) {
-            wjQuery('.loading').show();
+            Xrm.Utility.showProgressIndicator("Processing please wait...")
             objPinnedStudent['hub_center@odata.bind'] = student[0].locationId;
             objPinnedStudent['hub_enrollment@odata.bind'] = student[0].enrollmentId;
             objPinnedStudent['hub_service@odata.bind'] = student[0].serviceId;
@@ -5499,7 +5503,7 @@ function SylvanCalendar() {
                 self.updateEventTitle(eventObj, element);
             }
         }
-        wjQuery('.loading').hide();
+        Xrm.Utility.closeProgressIndicator()
     };
 
     this.unPinStudent = function (element) {
@@ -5551,7 +5555,7 @@ function SylvanCalendar() {
             wjQuery(element).find("img").remove();
             self.updateEventTitle(eventObj, element);
         }
-        wjQuery('.loading').hide();
+        Xrm.Utility.closeProgressIndicator()
     };
 
     this.pinTeacher = function (element) {
@@ -5622,10 +5626,10 @@ function SylvanCalendar() {
                 }
                 self.convertedPinnedList.push(teacherPinRec);
             } else {
-                wjQuery('.loading').hide();
+                Xrm.Utility.closeProgressIndicator()
             }
         }
-        wjQuery('.loading').hide();
+        Xrm.Utility.closeProgressIndicator()
     }
 
     this.unPinTeacher = function (element) {
@@ -5677,12 +5681,12 @@ function SylvanCalendar() {
                         self.convertedPinnedList.splice(index, 1);
                     }
                 }
-                wjQuery('.loading').hide();
+                Xrm.Utility.closeProgressIndicator()
             } else {
-                wjQuery('.loading').hide();
+                Xrm.Utility.closeProgressIndicator()
             }
         }
-        wjQuery('.loading').hide();
+        Xrm.Utility.closeProgressIndicator()
     };
 
     this.omitStudentFromSession = function (element,status) {
@@ -5778,7 +5782,7 @@ function SylvanCalendar() {
             this.showConflictMsg();
         }
         this.draggable('draggable');
-        wjQuery('.loading').hide();
+        Xrm.Utility.closeProgressIndicator()
     };
 
     this.excuseStudentFromSession = function (element) {
@@ -5872,7 +5876,7 @@ function SylvanCalendar() {
         self.openSofPane();
         self.showConflictMsg();
         self.draggable('draggable');
-        wjQuery('.loading').hide();
+        Xrm.Utility.closeProgressIndicator()
     };
 
     this.excuseAndMakeUpStudent = function (element) {
@@ -5964,7 +5968,7 @@ function SylvanCalendar() {
             wjQuery(".excuseSave").removeClass('reschedule').addClass('makeup');
             wjQuery("#excuseModal").dialog('option', 'title', 'Add MakeUp');
             wjQuery(".makeup").off('click').on('click', function () {
-                wjQuery('.loading').show();
+                Xrm.Utility.showProgressIndicator("Processing please wait...")
                 var flag = true;
                 if (selectedFromDate != '') {
                     objSession.hub_makeup_date = moment(moment(selectedFromDate).format('MM/DD/YYYY')).format('YYYY-MM-DD');
@@ -6038,13 +6042,13 @@ function SylvanCalendar() {
                         wjQuery('#error_block').css('color', 'red');
                     }
                 }
-                wjQuery('.loading').hide();
+                Xrm.Utility.closeProgressIndicator()
             });
         }
         self.openSofPane();
         self.showConflictMsg();
         self.draggable('draggable');
-        wjQuery('.loading').hide();
+        Xrm.Utility.closeProgressIndicator()
     };
 
     this.disableSpecificDates = function (date) {
@@ -6205,7 +6209,7 @@ function SylvanCalendar() {
             wjQuery(".excuseSave").removeClass('makeup').addClass('reschedule');
             wjQuery("#excuseModal").dialog('option', 'title', 'Re-Schedule');
             wjQuery(".reschedule").off('click').on('click', function () {
-                wjQuery('.loading').show();
+                Xrm.Utility.showProgressIndicator("Processing please wait...")
                 var flag = true;
                 if (selectedFromDate != '') {
                     objNewSession.hub_session_date = moment(moment(selectedFromDate).format('MM/DD/YYYY')).format('YYYY-MM-DD');
@@ -6314,13 +6318,13 @@ function SylvanCalendar() {
                         wjQuery('#error_block').css('color', 'red');
                     }
                 }
-                wjQuery('.loading').hide();
+                Xrm.Utility.closeProgressIndicator()
             });
         }
         self.openSofPane();
         self.showConflictMsg();
         self.draggable('draggable');
-        wjQuery('.loading').hide();
+        Xrm.Utility.closeProgressIndicator()
     };
 
     //
@@ -6341,7 +6345,7 @@ function SylvanCalendar() {
                 };
                 obj.unpin.visible = true;
                 obj.unpin.callback = function (key, options) {
-                    wjQuery(".loading").show();
+                    Xrm.Utility.showProgressIndicator("Processing please wait...")
                     options = wjQuery.extend(true, {}, options);
                     setTimeout(function () {
                         if (obj.unpin.visible) {
@@ -6357,7 +6361,7 @@ function SylvanCalendar() {
                 };
                 obj.pin.visible = true;
                 obj.pin.callback = function (key, options) {
-                    wjQuery(".loading").show();
+                    Xrm.Utility.showProgressIndicator("Processing please wait...")
                     options = wjQuery.extend(true, {}, options);
                     setTimeout(function () {
                         if (obj.pin.visible) {
@@ -6383,7 +6387,7 @@ function SylvanCalendar() {
                         name: "Omit",
                         disabled: self.checkAccountClosure(),
                         callback: function (key, options) {
-                            wjQuery(".loading").show();
+                            Xrm.Utility.showProgressIndicator("Processing please wait...")
                             options = wjQuery.extend(true, {}, options);
                             setTimeout(function () {
                                 var studUniqueId = wjQuery(options.$trigger[0]).attr("studUniqueId");
@@ -6405,7 +6409,7 @@ function SylvanCalendar() {
                     disabled: self.checkAccountClosure(),
                     // disabled:MAKEUP_TYPE == sessionType,
                     callback: function (key, options) {
-                        wjQuery(".loading").show();
+                        Xrm.Utility.showProgressIndicator("Processing please wait...")
                         options = wjQuery.extend(true, {}, options);
                         setTimeout(function () {
                             self.excuseStudentFromSession(options.$trigger[0]);
@@ -6416,7 +6420,7 @@ function SylvanCalendar() {
                     name: "Move to SOF",
                     disabled: self.checkAccountClosure(),
                     callback: function (key, options) {
-                        wjQuery(".loading").show();
+                        Xrm.Utility.showProgressIndicator("Processing please wait...")
                         options = wjQuery.extend(true, {}, options);
                         setTimeout(function () {
                             self.moveStudentToSOF(options.$trigger[0]);
@@ -6439,7 +6443,7 @@ function SylvanCalendar() {
                     name: "Reschedule",
                     disabled: self.checkAccountClosure(),
                     callback: function (key, options) {
-                        wjQuery(".loading").show();
+                        Xrm.Utility.showProgressIndicator("Processing please wait...")
                         options = wjQuery.extend(true, {}, options);
                         setTimeout(function () {
                             self.rescheduleStudentSession(options.$trigger[0]);
@@ -6450,7 +6454,7 @@ function SylvanCalendar() {
                     name: "Omit",
                     disabled: self.checkAccountClosure(),
                     callback: function (key, options) {
-                        wjQuery(".loading").show();
+                        Xrm.Utility.showProgressIndicator("Processing please wait...")
                         options = wjQuery.extend(true, {}, options);
                         setTimeout(function () {
                             var studUniqueId = wjQuery(options.$trigger[0]).attr("studUniqueId");
@@ -6469,7 +6473,7 @@ function SylvanCalendar() {
                     name: "Move to SOF",
                     disabled: self.checkAccountClosure(),
                     callback: function (key, options) {
-                        wjQuery(".loading").show();
+                        Xrm.Utility.showProgressIndicator("Processing please wait...")
                         options = wjQuery.extend(true, {}, options);
                         setTimeout(function () {
                             self.moveStudentToSOF(options.$trigger[0]);
@@ -6491,7 +6495,7 @@ function SylvanCalendar() {
                     name: "Omit",
                     disabled: self.checkAccountClosure(),
                     callback: function (key, options) {
-                        wjQuery(".loading").show();
+                        Xrm.Utility.showProgressIndicator("Processing please wait...")
                         options = wjQuery.extend(true, {}, options);
                         setTimeout(function () {
                             var studUniqueId = wjQuery(options.$trigger[0]).attr("studUniqueId");
@@ -6524,7 +6528,7 @@ function SylvanCalendar() {
                         disabled: setVisibility,
                         visible: !isAttended,
                         callback: function (key, options) {
-                            wjQuery(".loading").show();
+                            Xrm.Utility.showProgressIndicator("Processing please wait...")
                             options = wjQuery.extend(true, {}, options);
                             setTimeout(function () {
                                 if (obj.attended.visible) {
@@ -6539,7 +6543,7 @@ function SylvanCalendar() {
                         disabled: setVisibility,
                         visible: sessionStatus != UNEXCUSED_STATUS,
                         callback: function (key, options) {
-                            wjQuery(".loading").show();
+                            Xrm.Utility.showProgressIndicator("Processing please wait...")
                             options = wjQuery.extend(true, {}, options);
                             setTimeout(function () {
                                 self.omitStudentFromSession(options.$trigger[0],UNEXCUSED_STATUS);
@@ -6554,7 +6558,7 @@ function SylvanCalendar() {
                     "name": "Pin",
                     "visible": true,
                     callback: function (key, options) {
-                        wjQuery(".loading").show();
+                        Xrm.Utility.showProgressIndicator("Processing please wait...")
                         options = wjQuery.extend(true, {}, options);
                         setTimeout(function () {
                             if (obj.pin.visible) {
@@ -6569,7 +6573,7 @@ function SylvanCalendar() {
                     "name": "Unpin",
                     "visible": false,
                     callback: function (key, options) {
-                        wjQuery(".loading").show();
+                        Xrm.Utility.showProgressIndicator("Processing please wait...")
                         options = wjQuery.extend(true, {}, options);
                         setTimeout(function () {
                             if (obj.unpin.visible) {
@@ -6592,7 +6596,7 @@ function SylvanCalendar() {
             obj.moveToSof = {
                 name: "Remove",
                 callback: function (key, options) {
-                    wjQuery(".loading").show();
+                    Xrm.Utility.showProgressIndicator("Processing please wait...")
                     options = wjQuery.extend(true, {}, options);
                     setTimeout(function () {
                         self.removeTeacher(options.$trigger[0]);
@@ -6615,7 +6619,7 @@ function SylvanCalendar() {
                         name: "Makeup",
                         disabled: self.checkAccountClosure(),
                         callback: function (key, options) {
-                            wjQuery(".loading").show();
+                            Xrm.Utility.showProgressIndicator("Processing please wait...")
                             options = wjQuery.extend(true, {}, options);
                             setTimeout(function () {
                                 currentView = self.calendar.fullCalendar('getView');
@@ -6650,7 +6654,7 @@ function SylvanCalendar() {
                         name: "Float",
                         disabled: self.checkAccountClosure(),
                         callback: function (key, options) {
-                            wjQuery(".loading").show();
+                            Xrm.Utility.showProgressIndicator("Processing please wait...")
                             options = wjQuery.extend(true, {}, options);
                             setTimeout(function () {
                                 currentView = self.calendar.fullCalendar('getView');
@@ -6695,7 +6699,7 @@ function SylvanCalendar() {
                         name: "Float",
                         disabled: self.checkAccountClosure(),
                         callback: function (key, options) {
-                            wjQuery(".loading").show();
+                            Xrm.Utility.showProgressIndicator("Processing please wait...")
                             options = wjQuery.extend(true, {}, options);
                             setTimeout(function () {
                                 currentView = self.calendar.fullCalendar('getView');
@@ -6726,7 +6730,7 @@ function SylvanCalendar() {
                 name: "Float",
                 disabled: self.checkAccountClosure(),
                 callback: function (key, options) {
-                    wjQuery(".loading").show();
+                    Xrm.Utility.showProgressIndicator("Processing please wait...")
                     currentView = self.calendar.fullCalendar('getView');
                     var startDate = moment(currentView.start).format("YYYY-MM-DD");
                     var locationObj = self.getLocationObject(self.locationId);
@@ -6762,7 +6766,7 @@ function SylvanCalendar() {
             show: {
                 effect: 'slide',
                 complete: function () {
-                    wjQuery(".loading").hide();
+                    Xrm.Utility.closeProgressIndicator()
                 }
             },
             buttons: {
@@ -6878,7 +6882,7 @@ function SylvanCalendar() {
         self.openSofPane();
         self.showConflictMsg();
         self.draggable('draggable');
-        wjQuery('.loading').hide();
+        Xrm.Utility.closeProgressIndicator()
     };
 
     //
@@ -7188,7 +7192,7 @@ function SylvanCalendar() {
             show: {
                 effect: 'slide',
                 complete: function() {
-                    wjQuery(".loading").hide();
+                    Xrm.Utility.closeProgressIndicator()
                 }
             },
             buttons: {
@@ -7215,7 +7219,7 @@ function SylvanCalendar() {
             show: {
                 effect: 'slide',
                 complete: function() {
-                    wjQuery(".loading").hide();
+                    Xrm.Utility.closeProgressIndicator()
                 }
             },
             buttons: {
@@ -7242,7 +7246,7 @@ function SylvanCalendar() {
             show: {
                 effect: 'slide',
                 complete: function() {
-                    wjQuery(".loading").hide();
+                    Xrm.Utility.closeProgressIndicator()
                 }
             },
             buttons: {
@@ -7269,7 +7273,7 @@ function SylvanCalendar() {
             show: {
                 effect: 'slide',
                 complete: function() {
-                    wjQuery(".loading").hide();
+                    Xrm.Utility.closeProgressIndicator()
                 }
             },
             buttons: {
@@ -7296,7 +7300,7 @@ function SylvanCalendar() {
             show: {
                 effect: 'slide',
                 complete: function () {
-                    wjQuery(".loading").hide();
+                    Xrm.Utility.closeProgressIndicator()
                 }
             },
             buttons: {
@@ -7394,7 +7398,7 @@ function SylvanCalendar() {
                     show: {
                         effect: 'slide',
                         complete: function () {
-                            wjQuery(".loading").hide();
+                            Xrm.Utility.closeProgressIndicator()
                         }
                     },
                     buttons: {
@@ -7424,7 +7428,7 @@ function SylvanCalendar() {
                     show: {
                         effect: 'slide',
                         complete: function () {
-                            wjQuery(".loading").hide();
+                            Xrm.Utility.closeProgressIndicator()
                         }
                     },
                     buttons: {
@@ -7441,7 +7445,7 @@ function SylvanCalendar() {
             }
         } else {
             wjQuery("#makeup").dialog("close");
-            wjQuery(".loading").hide();
+            Xrm.Utility.closeProgressIndicator()
         }
     }
 
@@ -7657,7 +7661,7 @@ function SylvanCalendar() {
             show: {
                 effect: 'slide',
                 complete: function () {
-                    wjQuery(".loading").hide();
+                    Xrm.Utility.closeProgressIndicator()
                 }
             },
             buttons: {
@@ -7998,7 +8002,7 @@ function SylvanCalendar() {
         self.openSofPane();
         self.showConflictMsg();
         self.draggable('draggable');
-        wjQuery(".loading").hide();
+        Xrm.Utility.closeProgressIndicator()
     }
 
     this.generateWeekEventObject = function (arrayList, label) {
@@ -9018,10 +9022,10 @@ function SylvanCalendar() {
             self.calendar.fullCalendar('addEventSource', { events: self.eventList });
             self.calendar.fullCalendar('refetchEvents');
             wjQuery('.fc-view-agendaWeek .fc-event-time').css('visibility', 'hidden');
-            wjQuery('.loading').hide();
+            Xrm.Utility.closeProgressIndicator()
         }
         else {
-            wjQuery('.loading').hide();
+            Xrm.Utility.closeProgressIndicator()
         }
     }
 
@@ -9731,7 +9735,7 @@ function SylvanCalendar() {
                     show: {
                         effect: 'slide',
                         complete: function () {
-                            wjQuery(".loading").hide();
+                            Xrm.Utility.closeProgressIndicator()
                         }
                     },
                     buttons: {
@@ -9756,7 +9760,7 @@ function SylvanCalendar() {
                     show: {
                         effect: 'slide',
                         complete: function () {
-                            wjQuery(".loading").hide();
+                            Xrm.Utility.closeProgressIndicator()
                         }
                     },
                     buttons: {
@@ -9769,16 +9773,16 @@ function SylvanCalendar() {
             }
         }else{
             wjQuery("#makeup").dialog("close");
-            wjQuery(".loading").hide();
+            Xrm.Utility.closeProgressIndicator()
         }
-        wjQuery(".loading").hide();
+        Xrm.Utility.closeProgressIndicator()
     }
 
 
     this.floatClickEvent = function(floatTeacherObj, idArry){
         var self = this;
         wjQuery(".float-item").click(function (event) {
-            wjQuery(".loading").show();
+            Xrm.Utility.showProgressIndicator("Processing please wait...")
             var teacherId = wjQuery(this).attr("id");
             setTimeout(function () {
                 // var teacherObj = floatTeacherObj.filter(function (obj) {
@@ -9795,7 +9799,7 @@ function SylvanCalendar() {
                 var allowToDropTeacher = self.validateTeacherOnSameRow(teacherId, idArry[2], teacherObj[0], false);
                 if (allowToDropTeacher) {
                     if (self.checkTeacherScheduleInDiffCenter(teacherId, idArry[2])) {
-                        wjQuery(".loading").hide();
+                        Xrm.Utility.closeProgressIndicator()
                         wjQuery("#makeup").dialog("close");
                         self.prompt("The selected staff is already scheduled for the respective timeslot in different center.");
                     } else {
@@ -9837,15 +9841,15 @@ function SylvanCalendar() {
                             } else {
                                 wjQuery("#makeup").dialog("close");
                             }
-                            wjQuery(".loading").hide();
+                            Xrm.Utility.closeProgressIndicator()
                         } else {
-                            wjQuery(".loading").hide();
+                            Xrm.Utility.closeProgressIndicator()
                             self.floatTeacherCnfmPopup(teacherObj, idArry, "Teacher is not available. Do you wish to continue?");
                             wjQuery("#makeup").dialog("close");
                         }
                     }
                 } else {
-                    wjQuery(".loading").hide();
+                    Xrm.Utility.closeProgressIndicator()
                     wjQuery("#makeup").dialog("close");
                     self.prompt("The selected staff is already scheduled for the respective timeslot.");
                 }
@@ -9912,7 +9916,7 @@ function SylvanCalendar() {
         } else {
             wjQuery("#makeup").dialog("close");
         }
-        wjQuery(".loading").hide();
+        Xrm.Utility.closeProgressIndicator()
     }
 
     this.updateEventTitle = function (eventObj, element) {
