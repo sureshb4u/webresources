@@ -2792,7 +2792,7 @@ function SylvanCalendar() {
         setTimeout(function () {
             //table Fixed column code End
             var currentCalendarDate = self.calendar.fullCalendar('getDate');
-            var iDay = (moment(currentCalendarDate).day();
+            var iDay = moment(currentCalendarDate).day();
             if(iDay == 0){
                 iDay = 7;
             }
@@ -4189,15 +4189,25 @@ function SylvanCalendar() {
         }
         else if (label == "teacherAvailability") {
             var currentCalendarDate = this.calendar.fullCalendar('getDate');
-            var currentView = new Date(currentCalendarDate).setHours(0);
-            currentView = new Date(new Date(currentCalendarDate).setMinutes(0));
-            currentView = new Date(new Date(currentCalendarDate).setSeconds(0));
+            var currentView = new Date(new Date(currentCalendarDate).setHours(0,0,0,0));
             args.sort(function (a, b) { return a.hub_starttime - b.hub_starttime });
             var staffAvailability = args;
+            staffAvailability = staffAvailability.filter(function(staff, staffkey){
+                if (currentView >= new Date(staff["hub_effectivestartdate@OData.Community.Display.V1.FormattedValue"]) &&
+                   ((staff["hub_effectiveenddate@OData.Community.Display.V1.FormattedValue"]
+                    && currentView <= new Date(staff["hub_effectiveenddate@OData.Community.Display.V1.FormattedValue"])) || !staff["hub_effectiveenddate"])) {
+                    return staff;
+                } else {
+                    args.splice(staffkey, 1);
+                }
+            });
             args.forEach(function (staffAvailable,staffIndex) {
                 var filteredStaff = staffAvailability.filter(function (staff, staffKey) {
                     if (currentCalendarDate.getDay() == staff["hub_days"] && staffAvailable["astaff_timings_x002e_hub_staffid"] == staff["astaff_timings_x002e_hub_staffid"] &&
-                        staffAvailable["hub_days"] == staff["hub_days"]) {
+                        staffAvailable["hub_days"] == staff["hub_days"] && currentView >= new Date(staffAvailable["hub_effectivestartdate@OData.Community.Display.V1.FormattedValue"])
+                        && ((staffAvailable["hub_effectiveenddate"]
+                        && currentView <= new Date(staffAvailable["hub_effectiveenddate@OData.Community.Display.V1.FormattedValue"])))
+                        || !staffAvailable["hub_effectiveenddate"]) {
                          return staff;
                     };
                 });
@@ -4257,12 +4267,13 @@ function SylvanCalendar() {
                     }
                 }
                 if (index == -1) {
-                    if (args[i]['hub_days'] == currentCalendarDate.getDay()) {
+                    if (args[i]['hub_days'] == currentCalendarDate.getDay())
+                    {
                         var obj = {
                             name: args[i]['astaff_timings_x002e_hub_staffid@OData.Community.Display.V1.FormattedValue'],
                             id: args[i]['astaff_timings_x002e_hub_staffid'],
-                            startDate: args[i]['astaff_timings_x002e_hub_startdate@OData.Community.Display.V1.FormattedValue'],
-                            endDate: args[i]['astaff_timings_x002e_hub_enddate@OData.Community.Display.V1.FormattedValue'],
+                            startDate: args[i]['hub_effectivestartdate@OData.Community.Display.V1.FormattedValue'],
+                            endDate: args[i]['hub_effectiveenddate@OData.Community.Display.V1.FormattedValue'],
                             locationId: args[i]['astaff_x002e_hub_center'],
                             subjects: self.getTeacherSubjects(args[i]),
                             startTime: args[i]['hub_starttime@OData.Community.Display.V1.FormattedValue'],
@@ -4273,7 +4284,7 @@ function SylvanCalendar() {
                             return a.exceptionStartHour - b.exceptionStartHour;
                         });
                         if (!obj.endTime) {
-                            obj.endTime = moment(obj.startTime, 'h:mm A').hours(20).format("h:mm A");
+                            obj.endTime = moment(obj.startTime, 'h:mm A').hours(22).format("h:mm A");
                             obj.endTime = moment(obj.endTime, 'h:mm A').minutes(00).format("h:mm A");
                             obj.endTime = moment(obj.endTime, 'h:mm A').seconds(00).format("h:mm A");
                         }
@@ -4284,7 +4295,7 @@ function SylvanCalendar() {
                             });
                         } else {
                             if (!obj.endDate) {
-                                obj.endDate = new Date();
+                                obj.endDate = new Date(currentView);
                                 obj.endDate = moment(obj.endDate).format("MM/DD/YYYY");
                             }
                             obj.startHour = new Date(moment(obj.startDate, "MM/DD/YYYY").format("MM/DD/YYYY") + " " + obj.startTime).getHours();
@@ -8107,12 +8118,12 @@ function SylvanCalendar() {
                         subjects: this.getTeacherSubjects(arrayList[i]),
                         isTeacher: true
                     };
-                    obj.startDate = new Date(arrayList[i]['astaff_timings_x002e_hub_startdate@OData.Community.Display.V1.FormattedValue']);
+                    obj.startDate = new Date(arrayList[i]['hub_effectivestartdate@OData.Community.Display.V1.FormattedValue']);
                     obj.startDate = new Date(obj.startDate).setHours(0);
                     obj.startDate = new Date(new Date(obj.startDate).setMinutes(0));
                     obj.startDate = new Date(new Date(obj.startDate).setSeconds(0));
-                    if (arrayList[i]['astaff_timings_x002e_hub_enddate@OData.Community.Display.V1.FormattedValue'] != undefined) {
-                        obj.endDate = new Date(arrayList[i]['astaff_timings_x002e_hub_enddate@OData.Community.Display.V1.FormattedValue']);
+                    if (arrayList[i]['hub_effectiveenddate@OData.Community.Display.V1.FormattedValue'] != undefined) {
+                        obj.endDate = new Date(arrayList[i]['hub_effectiveenddate@OData.Community.Display.V1.FormattedValue']);
                         obj.endDate = new Date(obj.endDate).setHours(0);
                         obj.endDate = new Date(new Date(obj.endDate).setMinutes(0));
                         obj.endDate = new Date(new Date(obj.endDate).setSeconds(0));
