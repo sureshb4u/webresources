@@ -4203,13 +4203,12 @@ function SylvanCalendar() {
             });
             args.forEach(function (staffAvailable,staffIndex) {
                 var filteredStaff = staffAvailability.filter(function (staff, staffKey) {
-                    if (currentCalendarDate.getDay() == staff["hub_days"] && staffAvailable["astaff_timings_x002e_hub_staffid"] == staff["astaff_timings_x002e_hub_staffid"] &&
-                        staffAvailable["hub_days"] == staff["hub_days"] && currentView >= new Date(staffAvailable["hub_effectivestartdate@OData.Community.Display.V1.FormattedValue"])
-                        && ((staffAvailable["hub_effectiveenddate"]
-                        && currentView <= new Date(staffAvailable["hub_effectiveenddate@OData.Community.Display.V1.FormattedValue"])))
-                        || !staffAvailable["hub_effectiveenddate"]) {
-                         return staff;
-                    };
+                    if (self.getDayValue(currentCalendarDate) == staff["hub_days"] && staffAvailable["astaff_timings_x002e_hub_staffid"] == staff["astaff_timings_x002e_hub_staffid"]) {
+                        if(staffAvailable["hub_days"] == staff["hub_days"] && currentView >= new Date(staffAvailable["hub_effectivestartdate@OData.Community.Display.V1.FormattedValue"]) &&
+                        ((staffAvailable["hub_effectiveenddate"] && currentView <= new Date(staffAvailable["hub_effectiveenddate@OData.Community.Display.V1.FormattedValue"])) || !staffAvailable["hub_effectiveenddate"])) {
+                            return staff;
+                        }
+                    }        
                 });
                 filteredStaff.sort(function (a, b) { return a.hub_starttime - b.hub_starttime });
                 filteredStaff.forEach(function (teacherTiming, key) {
@@ -4267,7 +4266,7 @@ function SylvanCalendar() {
                     }
                 }
                 if (index == -1) {
-                    if (args[i]['hub_days'] == currentCalendarDate.getDay())
+                    if (args[i]['hub_days'] == self.getDayValue(currentCalendarDate))
                     {
                         var obj = {
                             name: args[i]['astaff_timings_x002e_hub_staffid@OData.Community.Display.V1.FormattedValue'],
@@ -8134,7 +8133,7 @@ function SylvanCalendar() {
                         obj.endDate = new Date(new Date(obj.endDate).setSeconds(0));
                     }
                     for (var j = currentView.start.getTime() ; j < currentView.end.getTime() ; j = j + (24 * 60 * 60 * 1000)) {
-                        if (new Date(j).getDay() == arrayList[i].hub_days) {
+                        if (self.getDayValue(new Date(j)) == arrayList[i].hub_days) {
                             var taObject = wjQuery.extend(true, {}, obj);
                             if (j >= taObject.startDate.getTime() && j <= taObject.endDate.getTime()) {
                                 taObject.startTime = new Date(moment(j).format('MM-DD-YYYY') + " " + arrayList[i]['hub_starttime@OData.Community.Display.V1.FormattedValue']);
