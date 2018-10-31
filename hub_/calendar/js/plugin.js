@@ -1364,7 +1364,8 @@ function SylvanCalendar() {
                 var giValidation = true;
                 var numHour = prevStudObj['duration'] / 60;
                 var prevdate1 = new Date(prevStudObj['startHour']);
-                var prevStudEndHour = new Date(prevdate1.setHours(prevdate1.getHours() + numHour));
+                var eventDuration = (new Date(prevStudObj.end).getTime() - new Date(prevStudObj.start).getTime()) / (1000 * 60);
+                var prevStudEndHour = new Date(prevdate1.setHours(prevdate1.getHours() + (eventDuration / 60)));
                 var date1 = new Date(date);
                 var endHour = new Date(date1.setHours(date1.getHours() + 1));
                 if (prevStudObj['deliveryTypeCode'] == groupInstruction) {
@@ -5119,7 +5120,7 @@ function SylvanCalendar() {
                     // }
                     var resourceObj = self.getResourceObj(value['resourceId']);
                     var draggable = "drag-student";
-                    if(!self.checkAccountClosure() && resourceObj.deliveryTypeCode != groupInstruction){
+                    if (!self.checkAccountClosure() && resourceObj.deliveryTypeCode != groupInstruction && value.deliveryTypeCode != groupInstruction) {
                         draggable = "draggable drag-student";
                     }
                     if (event.length) {
