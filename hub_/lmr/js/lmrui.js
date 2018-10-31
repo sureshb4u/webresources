@@ -255,8 +255,8 @@ function LmrUI() {
                         '<span id="wrate" raw-value=' + el.Wrate + '>' + parseFloat((el.Wrate * 100)).toFixed(2) + '</span><span id="foreignWitholdings">$ ' + parseFloat(foreignWitholdings).toFixed(2) + '</span>' +
                         '</article><article class="subHeader">'+
                         '<span></span><span></span><span> total royalty due local currency: </span>'+
-                        '<span id="royaltyDueLocal">$' + parseFloat(localRoyaltyDue).toFixed(2) + '</span></article>' +
-                        '<article><span>Foreign Exchange Conversion : </span><span id="royaltyDueLocal">$' + parseFloat(localRoyaltyDue).toFixed(2) + '</span>' +
+                        '<span class="royaltyDueLocal">$' + parseFloat(localRoyaltyDue).toFixed(2) + '</span></article>' +
+                        '<article><span>Foreign Exchange Conversion : </span><span class="royaltyDueLocal">$' + parseFloat(localRoyaltyDue).toFixed(2) + '</span>' +
                         '<span  id="erate" raw-value=' + el.Erate + '>' + parseFloat((el.Erate * 100)).toFixed(2) + '</span><span class="foreignExchange">$ ' + parseFloat(foreignExchange).toFixed(2) + '</span>'
                 }
                 skeleton += '        </article>' +
@@ -348,6 +348,7 @@ function LmrUI() {
         }
         setTimeout(function () {
             self.attachAllEvent();
+            wjQuery("#creditval").trigger("input");
             Xrm.Utility.closeProgressIndicator();
             wjQuery("#lmr").removeAttr('style');
         }, 500);
@@ -560,7 +561,11 @@ function LmrUI() {
             var creditTotal = ((creditVal*creditPercent)).toFixed(2);
             wjQuery("#creditTotal").text("($"+creditTotal+")");
             creditTotal = parseFloat(wjQuery("#creditTotal").text().replace("($",""));
-            var coreVal = parseFloat(wjQuery("#coreval").text().replace("$",""));
+            var coreVal = parseFloat(wjQuery("#coreval").text().replace("$", ""));
+            var returnFess = parseFloat(wjQuery("#returnPayVal").val());
+            if(returnFess && returnFess <= coreVal){
+                coreVal = coreVal - returnFess;
+            }
             var coreTotal = parseFloat(wjQuery("#coreTotal").text().replace("$",""));
             var edgeVal = parseFloat(wjQuery("#edgeval").text().replace("$",""));
             var edgeTotal = parseFloat(wjQuery("#edgeTotal").text().replace("$",""));
@@ -571,8 +576,8 @@ function LmrUI() {
             var rTotal = parseFloat((coreTotal+miscTotal+edgeTotal) - creditTotal).toFixed(2);
             var r1Total = parseFloat(coreVal+edgeVal+miscVal).toFixed(2);
 
-            var rTotal = parseFloat((coreTotal+edgeTotal+miscVal) - (creditTotal)).toFixed(2);
-            var r1Total = parseFloat(coreVal+edgeVal- miscVal).toFixed(2);
+            //var rTotal = parseFloat((coreTotal+edgeTotal+miscVal) - (creditTotal)).toFixed(2);
+            //var r1Total = parseFloat(coreVal+edgeVal- miscVal).toFixed(2);
             var wrate = parseFloat(wjQuery("#wrate").attr("raw-value"));
             var erate = parseFloat(wjQuery("#erate").attr("raw-value"));
             var nafAmount = parseFloat(((parseFloat(self.lmrList[0].NAFAmount) + miscVal) - creditVal).toFixed(2));
@@ -616,11 +621,11 @@ function LmrUI() {
             } else {
                 wjQuery(".rTotal").text("($" + Math.abs(rTotal) + ")");
             }
-            if (wjQuery('#royaltyDueLocal').length) {
+            if (wjQuery('.royaltyDueLocal').length) {
                 var foreignWithHolding = parseFloat(rTotal).toFixed(2) * wrate;
                 wjQuery("#foreignWitholdings").text("$" + parseFloat(foreignWithHolding).toFixed(2));
                 var localRoyaltyDue = parseFloat(rTotal).toFixed(2) - foreignWithHolding.toFixed(2);
-                wjQuery("#royaltyDueLocal").text("$" + parseFloat(localRoyaltyDue).toFixed(2));
+                wjQuery(".royaltyDueLocal").text("$" + parseFloat(localRoyaltyDue).toFixed(2));
                 var foreignExchange = parseFloat(localRoyaltyDue).toFixed(2) * erate;
                 wjQuery(".foreignExchange").text("$" + parseFloat(foreignExchange).toFixed(2));
                 var adPaymentLocal = parseFloat(totalAdvertisingPayment).toFixed(2) * erate;
@@ -649,7 +654,11 @@ function LmrUI() {
             }
 
             miscVal = isNaN(miscVal) ? 0 : miscVal; 
-            var coreVal = parseFloat(wjQuery("#coreval").text().replace("$",""));
+            var coreVal = parseFloat(wjQuery("#coreval").text().replace("$", ""));
+            var returnFess = parseFloat(wjQuery("#returnPayVal").val());
+            if (returnFess && returnFess <= coreVal) {
+                coreVal = coreVal - returnFess;
+            }
             var coreTotal = parseFloat(wjQuery("#coreTotal").text().replace("$",""));
             var edgeVal = parseFloat(wjQuery("#edgeval").text().replace("$",""));
             var edgeTotal = parseFloat(wjQuery("#edgeTotal").text().replace("$",""));
@@ -703,11 +712,11 @@ function LmrUI() {
                 rTotal = rTotal.toString().replace("-", "");
                 wjQuery(".rTotal").text("($" + rTotal + ")");
             }
-            if (wjQuery('#royaltyDueLocal').length) {
+            if (wjQuery('.royaltyDueLocal').length) {
                 var foreignWithHolding = parseFloat(rTotal).toFixed(2) * wrate;
                 wjQuery("#foreignWitholdings").text("$" + parseFloat(foreignWithHolding).toFixed(2));
                 var localRoyaltyDue = parseFloat(rTotal).toFixed(2) - foreignWithHolding.toFixed(2);
-                wjQuery("#royaltyDueLocal").text("$" + parseFloat(localRoyaltyDue).toFixed(2));
+                wjQuery(".royaltyDueLocal").text("$" + parseFloat(localRoyaltyDue).toFixed(2));
                 var foreignExchange = parseFloat(localRoyaltyDue).toFixed(2) * erate;
                 wjQuery(".foreignExchange").text("$" + parseFloat(foreignExchange).toFixed(2));
                 var adPaymentLocal = parseFloat(totalAdvertisingPayment).toFixed(2) * erate;
@@ -739,18 +748,19 @@ function LmrUI() {
 
         wjQuery("#returnPayVal").on("input", function (e) {
             var val = wjQuery(this).val();
-            var coreTotal =  wjQuery('#coreTotal');
-            var coreRevenuetotal = self.lmrList[0].CoreTotal;
+            var coreTotal = wjQuery('#coreTotal');
+            var coreVal = parseFloat(wjQuery("#coreval").text().replace("$", ""));
+            var royaltyPercent = self.lmrList[0].CorePecent;
+            var coreRevenuetotal = parseFloat(coreVal * royaltyPercent).toFixed(2);
             wjQuery(".returnPaymentContainer").tooltip({
                 tooltipClass: "custom-conflict",
                 track: false,
             });
             if (val) {
-                if (parseFloat(val) <= parseFloat(coreRevenuetotal)) {
-                    coreRevenuetotal = coreRevenuetotal - val;
-                    if (coreRevenuetotal && coreRevenuetotal > 0) {
-                        coreTotal.text("$" + parseFloat(coreRevenuetotal).toFixed(2));
-                    }
+                if (parseFloat(val) <= parseFloat(self.lmrList[0].CoreAmount)) {
+                    coreVal = coreVal - val;
+                    coreRevenuetotal = parseFloat(coreVal * royaltyPercent).toFixed(2);
+                    coreTotal.text("$" + parseFloat(coreRevenuetotal).toFixed(2));
                     wjQuery(".returnPaymentContainer").removeAttr("title");
                     wjQuery(".returnPaymentContainer").removeAttr("data-original-title");
                     wjQuery(".lmr-submit").removeClass("disabledBtn");
@@ -759,8 +769,8 @@ function LmrUI() {
                     coreTotal.text("$" + parseFloat(coreRevenuetotal).toFixed(2));
                     wjQuery(this).addClass("errorField");
                     wjQuery(".lmr-submit").addClass("disabledBtn");
-                    wjQuery(".returnPaymentContainer").attr("title", "Return Patment cannot be greater than Core revenue Total");
-                    wjQuery(".returnPaymentContainer").attr("data-original-title", "Return Patment cannot be greater than Core revenue Total");
+                    wjQuery(".returnPaymentContainer").attr("title", "Return Payment cannot be greater than Core Revenue Amount");
+                    wjQuery(".returnPaymentContainer").attr("data-original-title", "Return Payment cannot be greater than Core Revenue Amount");
                 }
             } else {
                 coreTotal.text("$" + parseFloat(coreRevenuetotal).toFixed(2));
