@@ -183,7 +183,7 @@ function LmrUI() {
                             '            </span>';
                 if (el.hasOwnProperty("CoreAmount")) {
                     skeleton += '<span id="coreval"><div style="padding:5px">$' + parseFloat(el.CoreAmount).toFixed(2) + '</div>' +
-                                '<div style="padding: 5px;padding-top:15px;" class="input-field returnPaymentContainer"><b>$</b><input type="text" class="form-control table-input" id="returnPayVal" name="returnPayment" value="' + el.returnPaymentFees + '" ></div></span>';
+                                '<div style="padding: 5px;padding-top:15px;" class="input-field returnPaymentContainer"><b>$</b><input type="text" class="form-control table-input" id="returnPayVal" name="returnPayment" value="' + el.returnPaymentFees + '" ' + isClosedText + '></div></span>';
                 }
                 if (el.hasOwnProperty("CorePecent")) {
                     if (!el.CorePecent) {
@@ -580,8 +580,15 @@ function LmrUI() {
             //var r1Total = parseFloat(coreVal+edgeVal- miscVal).toFixed(2);
             var wrate = parseFloat(wjQuery("#wrate").attr("raw-value"));
             var erate = parseFloat(wjQuery("#erate").attr("raw-value"));
-            var nafAmount = parseFloat(((parseFloat(self.lmrList[0].NAFAmount) + miscVal) - creditVal).toFixed(2));
-            var nacAmount = parseFloat(((parseFloat(self.lmrList[0].NACAmount) + miscVal) - creditVal).toFixed(2));
+            var nafAmount;
+            var nacAmount
+            if (!self.lmrList[0].isClosed) {
+                nafAmount = parseFloat(((parseFloat(self.lmrList[0].NAFAmount) + miscVal) - creditVal).toFixed(2));
+                nacAmount = parseFloat(((parseFloat(self.lmrList[0].NACAmount) + miscVal) - creditVal).toFixed(2));
+            } else {
+                nafAmount = parseFloat(self.lmrList[0].NAFAmount).toFixed(2);
+                nacAmount = parseFloat(self.lmrList[0].NACAmount).toFixed(2);
+            }
             var nafPayment = parseFloat((parseFloat(self.lmrList[0].NAFRate)*nafAmount).toFixed(2));
             var nacPayment = parseFloat((parseFloat(self.lmrList[0].NACRate)*nacAmount).toFixed(2));
             var totalAdvertisingPayment = parseFloat(nafPayment + nacPayment).toFixed(2);
