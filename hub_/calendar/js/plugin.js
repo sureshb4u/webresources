@@ -1365,9 +1365,10 @@ function SylvanCalendar() {
                 var numHour = prevStudObj['duration'] / 60;
                 var prevdate1 = new Date(prevStudObj['startHour']);
                 var eventDuration = (new Date(prevStudObj.end).getTime() - new Date(prevStudObj.start).getTime()) / (1000 * 60);
-                var prevStudEndHour = new Date(prevdate1.setHours(prevdate1.getHours() + (eventDuration / 60)));
+               // var prevStudEndHour = new Date(prevdate1.setHours(prevdate1.getHours() + (eventDuration / 60)));
+                var prevStudEndHour = new Date(prevdate1.setMinutes(eventDuration));
                 var date1 = new Date(date);
-                var endHour = new Date(date1.setHours(date1.getHours() + 1));
+                var endHour = new Date(date1.setMinutes(eventDuration));
                 if (prevStudObj['deliveryTypeCode'] == groupInstruction) {
                     if (prevStudObj['startHour'].getTime() == date.getTime() && prevStudEndHour.getTime() == endHour.getTime()) {
                         giValidation = false;
@@ -5457,6 +5458,10 @@ function SylvanCalendar() {
         }
         objPinnedStudent['hub_session_status'] = student[0]['sessionStatus'];
         var locationObj = self.getLocationObject(self.locationId);
+        var parentCenterId;
+        if (locationObj['_hub_parentcenter_value'] != undefined) {
+            parentCenterId = locationObj['_hub_parentcenter_value'];
+        }
         objPinnedStudent['ownerObj'] = locationObj['ownerObj'];
         if (student[0]['studentSession']) {
             objPinnedStudent['hub_student_session@odata.bind'] = student[0]['studentSession'];
@@ -5467,7 +5472,7 @@ function SylvanCalendar() {
         if (student[0]['sourceAppId']) {
             objPinnedStudent['hub_sourceapplicationid'] = student[0]['sourceAppId'];
         }
-        var responseObj = data.savePinStudent(objPinnedStudent);
+        var responseObj = data.savePinStudent(objPinnedStudent, parentCenterId);
         var eventObj = self.calendar.fullCalendar('clientEvents', eventId);
         if (typeof (responseObj) == 'boolean') {
             if (responseObj) {
@@ -5596,9 +5601,13 @@ function SylvanCalendar() {
             objPinnedStaff['hub_resourceid@odata.bind'] = teacher[0].resourceId;
 
             var locationObj = self.getLocationObject(self.locationId);
+            var parentCenterId;
+            if (locationObj['_hub_parentcenter_value'] != undefined) {
+                parentCenterId = locationObj['_hub_parentcenter_value'];
+            }
             objPinnedStaff['ownerObj'] = locationObj['ownerObj'];
             objPinnedStaff['hub_centerid'] = locationObj['hub_centerid'];
-            var responseObj = data.savePinTeacher(objPinnedStaff);
+            var responseObj = data.savePinTeacher(objPinnedStaff, parentCenterId);
             if (typeof (responseObj) == 'boolean') {
                 if (self.convertedPinnedList.length) {
                     index = -1;
@@ -10125,7 +10134,9 @@ function SylvanCalendar() {
 
         if (newEvent.length) {
             var newEventDuration = (new Date(newEvent[0].end).getTime() - new Date(newEvent[0].start).getTime()) / (1000 * 60);
-            if (newEventDuration != prevStudObj.duration) {
+            var previousEventDuration = (new Date(prevStudObj.end).getTime() - new Date(prevStudObj.start).getTime()) / (1000 * 60);
+            if (newEventDuration != previousEventDuration) {
+           // if (newEventDuration != prevStudObj.duration) {
                 messageObject.alert.push("Student slot timings are mismatching.Cannot be placed.");
             }
             // Non prefered teacher.
