@@ -1366,9 +1366,9 @@ function SylvanCalendar() {
                 var prevdate1 = new Date(prevStudObj['startHour']);
                 var eventDuration = (new Date(prevStudObj.end).getTime() - new Date(prevStudObj.start).getTime()) / (1000 * 60);
                // var prevStudEndHour = new Date(prevdate1.setHours(prevdate1.getHours() + (eventDuration / 60)));
-                var prevStudEndHour = new Date(prevdate1.setMinutes(eventDuration));
+                var prevStudEndHour = new Date(prevdate1.setMinutes(prevdate1.getMinutes() + eventDuration));
                 var date1 = new Date(date);
-                var endHour = new Date(date1.setMinutes(eventDuration));
+                var endHour = new Date(date1.setMinutes(date1.getMinutes() + eventDuration));
                 if (prevStudObj['deliveryTypeCode'] == groupInstruction) {
                     if (prevStudObj['startHour'].getTime() == date.getTime() && prevStudEndHour.getTime() == endHour.getTime()) {
                         giValidation = false;
@@ -1820,7 +1820,7 @@ function SylvanCalendar() {
                 name: teacher[0].name,
                 start: date,
                 startHour: startHour,
-                end: new Date(endDate.setHours(endDate.getHours() + (eventDuration / 60))),
+                end: new Date(endDate.setMinutes(endDate.getMinutes() + eventDuration)),
                 resourceId: resource.id,
                 deliveryTypeId: this.getResourceObj(resource.id).deliveryTypeId,
                 deliveryType: this.getResourceObj(resource.id).deliveryType,
@@ -1867,6 +1867,7 @@ function SylvanCalendar() {
         var uniqTeacherId = wjQuery(elm).attr("id");
         var prevEventId = wjQuery(elm).attr("eventid");
         var uniqueId = wjQuery(elm).attr('uniqueId');
+        var newEvent = this.calendar.fullCalendar('clientEvents', resource.id + date);
         var prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
         var currentCalendarDate = self.calendar.fullCalendar('getDate');
 
@@ -1884,9 +1885,14 @@ function SylvanCalendar() {
         if (t.convertedTeacherObj[index]) {
             var newTeacherSession = wjQuery.extend(true, {}, t.convertedTeacherObj[index]);
             elm.remove();
+            var newEventDuration = 60;
+            if (newEvent.length != 0) {
+                newEventDuration = (new Date(newEvent[0].end).getTime() - new Date(newEvent[0].start).getTime()) / (1000 * 60);
+            }
             newTeacherSession.start = date;
             newTeacherSession.startHour = startHour;
-            newTeacherSession.end = this.setEnd(t.convertedTeacherObj[index], newTeacherSession);
+            var tempStartHour = new Date(startHour);
+            newTeacherSession.end = new Date(tempStartHour.setMinutes(tempStartHour.getMinutes() + newEventDuration));
             newTeacherSession.resourceId = resource.id;
             newTeacherSession.deliveryTypeId = t.getResourceObj(resource.id).deliveryTypeId;
             newTeacherSession.deliveryType = t.getResourceObj(resource.id).deliveryType;
@@ -5328,7 +5334,10 @@ function SylvanCalendar() {
             var filteredList = this.sofList['Group Facilitation'].filter(function (x) {
                 return x.startHour.getHours() >= 6
             });
-            if (this.sofList['Group Facilitation'].length == 0 || filteredList.length == 0) {
+            var filteredGIList = this.sofList['Group Instruction'].filter(function (x) {
+                return x.startHour.getHours() >= 6
+            });
+            if ((this.sofList['Group Facilitation'].length == 0 || filteredList.length == 0) && (this.sofList['Group Instruction'].length == 0 || filteredGIList.length == 0)) {
                 closeSofPane = true;
             }
         } else {
