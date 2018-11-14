@@ -1456,7 +1456,7 @@ function SylvanCalendar() {
             if (newEvent.length != 0) {
                 eventDuration = (new Date(newEvent[0].end).getTime() - new Date(newEvent[0].start).getTime()) / (1000 * 60);
             }
-            var allowToDropTeacher = self.validateTeacherOnSameRow(teacherId, startHour, teacher[0], false);
+            var allowToDropTeacher = self.validateTeacherOnSameRow(teacherId, startHour, teacher[0], false, eventDuration);
             var teacherObj = {}
             teacherObj.duration = eventDuration;
             teacherObj.deliveryTypeCode = resource.deliveryTypeCode;
@@ -1689,14 +1689,14 @@ function SylvanCalendar() {
             if (resource.id + date != prevEventId) {
                 var updateFlag = false;
                 var newEvent = this.calendar.fullCalendar('clientEvents', resource.id + date);
-                var allowToDropTeacher = true;
-                if (startHour.getTime() != prevEvent[0].start.getTime()) {
-                    allowToDropTeacher = self.validateTeacherOnSameRow(teacherId, startHour, prevEvent[0], true);
-                }
                 var teacherObj = {}
                 teacherObj.duration = 60;
                 if (newEvent.length != 0) {
                     teacherObj.duration = (new Date(newEvent[0].end).getTime() - new Date(newEvent[0].start).getTime()) / (1000 * 60);
+                }
+                var allowToDropTeacher = true;
+                if (startHour.getTime() != prevEvent[0].start.getTime()) {
+                    allowToDropTeacher = self.validateTeacherOnSameRow(teacherId, startHour, prevEvent[0], true, teacherObj.duration);
                 }
                 teacherObj.deliveryTypeCode = resource.deliveryTypeCode;
                 var instructionalHourValidation = self.checkInstructionalHours(teacherObj, startHour, "teacher");
@@ -7570,7 +7570,7 @@ function SylvanCalendar() {
                 }
                 objSession["hub_session_date"] = moment(new Date(idArry[2])).format("YYYY-MM-DD");
                 objSession["hub_start_time"] = start;
-                objSession["hub_end_time"] = start + 60;
+                objSession["hub_end_time"] = start + studentObj[0].duration;
                 objSession["hub_sessiontype"] = studentObj[0]['sessiontype'];
                 objSession["hub_session_status"] = studentObj[0]['sessionStatus'];
                 if (studentObj[0]['makeupExpiryDate']) {
@@ -9262,35 +9262,19 @@ function SylvanCalendar() {
         return allowToDropStudent;
     }
 
-    this.validateTeacherOnSameRow = function (teacherId, startHour, prevEvent, sessionDrag) {
+    this.validateTeacherOnSameRow = function (teacherId, startHour, prevEvent, sessionDrag, newEventDuration) {
         var self = this;
         var allowToDropTeacher = true;
         startHour = new Date(startHour);
         if (prevEvent['duration'] == undefined) {
             prevEvent['duration'] = 60;
         }
-        var numHour;
-        var numMinite;
+        if (!newEventDuration) {
+            newEventDuration = 60;
+        }
         var endHour;
-        if (prevEvent['duration'] % 60 == 0) {
-            numHour = prevEvent['duration'] / 60;
-            numMinite = 0;
-        } else {
-            numHour = Math.floor(prevEvent['duration'] / 60);
-            numMinite = prevEvent['duration'] % 60;
-        }
         var startHour1 = new Date(startHour);
-        if ((startHour1.getMinutes() + numMinite) < 60) {
-            endHour = new Date(startHour1.setHours(startHour1.getHours() + numHour));
-            endHour = new Date(startHour1.setMinutes(startHour1.getMinutes() + numMinite));
-        }
-        if ((startHour1.getMinutes() + numMinite) >= 60) {
-            numHour += Math.floor((startHour1.getMinutes() + numMinite) / 60);
-            numMinite += (startHour1.getMinutes() + numMinite) % 60;
-            endHour = new Date(startHour1.setHours(startHour1.getHours() + numHour));
-            endHour = new Date(startHour1.setMinutes(startHour1.getMinutes() + numMinite));
-        }
-
+        endHour = new Date(startHour1.setMinutes(startHour1.getMinutes() + newEventDuration));
         var dropableEvent = [];
         if (sessionDrag) {
             dropableEvent = self.calendar.fullCalendar('clientEvents', function (el) {
@@ -9825,7 +9809,12 @@ function SylvanCalendar() {
                         break;
                     }
                 }
-                var allowToDropTeacher = self.validateTeacherOnSameRow(teacherId, idArry[2], teacherObj[0], false);
+                var newEvent = self.calendar.fullCalendar('clientEvents', idArry[1] + idArry[2]);
+                var newEventDuration;
+                if (newEvent.length) {
+                    newEventDuration = (new Date(newEvent[0].end).getTime() - new Date(newEvent[0].start).getTime()) / (1000 * 60);
+                }
+                var allowToDropTeacher = self.validateTeacherOnSameRow(teacherId, idArry[2], teacherObj[0], false, newEventDuration);
                 if (allowToDropTeacher) {
                     if (self.checkTeacherScheduleInDiffCenter(teacherId, idArry[2])) {
                         Xrm.Utility.closeProgressIndicator()
