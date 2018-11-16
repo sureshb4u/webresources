@@ -582,7 +582,7 @@ function LmrUI() {
             var erate = parseFloat(wjQuery("#erate").attr("raw-value"));
             var nafAmount;
             var nacAmount
-            if (!self.lmrList[0].isClosed) {
+            if (!self.lmrList[0].IsClosed) {
                 nafAmount = parseFloat(((parseFloat(self.lmrList[0].NAFAmount) + miscVal) - creditVal).toFixed(2));
                 nacAmount = parseFloat(((parseFloat(self.lmrList[0].NACAmount) + miscVal) - creditVal).toFixed(2));
             } else {
