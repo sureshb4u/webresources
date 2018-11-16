@@ -1220,7 +1220,7 @@ function SylvanCalendar() {
                     objNewSession['hub_makeup_expiry_date'] =  moment(student[0]['makeupExpiryDate']).format('YYYY-MM-DD');
                     objSession['hub_makeup_expiry_date'] = moment(student[0]['makeupExpiryDate']).format('YYYY-MM-DD');
                 }
-
+                objNewSession['@odata.etag'] = student[0].etagId;
                 objNewSession['hub_is_1to1'] = student[0]['is1to1'];
                 objNewSession['hub_isattended'] = student[0]['isAttended'];
                 objNewSession['hub_enrollment@odata.bind'] = oldStudent['enrollmentId'];
@@ -1233,7 +1233,7 @@ function SylvanCalendar() {
                 objNewSession['hub_deliverytype@OData.Community.Display.V1.FormattedValue'] = student[0].deliveryType;
                 objNewSession['hub_deliverytype_code'] = student[0].deliveryTypeCode;
                 objSession['hub_deliverytype_code'] = student[0].deliveryTypeCode;
-                
+                objSession['@odata.etag'] = student[0].etagId;
                 objSession['hub_start_time'] = this.convertToMinutes(moment(student[0]['start']).format("h:mm A"));
                 objSession['hub_end_time'] = this.convertToMinutes(moment(student[0]['end']).format("h:mm A"));
                 objSession['hub_isattended'] = student[0]['isAttended'];
@@ -2089,7 +2089,7 @@ function SylvanCalendar() {
                 }
                 this.convertedStudentObj.push(newStudent[0]);
                 t.populateStudentEvent(newStudent, true);
-            } else if (typeof (responseObj) == 'object' && responseObj != null && responseObj != undefined) {
+            } else if (typeof (responseObj) == 'object' && responseObj != null && responseObj != undefined && responseObj['@odata.etag']) {
                 elm.remove();
                 if(wjQuery(elm).attr("isfromSa") == "true"){
                     this.saList[sofType].splice(stdIndex, 1);
@@ -2100,6 +2100,7 @@ function SylvanCalendar() {
                 if (wjQuery(parentElement).html() == '') {
                     parentElement.remove();
                 }
+                newStudent[0].etagId = responseObj['@odata.etag'];
                 if (responseObj['hub_student_session@odata.bind']) {
                     newStudent[0]['studentSession'] = responseObj['hub_student_session@odata.bind'];
                 }
@@ -2198,10 +2199,11 @@ function SylvanCalendar() {
                     this.populateStudentEvent([newStudentObj], true);
                 }
             }
-            else if (typeof responseObj == 'object' && responseObj != null && responseObj != undefined) {
+            else if (typeof responseObj == 'object' && responseObj != null && responseObj != undefined && responseObj['@odata.etag']) {
                 if (responseObj['hub_student_session@odata.bind']) {
                     newStudentObj.studentSession = responseObj['hub_student_session@odata.bind'];
-                }
+                }                
+                newStudentObj.etagId = responseObj['@odata.etag']
                 if (responseObj['hub_master_schedule@odata.bind']) {
                     newStudentObj.masterScheduleId = responseObj['hub_master_schedule@odata.bind'];
                 }
@@ -2216,7 +2218,7 @@ function SylvanCalendar() {
                     newStudentObj['sessionId'] = responseObj['hub_studentsessionid'];
                     newStudentObj['start'] = newStudentObj.start;
                     newStudentObj['end'] = newStudentObj.end;
-                    newStudentObj['resourceId'] = responseObj['hub_resourceid@odata.bind'];
+                    newStudentObj['resourceId'] = newStudentObj.resourceId;
                     newStudentObj['sessiontype'] = responseObj['hub_sessiontype'];
                     newStudentObj['isAttended'] = responseObj['hub_isattended'];
                     newStudentObj['sessionStatus'] = responseObj['hub_session_status'];
@@ -3445,6 +3447,7 @@ function SylvanCalendar() {
                             eDate = new Date(moment(currentCalendarDate).format('MM-DD-YYYY') + " " + val['endTime']);
                             startHour = new Date(moment(currentCalendarDate).format('MM-DD-YYYY') + " " + val['startTime']);
                             var teacher = {
+                                etagId: val['@odata.etag'],
                                 id: val['teacherId'],
                                 name: val["teacherName"],
                                 start: sDate,
@@ -3520,6 +3523,7 @@ function SylvanCalendar() {
                     }
                 }
                 var teacher = {
+                    etagId: val['@odata.etag'],
                     id: val['_hub_staff_value'],
                     name: val["_hub_staff_value@OData.Community.Display.V1.FormattedValue"],
                     start: currentCalendarDate,
@@ -3612,6 +3616,7 @@ function SylvanCalendar() {
                         val['aprogram_x002e_hub_color'] = "#000";
                     }
                     var obj = {
+                        etagId: val['@odata.etag'],
                         studUniqueId: self.generateUniqueId(),
                         id: val._hub_student_value,
                         name: val["_hub_student_value@OData.Community.Display.V1.FormattedValue"],
@@ -3776,6 +3781,7 @@ function SylvanCalendar() {
                         val['aprogram_x002e_hub_color'] = "#000";
                     }
                     var obj = {
+                        etagId: val['@odata.etag'],
                         studUniqueId:self.generateUniqueId(),
                         id: val['aenrollment_x002e_hub_student'],
                         name: val["aenrollment_x002e_hub_student@OData.Community.Display.V1.FormattedValue"],
@@ -4277,6 +4283,7 @@ function SylvanCalendar() {
                     if (args[i]['hub_days'] == self.getDayValue(currentCalendarDate))
                     {
                         var obj = {
+                            etagId:args[i]['@odata.etag'],
                             name: args[i]['astaff_timings_x002e_hub_staffid@OData.Community.Display.V1.FormattedValue'],
                             id: args[i]['astaff_timings_x002e_hub_staffid'],
                             startDate: args[i]['hub_effectivestartdate@OData.Community.Display.V1.FormattedValue'],
@@ -6858,11 +6865,12 @@ function SylvanCalendar() {
             if (objStudent[0]['masterScheduleId']) {
                 objMovetoSOF['hub_master_schedule@odata.bind'] = objStudent[0]['masterScheduleId'];
             }
+            objMovetoSOF['@odata.etag'] = objStudent[0]['etagId'];
             if (objStudent[0]['sourceAppId']) {
                 objMovetoSOF['hub_sourceapplicationid'] = objStudent[0]['sourceAppId'];
             }
             var responseObj = data.moveStudentToSOF(objMovetoSOF);
-            if ((typeof (responseObj) == 'boolean' && responseObj )|| typeof (responseObj) == 'object') {
+            if (typeof (responseObj) == 'object' && responseObj['@odata.etag']) {
                 if (responseObj.hasOwnProperty('hub_studentsessionid')) {
                     objStudent[0]['sessionId'] = responseObj['hub_studentsessionid'];
                     objStudent[0]['resourceId'] = responseObj['hub_resourceid@odata.bind'];
@@ -6870,6 +6878,7 @@ function SylvanCalendar() {
                     objStudent[0]['sessionStatus'] = responseObj['hub_session_status'];
                     delete objStudent[0]['isFromMasterSchedule'];
                 }
+                objStudent[0].etagId = responseObj['@odata.etag']
                 if (responseObj['hub_student_session@odata.bind']) {
                     objStudent[0]['studentSession'] = responseObj['hub_student_session@odata.bind'];
                 }
@@ -7000,6 +7009,7 @@ function SylvanCalendar() {
         var self = this;
         if (isFromSave) {
             var obj = {
+                etagId: data['@odata.etag'],
                 id: data['hub_sch_pinned_students_teachersid'],
                 enrollmentId: data['_hub_enrollment_value'],
                 startTime: data['hub_start_time@OData.Community.Display.V1.FormattedValue'],
@@ -7027,6 +7037,7 @@ function SylvanCalendar() {
             if (data.length) {
                 for (var i = 0; i < data.length; i++) {
                     var obj = {
+                        etagId: data[i]['@odata.etag'],
                         id: data[i]['hub_sch_pinned_students_teachersid'],
                         enrollmentId: data[i]['_hub_enrollment_value'],
                         startTime: data[i]['hub_start_time@OData.Community.Display.V1.FormattedValue'],
@@ -7115,7 +7126,8 @@ function SylvanCalendar() {
                 objNewSession['hub_is_1to1'] = newStudent['is1to1'];
                 objNewSession['hub_isattended'] = newStudent['isAttended'];
             }
-
+            objNewSession['@odata.etag'] = newStudent.etagId;
+            objPrevSession['@odata.etag'] = prevStudent.etagId;
             if (prevStudent['makeupExpiryDate']) {
                 objNewSession['hub_makeup_expiry_date'] = moment(prevStudent['makeupExpiryDate']).format('YYYY-MM-DD');
                 objPrevSession['hub_makeup_expiry_date'] = moment(prevStudent['makeupExpiryDate']).format('YYYY-MM-DD');
