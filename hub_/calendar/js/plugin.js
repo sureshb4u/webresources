@@ -5730,6 +5730,7 @@ function SylvanCalendar() {
 
     this.omitStudentFromSession = function (element,status) {
         var self = this;
+        var responseForContext = true;
         var uniqueIds = wjQuery(element).attr("uniqueId").split('_');
         var studUniqueId = wjQuery(element).attr("studUniqueId");
         var objStudent = this.convertedStudentObj.filter(function (x) {
@@ -5765,6 +5766,9 @@ function SylvanCalendar() {
             if (objStudent[0]['sourceAppId']) {
                 objCancelSession['hub_sourceapplicationid'] = objStudent[0]['sourceAppId'];;
             }
+            if (objStudent[0]['etagId']) {
+                objCancelSession['@odata.etag'] = objStudent[0]['etagId'];
+            }
             if (status == "attended") {
                 var responseObj = data.markAsAttended(objCancelSession);
             } else if (status == UNEXCUSED_STATUS) {
@@ -5772,7 +5776,7 @@ function SylvanCalendar() {
             }else{
                 var responseObj = data.omitStudentSession(objCancelSession);
             }
-            if ((typeof (responseObj) == 'boolean' && responseObj) || typeof (responseObj) == 'object') {
+            if (typeof (responseObj) == 'object' && responseObj['@odata.etag']) {
                 var index = -1;
                 for (var i = 0; i < this.convertedStudentObj.length; i++) {
                     if(studUniqueId == this.convertedStudentObj[i]['studUniqueId']){
@@ -5796,6 +5800,7 @@ function SylvanCalendar() {
                     if (responseObj['hub_sourceapplicationid']) {
                         this.convertedStudentObj[index]['sourceAppId'] = responseObj['hub_sourceapplicationid'];
                     }
+                    this.convertedStudentObj[index]['etagId'] = responseObj['@odata.etag']
                     if (status != "attended") {
                         this.convertedStudentObj[index]['sessionStatus'] = status;
                         this.convertedStudentObj[index]['isAttended'] = false;
@@ -5814,6 +5819,10 @@ function SylvanCalendar() {
                         this.convertedStudentObj[index]['isAttended'] = true;
                     }
                 }
+
+            } else if (typeof responseObj == 'object' && responseObj.code) {
+                responseForContext = false;
+                self.refreshConfirmation(responseObj.message);
             }
         }
         if (status != "attended") {
@@ -5821,7 +5830,8 @@ function SylvanCalendar() {
             this.showConflictMsg();
         }
         this.draggable('draggable');
-        Xrm.Utility.closeProgressIndicator()
+        Xrm.Utility.closeProgressIndicator();
+        return responseForContext;
     };
 
     this.excuseStudentFromSession = function (element) {
@@ -5852,6 +5862,9 @@ function SylvanCalendar() {
                 objCancelSession.hub_start_time = this.convertToMinutes(moment(new Date(uniqueIds[2])).format("h:mm A"));
                 objCancelSession.hub_end_time = objCancelSession.hub_start_time + 60;
             }
+            if (objStudent[0].etagId) {
+                objCancelSession['@odata.etag'] = objStudent[0].etagId;
+            }
             objCancelSession['hub_enrollment@odata.bind'] = objStudent[0]['enrollmentId'];
             objCancelSession['hub_service@odata.bind'] = objStudent[0]['serviceId'];
             objCancelSession['hub_center@odata.bind'] = this.locationId;
@@ -5873,7 +5886,7 @@ function SylvanCalendar() {
                 objCancelSession['hub_sourceapplicationid'] = objStudent[0]['sourceAppId'];
             }
             var responseObj = data.excuseStudentFromSession(objCancelSession);
-            if ((typeof (responseObj) == 'boolean' && responseObj) || typeof (responseObj) == 'object') {
+            if (typeof (responseObj) == 'object' && responseObj['@odata.etag']) {
                 var index = -1;
                 for (var i = 0; i < this.convertedStudentObj.length; i++) {
                     if(studUniqueId == this.convertedStudentObj[i]['studUniqueId']){
@@ -5897,6 +5910,7 @@ function SylvanCalendar() {
                     if (responseObj['hub_sourceapplicationid']) {
                         this.convertedStudentObj[index]['sourceAppId'] = responseObj['hub_sourceapplicationid'];
                     }
+                    this.convertedStudentObj[index].etagId = responseObj['@odata.etag'];
                     this.convertedStudentObj[index]['sessionStatus'] = EXCUSED_STATUS;
                     this.pushStudentToSA(this.convertedStudentObj[index]);
                     self.saList = this.saList;
@@ -5910,6 +5924,8 @@ function SylvanCalendar() {
                     var prevEvent = this.calendar.fullCalendar('clientEvents', prevEventId);
                     self.updatePrevStudentEvent(prevEvent, uniqueIds[0], prevEventId, element);
                 }
+            } else if (typeof responseObj == 'object' && responseObj.code) {
+                self.refreshConfirmation(response.message);
             }
         }
         self.openSofPane();
@@ -6288,8 +6304,11 @@ function SylvanCalendar() {
                     objNewSession['hub_sourceapplicationid'] = objStudent[0]['sourceAppId'];
                     objPrevSession['hub_sourceapplicationid'] = objStudent[0]['sourceAppId'];
                 }
+                if (objStudent[0].etagId) {
+                    objPrevSession['@odata.etag'] = objStudent[0].etagId;
+                }
                 var responseObj = data.rescheduleStudentSession(objPrevSession, objNewSession);
-                if (typeof (responseObj) == 'boolean' || typeof (responseObj) == 'object') {
+                if (typeof (responseObj) == 'object' && responseObj['@odata.etag']) {
                     if (responseObj && flag) {
                         wjQuery(".excuseSave").removeClass('reschedule');
                         var index = -1;
@@ -6350,6 +6369,8 @@ function SylvanCalendar() {
                             wjQuery('#error_block').css('color', 'red');
                         }
                     }
+                } else if (typeof responseObj == 'object' && responseObj.code) {
+                    self.refreshConfirmation(responseObj.message);
                 }
                 else {
                     if (wjQuery('#error_block').text() == '') {
@@ -6571,8 +6592,10 @@ function SylvanCalendar() {
                             options = wjQuery.extend(true, {}, options);
                             setTimeout(function () {
                                 if (obj.attended.visible) {
-                                    obj.attended.visible = false;
-                                    self.omitStudentFromSession(options.$trigger[0], "attended");
+                                    var response = self.omitStudentFromSession(options.$trigger[0], "attended");
+                                    if (response) {
+                                        obj.attended.visible = false;
+                                    }
                                 }
                             }, 300);
                         }
@@ -6869,6 +6892,8 @@ function SylvanCalendar() {
                 objMovetoSOF['hub_master_schedule@odata.bind'] = objStudent[0]['masterScheduleId'];
             }
             objMovetoSOF['@odata.etag'] = objStudent[0]['etagId'];
+            objMovetoSOF['hub_sessiontype'] = objStudent[0]['sessiontype'] ;
+            objMovetoSOF['hub_session_status'] = objStudent[0]['sessionStatus'];
             if (objStudent[0]['sourceAppId']) {
                 objMovetoSOF['hub_sourceapplicationid'] = objStudent[0]['sourceAppId'];
             }
@@ -7640,6 +7665,9 @@ function SylvanCalendar() {
                         if (studentObj[0]['sourceAppId']) {
                             objSession['hub_sourceapplicationid'] = studentObj[0]['sourceAppId'];
                         }
+                        if (studentObj[0]['etagId']) {
+                            objSession['@odata.etag'] = studentObj[0]['etagId'];
+                        }
                         if (instructionalHourCheck) {
                             self.saveMakeupOrFloat(objSession, studentObj, idArry);
                         } else {
@@ -7663,7 +7691,7 @@ function SylvanCalendar() {
     this.saveMakeupOrFloat = function (objSession, studentObj, idArry) {
         var self = this;
         var responseObj = data.saveMakeupNFloat(objSession);
-        if (typeof (responseObj) == 'object') {
+        if (typeof (responseObj) == 'object' && responseObj['@odata.etag']) {
             var uniqueid = studentObj[0].id + "_" + idArry[1] + "_" + idArry[2];
             // Update New student Session
             studentObj[0]['resourceId'] = idArry[1];
@@ -7672,6 +7700,7 @@ function SylvanCalendar() {
             studentObj[0]['end'] = new Date(new Date(idArry[2]).setHours(new Date(idArry[2]).getHours() + 1));
             studentObj[0]['sessionId'] = responseObj['hub_studentsessionid'];
             studentObj[0]['sessionDate'] = responseObj['hub_session_date'];
+            studentObj[0]['etagId'] = responseObj['@odata.etag'];
             if (responseObj['hub_sessiontype'] != undefined) {
                 studentObj[0]['sessiontype'] = responseObj['hub_sessiontype'];
             }
@@ -7696,6 +7725,8 @@ function SylvanCalendar() {
             self.draggable('draggable');
             wjQuery("#makeup > .error_block").html("");
             wjQuery("#makeup").dialog("close");
+        } else if (typeof responseObj == 'object' && responseObj.code) {
+            self.refreshConfirmation(responseObj.message);
         } else {
             wjQuery("#makeup > .error_block").html(responseObj);
             wjQuery("#makeup").dialog("open");
